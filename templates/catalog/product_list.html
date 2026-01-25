@@ -160,18 +160,16 @@
                                 <span class="product-ref-value">P{{ product.pk|stringformat:"06d" }}</span>
                             </div>
                             
-                            <!-- (c) Precio destacado + unidad/gramos -->
+                            <!-- (c) Precio destacado estilo Amazon + unidad/gramos -->
                             <div class="product-price-section">
-                                <div class="product-price-main">
-                                    <span class="product-price-amount">{{ product.price|floatformat:2 }}</span>
-                                    <span class="product-price-currency">€</span>
-                                </div>
-                                <div class="product-unit-info">
-                                    <span class="product-unit">{% cycle '150 g' '200 g' '100 g' '250 g' '300 g' '180 g' '120 g' '160 g' %}</span>
+                                <div class="product-price-main" data-price="{{ product.price }}">
+                                    <span class="price-full">{{ product.price|floatformat:2 }}</span>
+                                    <span class="price-cur">€</span>
+                                    <span class="price-unit">/ {% cycle '150 g' '200 g' '100 g' '250 g' '300 g' '180 g' '120 g' '160 g' %}</span>
                                 </div>
                             </div>
                             
-                            <!-- (d) Imagen del producto (grande, protagonista) -->
+                            <!-- (d) Imagen del producto (grande, protagonista) con badge overlay -->
                             <div class="product-image-container">
                                 {% if product.image %}
                                 <img src="{{ product.image.url }}" 
@@ -182,6 +180,10 @@
                                     <i class="bi bi-image"></i>
                                 </div>
                                 {% endif %}
+                                <!-- Badge overlay "En carrito: X" -->
+                                <div class="product-cart-badge-overlay" data-product-id="{{ product.pk }}" style="display: none;">
+                                    <span class="cart-badge-text">{% trans "En carrito:" %} <strong class="cart-badge-quantity">0</strong></span>
+                                </div>
                             </div>
                             
                             <!-- (e) Stepper de cantidad -->
@@ -204,12 +206,6 @@
                             <button type="button" class="btn btn-primary btn-add-product" data-product-id="{{ product.pk }}">
                                 <i class="bi bi-cart-plus"></i> {% trans "Añadir" %}
                             </button>
-                            
-                            <!-- Feedback de cantidad en carrito -->
-                            <div class="product-cart-feedback" data-product-id="{{ product.pk }}" style="display: none;">
-                                <i class="bi bi-check-circle"></i>
-                                <span class="cart-feedback-text">{% trans "En carrito:" %} <strong class="cart-quantity">0</strong></span>
-                            </div>
                         </div>
                     </div>
                     {% endfor %}
@@ -227,24 +223,6 @@
                 {% endif %}
             </div>
         </div>
-    </div>
-</div>
-
-<!-- Panel de carrito sticky -->
-<div class="cart-panel" id="cartPanel">
-    <div class="cart-panel-header">
-        <i class="bi bi-cart3"></i>
-        <span class="cart-panel-title">{% trans "Carrito" %}</span>
-        <span class="cart-panel-count" id="cartTotalItems">0</span>
-    </div>
-    <div class="cart-panel-body">
-        <div class="cart-panel-subtotal">
-            <span>{% trans "Subtotal:" %}</span>
-            <strong id="cartSubtotal">0.00 €</strong>
-        </div>
-        <a href="{% url 'orders:cart' %}" class="btn btn-primary btn-block cart-panel-button">
-            {% trans "Ver carrito" %}
-        </a>
     </div>
 </div>
 
@@ -282,12 +260,72 @@
                 // Continuar sin carrito inicial, se cargará desde la UI
             }
             CatalogCart.init();
+            
+            // Inicializar badge del topbar con el contador actual
+            const topbarBadge = document.getElementById('topbarCartBadge');
+            const topbarCartBtn = document.getElementById('topbarCartBtn');
+            if (topbarBadge) {
+                const currentCount = Object.values(CatalogCart.cart).reduce((sum, qty) => sum + qty, 0);
+                if (currentCount > 0) {
+                    topbarBadge.textContent = currentCount;
+                    topbarBadge.setAttribute('data-count', currentCount);
+                    topbarBadge.style.display = 'flex';
+                    
+                    // Ajustar tamaño del badge si el número es mayor a 9
+                    if (currentCount > 9) {
+                        topbarBadge.style.minWidth = '18px';
+                        topbarBadge.style.height = '18px';
+                        topbarBadge.style.fontSize = '12px';
+                        topbarBadge.style.padding = '0 5px';
+                    } else {
+                        topbarBadge.style.minWidth = '16px';
+                        topbarBadge.style.height = '16px';
+                        topbarBadge.style.fontSize = '11px';
+                        topbarBadge.style.padding = '0 4px';
+                    }
+                    
+                    // Actualizar aria-label y title
+                    if (topbarCartBtn) {
+                        const cartLabel = 'Carrito (' + currentCount + ')';
+                        topbarCartBtn.setAttribute('aria-label', cartLabel);
+                        topbarCartBtn.setAttribute('title', cartLabel);
+                    }
+                } else {
+                    topbarBadge.textContent = '';
+                    topbarBadge.setAttribute('data-count', '0');
+                    topbarBadge.style.display = 'none';
+                    
+                    // Actualizar aria-label y title cuando está vacío
+                    if (topbarCartBtn) {
+                        topbarCartBtn.setAttribute('aria-label', 'Carrito');
+                        topbarCartBtn.setAttribute('title', 'Carrito');
+                    }
+                }
+            }
         }
         
         // Inicializar filtros
         if (typeof CatalogFilters !== 'undefined') {
             CatalogFilters.init();
         }
+        
+        // Parsear precios estilo Amazon (separar parte entera y decimales)
+        document.querySelectorAll('.product-price-main[data-price]').forEach(function(priceElement) {
+            const priceValue = parseFloat(priceElement.getAttribute('data-price'));
+            if (isNaN(priceValue)) return;
+            
+            const priceFull = priceElement.querySelector('.price-full');
+            if (!priceFull) return;
+            
+            // Formatear precio con 2 decimales
+            const formatted = priceValue.toFixed(2);
+            const parts = formatted.split('.');
+            const intPart = parts[0];
+            const decPart = parts[1] || '00';
+            
+            // Reemplazar el contenido del precio completo con parte entera y decimales
+            priceFull.outerHTML = '<span class="price-int">' + intPart + '</span><span class="price-dec">,' + decPart + '</span>';
+        });
     });
 </script>
 {% endblock %}

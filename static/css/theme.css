@@ -392,6 +392,14 @@ body {
     white-space: nowrap;
 }
 
+/* Contenedor de acciones del topbar (Idioma, Carrito, Perfil) */
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+}
+
 /* Dropdown del usuario */
 .topbar-right .dropdown {
     position: relative;
@@ -438,10 +446,18 @@ body {
     flex-shrink: 0;
 }
 
+.topbar-actions > * {
+    flex-shrink: 0;
+}
+
 /* Responsive para topbar */
 @media (max-width: 768px) {
     .topbar-right {
         gap: 8px;
+    }
+    
+    .topbar-actions {
+        gap: 10px;
     }
     
     .language-select {
@@ -453,11 +469,95 @@ body {
     .user-dropdown-btn span {
         display: none !important;
     }
+    
+    .topbar-cart-btn,
+    .fenix-cart-minimal {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        min-height: 36px;
+    }
+    
+    .topbar-cart-icon {
+        font-size: 18px;
+    }
 }
 
 .topbar-right .dropdown-divider {
     margin: 8px 0;
     border-top: 1px solid var(--gray-200);
+}
+
+/* Botón de carrito minimalista estilo Amazon */
+.topbar-cart-btn,
+.fenix-cart-minimal {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid var(--gray-200);
+    color: var(--gray-700);
+    text-decoration: none;
+    transition: all var(--transition);
+    flex-shrink: 0;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.topbar-cart-btn:hover,
+.fenix-cart-minimal:hover {
+    background: var(--gray-50);
+    border-color: var(--gray-300);
+    color: var(--gray-900);
+    transform: scale(1.05);
+}
+
+.topbar-cart-icon {
+    font-size: 20px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.topbar-cart-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #ff3b30;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    border: 1.5px solid white;
+    line-height: 1;
+    z-index: 10;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* Badge base - el tamaño se ajusta dinámicamente por JS para números > 9 */
+
+/* Ocultar badge si está vacío o el contador es 0 */
+.topbar-cart-badge:empty,
+.topbar-cart-badge[data-count="0"],
+.topbar-cart-badge:not([data-count]),
+.topbar-cart-badge[data-count=""] {
+    display: none !important;
 }
 
 /* Selector de idioma */

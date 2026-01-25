@@ -8,27 +8,41 @@
     </div>
     
     <div class="topbar-right">
-        <!-- Selector de idioma -->
-        <form action="{% url 'set_language' %}" method="post" class="language-selector-form" id="language-form">
-            {% csrf_token %}
-            <input name="next" type="hidden" value="{{ request.get_full_path }}">
-            <select name="language" onchange="this.form.submit()" class="language-select">
-                {% get_current_language as CURRENT_LANGUAGE %}
-                {% get_available_languages as LANGUAGES_LIST %}
-                {% for lang_code, lang_name in LANGUAGES_LIST %}
-                    {% if lang_code != 'en' %}
-                    <option value="{{ lang_code }}" {% if lang_code == CURRENT_LANGUAGE %}selected{% endif %}>
-                        {% if lang_code == 'es' %}🇪🇸 Español
-                        {% elif lang_code == 'zh-hans' %}🇨🇳 中文
-                        {% else %}{{ lang_name }}{% endif %}
-                    </option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-        </form>
-        
-        {% if user.is_authenticated %}
-        <div class="dropdown" id="userDropdownContainer" style="position: relative;">
+        <div class="topbar-actions">
+            <!-- Selector de idioma -->
+            <form action="{% url 'set_language' %}" method="post" class="language-selector-form" id="language-form">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                <select name="language" onchange="this.form.submit()" class="language-select">
+                    {% get_current_language as CURRENT_LANGUAGE %}
+                    {% get_available_languages as LANGUAGES_LIST %}
+                    {% for lang_code, lang_name in LANGUAGES_LIST %}
+                        {% if lang_code != 'en' %}
+                        <option value="{{ lang_code }}" {% if lang_code == CURRENT_LANGUAGE %}selected{% endif %}>
+                            {% if lang_code == 'es' %}🇪🇸 Español
+                            {% elif lang_code == 'zh-hans' %}🇨🇳 中文
+                            {% else %}{{ lang_name }}{% endif %}
+                        </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </form>
+            
+            {% if user.is_authenticated %}
+            <!-- Carrito minimalista estilo Amazon -->
+            <a href="{% url 'orders:cart' %}" 
+               class="topbar-cart-btn fenix-cart-minimal" 
+               id="topbarCartBtn"
+               aria-label="{% if cart_count > 0 %}{% trans 'Carrito' %} ({{ cart_count }}){% else %}{% trans 'Carrito' %}{% endif %}"
+               title="{% if cart_count > 0 %}{% trans 'Carrito' %} ({{ cart_count }}){% else %}{% trans 'Carrito' %}{% endif %}">
+                <span class="topbar-cart-icon">🛒</span>
+                <span class="topbar-cart-badge" id="topbarCartBadge" data-count="{{ cart_count|default:0 }}" {% if cart_count|default:0 == 0 %}style="display: none;"{% endif %}>
+                    {% if cart_count > 0 %}{{ cart_count }}{% endif %}
+                </span>
+            </a>
+            
+            <!-- Perfil de usuario -->
+            <div class="dropdown" id="userDropdownContainer" style="position: relative;">
             <button class="btn btn-outline user-dropdown-btn" type="button" id="userDropdown">
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; flex-shrink: 0;">
@@ -51,6 +65,15 @@
                     </a>
                 </li>
             </ul>
+            </div>
+            {% else %}
+            <a href="{% url 'accounts:login' %}" class="btn btn-outline btn-sm">
+                {% trans "Iniciar Sesión" %}
+            </a>
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-sm">
+                {% trans "Registrarse" %}
+            </a>
+            {% endif %}
         </div>
         
         <script>
@@ -79,13 +102,5 @@
             }
         });
         </script>
-        {% else %}
-        <a href="{% url 'accounts:login' %}" class="btn btn-outline btn-sm">
-            {% trans "Iniciar Sesión" %}
-        </a>
-        <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-sm">
-            {% trans "Registrarse" %}
-        </a>
-        {% endif %}
     </div>
 </div>
