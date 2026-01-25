@@ -145,7 +145,7 @@
                          data-product-features="{% cycle 'sin-lactosa,sin-conservantes' 'natural' 'sin-colorantes' 'sin-azucares' 'bajo-carbohidratos' 'apto-diabeticos' 'natural,sin-lactosa' '' %}">
                         <!-- Contenido de la card (orden específico) -->
                         <div class="product-card-content">
-                            <!-- (1) Nombre del producto -->
+                            <!-- (a) Nombre del producto -->
                             <h3 class="product-name">
                                 {% if lang == 'zh-hans' %}
                                     {{ product.name_zh_hans }}
@@ -154,14 +154,24 @@
                                 {% endif %}
                             </h3>
                             
-                            <!-- (2) Precio + unidad/gramos -->
-                            <div class="product-price-section">
-                                <span class="product-price">{{ product.price }} €</span>
-                                <span class="product-unit-separator">·</span>
-                                <span class="product-unit">{% cycle '150 g' '200 g' '100 g' '250 g' '300 g' '180 g' '120 g' '160 g' %}</span>
+                            <!-- (b) Referencia/ID del producto -->
+                            <div class="product-reference">
+                                <span class="product-ref-label">{% trans "Ref:" %}</span>
+                                <span class="product-ref-value">P{{ product.pk|stringformat:"06d" }}</span>
                             </div>
                             
-                            <!-- Imagen del producto (compacta, después del precio) -->
+                            <!-- (c) Precio destacado + unidad/gramos -->
+                            <div class="product-price-section">
+                                <div class="product-price-main">
+                                    <span class="product-price-amount">{{ product.price|floatformat:2 }}</span>
+                                    <span class="product-price-currency">€</span>
+                                </div>
+                                <div class="product-unit-info">
+                                    <span class="product-unit">{% cycle '150 g' '200 g' '100 g' '250 g' '300 g' '180 g' '120 g' '160 g' %}</span>
+                                </div>
+                            </div>
+                            
+                            <!-- (d) Imagen del producto (grande, protagonista) -->
                             <div class="product-image-container">
                                 {% if product.image %}
                                 <img src="{{ product.image.url }}" 
@@ -174,7 +184,7 @@
                                 {% endif %}
                             </div>
                             
-                            <!-- (3) Stepper de cantidad -->
+                            <!-- (e) Stepper de cantidad -->
                             <div class="product-quantity-selector">
                                 <button type="button" class="qty-btn qty-minus" data-product-id="{{ product.pk }}" aria-label="{% trans 'Reducir cantidad' %}">
                                     <i class="bi bi-dash"></i>
@@ -190,7 +200,7 @@
                                 </button>
                             </div>
                             
-                            <!-- (4) Botón Añadir -->
+                            <!-- (f) Botón Añadir -->
                             <button type="button" class="btn btn-primary btn-add-product" data-product-id="{{ product.pk }}">
                                 <i class="bi bi-cart-plus"></i> {% trans "Añadir" %}
                             </button>

@@ -5,10 +5,10 @@
 /* Variables específicas del catálogo */
 :root {
     --catalog-card-height: 300px;
-    --catalog-card-min-height: 300px;
+    --catalog-card-min-height: 380px;
     --catalog-card-min-width: 220px;
-    --catalog-image-height: 130px;
-    --catalog-card-padding: 14px;
+    --catalog-image-height: 180px;
+    --catalog-card-padding: 12px;
     --catalog-gap: 16px;
     --filters-panel-width: 320px;
 }
@@ -362,7 +362,7 @@
     }
 }
 
-/* Card de producto - Mejorada con mejor espaciado */
+/* Card de producto - Compacta y optimizada */
 .product-card {
     background: white;
     border-radius: var(--radius-md);
@@ -401,49 +401,89 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    gap: 8px;
+    gap: 6px;
     min-height: 100%;
     overflow: visible;
     box-sizing: border-box;
     width: 100%;
 }
 
-/* (1) Nombre del producto */
+/* (a) Nombre del producto */
 .product-name {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--gray-900);
     margin: 0;
-    line-height: 1.4;
+    line-height: 1.3;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-height: 2.8em;
-    max-height: 2.8em;
+    min-height: 2.6em;
+    max-height: 2.6em;
     flex-shrink: 0;
 }
 
-/* (2) Precio + unidad */
-.product-price-section {
+/* (b) Referencia/ID del producto */
+.product-reference {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 4px;
     flex-shrink: 0;
-    margin: 4px 0;
+    margin: 2px 0;
 }
 
-.product-price {
-    font-size: 16px;
+.product-ref-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.product-ref-value {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray-700);
+    font-family: var(--font-mono);
+    letter-spacing: 0.5px;
+}
+
+/* (c) Precio destacado (estilo ecommerce) */
+.product-price-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex-shrink: 0;
+    margin: 4px 0 6px 0;
+}
+
+.product-price-main {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    line-height: 1;
+}
+
+.product-price-amount {
+    font-size: 22px;
     font-weight: 700;
     color: var(--primary-600);
+    line-height: 1;
 }
 
-.product-unit-separator {
-    font-size: 12px;
-    color: var(--gray-400);
-    margin: 0 2px;
+.product-price-currency {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-600);
+    line-height: 1;
+    margin-left: 1px;
+}
+
+.product-unit-info {
+    display: flex;
+    align-items: center;
 }
 
 .product-unit {
@@ -452,7 +492,7 @@
     font-weight: 400;
 }
 
-/* Imagen del producto (compacta, altura fija) */
+/* (d) Imagen del producto (grande, protagonista) */
 .product-image-container {
     width: 100%;
     height: var(--catalog-image-height);
@@ -464,7 +504,7 @@
     flex-shrink: 0;
     overflow: hidden;
     border-radius: var(--radius);
-    margin: 6px 0;
+    margin: 4px 0 8px 0;
 }
 
 .product-image {
@@ -472,7 +512,7 @@
     height: 100%;
     object-fit: contain;
     object-position: center;
-    padding: 8px;
+    padding: 10px;
     background: var(--gray-100);
 }
 
@@ -487,17 +527,17 @@
 }
 
 .product-image-placeholder i {
-    font-size: 32px;
+    font-size: 40px;
 }
 
-/* (3) Selector de cantidad - Compacto */
+/* (e) Selector de cantidad - Compacto */
 .product-quantity-selector {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    margin-top: 8px;
-    margin-bottom: 8px;
+    margin-top: 4px;
+    margin-bottom: 6px;
     flex-shrink: 0;
 }
 
@@ -555,7 +595,7 @@
     box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1);
 }
 
-/* (4) Botón Añadir - Full width, siempre visible */
+/* (f) Botón Añadir - Full width, siempre visible, fijo al final */
 .btn-add-product {
     width: 100% !important;
     min-width: 100% !important;
@@ -573,6 +613,7 @@
     justify-content: center !important;
     gap: 6px !important;
     min-height: 40px !important;
+    max-height: 40px !important;
     box-sizing: border-box !important;
     white-space: nowrap !important;
     overflow: visible !important;
