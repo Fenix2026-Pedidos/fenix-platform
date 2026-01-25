@@ -1,0 +1,52 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+<script>
+(function() {
+    function calculateLineTotal() {
+        var quantityEl = document.getElementById('id_quantity');
+        var unitPriceEl = document.getElementById('id_unit_price');
+        var lineTotalEl = document.getElementById('id_line_total');
+        
+        if (!quantityEl || !unitPriceEl || !lineTotalEl) {
+            return;
+        }
+        
+        var quantity = parseFloat(quantityEl.value) || 0;
+        var unitPriceStr = unitPriceEl.value || '0';
+        var unitPrice = parseFloat(unitPriceStr.replace(',', '.')) || 0;
+        var lineTotal = quantity * unitPrice;
+        
+        if (!isNaN(lineTotal) && lineTotal >= 0) {
+            var formatted = lineTotal.toFixed(2);
+            lineTotalEl.removeAttribute('readonly');
+            lineTotalEl.value = formatted;
+            lineTotalEl.setAttribute('readonly', 'readonly');
+        }
+    }
+    
+    function initCalc() {
+        var quantityEl = document.getElementById('id_quantity');
+        var unitPriceEl = document.getElementById('id_unit_price');
+        
+        if (quantityEl && unitPriceEl) {
+            quantityEl.addEventListener('input', calculateLineTotal);
+            quantityEl.addEventListener('change', calculateLineTotal);
+            unitPriceEl.addEventListener('input', calculateLineTotal);
+            unitPriceEl.addEventListener('change', calculateLineTotal);
+            calculateLineTotal();
+        } else {
+            setTimeout(initCalc, 100);
+        }
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCalc);
+    } else {
+        setTimeout(initCalc, 100);
+    }
+})();
+</script>
+{% endblock %}

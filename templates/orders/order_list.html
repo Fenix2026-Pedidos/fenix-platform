@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Mis Pedidos" %} - Fenix{% endblock %}
+
+{% block content %}
+<h1 class="mb-4"><i class="bi bi-receipt"></i> {% trans "Mis Pedidos" %}</h1>
+
+{% if orders %}
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>{% trans "ID" %}</th>
+                        <th>{% trans "Fecha" %}</th>
+                        <th>{% trans "Estado" %}</th>
+                        <th>{% trans "Total" %}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.created_at|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            <span class="badge badge-status status-{{ order.status }}">
+                                {{ order.get_status_display }}
+                            </span>
+                        </td>
+                        <td class="fw-bold">{{ order.total_amount }} €</td>
+                        <td>
+                            <a href="{% url 'orders:order_detail' order.pk %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> {% trans "Ver" %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> {% trans "No tienes pedidos aún." %}
+    <a href="{% url 'catalog:product_list' %}" class="alert-link">{% trans "Ver catálogo" %}</a>
+</div>
+{% endif %}
+{% endblock %}

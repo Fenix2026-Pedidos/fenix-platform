@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}
+    {% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif %} - Fenix
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'catalog:product_list' %}">{% trans "Catálogo" %}</a></li>
+                <li class="breadcrumb-item active">
+                    {% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif %}
+                </li>
+            </ol>
+        </nav>
+        
+        <h1 class="mb-4">
+            {% if lang == 'zh-hans' %}
+                {{ product.name_zh_hans }}
+            {% else %}
+                {{ product.name_es }}
+            {% endif %}
+        </h1>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">{% trans "Descripción" %}</h5>
+                <p class="card-text">
+                    {% if lang == 'zh-hans' %}
+                        {{ product.description_zh_hans|default:"Sin descripción disponible."|linebreaks }}
+                    {% else %}
+                        {{ product.description_es|default:"Sin descripción disponible."|linebreaks }}
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card sticky-top" style="top: 20px;">
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <h2 class="text-primary">{{ product.price }} €</h2>
+                </div>
+                
+                {% if user.is_authenticated %}
+                <form id="add-to-cart-form" class="mb-3">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ product.pk }}">
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">{% trans "Cantidad" %}</label>
+                        <input type="number" id="quantity" name="quantity" class="form-control" 
+                               value="1" min="1" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-cart-plus"></i> {% trans "Añadir al Carrito" %}
+                    </button>
+                </form>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> 
+                    {% trans "Debes iniciar sesión para añadir productos al carrito." %}
+                    <a href="{% url 'accounts:login' %}" class="alert-link">{% trans "Iniciar Sesión" %}</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('add-to-cart-form')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const data = {
+        product_id: formData.get('product_id'),
+        quantity: parseInt(formData.get('quantity'))
+    };
+    
+    try {
+        const response = await fetch('{% url "orders:cart_add" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            // Mostrar mensaje de éxito
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+            alertDiv.style.zIndex = '9999';
+            alertDiv.innerHTML = `
+                <i class="bi bi-check-circle"></i> ${result.message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 3000);
+            
+            // Recargar la página para actualizar el contador del carrito
+            setTimeout(() => location.reload(), 500);
+        } else {
+            alert('Error: ' + result.message);
+        }
+    } catch (error) {
+        alert('Error al añadir al carrito');
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Mi Perfil" %} - Fenix{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title mb-4">
+                    <i class="bi bi-person-circle"></i> {% trans "Mi Perfil" %}
+                </h2>
+                
+                <dl class="row">
+                    <dt class="col-sm-3">{% trans "Email" %}</dt>
+                    <dd class="col-sm-9">{{ user.email }}</dd>
+                    
+                    <dt class="col-sm-3">{% trans "Nombre Completo" %}</dt>
+                    <dd class="col-sm-9">{{ user.full_name }}</dd>
+                    
+                    <dt class="col-sm-3">{% trans "Rol" %}</dt>
+                    <dd class="col-sm-9">
+                        <span class="badge bg-primary">{{ user.get_role_display }}</span>
+                    </dd>
+                    
+                    <dt class="col-sm-3">{% trans "Idioma" %}</dt>
+                    <dd class="col-sm-9">{{ user.get_language_display }}</dd>
+                    
+                    <dt class="col-sm-3">{% trans "Estado" %}</dt>
+                    <dd class="col-sm-9">
+                        {% if user.pending_approval %}
+                            <span class="badge bg-warning">{% trans "Pendiente de Aprobación" %}</span>
+                        {% elif user.is_active %}
+                            <span class="badge bg-success">{% trans "Activo" %}</span>
+                        {% else %}
+                            <span class="badge bg-danger">{% trans "Inactivo" %}</span>
+                        {% endif %}
+                    </dd>
+                    
+                    <dt class="col-sm-3">{% trans "Fecha de Registro" %}</dt>
+                    <dd class="col-sm-9">{{ user.date_joined|date:"d/m/Y H:i" }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

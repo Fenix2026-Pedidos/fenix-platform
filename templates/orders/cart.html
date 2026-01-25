@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Carrito de Compras" %} - Fenix{% endblock %}
+
+{% block content %}
+<h1 class="mb-4"><i class="bi bi-cart3"></i> {% trans "Carrito de Compras" %}</h1>
+
+{% if cart_items %}
+<div class="card">
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>{% trans "Producto" %}</th>
+                    <th>{% trans "Precio Unitario" %}</th>
+                    <th>{% trans "Cantidad" %}</th>
+                    <th>{% trans "Total" %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.product.name_es }}</td>
+                    <td>{{ item.product.price }} €</td>
+                    <td>
+                        <input type="number" class="form-control form-control-sm quantity-input" 
+                               value="{{ item.quantity }}" min="1" 
+                               data-product-id="{{ item.product.pk }}" 
+                               style="width: 80px;">
+                    </td>
+                    <td>{{ item.item_total }} €</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger remove-item" 
+                                data-product-id="{{ item.product.pk }}">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="3" class="text-end">{% trans "Total:" %}</th>
+                    <th class="h5">{{ total }} €</th>
+                    <th></th>
+                </tr>
+            </tfoot>
+        </table>
+        
+        <div class="d-flex justify-content-end mt-4">
+            <a href="{% url 'catalog:product_list' %}" class="btn btn-outline-secondary me-2">
+                <i class="bi bi-arrow-left"></i> {% trans "Seguir Comprando" %}
+            </a>
+            <form method="post" action="{% url 'orders:order_create' %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> {% trans "Crear Pedido" %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> {% trans "Tu carrito está vacío." %}
+    <a href="{% url 'catalog:product_list' %}" class="alert-link">{% trans "Ver catálogo" %}</a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Actualizar cantidad
+document.querySelectorAll('.quantity-input').forEach(input => {
+    input.addEventListener('change', async function() {
+        const productId = this.dataset.productId;
+        const quantity = parseInt(this.value);
+        
+        if (quantity <= 0) {
+            removeFromCart(productId);
+            return;
+        }
+        
+        await updateCart(productId, quantity);
+    });
+});
+
+// Eliminar producto
+document.querySelectorAll('.remove-item').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const productId = this.dataset.productId;
+        removeFromCart(productId);
+    });
+});
+
+async function updateCart(productId, quantity) {
+    try {
+        const response = await fetch('{% url "orders:cart_update" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ product_id: productId, quantity: quantity })
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            location.reload();
+        }
+    } catch (error) {
+        alert('Error al actualizar el carrito');
+    }
+}
+
+async function removeFromCart(productId) {
+    try {
+        const response = await fetch('{% url "orders:cart_remove" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ product_id: productId })
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            location.reload();
+        }
+    } catch (error) {
+        alert('Error al eliminar del carrito');
+    }
+}
+</script>
+{% endblock %}
