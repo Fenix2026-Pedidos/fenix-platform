@@ -1,46 +1,55 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
+{% block page_title %}{% trans "Mi Perfil" %}{% endblock %}
 {% block title %}{% trans "Mi Perfil" %} - Fenix{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-8 mx-auto">
-        <div class="card">
-            <div class="card-body">
-                <h2 class="card-title mb-4">
-                    <i class="bi bi-person-circle"></i> {% trans "Mi Perfil" %}
-                </h2>
-                
-                <dl class="row">
-                    <dt class="col-sm-3">{% trans "Email" %}</dt>
-                    <dd class="col-sm-9">{{ user.email }}</dd>
-                    
-                    <dt class="col-sm-3">{% trans "Nombre Completo" %}</dt>
-                    <dd class="col-sm-9">{{ user.full_name }}</dd>
-                    
-                    <dt class="col-sm-3">{% trans "Rol" %}</dt>
-                    <dd class="col-sm-9">
-                        <span class="badge bg-primary">{{ user.get_role_display }}</span>
-                    </dd>
-                    
-                    <dt class="col-sm-3">{% trans "Idioma" %}</dt>
-                    <dd class="col-sm-9">{{ user.get_language_display }}</dd>
-                    
-                    <dt class="col-sm-3">{% trans "Estado" %}</dt>
-                    <dd class="col-sm-9">
-                        {% if user.pending_approval %}
-                            <span class="badge bg-warning">{% trans "Pendiente de Aprobación" %}</span>
-                        {% elif user.is_active %}
-                            <span class="badge bg-success">{% trans "Activo" %}</span>
-                        {% else %}
-                            <span class="badge bg-danger">{% trans "Inactivo" %}</span>
-                        {% endif %}
-                    </dd>
-                    
-                    <dt class="col-sm-3">{% trans "Fecha de Registro" %}</dt>
-                    <dd class="col-sm-9">{{ user.date_joined|date:"d/m/Y H:i" }}</dd>
-                </dl>
+<div class="page-header">
+    <h1 class="page-title">{% trans "Mi Perfil" %}</h1>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
+            <div>
+                <dt style="font-size: 12px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">{% trans "Email" %}</dt>
+                <dd style="font-weight: 500; font-size: 16px; margin: 0;">{{ user.email }}</dd>
+            </div>
+            
+            <div>
+                <dt style="font-size: 12px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">{% trans "Nombre Completo" %}</dt>
+                <dd style="font-weight: 500; font-size: 16px; margin: 0;">{{ user.full_name }}</dd>
+            </div>
+            
+            <div>
+                <dt style="font-size: 12px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">{% trans "Rol" %}</dt>
+                <dd style="margin: 0;">
+                    <span class="badge badge-primary">{{ user.get_role_display }}</span>
+                </dd>
+            </div>
+            
+            <div>
+                <dt style="font-size: 12px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">{% trans "Idioma" %}</dt>
+                <dd style="font-weight: 500; font-size: 16px; margin: 0;">{{ user.get_language_display }}</dd>
+            </div>
+            
+            <div>
+                <dt style="font-size: 12px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">{% trans "Estado" %}</dt>
+                <dd style="margin: 0;">
+                    {% if user.pending_approval %}
+                        <span class="badge badge-warning">{% trans "Pendiente de Aprobación" %}</span>
+                    {% elif user.is_active %}
+                        <span class="badge badge-success">{% trans "Activo" %}</span>
+                    {% else %}
+                        <span class="badge badge-danger">{% trans "Inactivo" %}</span>
+                    {% endif %}
+                </dd>
+            </div>
+            
+            <div>
+                <dt style="font-size: 12px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">{% trans "Fecha de Registro" %}</dt>
+                <dd style="font-weight: 500; font-size: 16px; margin: 0;">{{ user.date_joined|date:"d/m/Y H:i" }}</dd>
             </div>
         </div>
     </div>

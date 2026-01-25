@@ -4,43 +4,45 @@
 {% block title %}{% trans "Iniciar Sesión" %} - Fenix{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-5">
-        <div class="card">
-            <div class="card-body p-5">
-                <h2 class="card-title text-center mb-4">
-                    <i class="bi bi-box-arrow-in-right"></i> {% trans "Iniciar Sesión" %}
-                </h2>
-                
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="{{ form.username.id_for_label }}" class="form-label">{% trans "Email" %}</label>
-                        {{ form.username }}
-                        {% if form.username.errors %}
-                            <div class="text-danger small">{{ form.username.errors }}</div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.password.id_for_label }}" class="form-label">{% trans "Contraseña" %}</label>
-                        {{ form.password }}
-                        {% if form.password.errors %}
-                            <div class="text-danger small">{{ form.password.errors }}</div>
-                        {% endif %}
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary w-100 mb-3">
-                        {% trans "Iniciar Sesión" %}
-                    </button>
-                </form>
-                
-                <div class="text-center">
-                    <p class="mb-0">
-                        {% trans "¿No tienes cuenta?" %} 
-                        <a href="{% url 'accounts:register' %}">{% trans "Regístrate aquí" %}</a>
-                    </p>
+<div style="max-width: 440px; margin: 60px auto;">
+    <div class="card">
+        <div class="card-body" style="padding: 40px;">
+            <div style="text-align: center; margin-bottom: 32px;">
+                <div style="width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: white; font-size: 28px;">
+                    <i class="bi bi-box-arrow-in-right"></i>
                 </div>
+                <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">{% trans "Iniciar Sesión" %}</h2>
+                <p class="text-muted">{% trans "Accede a tu cuenta de Fenix" %}</p>
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="form-label">{% trans "Email" %}</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.username.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">{% trans "Contraseña" %}</label>
+                    {{ form.password }}
+                    {% if form.password.errors %}
+                        <div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.password.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
+                    {% trans "Iniciar Sesión" %}
+                </button>
+            </form>
+            
+            <div style="text-align: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--gray-200);">
+                <p style="color: var(--gray-600); margin: 0;">
+                    {% trans "¿No tienes cuenta?" %} 
+                    <a href="{% url 'accounts:register' %}" style="color: var(--primary-600); text-decoration: none; font-weight: 500;">{% trans "Regístrate aquí" %}</a>
+                </p>
             </div>
         </div>
     </div>

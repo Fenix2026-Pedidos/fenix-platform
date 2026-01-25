@@ -1,0 +1,89 @@
+{% load i18n %}
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <a href="{% url 'catalog:product_list' %}" class="sidebar-logo">
+            <i class="bi bi-fire sidebar-logo-icon"></i>
+            <span class="sidebar-menu-text">Fenix</span>
+        </a>
+        <button class="btn btn-sm btn-outline d-none d-md-block" id="sidebar-toggle" style="color: white; border-color: rgba(255,255,255,0.3);">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+    </div>
+    
+    <nav class="sidebar-menu">
+        <div class="sidebar-menu-item">
+            <a href="{% url 'catalog:product_list' %}" class="sidebar-menu-link {% if request.resolver_match.url_name == 'product_list' or request.resolver_match.url_name == 'product_detail' %}active{% endif %}">
+                <i class="bi bi-grid sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">{% trans "Catálogo" %}</span>
+            </a>
+        </div>
+        
+        {% if user.is_authenticated %}
+        <div class="sidebar-menu-item">
+            <a href="{% url 'orders:order_list' %}" class="sidebar-menu-link {% if 'order' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-receipt sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">{% trans "Mis Pedidos" %}</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-menu-item">
+            <a href="{% url 'orders:cart' %}" class="sidebar-menu-link {% if request.resolver_match.url_name == 'cart' %}active{% endif %}">
+                <i class="bi bi-cart3 sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">{% trans "Carrito" %}</span>
+                {% if cart_count > 0 %}
+                <span style="background-color: var(--danger); color: white; margin-left: auto; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; min-width: 20px; text-align: center;">{{ cart_count }}</span>
+                {% endif %}
+            </a>
+        </div>
+        {% endif %}
+        
+        {% if user.is_staff %}
+        <div class="sidebar-menu-item">
+            <a href="{% url 'admin:index' %}" class="sidebar-menu-link">
+                <i class="bi bi-gear sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">{% trans "Administración" %}</span>
+            </a>
+        </div>
+        {% endif %}
+    </nav>
+    
+    {% if user.is_authenticated %}
+    <div class="sidebar-footer">
+        <div class="sidebar-menu-item">
+            <a href="{% url 'accounts:profile' %}" class="sidebar-menu-link">
+                <i class="bi bi-person sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">{{ user.full_name|default:user.email|truncatechars:20 }}</span>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</aside>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('sidebar-toggle');
+    
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            const icon = this.querySelector('i');
+            if (sidebar.classList.contains('collapsed')) {
+                icon.classList.remove('bi-chevron-left');
+                icon.classList.add('bi-chevron-right');
+            } else {
+                icon.classList.remove('bi-chevron-right');
+                icon.classList.add('bi-chevron-left');
+            }
+        });
+    }
+    
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-toggle');
+    if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('mobile-open');
+        });
+    }
+});
+</script>

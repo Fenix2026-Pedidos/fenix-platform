@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
+{% block page_title %}{% trans "Catálogo de Productos" %}{% endblock %}
 {% block title %}{% trans "Catálogo de Productos" %} - Fenix{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h2"><i class="bi bi-grid"></i> {% trans "Catálogo de Productos" %}</h1>
-    <form method="get" class="d-flex" style="max-width: 400px;">
-        <input type="text" name="q" value="{{ search_query }}" class="form-control me-2" 
+<div class="page-header" style="margin-bottom: 24px;">
+    <form method="get" class="d-flex" style="max-width: 400px; gap: 8px; margin-left: auto;">
+        <input type="text" name="q" value="{{ search_query }}" class="form-control" 
                placeholder="{% trans 'Buscar productos...' %}">
         <button type="submit" class="btn btn-primary">
             <i class="bi bi-search"></i>
@@ -16,46 +16,48 @@
 </div>
 
 {% if products %}
-<div class="row g-4">
+<div class="row g-4" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;">
     {% for product in products %}
-    <div class="col-md-6 col-lg-4">
-        <div class="card h-100">
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title">
-                    {% if lang == 'zh-hans' %}
-                        {{ product.name_zh_hans }}
-                    {% else %}
-                        {{ product.name_es }}
-                    {% endif %}
-                </h5>
-                <p class="card-text text-muted small flex-grow-1">
-                    {% if lang == 'zh-hans' %}
-                        {{ product.description_zh_hans|truncatewords:20|default:"Sin descripción" }}
-                    {% else %}
-                        {{ product.description_es|truncatewords:20|default:"Sin descripción" }}
-                    {% endif %}
-                </p>
-                <div class="mt-auto">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="h4 mb-0 text-primary">{{ product.price }} €</span>
-                    </div>
-                    <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-outline-primary w-100">
-                        <i class="bi bi-eye"></i> {% trans "Ver Detalles" %}
-                    </a>
-                </div>
+    <div class="card">
+        <div class="card-body" style="display: flex; flex-direction: column; height: 100%;">
+            <h5 class="card-title" style="font-size: 18px; margin-bottom: 12px;">
+                {% if lang == 'zh-hans' %}
+                    {{ product.name_zh_hans }}
+                {% else %}
+                    {{ product.name_es }}
+                {% endif %}
+            </h5>
+            <p class="text-muted" style="flex-grow: 1; margin-bottom: 16px; font-size: 14px;">
+                {% if lang == 'zh-hans' %}
+                    {{ product.description_zh_hans|truncatewords:20|default:"Sin descripción" }}
+                {% else %}
+                    {{ product.description_es|truncatewords:20|default:"Sin descripción" }}
+                {% endif %}
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
+                <span style="font-size: 24px; font-weight: 700; color: var(--primary-600);">
+                    {{ product.price }} €
+                </span>
+                <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-eye"></i> {% trans "Ver Detalles" %}
+                </a>
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
 {% else %}
-<div class="alert alert-info">
-    <i class="bi bi-info-circle"></i> 
-    {% if search_query %}
-        {% trans "No se encontraron productos que coincidan con tu búsqueda." %}
-    {% else %}
-        {% trans "No hay productos disponibles en este momento." %}
-    {% endif %}
+<div class="card">
+    <div class="card-body" style="text-align: center; padding: 48px;">
+        <i class="bi bi-inbox" style="font-size: 48px; color: var(--gray-400); margin-bottom: 16px;"></i>
+        <p class="text-muted">
+            {% if search_query %}
+                {% trans "No se encontraron productos que coincidan con tu búsqueda." %}
+            {% else %}
+                {% trans "No hay productos disponibles en este momento." %}
+            {% endif %}
+        </p>
+    </div>
 </div>
 {% endif %}
 {% endblock %}

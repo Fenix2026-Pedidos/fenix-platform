@@ -1,14 +1,17 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
+{% block page_title %}{% trans "Carrito de Compras" %}{% endblock %}
 {% block title %}{% trans "Carrito de Compras" %} - Fenix{% endblock %}
 
 {% block content %}
-<h1 class="mb-4"><i class="bi bi-cart3"></i> {% trans "Carrito de Compras" %}</h1>
+<div class="page-header">
+    <h1 class="page-title">{% trans "Carrito de Compras" %}</h1>
+</div>
 
 {% if cart_items %}
 <div class="card">
-    <div class="card-body">
+    <div class="table-wrapper">
         <table class="table">
             <thead>
                 <tr>
@@ -16,23 +19,23 @@
                     <th>{% trans "Precio Unitario" %}</th>
                     <th>{% trans "Cantidad" %}</th>
                     <th>{% trans "Total" %}</th>
-                    <th></th>
+                    <th style="text-align: right;">{% trans "Acciones" %}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in cart_items %}
                 <tr>
-                    <td>{{ item.product.name_es }}</td>
+                    <td style="font-weight: 500;">{{ item.product.name_es }}</td>
                     <td>{{ item.product.price }} €</td>
                     <td>
-                        <input type="number" class="form-control form-control-sm quantity-input" 
+                        <input type="number" class="form-control quantity-input" 
                                value="{{ item.quantity }}" min="1" 
                                data-product-id="{{ item.product.pk }}" 
-                               style="width: 80px;">
+                               style="width: 80px; display: inline-block;">
                     </td>
-                    <td>{{ item.item_total }} €</td>
-                    <td>
-                        <button class="btn btn-sm btn-danger remove-item" 
+                    <td style="font-weight: 600;">{{ item.item_total }} €</td>
+                    <td style="text-align: right;">
+                        <button class="btn btn-danger btn-sm remove-item" 
                                 data-product-id="{{ item.product.pk }}">
                             <i class="bi bi-trash"></i>
                         </button>
@@ -40,32 +43,37 @@
                 </tr>
                 {% endfor %}
             </tbody>
-            <tfoot>
+            <tfoot style="background-color: var(--gray-50);">
                 <tr>
-                    <th colspan="3" class="text-end">{% trans "Total:" %}</th>
-                    <th class="h5">{{ total }} €</th>
+                    <th colspan="3" style="text-align: right; padding: 20px 16px;">{% trans "Total:" %}</th>
+                    <th style="font-size: 20px; padding: 20px 16px;">{{ total }} €</th>
                     <th></th>
                 </tr>
             </tfoot>
         </table>
-        
-        <div class="d-flex justify-content-end mt-4">
-            <a href="{% url 'catalog:product_list' %}" class="btn btn-outline-secondary me-2">
-                <i class="bi bi-arrow-left"></i> {% trans "Seguir Comprando" %}
-            </a>
-            <form method="post" action="{% url 'orders:order_create' %}" class="d-inline">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-circle"></i> {% trans "Crear Pedido" %}
-                </button>
-            </form>
-        </div>
+    </div>
+    
+    <div class="card-footer" style="display: flex; justify-content: flex-end; gap: 12px;">
+        <a href="{% url 'catalog:product_list' %}" class="btn btn-outline">
+            <i class="bi bi-arrow-left"></i> {% trans "Seguir Comprando" %}
+        </a>
+        <form method="post" action="{% url 'orders:order_create' %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle"></i> {% trans "Crear Pedido" %}
+            </button>
+        </form>
     </div>
 </div>
 {% else %}
-<div class="alert alert-info">
-    <i class="bi bi-info-circle"></i> {% trans "Tu carrito está vacío." %}
-    <a href="{% url 'catalog:product_list' %}" class="alert-link">{% trans "Ver catálogo" %}</a>
+<div class="card">
+    <div class="card-body" style="text-align: center; padding: 48px;">
+        <i class="bi bi-cart-x" style="font-size: 48px; color: var(--gray-400); margin-bottom: 16px;"></i>
+        <p class="text-muted mb-3">{% trans "Tu carrito está vacío." %}</p>
+        <a href="{% url 'catalog:product_list' %}" class="btn btn-primary">
+            <i class="bi bi-grid"></i> {% trans "Ver Catálogo" %}
+        </a>
+    </div>
 </div>
 {% endif %}
 {% endblock %}

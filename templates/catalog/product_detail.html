@@ -1,23 +1,27 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
+{% block page_title %}
+    {% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif %}
+{% endblock %}
 {% block title %}
     {% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif %} - Fenix
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-8">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'catalog:product_list' %}">{% trans "Catálogo" %}</a></li>
-                <li class="breadcrumb-item active">
-                    {% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif %}
-                </li>
-            </ol>
-        </nav>
-        
-        <h1 class="mb-4">
+<nav style="margin-bottom: 24px;">
+    <ol style="display: flex; list-style: none; padding: 0; gap: 8px; align-items: center;">
+        <li><a href="{% url 'catalog:product_list' %}" style="color: var(--primary-600); text-decoration: none;">{% trans "Catálogo" %}</a></li>
+        <li><i class="bi bi-chevron-right" style="color: var(--gray-400);"></i></li>
+        <li style="color: var(--gray-600);">
+            {% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif %}
+        </li>
+    </ol>
+</nav>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+    <div>
+        <h1 style="font-size: 32px; font-weight: 700; margin-bottom: 24px; color: var(--gray-900);">
             {% if lang == 'zh-hans' %}
                 {{ product.name_zh_hans }}
             {% else %}
@@ -25,10 +29,12 @@
             {% endif %}
         </h1>
         
-        <div class="card mb-4">
-            <div class="card-body">
+        <div class="card">
+            <div class="card-header">
                 <h5 class="card-title">{% trans "Descripción" %}</h5>
-                <p class="card-text">
+            </div>
+            <div class="card-body">
+                <p style="color: var(--gray-700); line-height: 1.8;">
                     {% if lang == 'zh-hans' %}
                         {{ product.description_zh_hans|default:"Sin descripción disponible."|linebreaks }}
                     {% else %}
@@ -39,23 +45,24 @@
         </div>
     </div>
     
-    <div class="col-md-4">
-        <div class="card sticky-top" style="top: 20px;">
+    <div>
+        <div class="card" style="position: sticky; top: 90px;">
             <div class="card-body">
-                <div class="text-center mb-4">
-                    <h2 class="text-primary">{{ product.price }} €</h2>
+                <div style="text-align: center; margin-bottom: 24px; padding: 24px; background: linear-gradient(135deg, var(--primary-50) 0%, var(--primary-100) 100%); border-radius: var(--radius-md);">
+                    <div style="font-size: 12px; color: var(--gray-600); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">{% trans "Precio" %}</div>
+                    <div style="font-size: 36px; font-weight: 700; color: var(--primary-600);">{{ product.price }} €</div>
                 </div>
                 
                 {% if user.is_authenticated %}
-                <form id="add-to-cart-form" class="mb-3">
+                <form id="add-to-cart-form">
                     {% csrf_token %}
                     <input type="hidden" name="product_id" value="{{ product.pk }}">
-                    <div class="mb-3">
-                        <label for="quantity" class="form-label">{% trans "Cantidad" %}</label>
+                    <div class="form-group">
+                        <label class="form-label">{% trans "Cantidad" %}</label>
                         <input type="number" id="quantity" name="quantity" class="form-control" 
                                value="1" min="1" required>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
                         <i class="bi bi-cart-plus"></i> {% trans "Añadir al Carrito" %}
                     </button>
                 </form>
@@ -63,7 +70,11 @@
                 <div class="alert alert-info">
                     <i class="bi bi-info-circle"></i> 
                     {% trans "Debes iniciar sesión para añadir productos al carrito." %}
-                    <a href="{% url 'accounts:login' %}" class="alert-link">{% trans "Iniciar Sesión" %}</a>
+                    <div style="margin-top: 12px;">
+                        <a href="{% url 'accounts:login' %}" class="btn btn-primary btn-sm" style="width: 100%;">
+                            {% trans "Iniciar Sesión" %}
+                        </a>
+                    </div>
                 </div>
                 {% endif %}
             </div>
@@ -94,18 +105,19 @@ document.getElementById('add-to-cart-form')?.addEventListener('submit', async fu
         
         const result = await response.json();
         if (result.success) {
-            // Mostrar mensaje de éxito
             const alertDiv = document.createElement('div');
-            alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+            alertDiv.className = 'alert alert-success';
+            alertDiv.style.position = 'fixed';
+            alertDiv.style.top = '90px';
+            alertDiv.style.right = '24px';
             alertDiv.style.zIndex = '9999';
+            alertDiv.style.minWidth = '300px';
             alertDiv.innerHTML = `
                 <i class="bi bi-check-circle"></i> ${result.message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" onclick="this.parentElement.remove()" style="background: none; border: none; float: right; cursor: pointer; font-size: 18px;">&times;</button>
             `;
             document.body.appendChild(alertDiv);
             setTimeout(() => alertDiv.remove(), 3000);
-            
-            // Recargar la página para actualizar el contador del carrito
             setTimeout(() => location.reload(), 500);
         } else {
             alert('Error: ' + result.message);

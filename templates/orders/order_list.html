@@ -1,52 +1,58 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
+{% block page_title %}{% trans "Mis Pedidos" %}{% endblock %}
 {% block title %}{% trans "Mis Pedidos" %} - Fenix{% endblock %}
 
 {% block content %}
-<h1 class="mb-4"><i class="bi bi-receipt"></i> {% trans "Mis Pedidos" %}</h1>
+<div class="page-header">
+    <h1 class="page-title">{% trans "Mis Pedidos" %}</h1>
+</div>
 
 {% if orders %}
 <div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>{% trans "ID" %}</th>
-                        <th>{% trans "Fecha" %}</th>
-                        <th>{% trans "Estado" %}</th>
-                        <th>{% trans "Total" %}</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for order in orders %}
-                    <tr>
-                        <td>#{{ order.id }}</td>
-                        <td>{{ order.created_at|date:"d/m/Y H:i" }}</td>
-                        <td>
-                            <span class="badge badge-status status-{{ order.status }}">
-                                {{ order.get_status_display }}
-                            </span>
-                        </td>
-                        <td class="fw-bold">{{ order.total_amount }} €</td>
-                        <td>
-                            <a href="{% url 'orders:order_detail' order.pk %}" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i> {% trans "Ver" %}
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <div class="table-wrapper">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>{% trans "ID" %}</th>
+                    <th>{% trans "Fecha" %}</th>
+                    <th>{% trans "Estado" %}</th>
+                    <th>{% trans "Total" %}</th>
+                    <th style="text-align: right;">{% trans "Acciones" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td style="font-weight: 600; color: var(--primary-600);">#{{ order.id }}</td>
+                    <td>{{ order.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <span class="status-badge status-{{ order.status }}">
+                            {{ order.get_status_display }}
+                        </span>
+                    </td>
+                    <td style="font-weight: 600;">{{ order.total_amount }} €</td>
+                    <td style="text-align: right;">
+                        <a href="{% url 'orders:order_detail' order.pk %}" class="btn btn-outline btn-sm">
+                            <i class="bi bi-eye"></i> {% trans "Ver" %}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% else %}
-<div class="alert alert-info">
-    <i class="bi bi-info-circle"></i> {% trans "No tienes pedidos aún." %}
-    <a href="{% url 'catalog:product_list' %}" class="alert-link">{% trans "Ver catálogo" %}</a>
+<div class="card">
+    <div class="card-body" style="text-align: center; padding: 48px;">
+        <i class="bi bi-receipt" style="font-size: 48px; color: var(--gray-400); margin-bottom: 16px;"></i>
+        <p class="text-muted mb-3">{% trans "No tienes pedidos aún." %}</p>
+        <a href="{% url 'catalog:product_list' %}" class="btn btn-primary">
+            <i class="bi bi-grid"></i> {% trans "Ver Catálogo" %}
+        </a>
+    </div>
 </div>
 {% endif %}
 {% endblock %}
