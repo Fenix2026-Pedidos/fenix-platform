@@ -54,14 +54,17 @@ def product_list(request):
     
     # Obtener carrito para pasar cantidades iniciales al frontend
     from orders.views import get_cart
-    import json
     cart = get_cart(request)
+    
+    # Asegurar que cart es un diccionario válido (json_script lo convertirá a JSON)
+    if not cart or not isinstance(cart, dict):
+        cart = {}
     
     context = {
         'products': products,
         'search_query': search_query,
         'lang': lang,
-        'cart': json.dumps(cart) if cart else '{}',  # Pasar carrito como JSON string
+        'cart': cart,  # Pasar carrito como dict, json_script lo convertirá
     }
     return render(request, 'catalog/product_list.html', context)
 

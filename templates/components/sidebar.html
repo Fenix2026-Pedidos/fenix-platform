@@ -11,42 +11,12 @@
     </div>
     
     <nav class="sidebar-menu">
-        <!-- Accordion de Productos -->
-        <div class="sidebar-menu-item sidebar-menu-accordion" id="productsAccordionItem">
-            <div class="sidebar-menu-link sidebar-menu-toggle" id="productsAccordionToggle" aria-expanded="false" aria-controls="productsSubmenu">
+        <!-- Link simple a Catálogo (sin accordion) -->
+        <div class="sidebar-menu-item">
+            <a href="{% url 'catalog:product_list' %}" class="sidebar-menu-link {% if request.resolver_match.url_name == 'product_list' or request.path == '/' %}active{% endif %}">
                 <i class="bi bi-grid sidebar-menu-icon"></i>
-                <span class="sidebar-menu-text">{% trans "Productos" %}</span>
-                <i class="bi bi-chevron-down sidebar-menu-chevron"></i>
-            </div>
-            <div class="sidebar-menu-submenu" id="productsSubmenu" role="region" aria-labelledby="productsAccordionToggle">
-                <a href="{% url 'catalog:product_list' %}" class="sidebar-menu-link sidebar-menu-sublink {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}" data-category="all">
-                    <span class="sidebar-menu-text">{% trans "Todos" %}</span>
-                </a>
-                <a href="{% url 'catalog:product_list' %}" class="sidebar-menu-link sidebar-menu-sublink" data-category="charcuteria">
-                    <span class="sidebar-menu-text">{% trans "Charcutería" %}</span>
-                </a>
-                <a href="{% url 'catalog:product_list' %}" class="sidebar-menu-link sidebar-menu-sublink" data-category="curados">
-                    <span class="sidebar-menu-text">{% trans "Curados" %}</span>
-                </a>
-                <a href="{% url 'catalog:product_list' %}" class="sidebar-menu-link sidebar-menu-sublink" data-category="ibericos">
-                    <span class="sidebar-menu-text">{% trans "Ibéricos" %}</span>
-                </a>
-                <a href="{% url 'catalog:product_list' %}" class="sidebar-menu-link sidebar-menu-sublink" data-category="jamon-cocido">
-                    <span class="sidebar-menu-text">{% trans "Jamón Cocido y York" %}</span>
-                </a>
-                <a href="{% url 'catalog:product_list' %}" class="sidebar-menu-link sidebar-menu-sublink" data-category="jamon-curado">
-                    <span class="sidebar-menu-text">{% trans "Jamón Curado" %}</span>
-                </a>
-                <a href="{% url 'catalog:product_list' %}" class="sidebar-menu-link sidebar-menu-sublink" data-category="pavo-pollo">
-                    <span class="sidebar-menu-text">{% trans "Pavo y Pollo" %}</span>
-                </a>
-                <a href="{% url 'catalog:product_list' %}" class="sidebar-menu-link sidebar-menu-sublink" data-category="platos-preparados">
-                    <span class="sidebar-menu-text">{% trans "Platos preparados" %}</span>
-                </a>
-                <a href="{% url 'catalog:product_list' %}" class="sidebar-menu-link sidebar-menu-sublink" data-category="salchichas">
-                    <span class="sidebar-menu-text">{% trans "Salchichas" %}</span>
-                </a>
-            </div>
+                <span class="sidebar-menu-text">{% trans "Catálogo" %}</span>
+            </a>
         </div>
         
         {% if user.is_authenticated %}
@@ -80,7 +50,7 @@
         </div>
         
         <div class="sidebar-menu-item">
-            <a href="{% url 'admin:index' %}" class="sidebar-menu-link">
+            <a href="{% url 'admin:index' %}" class="sidebar-menu-link" target="_blank" rel="noopener noreferrer">
                 <i class="bi bi-gear sidebar-menu-icon"></i>
                 <span class="sidebar-menu-text">{% trans "Administración" %}</span>
             </a>
@@ -126,196 +96,5 @@ document.addEventListener('DOMContentLoaded', function() {
             sidebar.classList.toggle('mobile-open');
         });
     }
-    
-    // Gestión de estados activos del sidebar
-    const STORAGE_ACCORDION_KEY = 'fenix_sidebar_products_open';
-    const STORAGE_CATEGORY_KEY = 'fenix_products_category';
-    
-    // Función para obtener la categoría activa desde URL o localStorage
-    function getActiveCategory() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlCategory = urlParams.get('cat') || urlParams.get('category');
-        if (urlCategory) {
-            return urlCategory;
-        }
-        try {
-            return localStorage.getItem(STORAGE_CATEGORY_KEY) || 'all';
-        } catch (e) {
-            return 'all';
-        }
-    }
-    
-    // Función para guardar la categoría activa
-    function saveActiveCategory(category) {
-        try {
-            localStorage.setItem(STORAGE_CATEGORY_KEY, category || 'all');
-        } catch (e) {
-            console.warn('No se pudo guardar la categoría:', e);
-        }
-    }
-    
-    // Función para marcar un item principal como activo
-    function setMainItemActive(selector, isActive) {
-        const item = document.querySelector(selector);
-        if (item) {
-            if (isActive) {
-                item.classList.add('is-active', 'active');
-                item.setAttribute('aria-current', 'page');
-            } else {
-                item.classList.remove('is-active', 'active');
-                item.removeAttribute('aria-current');
-            }
-        }
-    }
-    
-    // Función para marcar una categoría como activa
-    function setCategoryActive(category) {
-        // Remover todas las clases activas
-        document.querySelectorAll('.sidebar-menu-sublink').forEach(link => {
-            link.classList.remove('active', 'is-active');
-            link.removeAttribute('aria-current');
-        });
-        
-        // Marcar la categoría activa
-        const activeLink = document.querySelector(`.sidebar-menu-sublink[data-category="${category}"]`);
-        if (activeLink) {
-            activeLink.classList.add('active', 'is-active');
-            activeLink.setAttribute('aria-current', 'page');
-        }
-        
-        // Actualizar indicador en el header del accordion
-        const productsAccordionItem = document.getElementById('productsAccordionItem');
-        if (productsAccordionItem) {
-            if (category && category !== 'all') {
-                productsAccordionItem.classList.add('has-active-category');
-            } else {
-                productsAccordionItem.classList.remove('has-active-category');
-            }
-        }
-    }
-    
-    // Inicializar estados activos basados en la URL actual
-    function initializeActiveStates() {
-        const path = window.location.pathname;
-        
-        // Marcar items principales como activos
-        if (path.includes('/catalog') || path === '/') {
-            setMainItemActive('#productsAccordionToggle', true);
-        } else {
-            setMainItemActive('#productsAccordionToggle', false);
-        }
-        
-        if (path.includes('/order') && !path.includes('/cart')) {
-            setMainItemActive('a[href*="order_list"]', true);
-        } else {
-            setMainItemActive('a[href*="order_list"]', false);
-        }
-        
-        if (path.includes('/cart')) {
-            setMainItemActive('a[href*="cart"]', true);
-        } else {
-            setMainItemActive('a[href*="cart"]', false);
-        }
-        
-        if (path.includes('/approval')) {
-            setMainItemActive('a[href*="approval"]', true);
-        } else {
-            setMainItemActive('a[href*="approval"]', false);
-        }
-        
-        // Obtener y marcar categoría activa
-        const activeCategory = getActiveCategory();
-        setCategoryActive(activeCategory);
-        
-        return activeCategory;
-    }
-    
-    // Accordion de Productos con persistencia en localStorage
-    const productsAccordion = document.getElementById('productsAccordionToggle');
-    const productsSubmenu = document.getElementById('productsSubmenu');
-    const productsAccordionItem = document.getElementById('productsAccordionItem');
-    
-    if (productsAccordion && productsSubmenu && productsAccordionItem) {
-        // Función para guardar el estado del accordion
-        function saveAccordionState(isOpen) {
-            try {
-                localStorage.setItem(STORAGE_ACCORDION_KEY, isOpen ? '1' : '0');
-            } catch (e) {
-                console.warn('No se pudo guardar el estado del accordion:', e);
-            }
-        }
-        
-        // Función para leer el estado del accordion
-        function getAccordionState() {
-            try {
-                const stored = localStorage.getItem(STORAGE_ACCORDION_KEY);
-                return stored === '1';
-            } catch (e) {
-                return false;
-            }
-        }
-        
-        // Función para verificar si hay una categoría activa
-        function hasActiveCategory() {
-            const activeCategory = getActiveCategory();
-            return activeCategory && activeCategory !== 'all';
-        }
-        
-        // Función para abrir/cerrar el accordion
-        function setAccordionState(isOpen) {
-            if (isOpen) {
-                productsAccordionItem.classList.add('open');
-                productsAccordion.setAttribute('aria-expanded', 'true');
-            } else {
-                productsAccordionItem.classList.remove('open');
-                productsAccordion.setAttribute('aria-expanded', 'false');
-            }
-            saveAccordionState(isOpen);
-        }
-        
-        // Inicializar el estado del accordion
-        const activeCategory = initializeActiveStates();
-        const shouldOpen = hasActiveCategory() || getAccordionState();
-        if (shouldOpen) {
-            setAccordionState(true);
-        } else {
-            setAccordionState(false);
-        }
-        
-        // Manejar clic en el toggle del accordion
-        productsAccordion.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const isCurrentlyOpen = productsAccordionItem.classList.contains('open');
-            setAccordionState(!isCurrentlyOpen);
-        });
-        
-        // Manejar clics en subcategorías
-        document.querySelectorAll('.sidebar-menu-sublink[data-category]').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const category = this.getAttribute('data-category') || 'all';
-                
-                // Guardar categoría en localStorage
-                saveActiveCategory(category);
-                
-                // Actualizar estado visual
-                setCategoryActive(category);
-                
-                // Si hay una categoría activa (no 'all'), abrir el accordion
-                if (category && category !== 'all') {
-                    setAccordionState(true);
-                }
-                
-                // Filtrar productos por categoría (solo UI)
-                if (typeof CatalogFilters !== 'undefined') {
-                    CatalogFilters.setCategory(category === 'all' ? null : category);
-                }
-            });
-        });
-    }
-    
-    // Inicializar estados activos al cargar
-    initializeActiveStates();
 });
 </script>

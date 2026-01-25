@@ -34,41 +34,93 @@
     <!-- Panel de filtros desplegable -->
     <aside class="catalog-filters-panel" id="filtersPanel">
         <div class="filters-header">
-            <h3>{% trans "Características especiales" %}</h3>
+            <h3>{% trans "Filtros" %}</h3>
             <button type="button" class="btn-close-filters" id="closeFiltersPanel" aria-label="{% trans 'Cerrar filtros' %}">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
         
-        <div class="filters-list">
-            <label class="filter-checkbox">
-                <input type="checkbox" class="filter-input" data-filter="sin-lactosa" value="sin-lactosa">
-                <span class="filter-label">{% trans "Sin lactosa" %}</span>
-            </label>
-            <label class="filter-checkbox">
-                <input type="checkbox" class="filter-input" data-filter="sin-conservantes" value="sin-conservantes">
-                <span class="filter-label">{% trans "Sin conservantes" %}</span>
-            </label>
-            <label class="filter-checkbox">
-                <input type="checkbox" class="filter-input" data-filter="sin-colorantes" value="sin-colorantes">
-                <span class="filter-label">{% trans "Sin colorantes" %}</span>
-            </label>
-            <label class="filter-checkbox">
-                <input type="checkbox" class="filter-input" data-filter="sin-azucares" value="sin-azucares">
-                <span class="filter-label">{% trans "Sin azúcares añadidos" %}</span>
-            </label>
-            <label class="filter-checkbox">
-                <input type="checkbox" class="filter-input" data-filter="bajo-carbohidratos" value="bajo-carbohidratos">
-                <span class="filter-label">{% trans "Bajo en carbohidratos" %}</span>
-            </label>
-            <label class="filter-checkbox">
-                <input type="checkbox" class="filter-input" data-filter="apto-diabeticos" value="apto-diabeticos">
-                <span class="filter-label">{% trans "Apto para diabéticos" %}</span>
-            </label>
-            <label class="filter-checkbox">
-                <input type="checkbox" class="filter-input" data-filter="natural" value="natural">
-                <span class="filter-label">{% trans "Natural" %}</span>
-            </label>
+        <div class="filters-content">
+            <!-- Sección 1: Tipos de producto -->
+            <div class="filters-section">
+                <h4 class="filters-section-title">{% trans "Tipos de producto" %}</h4>
+                <div class="filters-radio-list">
+                    <label class="filter-radio">
+                        <input type="radio" name="product-type" class="filter-type-radio" value="todos" data-type="todos" checked>
+                        <span class="filter-label">{% trans "Todos" %}</span>
+                    </label>
+                    <label class="filter-radio">
+                        <input type="radio" name="product-type" class="filter-type-radio" value="charcuteria" data-type="charcuteria">
+                        <span class="filter-label">{% trans "Charcutería" %}</span>
+                    </label>
+                    <label class="filter-radio">
+                        <input type="radio" name="product-type" class="filter-type-radio" value="curados" data-type="curados">
+                        <span class="filter-label">{% trans "Curados" %}</span>
+                    </label>
+                    <label class="filter-radio">
+                        <input type="radio" name="product-type" class="filter-type-radio" value="ibericos" data-type="ibericos">
+                        <span class="filter-label">{% trans "Ibéricos" %}</span>
+                    </label>
+                    <label class="filter-radio">
+                        <input type="radio" name="product-type" class="filter-type-radio" value="jamon-cocido" data-type="jamon-cocido">
+                        <span class="filter-label">{% trans "Jamón Cocido y York" %}</span>
+                    </label>
+                    <label class="filter-radio">
+                        <input type="radio" name="product-type" class="filter-type-radio" value="jamon-curado" data-type="jamon-curado">
+                        <span class="filter-label">{% trans "Jamón Curado" %}</span>
+                    </label>
+                    <label class="filter-radio">
+                        <input type="radio" name="product-type" class="filter-type-radio" value="pavo-pollo" data-type="pavo-pollo">
+                        <span class="filter-label">{% trans "Pavo y Pollo" %}</span>
+                    </label>
+                    <label class="filter-radio">
+                        <input type="radio" name="product-type" class="filter-type-radio" value="platos-preparados" data-type="platos-preparados">
+                        <span class="filter-label">{% trans "Platos preparados" %}</span>
+                    </label>
+                    <label class="filter-radio">
+                        <input type="radio" name="product-type" class="filter-type-radio" value="salchichas" data-type="salchichas">
+                        <span class="filter-label">{% trans "Salchichas" %}</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Separador visual -->
+            <hr class="filters-separator">
+            
+            <!-- Sección 2: Características especiales -->
+            <div class="filters-section">
+                <h4 class="filters-section-title">{% trans "Características especiales" %}</h4>
+                <div class="filters-list">
+                    <label class="filter-checkbox">
+                        <input type="checkbox" class="filter-input" data-filter="sin-lactosa" value="sin-lactosa">
+                        <span class="filter-label">{% trans "Sin lactosa" %}</span>
+                    </label>
+                    <label class="filter-checkbox">
+                        <input type="checkbox" class="filter-input" data-filter="sin-conservantes" value="sin-conservantes">
+                        <span class="filter-label">{% trans "Sin conservantes" %}</span>
+                    </label>
+                    <label class="filter-checkbox">
+                        <input type="checkbox" class="filter-input" data-filter="sin-colorantes" value="sin-colorantes">
+                        <span class="filter-label">{% trans "Sin colorantes" %}</span>
+                    </label>
+                    <label class="filter-checkbox">
+                        <input type="checkbox" class="filter-input" data-filter="sin-azucares" value="sin-azucares">
+                        <span class="filter-label">{% trans "Sin azúcares añadidos" %}</span>
+                    </label>
+                    <label class="filter-checkbox">
+                        <input type="checkbox" class="filter-input" data-filter="bajo-carbohidratos" value="bajo-carbohidratos">
+                        <span class="filter-label">{% trans "Bajo en carbohidratos" %}</span>
+                    </label>
+                    <label class="filter-checkbox">
+                        <input type="checkbox" class="filter-input" data-filter="apto-diabeticos" value="apto-diabeticos">
+                        <span class="filter-label">{% trans "Apto para diabéticos" %}</span>
+                    </label>
+                    <label class="filter-checkbox">
+                        <input type="checkbox" class="filter-input" data-filter="natural" value="natural">
+                        <span class="filter-label">{% trans "Natural" %}</span>
+                    </label>
+                </div>
+            </div>
         </div>
         
         <div class="filters-footer">
@@ -89,7 +141,7 @@
                     <div class="product-card" 
                          data-product-id="{{ product.pk }}" 
                          data-product-price="{{ product.price }}"
-                         data-product-category="{% cycle 'charcuteria' 'curados' 'ibericos' 'jamon-cocido' 'jamon-curado' 'pavo-pollo' 'platos-preparados' 'salchichas' %}"
+                         data-product-type="{% cycle 'charcuteria' 'curados' 'ibericos' 'jamon-cocido' 'jamon-curado' 'pavo-pollo' 'platos-preparados' 'salchichas' %}"
                          data-product-features="{% cycle 'sin-lactosa,sin-conservantes' 'natural' 'sin-colorantes' 'sin-azucares' 'bajo-carbohidratos' 'apto-diabeticos' 'natural,sin-lactosa' '' %}">
                         <!-- Contenido de la card (orden específico) -->
                         <div class="product-card-content">
@@ -187,7 +239,7 @@
 </div>
 
 <!-- Datos iniciales del carrito para JavaScript -->
-<script type="application/json" id="initialCartData">{{ cart }}</script>
+{{ cart|json_script:"initialCartData" }}
 
 {% endblock %}
 
@@ -199,16 +251,25 @@
     document.addEventListener('DOMContentLoaded', function() {
         if (typeof CatalogCart !== 'undefined') {
             // Cargar carrito inicial desde el servidor si existe
-            const initialCartData = document.getElementById('initialCartData');
-            if (initialCartData) {
-                try {
-                    const cartData = JSON.parse(initialCartData.textContent);
-                    Object.keys(cartData).forEach(productId => {
-                        CatalogCart.setQuantity(productId, parseInt(cartData[productId]) || 0);
-                    });
-                } catch (e) {
-                    console.error('Error al parsear carrito inicial:', e);
+            try {
+                const initialCartDataElement = document.getElementById('initialCartData');
+                if (initialCartDataElement) {
+                    const cartDataText = initialCartDataElement.textContent.trim();
+                    if (cartDataText) {
+                        const cartData = JSON.parse(cartDataText);
+                        if (cartData && typeof cartData === 'object') {
+                            Object.keys(cartData).forEach(productId => {
+                                const quantity = parseInt(cartData[productId]) || 0;
+                                if (quantity > 0) {
+                                    CatalogCart.setQuantity(productId, quantity);
+                                }
+                            });
+                        }
+                    }
                 }
+            } catch (e) {
+                console.warn('No se pudo cargar el carrito inicial desde el servidor:', e);
+                // Continuar sin carrito inicial, se cargará desde la UI
             }
             CatalogCart.init();
         }
