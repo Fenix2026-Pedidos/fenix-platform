@@ -1,6 +1,7 @@
 {% load i18n static %}
+{% get_current_language as CURRENT_LANG %}
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE|default:'es' }}">
+<html lang="{{ CURRENT_LANG }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,41 +23,7 @@
         
         <div class="main-content">
             {% if user.is_authenticated %}
-                <div class="topbar">
-                    <div class="topbar-left">
-                        <button class="btn btn-sm btn-outline d-md-none" id="mobile-menu-toggle" style="border: none; background: transparent; color: var(--gray-700);">
-                            <i class="bi bi-list" style="font-size: 20px;"></i>
-                        </button>
-                        <h1 class="topbar-title">{% block page_title %}{% trans "Dashboard" %}{% endblock %}</h1>
-                    </div>
-                    
-                    <div class="topbar-right">
-                        <div class="dropdown">
-                            <button class="btn btn-outline" type="button" id="userDropdown" data-bs-toggle="dropdown" style="border: none; background: transparent; padding: 8px;">
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">
-                                        {{ user.full_name|first|default:user.email|first|upper }}
-                                    </div>
-                                    <span class="d-none d-md-inline">{{ user.full_name|default:user.email|truncatechars:20 }}</span>
-                                    <i class="bi bi-chevron-down"></i>
-                                </div>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end" style="min-width: 200px;">
-                                <li>
-                                    <a class="dropdown-item" href="{% url 'accounts:profile' %}">
-                                        <i class="bi bi-person"></i> {% trans "Mi Perfil" %}
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <a class="dropdown-item" href="{% url 'accounts:logout' %}">
-                                        <i class="bi bi-box-arrow-right"></i> {% trans "Cerrar Sesión" %}
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                {% include 'components/topbar.html' %}
             {% else %}
                 <!-- Public navbar for non-authenticated users -->
                 <nav style="background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%); padding: 16px var(--content-padding); box-shadow: var(--shadow-md);">
@@ -64,7 +31,33 @@
                         <a href="{% url 'catalog:product_list' %}" style="color: white; text-decoration: none; font-size: 20px; font-weight: 700;">
                             <i class="bi bi-fire"></i> Fenix
                         </a>
-                        <div style="display: flex; gap: 12px;">
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <!-- Selector de idioma para usuarios no autenticados -->
+                            <form action="{% url 'set_language' %}" method="post" style="display: inline-block;">
+                                {% csrf_token %}
+                                <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                                {% get_current_language as CURRENT_LANGUAGE %}
+                                {% get_available_languages as LANGUAGES_LIST %}
+                                <select name="language" onchange="this.form.submit()" style="
+                                    padding: 6px 12px;
+                                    border: 1px solid rgba(255,255,255,0.3);
+                                    border-radius: var(--radius);
+                                    background: rgba(255,255,255,0.1);
+                                    font-size: 14px;
+                                    cursor: pointer;
+                                    color: white;
+                                ">
+                                    {% for lang_code, lang_name in LANGUAGES_LIST %}
+                                        {% if lang_code != 'en' %}
+                                        <option value="{{ lang_code }}" {% if lang_code == CURRENT_LANGUAGE %}selected{% endif %} style="color: var(--gray-900);">
+                                            {% if lang_code == 'es' %}🇪🇸 Español
+                                            {% elif lang_code == 'zh-hans' %}🇨🇳 中文
+                                            {% else %}{{ lang_name }}{% endif %}
+                                        </option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </form>
                             <a href="{% url 'accounts:login' %}" class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.3);">
                                 {% trans "Iniciar Sesión" %}
                             </a>

@@ -1,21 +1,409 @@
-# FENIX - 简体中文
-# Copyright (C) 2025
-# This file is distributed under the same license as the FENIX project.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: FENIX 1.0\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-25 12:00+0000\n"
-"PO-Revision-Date: 2025-01-25 12:00+0000\n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2026-01-25 14:00+0100\n"
+"PO-Revision-Date: 2026-01-25 18:00+0100\n"
+"Last-Translator: Fenix Platform\n"
+"Language-Team: Chinese\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
 
-# Admin / UI común
-msgid "FENIX"
-msgstr "FENIX"
+#: templates/components/sidebar.html
+msgid "Productos"
+msgstr "产品"
+
+#: templates/components/sidebar.html
+msgid "Todos"
+msgstr "全部"
+
+#: templates/components/sidebar.html
+msgid "Charcutería"
+msgstr "熟食"
+
+#: templates/components/sidebar.html
+msgid "Curados"
+msgstr "腌制食品"
+
+#: templates/components/sidebar.html
+msgid "Ibéricos"
+msgstr "伊比利亚"
+
+#: templates/components/sidebar.html
+msgid "Jamón Cocido y York"
+msgstr "熟火腿和约克火腿"
+
+#: templates/components/sidebar.html
+msgid "Jamón Curado"
+msgstr "腌制火腿"
+
+#: templates/components/sidebar.html
+msgid "Pavo y Pollo"
+msgstr "火鸡和鸡肉"
+
+#: templates/components/sidebar.html
+msgid "Platos preparados"
+msgstr "预制菜"
+
+#: templates/components/sidebar.html
+msgid "Salchichas"
+msgstr "香肠"
+
+#: templates/components/sidebar.html
+msgid "Mis Pedidos"
+msgstr "我的订单"
+
+#: templates/components/sidebar.html
+msgid "Carrito"
+msgstr "购物车"
+
+#: templates/components/sidebar.html
+msgid "Aprobación de Usuarios"
+msgstr "用户审批"
+
+#: templates/components/sidebar.html
+msgid "Administración"
+msgstr "管理"
+
+#: templates/catalog/product_list.html
+msgid "Catálogo de Productos"
+msgstr "产品目录"
+
+#: templates/catalog/product_list.html
+msgid "Buscar productos..."
+msgstr "搜索产品..."
+
+#: templates/catalog/product_list.html
+msgid "Filtros"
+msgstr "筛选"
+
+#: templates/catalog/product_list.html
+msgid "Características especiales"
+msgstr "特殊特性"
+
+#: templates/catalog/product_list.html
+msgid "Cerrar filtros"
+msgstr "关闭筛选"
+
+#: templates/catalog/product_list.html
+msgid "Sin lactosa"
+msgstr "无乳糖"
+
+#: templates/catalog/product_list.html
+msgid "Sin conservantes"
+msgstr "无防腐剂"
+
+#: templates/catalog/product_list.html
+msgid "Sin colorantes"
+msgstr "无色素"
+
+#: templates/catalog/product_list.html
+msgid "Sin azúcares añadidos"
+msgstr "无添加糖"
+
+#: templates/catalog/product_list.html
+msgid "Bajo en carbohidratos"
+msgstr "低碳水化合物"
+
+#: templates/catalog/product_list.html
+msgid "Apto para diabéticos"
+msgstr "适合糖尿病患者"
+
+#: templates/catalog/product_list.html
+msgid "Natural"
+msgstr "天然"
+
+#: templates/catalog/product_list.html
+msgid "Eliminar selección"
+msgstr "清除选择"
+
+#: templates/catalog/product_list.html
+msgid "Añadir"
+msgstr "添加"
+
+#: templates/catalog/product_list.html
+msgid "En carrito:"
+msgstr "购物车中："
+
+#: templates/catalog/product_list.html
+msgid "No se encontraron productos que coincidan con tu búsqueda."
+msgstr "未找到符合您搜索条件的产品。"
+
+#: templates/catalog/product_list.html
+msgid "No hay productos disponibles en este momento."
+msgstr "目前没有可用的产品。"
+
+#: templates/catalog/product_list.html
+msgid "Subtotal:"
+msgstr "小计："
+
+#: templates/catalog/product_list.html
+msgid "Ver carrito"
+msgstr "查看购物车"
+
+#: templates/catalog/product_list.html
+msgid "Reducir cantidad"
+msgstr "减少数量"
+
+#: templates/catalog/product_list.html
+msgid "Aumentar cantidad"
+msgstr "增加数量"
+
+#: templates/components/topbar.html
+msgid "Dashboard"
+msgstr "仪表板"
+
+#: templates/components/topbar.html templates/accounts/profile.html
+msgid "Mi Perfil"
+msgstr "我的资料"
+
+#: templates/components/topbar.html
+msgid "Cerrar Sesión"
+msgstr "退出登录"
+
+#: templates/base.html
+msgid "Iniciar Sesión"
+msgstr "登录"
+
+#: templates/base.html
+msgid "Registrarse"
+msgstr "注册"
+
+#: templates/catalog/product_detail.html
+msgid "Catálogo"
+msgstr "目录"
+
+#: templates/catalog/product_detail.html
+msgid "Descripción"
+msgstr "描述"
+
+#: templates/catalog/product_detail.html
+msgid "Precio"
+msgstr "价格"
+
+#: templates/catalog/product_detail.html
+msgid "Cantidad"
+msgstr "数量"
+
+#: templates/catalog/product_detail.html
+msgid "Añadir al Carrito"
+msgstr "添加到购物车"
+
+#: templates/catalog/product_detail.html
+msgid "Debes iniciar sesión para añadir productos al carrito."
+msgstr "您需要登录才能将产品添加到购物车。"
+
+#: templates/catalog/product_detail.html
+msgid "Error al añadir al carrito"
+msgstr "添加到购物车时出错"
+
+#: templates/orders/cart.html
+msgid "Carrito de Compras"
+msgstr "购物车"
+
+#: templates/orders/cart.html
+msgid "Producto"
+msgstr "产品"
+
+#: templates/orders/cart.html
+msgid "Precio Unitario"
+msgstr "单价"
+
+#: templates/orders/cart.html
+msgid "Total"
+msgstr "总计"
+
+#: templates/orders/cart.html
+msgid "Acciones"
+msgstr "操作"
+
+#: templates/orders/cart.html
+msgid "Total:"
+msgstr "总计："
+
+#: templates/orders/cart.html
+msgid "Seguir Comprando"
+msgstr "继续购物"
+
+#: templates/orders/cart.html
+msgid "Crear Pedido"
+msgstr "创建订单"
+
+#: templates/orders/cart.html
+msgid "Tu carrito está vacío."
+msgstr "您的购物车是空的。"
+
+#: templates/orders/cart.html
+msgid "Ver Catálogo"
+msgstr "查看目录"
+
+#: templates/orders/cart.html
+msgid "Error al actualizar el carrito"
+msgstr "更新购物车时出错"
+
+#: templates/orders/cart.html
+msgid "Error al eliminar del carrito"
+msgstr "从购物车删除时出错"
+
+#: templates/accounts/profile.html
+msgid "Cuenta Pendiente de Aprobación"
+msgstr "账户待审批"
+
+#: templates/accounts/profile.html
+msgid "Tu cuenta está pendiente de aprobación por un administrador. Recibirás una notificación por email una vez que tu cuenta sea aprobada."
+msgstr "您的账户正在等待管理员审批。一旦您的账户被批准，您将收到一封电子邮件通知。"
+
+#: templates/accounts/profile.html
+msgid "Email"
+msgstr "电子邮件"
+
+#: templates/accounts/profile.html
+msgid "Nombre Completo"
+msgstr "全名"
+
+#: templates/accounts/profile.html
+msgid "Rol"
+msgstr "角色"
+
+#: templates/accounts/profile.html
+msgid "Idioma"
+msgstr "语言"
+
+#: templates/accounts/profile.html
+msgid "Estado"
+msgstr "状态"
+
+#: templates/accounts/profile.html
+msgid "Pendiente de Aprobación"
+msgstr "待审批"
+
+#: templates/accounts/profile.html
+msgid "Activo"
+msgstr "活跃"
+
+#: templates/accounts/profile.html
+msgid "Inactivo"
+msgstr "不活跃"
+
+#: templates/accounts/profile.html
+msgid "Fecha de Registro"
+msgstr "注册日期"
+
+#: templates/orders/order_list.html
+msgid "Cliente"
+msgstr "客户"
+
+#: templates/orders/order_list.html
+msgid "ID"
+msgstr "ID"
+
+#: templates/orders/order_list.html
+msgid "Fecha"
+msgstr "日期"
+
+#: templates/orders/order_list.html
+msgid "Ver"
+msgstr "查看"
+
+#: templates/orders/order_list.html
+msgid "No tienes pedidos aún."
+msgstr "您还没有订单。"
+
+#: templates/accounts/user_approve.html
+msgid "Revisar Usuario"
+msgstr "审查用户"
+
+#: templates/accounts/user_approve.html
+msgid "Información del Usuario"
+msgstr "用户信息"
+
+#: templates/accounts/user_approve.html
+msgid "¿Estás seguro de rechazar esta solicitud?"
+msgstr "您确定要拒绝此请求吗？"
+
+#: templates/accounts/user_approve.html
+msgid "Rechazar"
+msgstr "拒绝"
+
+#: templates/accounts/user_approve.html
+msgid "Aprobar Usuario"
+msgstr "批准用户"
+
+#: templates/accounts/user_approval_list.html
+msgid "Revisar"
+msgstr "审查"
+
+#: templates/accounts/user_approval_list.html
+msgid "No hay usuarios pendientes de aprobación."
+msgstr "没有待审批的用户。"
+
+#: templates/orders/order_detail.html
+msgid "Pedido"
+msgstr "订单"
+
+#: templates/orders/order_detail.html
+msgid "Detalles del Pedido"
+msgstr "订单详情"
+
+#: templates/orders/order_detail.html
+msgid "Historial del Pedido"
+msgstr "订单历史"
+
+#: templates/orders/order_detail.html
+msgid "Información del Pedido"
+msgstr "订单信息"
+
+#: templates/orders/order_detail.html
+msgid "ID del Pedido"
+msgstr "订单ID"
+
+#: templates/orders/order_detail.html
+msgid "Fecha de Creación"
+msgstr "创建日期"
+
+#: templates/orders/order_detail.html
+msgid "Ventana de Entrega"
+msgstr "交付窗口"
+
+#: templates/accounts/register.html
+msgid "Crear Cuenta"
+msgstr "创建账户"
+
+#: templates/accounts/register.html
+msgid "Regístrate para comenzar a usar Fenix"
+msgstr "注册以开始使用 Fenix"
+
+#: templates/accounts/register.html
+msgid "Contraseña"
+msgstr "密码"
+
+#: templates/accounts/register.html
+msgid "Confirmar Contraseña"
+msgstr "确认密码"
+
+#: templates/accounts/register.html
+msgid "¿Ya tienes cuenta?"
+msgstr "已有账户？"
+
+#: templates/accounts/register.html
+msgid "Inicia sesión aquí"
+msgstr "在此登录"
+
+#: templates/accounts/login.html
+msgid "Accede a tu cuenta de Fenix"
+msgstr "访问您的 Fenix 账户"
+
+#: templates/accounts/login.html
+msgid "¿No tienes cuenta?"
+msgstr "没有账户？"
+
+#: templates/accounts/login.html
+msgid "Regístrate aquí"
+msgstr "在此注册"

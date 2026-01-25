@@ -9,6 +9,14 @@
     <h1 class="page-title">{% trans "Mi Perfil" %}</h1>
 </div>
 
+{% if user.pending_approval %}
+<div class="alert alert-warning">
+    <i class="bi bi-exclamation-triangle"></i>
+    <strong>{% trans "Cuenta Pendiente de Aprobación" %}</strong><br>
+    {% trans "Tu cuenta está pendiente de aprobación por un administrador. Recibirás una notificación por email una vez que tu cuenta sea aprobada." %}
+</div>
+{% endif %}
+
 <div class="card">
     <div class="card-body">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">

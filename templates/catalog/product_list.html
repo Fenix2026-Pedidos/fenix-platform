@@ -1,63 +1,222 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n static %}
 
 {% block page_title %}{% trans "Catálogo de Productos" %}{% endblock %}
 {% block title %}{% trans "Catálogo de Productos" %} - Fenix{% endblock %}
 
-{% block content %}
-<div class="page-header" style="margin-bottom: 24px;">
-    <form method="get" class="d-flex" style="max-width: 400px; gap: 8px; margin-left: auto;">
-        <input type="text" name="q" value="{{ search_query }}" class="form-control" 
-               placeholder="{% trans 'Buscar productos...' %}">
-        <button type="submit" class="btn btn-primary">
-            <i class="bi bi-search"></i>
-        </button>
-    </form>
-</div>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/catalog.css' %}">
+{% endblock %}
 
-{% if products %}
-<div class="row g-4" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;">
-    {% for product in products %}
-    <div class="card">
-        <div class="card-body" style="display: flex; flex-direction: column; height: 100%;">
-            <h5 class="card-title" style="font-size: 18px; margin-bottom: 12px;">
-                {% if lang == 'zh-hans' %}
-                    {{ product.name_zh_hans }}
+{% block content %}
+<!-- Token CSRF para AJAX -->
+{% csrf_token %}
+
+<div class="catalog-container">
+    <!-- Header con búsqueda y botón de filtros -->
+    <div class="catalog-header">
+        <h1 class="catalog-title">{% trans "Catálogo de Productos" %}</h1>
+        <div class="catalog-header-actions">
+            <form method="get" class="catalog-search" id="searchForm">
+                <input type="text" name="q" value="{{ search_query }}" class="form-control catalog-search-input" 
+                       placeholder="{% trans 'Buscar productos...' %}" id="searchInput">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+            <button type="button" class="btn btn-outline btn-filters-toggle" id="filtersToggle">
+                <i class="bi bi-sliders"></i>
+                <span class="d-none d-md-inline">{% trans "Filtros" %}</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Panel de filtros desplegable -->
+    <aside class="catalog-filters-panel" id="filtersPanel">
+        <div class="filters-header">
+            <h3>{% trans "Características especiales" %}</h3>
+            <button type="button" class="btn-close-filters" id="closeFiltersPanel" aria-label="{% trans 'Cerrar filtros' %}">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        
+        <div class="filters-list">
+            <label class="filter-checkbox">
+                <input type="checkbox" class="filter-input" data-filter="sin-lactosa" value="sin-lactosa">
+                <span class="filter-label">{% trans "Sin lactosa" %}</span>
+            </label>
+            <label class="filter-checkbox">
+                <input type="checkbox" class="filter-input" data-filter="sin-conservantes" value="sin-conservantes">
+                <span class="filter-label">{% trans "Sin conservantes" %}</span>
+            </label>
+            <label class="filter-checkbox">
+                <input type="checkbox" class="filter-input" data-filter="sin-colorantes" value="sin-colorantes">
+                <span class="filter-label">{% trans "Sin colorantes" %}</span>
+            </label>
+            <label class="filter-checkbox">
+                <input type="checkbox" class="filter-input" data-filter="sin-azucares" value="sin-azucares">
+                <span class="filter-label">{% trans "Sin azúcares añadidos" %}</span>
+            </label>
+            <label class="filter-checkbox">
+                <input type="checkbox" class="filter-input" data-filter="bajo-carbohidratos" value="bajo-carbohidratos">
+                <span class="filter-label">{% trans "Bajo en carbohidratos" %}</span>
+            </label>
+            <label class="filter-checkbox">
+                <input type="checkbox" class="filter-input" data-filter="apto-diabeticos" value="apto-diabeticos">
+                <span class="filter-label">{% trans "Apto para diabéticos" %}</span>
+            </label>
+            <label class="filter-checkbox">
+                <input type="checkbox" class="filter-input" data-filter="natural" value="natural">
+                <span class="filter-label">{% trans "Natural" %}</span>
+            </label>
+        </div>
+        
+        <div class="filters-footer">
+            <button type="button" class="btn btn-outline btn-clear-filters" id="clearFilters">
+                {% trans "Eliminar selección" %}
+            </button>
+        </div>
+    </aside>
+
+    <!-- Overlay para cerrar panel en móvil -->
+    <div class="filters-overlay" id="filtersOverlay"></div>
+
+    <!-- Área principal con grid -->
+    <div class="catalog-main-area">
+        <div class="products-grid" id="productsGrid">
+                {% if products %}
+                    {% for product in products %}
+                    <div class="product-card" 
+                         data-product-id="{{ product.pk }}" 
+                         data-product-price="{{ product.price }}"
+                         data-product-category="{% cycle 'charcuteria' 'curados' 'ibericos' 'jamon-cocido' 'jamon-curado' 'pavo-pollo' 'platos-preparados' 'salchichas' %}"
+                         data-product-features="{% cycle 'sin-lactosa,sin-conservantes' 'natural' 'sin-colorantes' 'sin-azucares' 'bajo-carbohidratos' 'apto-diabeticos' 'natural,sin-lactosa' '' %}">
+                        <!-- Contenido de la card (orden específico) -->
+                        <div class="product-card-content">
+                            <!-- (1) Nombre del producto -->
+                            <h3 class="product-name">
+                                {% if lang == 'zh-hans' %}
+                                    {{ product.name_zh_hans }}
+                                {% else %}
+                                    {{ product.name_es }}
+                                {% endif %}
+                            </h3>
+                            
+                            <!-- (2) Precio + unidad/gramos -->
+                            <div class="product-price-section">
+                                <span class="product-price">{{ product.price }} €</span>
+                                <span class="product-unit-separator">·</span>
+                                <span class="product-unit">{% cycle '150 g' '200 g' '100 g' '250 g' '300 g' '180 g' '120 g' '160 g' %}</span>
+                            </div>
+                            
+                            <!-- Imagen del producto (compacta, después del precio) -->
+                            <div class="product-image-container">
+                                {% if product.image %}
+                                <img src="{{ product.image.url }}" 
+                                     alt="{% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif %}" 
+                                     class="product-image">
+                                {% else %}
+                                <div class="product-image-placeholder">
+                                    <i class="bi bi-image"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- (3) Stepper de cantidad -->
+                            <div class="product-quantity-selector">
+                                <button type="button" class="qty-btn qty-minus" data-product-id="{{ product.pk }}" aria-label="{% trans 'Reducir cantidad' %}">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <input type="number" 
+                                       class="qty-input" 
+                                       data-product-id="{{ product.pk }}"
+                                       value="0" 
+                                       min="0" 
+                                       readonly>
+                                <button type="button" class="qty-btn qty-plus" data-product-id="{{ product.pk }}" aria-label="{% trans 'Aumentar cantidad' %}">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- (4) Botón Añadir -->
+                            <button type="button" class="btn btn-primary btn-add-product" data-product-id="{{ product.pk }}">
+                                <i class="bi bi-cart-plus"></i> {% trans "Añadir" %}
+                            </button>
+                            
+                            <!-- Feedback de cantidad en carrito -->
+                            <div class="product-cart-feedback" data-product-id="{{ product.pk }}" style="display: none;">
+                                <i class="bi bi-check-circle"></i>
+                                <span class="cart-feedback-text">{% trans "En carrito:" %} <strong class="cart-quantity">0</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
                 {% else %}
-                    {{ product.name_es }}
+                    <div class="empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <p class="text-muted">
+                            {% if search_query %}
+                                {% trans "No se encontraron productos que coincidan con tu búsqueda." %}
+                            {% else %}
+                                {% trans "No hay productos disponibles en este momento." %}
+                            {% endif %}
+                        </p>
+                    </div>
                 {% endif %}
-            </h5>
-            <p class="text-muted" style="flex-grow: 1; margin-bottom: 16px; font-size: 14px;">
-                {% if lang == 'zh-hans' %}
-                    {{ product.description_zh_hans|truncatewords:20|default:"Sin descripción" }}
-                {% else %}
-                    {{ product.description_es|truncatewords:20|default:"Sin descripción" }}
-                {% endif %}
-            </p>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
-                <span style="font-size: 24px; font-weight: 700; color: var(--primary-600);">
-                    {{ product.price }} €
-                </span>
-                <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-primary btn-sm">
-                    <i class="bi bi-eye"></i> {% trans "Ver Detalles" %}
-                </a>
             </div>
         </div>
     </div>
-    {% endfor %}
 </div>
-{% else %}
-<div class="card">
-    <div class="card-body" style="text-align: center; padding: 48px;">
-        <i class="bi bi-inbox" style="font-size: 48px; color: var(--gray-400); margin-bottom: 16px;"></i>
-        <p class="text-muted">
-            {% if search_query %}
-                {% trans "No se encontraron productos que coincidan con tu búsqueda." %}
-            {% else %}
-                {% trans "No hay productos disponibles en este momento." %}
-            {% endif %}
-        </p>
+
+<!-- Panel de carrito sticky -->
+<div class="cart-panel" id="cartPanel">
+    <div class="cart-panel-header">
+        <i class="bi bi-cart3"></i>
+        <span class="cart-panel-title">{% trans "Carrito" %}</span>
+        <span class="cart-panel-count" id="cartTotalItems">0</span>
+    </div>
+    <div class="cart-panel-body">
+        <div class="cart-panel-subtotal">
+            <span>{% trans "Subtotal:" %}</span>
+            <strong id="cartSubtotal">0.00 €</strong>
+        </div>
+        <a href="{% url 'orders:cart' %}" class="btn btn-primary btn-block cart-panel-button">
+            {% trans "Ver carrito" %}
+        </a>
     </div>
 </div>
-{% endif %}
+
+<!-- Datos iniciales del carrito para JavaScript -->
+<script type="application/json" id="initialCartData">{{ cart }}</script>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/catalog.js' %}"></script>
+<script src="{% static 'js/catalog-filters.js' %}"></script>
+<script>
+    // Inicializar carrito al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof CatalogCart !== 'undefined') {
+            // Cargar carrito inicial desde el servidor si existe
+            const initialCartData = document.getElementById('initialCartData');
+            if (initialCartData) {
+                try {
+                    const cartData = JSON.parse(initialCartData.textContent);
+                    Object.keys(cartData).forEach(productId => {
+                        CatalogCart.setQuantity(productId, parseInt(cartData[productId]) || 0);
+                    });
+                } catch (e) {
+                    console.error('Error al parsear carrito inicial:', e);
+                }
+            }
+            CatalogCart.init();
+        }
+        
+        // Inicializar filtros
+        if (typeof CatalogFilters !== 'undefined') {
+            CatalogFilters.init();
+        }
+    });
+</script>
 {% endblock %}

@@ -3,6 +3,15 @@
 import os
 import sys
 
+# Configurar codificación UTF-8 para evitar errores de Unicode
+if sys.platform == 'win32':
+    import locale
+    if sys.getdefaultencoding() != 'utf-8':
+        os.environ['PYTHONIOENCODING'] = 'utf-8'
+        # Forzar UTF-8 en Windows
+        if hasattr(sys, 'setdefaultencoding'):
+            sys.setdefaultencoding('utf-8')
+
 
 def main():
     """Run administrative tasks."""

@@ -1,14 +1,39 @@
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
+from django.utils import translation
+from core.models import PlatformSettings
 from .models import Product
 
 
 def get_user_language(user):
-    """Obtiene el idioma del usuario según prioridad"""
-    if user.is_authenticated and hasattr(user, 'language'):
+    """
+    Obtiene el idioma del usuario según prioridad:
+    1. user.language (si está autenticado)
+    2. platform.default_language (PlatformSettings)
+    3. 'es' (fallback)
+    """
+    if user.is_authenticated and hasattr(user, 'language') and user.language:
         return user.language
-    # TODO: Obtener de PlatformSettings si existe
+    
+    try:
+        platform = PlatformSettings.get_settings()
+        if platform.default_language:
+            return platform.default_language
+    except Exception:
+        pass
+    
     return 'es'
+
+
+def activate_user_language(request, user):
+    """
+    Activa el idioma del usuario en la sesión actual.
+    Prioridad: user.language -> platform.default_language -> 'es'
+    """
+    lang = get_user_language(user)
+    translation.activate(lang)
+    request.LANGUAGE_CODE = lang
+    return lang
 
 
 def product_list(request):
@@ -27,10 +52,16 @@ def product_list(request):
     
     lang = get_user_language(request.user)
     
+    # Obtener carrito para pasar cantidades iniciales al frontend
+    from orders.views import get_cart
+    import json
+    cart = get_cart(request)
+    
     context = {
         'products': products,
         'search_query': search_query,
         'lang': lang,
+        'cart': json.dumps(cart) if cart else '{}',  # Pasar carrito como JSON string
     }
     return render(request, 'catalog/product_list.html', context)
 

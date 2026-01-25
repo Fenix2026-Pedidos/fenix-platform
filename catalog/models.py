@@ -16,6 +16,12 @@ class Product(models.Model):
     name_zh_hans = models.CharField(max_length=200)
     description_es = models.TextField(blank=True)
     description_zh_hans = models.TextField(blank=True)
+    image = models.ImageField(
+        upload_to='products/',
+        blank=True,
+        null=True,
+        help_text='Imagen del producto (recomendado: 800x600px)'
+    )
     price = models.DecimalField(max_digits=12, decimal_places=2)
     is_active = models.BooleanField(default=True)
     stock_available = models.IntegerField(default=0)

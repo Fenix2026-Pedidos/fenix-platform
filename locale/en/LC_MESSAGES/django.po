@@ -3,67 +3,68 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-25 14:00+0100\n"
-"PO-Revision-Date: 2026-01-25 18:00+0100\n"
-"Last-Translator: Fenix Platform\n"
-"Language-Team: Spanish\n"
-"Language: es\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: templates/components/sidebar.html
 msgid "Catálogo"
-msgstr "Catálogo"
+msgstr "Catalog"
 
 #: templates/components/sidebar.html
 msgid "Mis Pedidos"
-msgstr "Mis Pedidos"
+msgstr "My Orders"
 
 #: templates/components/sidebar.html
 msgid "Carrito"
-msgstr "Carrito"
+msgstr "Cart"
 
 #: templates/components/sidebar.html
 msgid "Aprobación de Usuarios"
-msgstr "Aprobación de Usuarios"
+msgstr "User Approval"
 
 #: templates/components/sidebar.html
 msgid "Administración"
-msgstr "Administración"
+msgstr "Administration"
 
 #: templates/catalog/product_list.html
 msgid "Catálogo de Productos"
-msgstr "Catálogo de Productos"
+msgstr "Product Catalog"
 
 #: templates/catalog/product_list.html
 msgid "Buscar productos..."
-msgstr "Buscar productos..."
+msgstr "Search products..."
 
 #: templates/catalog/product_list.html
 msgid "Añadir"
-msgstr "Añadir"
+msgstr "Add"
 
 #: templates/catalog/product_list.html
 msgid "En carrito:"
-msgstr "En carrito:"
+msgstr "In cart:"
 
 #: templates/components/topbar.html
 msgid "Mi Perfil"
-msgstr "Mi Perfil"
+msgstr "My Profile"
 
 #: templates/components/topbar.html
 msgid "Cerrar Sesión"
-msgstr "Cerrar Sesión"
+msgstr "Log Out"
 
 #: templates/base.html
 msgid "Iniciar Sesión"
-msgstr "Iniciar Sesión"
+msgstr "Log In"
 
 #: templates/base.html
 msgid "Registrarse"
-msgstr "Registrarse"
+msgstr "Sign Up"

@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from accounts.models import User
 from catalog.models import Product
@@ -10,9 +11,9 @@ class RecurringOrder(models.Model):
     FREQ_MONTHLY = 'monthly'
 
     FREQUENCY_CHOICES = [
-        (FREQ_DAILY, 'Diaria'),
-        (FREQ_WEEKLY, 'Semanal'),
-        (FREQ_MONTHLY, 'Mensual'),
+        (FREQ_DAILY, _('Diaria')),
+        (FREQ_WEEKLY, _('Semanal')),
+        (FREQ_MONTHLY, _('Mensual')),
     ]
 
     customer = models.ForeignKey(

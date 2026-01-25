@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from accounts.models import User
 from catalog.models import Product
@@ -13,12 +14,12 @@ class Order(models.Model):
     STATUS_CANCELLED = 'cancelled'
 
     STATUS_CHOICES = [
-        (STATUS_NEW, 'Nuevo'),
-        (STATUS_CONFIRMED, 'Confirmado'),
-        (STATUS_PREPARING, 'Preparando'),
-        (STATUS_OUT_FOR_DELIVERY, 'En reparto'),
-        (STATUS_DELIVERED, 'Entregado'),
-        (STATUS_CANCELLED, 'Cancelado'),
+        (STATUS_NEW, _('Nuevo')),
+        (STATUS_CONFIRMED, _('Confirmado')),
+        (STATUS_PREPARING, _('Preparando')),
+        (STATUS_OUT_FOR_DELIVERY, _('En reparto')),
+        (STATUS_DELIVERED, _('Entregado')),
+        (STATUS_CANCELLED, _('Cancelado')),
     ]
 
     customer = models.ForeignKey(

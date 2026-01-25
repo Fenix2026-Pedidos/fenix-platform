@@ -15,6 +15,9 @@
         <table class="table">
             <thead>
                 <tr>
+                    {% if is_manager %}
+                    <th>{% trans "Cliente" %}</th>
+                    {% endif %}
                     <th>{% trans "ID" %}</th>
                     <th>{% trans "Fecha" %}</th>
                     <th>{% trans "Estado" %}</th>
@@ -25,6 +28,9 @@
             <tbody>
                 {% for order in orders %}
                 <tr>
+                    {% if is_manager %}
+                    <td style="font-weight: 500;">{{ order.customer.full_name|default:order.customer.email }}</td>
+                    {% endif %}
                     <td style="font-weight: 600; color: var(--primary-600);">#{{ order.id }}</td>
                     <td>{{ order.created_at|date:"d/m/Y H:i" }}</td>
                     <td>

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Aprobación de Usuarios" %}{% endblock %}
+{% block title %}{% trans "Aprobación de Usuarios" %} - Fenix{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">{% trans "Aprobación de Usuarios" %}</h1>
+</div>
+
+{% if pending_users %}
+<div class="card">
+    <div class="table-wrapper">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>{% trans "Email" %}</th>
+                    <th>{% trans "Nombre Completo" %}</th>
+                    <th>{% trans "Idioma" %}</th>
+                    <th>{% trans "Fecha de Registro" %}</th>
+                    <th style="text-align: right;">{% trans "Acciones" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in pending_users %}
+                <tr>
+                    <td style="font-weight: 500;">{{ user.email }}</td>
+                    <td>{{ user.full_name }}</td>
+                    <td>{{ user.get_language_display }}</td>
+                    <td>{{ user.date_joined|date:"d/m/Y H:i" }}</td>
+                    <td style="text-align: right;">
+                        <a href="{% url 'accounts:user_approve' user.pk %}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-check-circle"></i> {% trans "Revisar" %}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body" style="text-align: center; padding: 48px;">
+        <i class="bi bi-check-circle" style="font-size: 48px; color: var(--success); margin-bottom: 16px;"></i>
+        <p class="text-muted mb-3">{% trans "No hay usuarios pendientes de aprobación." %}</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

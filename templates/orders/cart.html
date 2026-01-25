@@ -25,7 +25,19 @@
             <tbody>
                 {% for item in cart_items %}
                 <tr>
-                    <td style="font-weight: 500;">{{ item.product.name_es }}</td>
+                    <td style="font-weight: 500;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name_es }}" 
+                                 style="width: 50px; height: 50px; object-fit: cover; border-radius: var(--radius);">
+                            {% else %}
+                            <div style="width: 50px; height: 50px; background: var(--gray-200); border-radius: var(--radius); display: flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-image" style="color: var(--gray-400);"></i>
+                            </div>
+                            {% endif %}
+                            <span>{{ item.product.name_es }}</span>
+                        </div>
+                    </td>
                     <td>{{ item.product.price }} €</td>
                     <td>
                         <input type="number" class="form-control quantity-input" 
@@ -119,7 +131,7 @@ async function updateCart(productId, quantity) {
             location.reload();
         }
     } catch (error) {
-        alert('Error al actualizar el carrito');
+        alert('{% trans "Error al actualizar el carrito" %}');
     }
 }
 
@@ -139,7 +151,7 @@ async function removeFromCart(productId) {
             location.reload();
         }
     } catch (error) {
-        alert('Error al eliminar del carrito');
+        alert('{% trans "Error al eliminar del carrito" %}');
     }
 }
 </script>

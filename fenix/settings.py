@@ -11,7 +11,16 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
+
+# Configurar codificación UTF-8 en Windows
+if sys.platform == 'win32':
+    if sys.getdefaultencoding() != 'utf-8':
+        os.environ['PYTHONIOENCODING'] = 'utf-8'
+        # Asegurar que los archivos se lean con UTF-8
+        import locale
+        locale.setlocale(locale.LC_ALL, '')
 
 try:
     from dotenv import load_dotenv
@@ -59,6 +68,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'accounts.middleware.UserApprovalMiddleware',  # Bloquea acceso si pending_approval=True
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -77,6 +87,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'orders.context_processors.cart_count',
+                'accounts.context_processors.user_language',  # Idioma del usuario
             ],
         },
     },
@@ -154,8 +165,15 @@ LANGUAGE_CODE = 'es'
 
 LANGUAGES = [
     ('es', 'Español'),
-    ('zh-hans', 'Chinese (Simplified)'),
+    ('zh-hans', '中文 (简体)'),
+    # ('en', 'English'),  # Oculto temporalmente
 ]
+
+# Configuración de cookies de idioma
+LANGUAGE_COOKIE_NAME = 'django_language'
+LANGUAGE_COOKIE_AGE = 60 * 60 * 24 * 365  # 1 año
+LANGUAGE_COOKIE_HTTPONLY = True
+LANGUAGE_COOKIE_SAMESITE = 'Lax'
 
 TIME_ZONE = 'Europe/Madrid'
 
@@ -175,6 +193,10 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+# Media files (imágenes subidas por usuarios)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
