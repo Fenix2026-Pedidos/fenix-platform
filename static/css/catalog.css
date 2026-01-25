@@ -8,8 +8,9 @@
     --catalog-card-min-height: 450px;
     --catalog-card-height-fixed: 450px;
     --catalog-card-min-width: 220px;
-    --catalog-image-height: 200px;
+    --catalog-image-height: 220px;
     --catalog-card-padding: 12px;
+    --catalog-card-padding-bottom: 8px;
     --catalog-gap: 16px;
     --filters-panel-width: 320px;
 }
@@ -153,33 +154,33 @@
     padding: 0;
 }
 
-/* Sección de filtros */
+/* Sección de filtros - Compacta */
 .filters-section {
-    padding: 20px;
+    padding: 16px 20px;
 }
 
 .filters-section:first-child {
-    padding-top: 20px;
+    padding-top: 16px;
 }
 
 .filters-section-title {
-    font-size: 15px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--gray-900);
-    margin: 0 0 16px 0;
+    margin: 0 0 10px 0;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    font-size: 12px;
+    line-height: 1.3;
 }
 
-/* Separador visual entre secciones */
+/* Separador visual entre secciones - Compacto */
 .filters-separator {
-    margin: 0 20px;
+    margin: 8px 20px;
     border: none;
     border-top: 1px solid var(--gray-200);
 }
 
-/* Lista de radio buttons para tipos de producto */
+/* Lista de radio buttons para tipos de producto - Compacta */
 .filters-radio-list {
     display: flex;
     flex-direction: column;
@@ -189,11 +190,13 @@
 .filter-radio {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     cursor: pointer;
-    padding: 12px;
+    padding: 6px 8px;
     border-radius: var(--radius);
     transition: background-color var(--transition);
+    margin: 0;
+    min-height: auto;
 }
 
 .filter-radio:hover {
@@ -206,9 +209,10 @@
     cursor: pointer;
     accent-color: var(--primary-600);
     flex-shrink: 0;
+    margin: 0;
 }
 
-/* Lista de checkboxes para características especiales */
+/* Lista de checkboxes para características especiales - Compacta */
 .filters-list {
     display: flex;
     flex-direction: column;
@@ -218,11 +222,13 @@
 .filter-checkbox {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     cursor: pointer;
-    padding: 12px;
+    padding: 6px 8px;
     border-radius: var(--radius);
     transition: background-color var(--transition);
+    margin: 0;
+    min-height: auto;
 }
 
 .filter-checkbox:hover {
@@ -235,6 +241,7 @@
     cursor: pointer;
     accent-color: var(--primary-600);
     flex-shrink: 0;
+    margin: 0;
 }
 
 .filter-label {
@@ -242,6 +249,8 @@
     color: var(--gray-700);
     cursor: pointer;
     user-select: none;
+    line-height: 1.3;
+    padding: 0;
 }
 
 .filters-footer {
@@ -400,7 +409,7 @@
 
 /* Contenido de la card (orden específico) */
 .product-card-content {
-    padding: var(--catalog-card-padding);
+    padding: var(--catalog-card-padding) var(--catalog-card-padding) var(--catalog-card-padding-bottom) var(--catalog-card-padding);
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -658,20 +667,17 @@
     width: 100% !important;
     min-width: 100% !important;
     max-width: 100% !important;
-    padding: 10px 16px !important;
+    padding: 8px 16px !important;
     font-size: 14px !important;
     font-weight: 600 !important;
-    margin-top: 6px !important;
-    margin-bottom: 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    margin: 0 !important;
     flex-shrink: 0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     gap: 6px !important;
-    min-height: 40px !important;
-    max-height: 40px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
     box-sizing: border-box !important;
     white-space: nowrap !important;
     overflow: visible !important;

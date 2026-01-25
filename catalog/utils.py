@@ -23,20 +23,14 @@ def translate_text(text: str, source_lang: str = 'es', target_lang: str = 'zh-CN
         return text
     
     try:
-        # Usar 'zh' en lugar de 'zh-CN' para deep-translator
-        target = 'zh' if target_lang == 'zh-CN' else target_lang
-        translator = GoogleTranslator(source=source_lang, target=target)
+        # deep-translator requiere 'zh-CN' para chino simplificado (no 'zh')
+        translator = GoogleTranslator(source=source_lang, target=target_lang)
         translated = translator.translate(text)
         return translated
     except Exception as e:
         logger.warning(f"Error al traducir texto: {e}")
-        # Intentar con 'zh-CN' si 'zh' falla
-        try:
-            translator = GoogleTranslator(source=source_lang, target='zh-CN')
-            translated = translator.translate(text)
-            return translated
-        except:
-            return text  # Retorna el texto original si falla
+        # Si falla, retornar el texto original
+        return text
 
 
 def translate_product_fields(product, translate_name=True, translate_description=True):

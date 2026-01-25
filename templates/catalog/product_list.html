@@ -186,26 +186,29 @@
                                 </div>
                             </div>
                             
-                            <!-- (e) Stepper de cantidad -->
-                            <div class="product-quantity-selector">
-                                <button type="button" class="qty-btn qty-minus" data-product-id="{{ product.pk }}" aria-label="{% trans 'Reducir cantidad' %}">
-                                    <i class="bi bi-dash"></i>
-                                </button>
-                                <input type="number" 
-                                       class="qty-input" 
-                                       data-product-id="{{ product.pk }}"
-                                       value="0" 
-                                       min="0" 
-                                       readonly>
-                                <button type="button" class="qty-btn qty-plus" data-product-id="{{ product.pk }}" aria-label="{% trans 'Aumentar cantidad' %}">
-                                    <i class="bi bi-plus"></i>
+                            <!-- (e) Bloque compacto: Stepper + Botón Añadir -->
+                            <div class="product-card-footer">
+                                <!-- Stepper de cantidad -->
+                                <div class="product-quantity-selector">
+                                    <button type="button" class="qty-btn qty-minus" data-product-id="{{ product.pk }}" aria-label="{% trans 'Reducir cantidad' %}">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+                                    <input type="number" 
+                                           class="qty-input" 
+                                           data-product-id="{{ product.pk }}"
+                                           value="0" 
+                                           min="0" 
+                                           readonly>
+                                    <button type="button" class="qty-btn qty-plus" data-product-id="{{ product.pk }}" aria-label="{% trans 'Aumentar cantidad' %}">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
+                                
+                                <!-- Botón Añadir -->
+                                <button type="button" class="btn btn-primary btn-add-product" data-product-id="{{ product.pk }}">
+                                    <i class="bi bi-cart-plus"></i> {% trans "Añadir" %}
                                 </button>
                             </div>
-                            
-                            <!-- (f) Botón Añadir -->
-                            <button type="button" class="btn btn-primary btn-add-product" data-product-id="{{ product.pk }}">
-                                <i class="bi bi-cart-plus"></i> {% trans "Añadir" %}
-                            </button>
                         </div>
                     </div>
                     {% endfor %}
