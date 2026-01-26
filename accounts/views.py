@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
@@ -69,6 +69,14 @@ def register_view(request):
         form = RegisterForm()
     
     return render(request, 'accounts/register.html', {'form': form})
+
+
+def logout_view(request):
+    """Vista personalizada de logout que maneja tanto GET como POST"""
+    if request.user.is_authenticated:
+        logout(request)
+        messages.success(request, _('Has cerrado sesión correctamente.'))
+    return redirect('/')
 
 
 @login_required

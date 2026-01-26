@@ -111,6 +111,29 @@ const CatalogCart = {
     },
     
     /**
+     * Añade un producto al carrito leyendo la cantidad del stepper
+     */
+    addProduct: function(productId) {
+        // Buscar el input de cantidad para este producto
+        const card = document.querySelector(`.product-card[data-product-id="${productId}"]`);
+        if (!card) return;
+        
+        const input = card.querySelector('.qty-input[data-product-id="' + productId + '"]');
+        if (!input) return;
+        
+        // Leer la cantidad actual del stepper
+        let quantity = parseInt(input.value) || 0;
+        
+        // Si la cantidad es 0, incrementar a 1
+        if (quantity === 0) {
+            quantity = 1;
+        }
+        
+        // Establecer la cantidad (esto actualiza el UI y sincroniza con el servidor)
+        this.setQuantity(productId, quantity);
+    },
+    
+    /**
      * Establece la cantidad de un producto
      */
     setQuantity: function(productId, quantity) {

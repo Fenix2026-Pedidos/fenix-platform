@@ -343,6 +343,12 @@ body {
     flex-direction: column;
 }
 
+/* Cuando no hay sidebar (página pública), quitar el margen izquierdo */
+.main-content.no-sidebar {
+    margin-left: 0;
+    width: 100%;
+}
+
 .sidebar.collapsed ~ .main-content {
     margin-left: var(--sidebar-collapsed-width);
 }
@@ -626,6 +632,8 @@ body {
 .content-wrapper {
     flex: 1;
     padding: var(--content-padding);
+    width: 100%;
+    max-width: 100%;
 }
 
 /* ============================================

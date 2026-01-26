@@ -60,9 +60,12 @@
                 </li>
                 <li style="list-style: none;"><hr class="dropdown-divider" style="margin: 8px 0; border-top: 1px solid var(--gray-200); border-bottom: none;"></li>
                 <li style="list-style: none;">
-                    <a class="dropdown-item" href="{% url 'accounts:logout' %}" style="display: block; padding: 8px 16px; color: var(--gray-700); text-decoration: none; font-size: 14px; transition: background-color var(--transition);">
-                        <i class="bi bi-box-arrow-right"></i> {% trans "Cerrar Sesión" %}
-                    </a>
+                    <form method="post" action="{% url 'accounts:logout' %}" class="dropdown-item p-0 m-0" style="display: block;">
+                        {% csrf_token %}
+                        <button type="submit" class="dropdown-item w-100 text-start" style="display: block; padding: 8px 16px; color: var(--gray-700); text-decoration: none; font-size: 14px; transition: background-color var(--transition); border: none; background: none; width: 100%; text-align: left; cursor: pointer;">
+                            <i class="bi bi-box-arrow-right"></i> {% trans "Cerrar Sesión" %}
+                        </button>
+                    </form>
                 </li>
             </ul>
             </div>

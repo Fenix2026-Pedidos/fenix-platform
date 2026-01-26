@@ -8,9 +8,9 @@
     --catalog-card-min-height: 450px;
     --catalog-card-height-fixed: 450px;
     --catalog-card-min-width: 220px;
-    --catalog-image-height: 220px;
+    --catalog-image-height: 250px;
     --catalog-card-padding: 12px;
-    --catalog-card-padding-bottom: 8px;
+    --catalog-card-padding-bottom: 2px;
     --catalog-gap: 16px;
     --filters-panel-width: 320px;
 }
@@ -372,13 +372,40 @@
     }
 }
 
+/* Responsive: Fila de acciones en móvil */
+@media (max-width: 767.98px) {
+    .product-actions-row {
+        flex-wrap: wrap;
+    }
+    
+    .product-stepper-wrap {
+        width: auto;
+        max-width: none;
+        min-width: 120px;
+        flex: 0 0 auto;
+    }
+    
+    .product-add-wrap {
+        width: 100%;
+        flex: 0 0 100%;
+        justify-content: stretch;
+        margin-top: 8px;
+        min-width: 0;
+    }
+    
+    .product-add-wrap .btn-add-product {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
 /* Card de producto - Compacta y optimizada con altura fija */
 .product-card {
     background: white;
     border-radius: var(--radius-md);
     box-shadow: var(--shadow);
     border: 1px solid var(--gray-200);
-    overflow: visible;
+    overflow: hidden;
     transition: all var(--transition);
     display: flex;
     flex-direction: column;
@@ -392,8 +419,14 @@
     box-sizing: border-box;
 }
 
-/* Asegurar que el contenido de la card no tenga overflow hidden */
-.product-card > * {
+/* Asegurar que el contenido de la card no se corte */
+.product-card > .product-card-content {
+    overflow: visible;
+}
+
+/* Permitir overflow visible solo para el badge overlay */
+.product-image-container {
+    position: relative;
     overflow: visible;
 }
 
@@ -409,7 +442,7 @@
 
 /* Contenido de la card (orden específico) */
 .product-card-content {
-    padding: var(--catalog-card-padding) var(--catalog-card-padding) var(--catalog-card-padding-bottom) var(--catalog-card-padding);
+    padding: var(--catalog-card-padding) var(--catalog-card-padding) 1rem var(--catalog-card-padding);
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -418,6 +451,8 @@
     overflow: visible;
     box-sizing: border-box;
     width: 100%;
+    min-height: unset;
+    justify-content: flex-start;
 }
 
 /* (a) Nombre del producto */
@@ -437,13 +472,34 @@
     flex-shrink: 0;
 }
 
-/* (b) Referencia/ID del producto */
+/* (c) Fila de precio (izq) + referencia (der) */
+.product-meta-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-shrink: 0;
+    margin: 2px 0 4px 0;
+    width: 100%;
+}
+
+/* Precio destacado estilo Amazon */
+.product-price-section {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    flex-shrink: 0;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+/* Referencia/ID del producto (a la derecha del precio) */
 .product-reference {
     display: flex;
     align-items: center;
     gap: 4px;
     flex-shrink: 0;
-    margin: 2px 0;
+    white-space: nowrap;
 }
 
 .product-ref-label {
@@ -457,20 +513,9 @@
 .product-ref-value {
     font-size: 11px;
     font-weight: 600;
-    color: var(--gray-700);
+    color: var(--gray-600);
     font-family: var(--font-mono);
     letter-spacing: 0.5px;
-}
-
-/* (c) Precio destacado estilo Amazon */
-.product-price-section {
-    display: flex;
-    flex-direction: row;
-    align-items: baseline;
-    flex-shrink: 0;
-    margin: 2px 0 4px 0;
-    gap: 4px;
-    flex-wrap: wrap;
 }
 
 .product-price-main {
@@ -535,7 +580,8 @@
     flex-shrink: 0;
     overflow: hidden;
     border-radius: var(--radius);
-    margin: 4px 0 4px 0;
+    margin: 4px 0 0 0;
+    margin-bottom: 0;
     position: relative;
 }
 
@@ -597,20 +643,85 @@
     font-size: 40px;
 }
 
-/* (e) Selector de cantidad - Compacto */
+/* (e) Contenedor de acciones: Stepper y Botón en columna siempre */
+/* Layout ahora manejado con clases Tailwind en el template */
+/* Implementación de utilidades Tailwind usadas en el template */
+
+/* Clases de utilidad Tailwind */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-row { flex-direction: row; }
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.mt-4 { margin-top: 1rem; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.rounded-lg { border-radius: var(--radius-md); }
+.border { border: 1px solid var(--gray-300); }
+.px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.text-white { color: white; }
+.bg-blue-600 { background-color: #2563eb; }
+.hover\:bg-blue-700:hover { background-color: #1d4ed8; }
+.overflow-hidden { overflow: hidden; }
+
+/* max-w-[240px] - Ancho máximo de 240px */
+.max-w-\[240px\] {
+    max-width: 240px;
+}
+
+/* Contenedor de acciones - Siempre en columna */
+.mt-3.w-full.flex.flex-col.items-center.gap-2 {
+    margin-top: 0.75rem;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    overflow: visible;
+}
+
+/* Clases de utilidad adicionales */
+.mt-3 { margin-top: 0.75rem; }
+.pb-4 { padding-bottom: 1rem; }
+.gap-2 { gap: 0.5rem; }
+.h-10 { height: 2.5rem; }
+.h-8 { height: 2rem; }
+.w-8 { width: 2rem; }
+.w-10 { width: 2.5rem; }
+.text-sm { font-size: 0.875rem; }
+.whitespace-nowrap { white-space: nowrap; }
+.max-w-\[260px\] { max-width: 260px; }
+
+/* Selector de cantidad - ahora es el contenedor directo con clases Tailwind */
+/* Clases: w-full max-w-[260px] h-10 flex items-center justify-between rounded-lg border px-2 */
 .product-quantity-selector {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 2px;
-    margin-bottom: 4px;
+    justify-content: space-between;
+    gap: 6px;
+    margin: 0;
+    width: 100%;
+    max-width: 260px;
+    height: 2.5rem;
+    box-sizing: border-box;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    padding: 0 0.5rem;
+    background: white;
+    overflow: visible;
+    min-width: 0;
     flex-shrink: 0;
 }
 
 .qty-btn {
-    width: 32px;
-    height: 32px;
+    width: 2rem;
+    height: 2rem;
     border: 1px solid var(--gray-300);
     background: white;
     border-radius: var(--radius);
@@ -622,7 +733,20 @@
     color: var(--gray-700);
     font-size: 14px;
     flex-shrink: 0;
-    min-width: 32px;
+    flex-grow: 0;
+    min-width: 2rem;
+    max-width: 2rem;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* Botones con clases h-8 w-8 */
+.h-8.w-8.qty-btn {
+    height: 2rem;
+    width: 2rem;
+    min-width: 2rem;
+    max-width: 2rem;
 }
 
 .qty-btn:hover {
@@ -641,19 +765,26 @@
 }
 
 .qty-input {
-    flex: 1;
+    flex: 0 0 auto;
     text-align: center;
-    border: 1px solid var(--gray-300);
-    border-radius: var(--radius);
-    padding: 6px 4px;
-    font-size: 14px;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.875rem;
     font-weight: 600;
     color: var(--gray-900);
-    background: var(--gray-50);
-    min-width: 45px;
-    max-width: 65px;
-    height: 32px;
+    background: transparent;
+    width: 2.5rem;
+    height: auto;
     box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+/* Input con clases w-10 text-center text-sm */
+.w-10.text-center.text-sm.qty-input {
+    width: 2.5rem;
+    text-align: center;
+    font-size: 0.875rem;
 }
 
 .qty-input:focus {
@@ -662,26 +793,61 @@
     box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1);
 }
 
-/* (f) Botón Añadir - Full width, siempre visible, fijo al final */
-.btn-add-product {
-    width: 100% !important;
-    min-width: 100% !important;
-    max-width: 100% !important;
+/* (f) Botón Añadir - Dentro del wrapper, ocupa el espacio disponible sin recorte */
+/* Estilos para el botón Añadir con las nuevas clases Tailwind */
+/* El botón ahora tiene clases: w-full max-w-[260px] h-10 flex items-center justify-center gap-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 whitespace-nowrap */
+button.btn-add-product.w-full {
+    width: 100%;
+    max-width: 260px;
+    height: 2.5rem;
+    min-width: 0;
+    padding: 0 1rem;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-md);
+    background-color: #2563eb; /* bg-blue-600 */
+    color: white;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: visible;
+    flex-shrink: 0;
+}
+
+button.btn-add-product.w-full:hover {
+    background-color: #1d4ed8; /* hover:bg-blue-700 */
+}
+
+/* Estilos legacy para compatibilidad */
+.product-add-wrap .btn-add-product {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     padding: 8px 16px !important;
     font-size: 14px !important;
     font-weight: 600 !important;
     margin: 0 !important;
-    flex-shrink: 0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     gap: 6px !important;
-    min-height: 38px !important;
-    max-height: 38px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    max-height: 32px !important;
     box-sizing: border-box !important;
     white-space: nowrap !important;
     overflow: visible !important;
+    text-overflow: clip !important;
     border-radius: var(--radius) !important;
+    position: relative !important;
+    float: none !important;
+    transform: none !important;
 }
 
 /* Feedback de carrito ELIMINADO - ahora se usa badge overlay en imagen */

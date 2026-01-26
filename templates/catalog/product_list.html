@@ -138,13 +138,13 @@
         <div class="products-grid" id="productsGrid">
                 {% if products %}
                     {% for product in products %}
-                    <div class="product-card" 
+                    <div class="product-card flex flex-col h-full overflow-hidden" 
                          data-product-id="{{ product.pk }}" 
                          data-product-price="{{ product.price }}"
                          data-product-type="{% cycle 'charcuteria' 'curados' 'ibericos' 'jamon-cocido' 'jamon-curado' 'pavo-pollo' 'platos-preparados' 'salchichas' %}"
                          data-product-features="{% cycle 'sin-lactosa,sin-conservantes' 'natural' 'sin-colorantes' 'sin-azucares' 'bajo-carbohidratos' 'apto-diabeticos' 'natural,sin-lactosa' '' %}">
                         <!-- Contenido de la card (orden específico) -->
-                        <div class="product-card-content">
+                        <div class="product-card-content flex flex-col h-full pb-4">
                             <!-- (a) Nombre del producto -->
                             <h3 class="product-name">
                                 {% if lang == 'zh-hans' %}
@@ -154,18 +154,19 @@
                                 {% endif %}
                             </h3>
                             
-                            <!-- (b) Referencia/ID del producto -->
-                            <div class="product-reference">
-                                <span class="product-ref-label">{% trans "Ref:" %}</span>
-                                <span class="product-ref-value">P{{ product.pk|stringformat:"06d" }}</span>
-                            </div>
-                            
-                            <!-- (c) Precio destacado estilo Amazon + unidad/gramos -->
-                            <div class="product-price-section">
-                                <div class="product-price-main" data-price="{{ product.price }}">
-                                    <span class="price-full">{{ product.price|floatformat:2 }}</span>
-                                    <span class="price-cur">€</span>
-                                    <span class="price-unit">/ {% cycle '150 g' '200 g' '100 g' '250 g' '300 g' '180 g' '120 g' '160 g' %}</span>
+                            <!-- (c) Fila de precio (izq) + referencia (der) -->
+                            <div class="product-meta-row">
+                                <div class="product-price-section">
+                                    <div class="product-price-main" data-price="{{ product.price }}">
+                                        <span class="price-full">{{ product.price|floatformat:2 }}</span>
+                                        <span class="price-cur">€</span>
+                                        <span class="price-unit">/ {% cycle '150 g' '200 g' '100 g' '250 g' '300 g' '180 g' '120 g' '160 g' %}</span>
+                                    </div>
+                                </div>
+                                <!-- Referencia a la derecha -->
+                                <div class="product-reference">
+                                    <span class="product-ref-label">{% trans "REF:" %}</span>
+                                    <span class="product-ref-value">P{{ product.pk|stringformat:"05d" }}</span>
                                 </div>
                             </div>
                             
@@ -186,26 +187,26 @@
                                 </div>
                             </div>
                             
-                            <!-- (e) Bloque compacto: Stepper + Botón Añadir -->
-                            <div class="product-card-footer">
-                                <!-- Stepper de cantidad -->
-                                <div class="product-quantity-selector">
-                                    <button type="button" class="qty-btn qty-minus" data-product-id="{{ product.pk }}" aria-label="{% trans 'Reducir cantidad' %}">
+                            <!-- (e) Contenedor de acciones: Stepper centrado arriba, Botón Añadir centrado abajo -->
+                            <div class="mt-3 w-full flex flex-col items-center gap-2">
+                                <!-- Stepper centrado -->
+                                <div class="w-full max-w-[260px] h-10 flex items-center justify-between rounded-lg border px-2 product-quantity-selector">
+                                    <button type="button" class="h-8 w-8 flex items-center justify-center rounded-md border qty-btn qty-minus" data-product-id="{{ product.pk }}" aria-label="{% trans 'Reducir cantidad' %}">
                                         <i class="bi bi-dash"></i>
                                     </button>
                                     <input type="number" 
-                                           class="qty-input" 
+                                           class="w-10 text-center text-sm qty-input" 
                                            data-product-id="{{ product.pk }}"
                                            value="0" 
                                            min="0" 
                                            readonly>
-                                    <button type="button" class="qty-btn qty-plus" data-product-id="{{ product.pk }}" aria-label="{% trans 'Aumentar cantidad' %}">
+                                    <button type="button" class="h-8 w-8 flex items-center justify-center rounded-md border qty-btn qty-plus" data-product-id="{{ product.pk }}" aria-label="{% trans 'Aumentar cantidad' %}">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
                                 
-                                <!-- Botón Añadir -->
-                                <button type="button" class="btn btn-primary btn-add-product" data-product-id="{{ product.pk }}">
+                                <!-- Botón Añadir centrado -->
+                                <button type="button" class="w-full max-w-[260px] h-10 flex items-center justify-center gap-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 whitespace-nowrap btn-add-product" data-product-id="{{ product.pk }}">
                                     <i class="bi bi-cart-plus"></i> {% trans "Añadir" %}
                                 </button>
                             </div>
