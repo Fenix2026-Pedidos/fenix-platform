@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Ajustar Stock" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3>{% translate "Ajustar Stock" %}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>{{ product.name_es }}</strong><br>
+                        <small>{{ product.name_zh_hans }}</small><br>
+                        <strong>{% translate "Stock actual" %}:</strong> {{ product.stock_available }}
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.adjustment.id_for_label }}" class="form-label">{{ form.adjustment.label }}</label>
+                            {{ form.adjustment }}
+                            <small class="form-text text-muted">{{ form.adjustment.help_text }}</small>
+                            {% if form.adjustment.errors %}
+                                <div class="text-danger">{{ form.adjustment.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.notes.id_for_label }}" class="form-label">{{ form.notes.label }}</label>
+                            {{ form.notes }}
+                            {% if form.notes.errors %}
+                                <div class="text-danger">{{ form.notes.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'catalog:product_manage_detail' product.pk %}" class="btn btn-secondary">
+                                {% translate "Cancelar" %}
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                {% translate "Actualizar Stock" %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

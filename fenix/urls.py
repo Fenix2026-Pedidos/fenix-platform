@@ -13,6 +13,8 @@ urlpatterns = [
     path('', include('catalog.urls')),
     path('orders/', include('orders.urls')),
     path('accounts/', include('accounts.urls')),
+    path('recurring/', include('recurring.urls')),
+    path('', include('whatsapp.urls')),  # WhatsApp API endpoints
 ]
 
 # Servir archivos media en desarrollo

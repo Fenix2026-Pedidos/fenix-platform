@@ -1,0 +1,307 @@
+/* ============================================
+   WhatsApp FAB (Floating Action Button)
+   ============================================ */
+
+/* Contenedor del FAB */
+#whatsapp-fab-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1000;
+}
+
+/* Botón flotante WhatsApp */
+#whatsapp-fab {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background-color: #25D366;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+    transition: all 0.3s ease;
+    padding: 0;
+    margin: 0;
+}
+
+#whatsapp-fab:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
+}
+
+#whatsapp-fab:active {
+    transform: scale(0.95);
+}
+
+#whatsapp-fab svg {
+    width: 28px;
+    height: 28px;
+}
+
+/* Responsive: tamaño más pequeño en móvil */
+@media (max-width: 640px) {
+    #whatsapp-fab-container {
+        bottom: 20px;
+        right: 20px;
+    }
+
+    #whatsapp-fab {
+        width: 48px;
+        height: 48px;
+    }
+
+    #whatsapp-fab svg {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+/* ============================================
+   Modal de contacto WhatsApp
+   ============================================ */
+
+.whatsapp-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.whatsapp-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.whatsapp-modal-content {
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    z-index: 2001;
+    animation: whatsapp-modal-fade-in 0.3s ease;
+}
+
+@keyframes whatsapp-modal-fade-in {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.whatsapp-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--gray-200, #e5e7eb);
+}
+
+.whatsapp-modal-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gray-900, #111827);
+}
+
+.whatsapp-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--gray-500, #6b7280);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+}
+
+.whatsapp-modal-close:hover {
+    color: var(--gray-900, #111827);
+    background-color: var(--gray-100, #f3f4f6);
+}
+
+/* Formulario */
+#whatsapp-contact-form {
+    padding: 24px;
+}
+
+.whatsapp-form-group {
+    margin-bottom: 20px;
+}
+
+.whatsapp-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-700, #374151);
+}
+
+.whatsapp-form-group input,
+.whatsapp-form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--gray-300, #d1d5db);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+.whatsapp-form-group input:focus,
+.whatsapp-form-group textarea:focus {
+    outline: none;
+    border-color: #25D366;
+    box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.1);
+}
+
+.whatsapp-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.whatsapp-form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.whatsapp-btn-cancel,
+.whatsapp-btn-submit {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.whatsapp-btn-cancel {
+    background-color: var(--gray-100, #f3f4f6);
+    color: var(--gray-700, #374151);
+}
+
+.whatsapp-btn-cancel:hover {
+    background-color: var(--gray-200, #e5e7eb);
+}
+
+.whatsapp-btn-submit {
+    background-color: #25D366;
+    color: white;
+}
+
+.whatsapp-btn-submit:hover:not(:disabled) {
+    background-color: #20ba5a;
+}
+
+.whatsapp-btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.whatsapp-btn-spinner {
+    animation: whatsapp-spin 1s linear infinite;
+}
+
+@keyframes whatsapp-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ============================================
+   Toast de notificaciones
+   ============================================ */
+
+.whatsapp-toast {
+    position: fixed;
+    bottom: 100px;
+    right: 24px;
+    background: white;
+    padding: 16px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 3000;
+    min-width: 280px;
+    max-width: 400px;
+    animation: whatsapp-toast-slide-in 0.3s ease;
+}
+
+@keyframes whatsapp-toast-slide-in {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.whatsapp-toast-success {
+    border-left: 4px solid #25D366;
+}
+
+.whatsapp-toast-error {
+    border-left: 4px solid #ef4444;
+}
+
+.whatsapp-toast #whatsapp-toast-message {
+    font-size: 14px;
+    color: var(--gray-900, #111827);
+    line-height: 1.5;
+}
+
+/* Responsive: ajustes para móvil */
+@media (max-width: 640px) {
+    .whatsapp-modal-content {
+        width: 95%;
+        margin: 20px;
+    }
+
+    .whatsapp-modal-header,
+    #whatsapp-contact-form {
+        padding: 16px;
+    }
+
+    .whatsapp-toast {
+        right: 12px;
+        left: 12px;
+        min-width: auto;
+        max-width: none;
+    }
+}

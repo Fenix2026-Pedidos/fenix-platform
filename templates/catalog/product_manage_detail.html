@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ product.name_es }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{% translate "Detalle del Producto" %}</h2>
+        <div>
+            <a href="{% url 'catalog:product_edit' product.pk %}" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> {% translate "Editar" %}
+            </a>
+            <a href="{% url 'catalog:product_stock_update' product.pk %}" class="btn btn-primary">
+                <i class="bi bi-box-seam"></i> {% translate "Ajustar Stock" %}
+            </a>
+            <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-danger">
+                <i class="bi bi-trash"></i> {% translate "Desactivar" %}
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name_es }}">
+            {% else %}
+                <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 300px;">
+                    <i class="bi bi-image" style="font-size: 4rem;"></i>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th width="30%">ID:</th>
+                            <td>{{ product.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>{% translate "Nombre" %} (ES):</th>
+                            <td><strong>{{ product.name_es }}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>{% translate "Nombre" %} (中文):</th>
+                            <td><strong>{{ product.name_zh_hans }}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>{% translate "Precio" %}:</th>
+                            <td class="h4">${{ product.price }}</td>
+                        </tr>
+                        <tr>
+                            <th>{% translate "Stock Disponible" %}:</th>
+                            <td>
+                                <span class="h5">{{ product.stock_available }}</span>
+                                {% if product.stock_status == 'ok' %}
+                                    <span class="badge bg-success ms-2">{% translate "OK" %}</span>
+                                {% elif product.stock_status == 'low' %}
+                                    <span class="badge bg-warning ms-2">{% translate "Bajo" %}</span>
+                                {% else %}
+                                    <span class="badge bg-danger ms-2">{% translate "Agotado" %}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>{% translate "Stock Mínimo" %}:</th>
+                            <td>{{ product.stock_min_threshold }}</td>
+                        </tr>
+                        <tr>
+                            <th>{% translate "Estado" %}:</th>
+                            <td>
+                                {% if product.is_active %}
+                                    <span class="badge bg-success">{% translate "Activo" %}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{% translate "Inactivo" %}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>{% translate "Creado" %}:</th>
+                            <td>{{ product.created_at }}</td>
+                        </tr>
+                    </table>
+
+                    <hr>
+                    
+                    <h5>{% translate "Descripción" %} (ES):</h5>
+                    <p>{{ product.description_es|default:"—" }}</p>
+
+                    <h5>{% translate "Descripción" %} (中文):</h5>
+                    <p>{{ product.description_zh_hans|default:"—" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a href="{% url 'catalog:product_manage_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> {% translate "Volver a la lista" %}
+        </a>
+    </div>
+</div>
+{% endblock %}

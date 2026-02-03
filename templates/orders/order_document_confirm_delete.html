@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Eliminar Documento" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3>{% translate "Eliminar Documento" %}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        {% translate "¿Estás seguro de que deseas eliminar este documento?" %}
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>{% translate "Pedido" %}:</strong> #{{ order.id }}<br>
+                        <strong>{% translate "Documento" %}:</strong> {{ document.title }}<br>
+                        <strong>{% translate "Tipo" %}:</strong> {{ document.get_document_type_display }}<br>
+                        <strong>{% translate "Archivo" %}:</strong> {{ document.file.name }}
+                    </div>
+
+                    <p class="text-muted">
+                        {% translate "Esta acción es permanente y no se puede deshacer. El archivo será eliminado del servidor." %}
+                    </p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'orders:order_detail' order.pk %}" class="btn btn-secondary">
+                                {% translate "Cancelar" %}
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                {% translate "Sí, eliminar" %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

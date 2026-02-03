@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Mis Pedidos Recurrentes" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{% translate "Mis Pedidos Recurrentes" %}</h2>
+        <a href="{% url 'orders:cart' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> {% translate "Nuevo Pedido Recurrente" %}
+        </a>
+    </div>
+
+    {% if recurring_orders %}
+        <div class="row">
+            {% for recurring_order in recurring_orders %}
+            <div class="col-md-6 mb-4">
+                <div class="card {% if not recurring_order.is_active %}border-secondary{% endif %}">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            {% translate "Pedido Recurrente" %} #{{ recurring_order.id }}
+                        </h5>
+                        {% if recurring_order.is_active %}
+                            <span class="badge bg-success">{% translate "Activo" %}</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{% translate "Inactivo" %}</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <p><strong>{% translate "Frecuencia" %}:</strong> {{ recurring_order.get_frequency_display }}</p>
+                        <p><strong>{% translate "Inicio" %}:</strong> {{ recurring_order.start_date }}</p>
+                        {% if recurring_order.end_date %}
+                            <p><strong>{% translate "Fin" %}:</strong> {{ recurring_order.end_date }}</p>
+                        {% endif %}
+                        {% if recurring_order.next_run_at %}
+                            <p><strong>{% translate "Próximo pedido" %}:</strong> {{ recurring_order.next_run_at|date:"d/m/Y H:i" }}</p>
+                        {% endif %}
+                        
+                        <hr>
+                        
+                        <h6>{% translate "Productos" %}:</h6>
+                        <ul class="list-unstyled">
+                            {% for item in recurring_order.items.all %}
+                                <li>{{ item.product_name_es }} × {{ item.quantity }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'recurring:recurring_order_detail' recurring_order.pk %}" class="btn btn-sm btn-info">
+                            <i class="bi bi-eye"></i> {% translate "Ver Detalle" %}
+                        </a>
+                        <a href="{% url 'recurring:recurring_order_toggle' recurring_order.pk %}" class="btn btn-sm btn-warning">
+                            {% if recurring_order.is_active %}
+                                <i class="bi bi-pause"></i> {% translate "Desactivar" %}
+                            {% else %}
+                                <i class="bi bi-play"></i> {% translate "Activar" %}
+                            {% endif %}
+                        </a>
+                        <a href="{% url 'recurring:recurring_order_delete' recurring_order.pk %}" class="btn btn-sm btn-danger">
+                            <i class="bi bi-trash"></i> {% translate "Eliminar" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <p>{% translate "No tienes pedidos recurrentes activos." %}</p>
+            <p>{% translate "Agrega productos al carrito y crea un pedido recurrente para automatizar tus compras." %}</p>
+            <a href="{% url 'catalog:product_list' %}" class="btn btn-primary">
+                {% translate "Ver Catálogo" %}
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Gestión de Productos" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{% translate "Gestión de Productos" %}</h2>
+        <a href="{% url 'catalog:product_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> {% translate "Nuevo Producto" %}
+        </a>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">{% translate "Buscar" %}</label>
+                    <input type="text" name="q" class="form-control" value="{{ search_query }}" placeholder="{% translate 'Nombre del producto...' %}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">{% translate "Estado" %}</label>
+                    <select name="status" class="form-select">
+                        <option value="">{% translate "Todos" %}</option>
+                        <option value="active" {% if status_filter == 'active' %}selected{% endif %}>{% translate "Activo" %}</option>
+                        <option value="inactive" {% if status_filter == 'inactive' %}selected{% endif %}>{% translate "Inactivo" %}</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">{% translate "Stock" %}</label>
+                    <select name="stock" class="form-select">
+                        <option value="">{% translate "Todos" %}</option>
+                        <option value="ok" {% if stock_filter == 'ok' %}selected{% endif %}>{% translate "OK" %}</option>
+                        <option value="low" {% if stock_filter == 'low' %}selected{% endif %}>{% translate "Bajo" %}</option>
+                        <option value="out" {% if stock_filter == 'out' %}selected{% endif %}>{% translate "Agotado" %}</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-secondary w-100">{% translate "Filtrar" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de productos -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>{% translate "Producto" %}</th>
+                            <th>{% translate "Precio" %}</th>
+                            <th>{% translate "Stock" %}</th>
+                            <th>{% translate "Estado Stock" %}</th>
+                            <th>{% translate "Activo" %}</th>
+                            <th>{% translate "Acciones" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td>{{ product.id }}</td>
+                            <td>
+                                <strong>{{ product.name_es }}</strong><br>
+                                <small class="text-muted">{{ product.name_zh_hans }}</small>
+                            </td>
+                            <td>${{ product.price }}</td>
+                            <td>{{ product.stock_available }}</td>
+                            <td>
+                                {% if product.stock_status == 'ok' %}
+                                    <span class="badge bg-success">{% translate "OK" %}</span>
+                                {% elif product.stock_status == 'low' %}
+                                    <span class="badge bg-warning">{% translate "Bajo" %}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{% translate "Agotado" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if product.is_active %}
+                                    <span class="badge bg-success">{% translate "Activo" %}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{% translate "Inactivo" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'catalog:product_manage_detail' product.pk %}" class="btn btn-sm btn-info" title="{% translate 'Ver' %}">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{% url 'catalog:product_edit' product.pk %}" class="btn btn-sm btn-warning" title="{% translate 'Editar' %}">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{% url 'catalog:product_stock_update' product.pk %}" class="btn btn-sm btn-primary" title="{% translate 'Stock' %}">
+                                    <i class="bi bi-box-seam"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">
+                                {% translate "No hay productos" %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

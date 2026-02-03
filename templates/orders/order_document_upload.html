@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Subir Documento" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3>{% translate "Subir Documento al Pedido" %}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>{% translate "Pedido" %} #{{ order.id }}</strong><br>
+                        <small>{% translate "Cliente" %}: {{ order.customer.full_name }}</small>
+                    </div>
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.document_type.id_for_label }}" class="form-label">{{ form.document_type.label }}</label>
+                            {{ form.document_type }}
+                            {% if form.document_type.errors %}
+                                <div class="text-danger">{{ form.document_type.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">{{ form.title.label }}</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="text-danger">{{ form.title.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">{{ form.description.label }}</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.file.id_for_label }}" class="form-label">{{ form.file.label }}</label>
+                            {{ form.file }}
+                            {% if form.file.errors %}
+                                <div class="text-danger">{{ form.file.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'orders:order_detail' order.pk %}" class="btn btn-secondary">
+                                {% translate "Cancelar" %}
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                {% translate "Subir Documento" %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -107,23 +107,3 @@
         </script>
     </div>
 </div>
-<!-- CSRF logout fallback -->
-<script>
-(function(){
-  function getCookie(name){ const m=document.cookie.match('(^|;)\\s*'+name+'\\s*=\\s*([^;]+)'); return m ? m.pop() : ''; }
-  document.addEventListener('click', function(e){
-    const btn = e.target.closest('form[action$="/accounts/logout/"] button[type="submit"], form[action$="/accounts/logout/"] input[type="submit"]');
-    if (btn) {
-      const form = btn.form;
-      if (form && !form.querySelector('input[name="csrfmiddlewaretoken"]')) {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'csrfmiddlewaretoken';
-        input.value = getCookie('csrftoken');
-        form.appendChild(input);
-      }
-    }
-  }, true);
-})();
-</script>
-<!-- CSRF logout fallback end -->

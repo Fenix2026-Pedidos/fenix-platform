@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Desactivar Producto" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3>{% translate "Desactivar Producto" %}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        {% translate "¿Estás seguro de que deseas desactivar este producto?" %}
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>{% translate "Producto" %}:</strong><br>
+                        {{ product.name_es }}<br>
+                        <small class="text-muted">{{ product.name_zh_hans }}</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>{% translate "Precio" %}:</strong> ${{ product.price }}
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>{% translate "Stock" %}:</strong> {{ product.stock_available }}
+                    </div>
+
+                    <p class="text-muted">
+                        {% translate "El producto no será visible para los clientes, pero se mantendrá en el sistema." %}
+                    </p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'catalog:product_manage_detail' product.pk %}" class="btn btn-secondary">
+                                {% translate "Cancelar" %}
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                {% translate "Sí, desactivar" %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Pedido Recurrente" %} #{{ recurring_order.id }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{% translate "Pedido Recurrente" %} #{{ recurring_order.id }}</h2>
+        <div>
+            {% if recurring_order.is_active %}
+                <span class="badge bg-success fs-5">{% translate "Activo" %}</span>
+            {% else %}
+                <span class="badge bg-secondary fs-5">{% translate "Inactivo" %}</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>{% translate "Configuración" %}</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th width="40%">{% translate "Frecuencia" %}:</th>
+                            <td>{{ recurring_order.get_frequency_display }}</td>
+                        </tr>
+                        <tr>
+                            <th>{% translate "Fecha de inicio" %}:</th>
+                            <td>{{ recurring_order.start_date }}</td>
+                        </tr>
+                        <tr>
+                            <th>{% translate "Fecha de fin" %}:</th>
+                            <td>{{ recurring_order.end_date|default:"—" }}</td>
+                        </tr>
+                        <tr>
+                            <th>{% translate "Próximo pedido" %}:</th>
+                            <td>
+                                {% if recurring_order.next_run_at %}
+                                    {{ recurring_order.next_run_at|date:"d/m/Y H:i" }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>{% translate "Ventana de entrega" %}:</th>
+                            <td>{{ recurring_order.delivery_window_hours }} {% translate "horas" %}</td>
+                        </tr>
+                        <tr>
+                            <th>{% translate "Creado" %}:</th>
+                            <td>{{ recurring_order.created_at|date:"d/m/Y H:i" }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5>{% translate "Acciones" %}</h5>
+                </div>
+                <div class="card-body d-grid gap-2">
+                    <a href="{% url 'recurring:recurring_order_toggle' recurring_order.pk %}" class="btn btn-warning">
+                        {% if recurring_order.is_active %}
+                            <i class="bi bi-pause"></i> {% translate "Desactivar Pedido Recurrente" %}
+                        {% else %}
+                            <i class="bi bi-play"></i> {% translate "Activar Pedido Recurrente" %}
+                        {% endif %}
+                    </a>
+                    <a href="{% url 'recurring:recurring_order_delete' recurring_order.pk %}" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> {% translate "Eliminar Pedido Recurrente" %}
+                    </a>
+                    <a href="{% url 'recurring:recurring_order_list' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> {% translate "Volver a la lista" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{% translate "Productos" %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for item in items %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ item.product_name_es }}</strong><br>
+                                    <small class="text-muted">{{ item.product_name_zh_hans }}</small>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">× {{ item.quantity }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

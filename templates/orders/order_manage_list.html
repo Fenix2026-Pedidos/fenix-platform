@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Gestión de Pedidos" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{% translate "Gestión de Pedidos" %}</h2>
+        <a href="{% url 'orders:order_dashboard' %}" class="btn btn-info">
+            <i class="bi bi-speedometer2"></i> {% translate "Dashboard" %}
+        </a>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">{% translate "Buscar cliente" %}</label>
+                    <input type="text" name="q" class="form-control" value="{{ search_query }}" placeholder="{% translate 'Email o nombre...' %}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">{% translate "Estado" %}</label>
+                    <select name="status" class="form-select">
+                        <option value="">{% translate "Todos" %}</option>
+                        {% for value, label in status_choices %}
+                            <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-secondary w-100">{% translate "Filtrar" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de pedidos -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>{% translate "Cliente" %}</th>
+                            <th>{% translate "Estado" %}</th>
+                            <th>{% translate "Total" %}</th>
+                            <th>{% translate "ETA" %}</th>
+                            <th>{% translate "Fecha" %}</th>
+                            <th>{% translate "Acciones" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>
+                                <strong>{{ order.customer.full_name }}</strong><br>
+                                <small class="text-muted">{{ order.customer.email }}</small>
+                            </td>
+                            <td>
+                                {% if order.status == 'new' %}
+                                    <span class="badge bg-primary">{{ order.get_status_display }}</span>
+                                {% elif order.status == 'confirmed' %}
+                                    <span class="badge bg-info">{{ order.get_status_display }}</span>
+                                {% elif order.status == 'preparing' %}
+                                    <span class="badge bg-warning">{{ order.get_status_display }}</span>
+                                {% elif order.status == 'out_for_delivery' %}
+                                    <span class="badge bg-secondary">{{ order.get_status_display }}</span>
+                                {% elif order.status == 'delivered' %}
+                                    <span class="badge bg-success">{{ order.get_status_display }}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{ order.get_status_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>${{ order.total_amount }}</td>
+                            <td>
+                                {% if order.eta_start %}
+                                    <small>{{ order.eta_start|date:"d/m H:i" }}</small>
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ order.created_at|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                <a href="{% url 'orders:order_detail' order.pk %}" class="btn btn-sm btn-info" title="{% translate 'Ver' %}">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{% url 'orders:order_update_status' order.pk %}" class="btn btn-sm btn-warning" title="{% translate 'Estado' %}">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                </a>
+                                <a href="{% url 'orders:order_update_eta' order.pk %}" class="btn btn-sm btn-primary" title="{% translate 'ETA' %}">
+                                    <i class="bi bi-clock"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">
+                                {% translate "No hay pedidos" %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

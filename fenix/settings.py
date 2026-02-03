@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'recurring',
     'notifications',
     'core',  # Configuración global de plataforma
+    'whatsapp',  # Integración WhatsApp Business Cloud API
 ]
 
 MIDDLEWARE = [
