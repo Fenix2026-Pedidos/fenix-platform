@@ -1,0 +1,693 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Gestión de Usuarios" %}{% endblock %}
+{% block title %}{% trans "Gestión de Usuarios" %} - Fenix{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Contenedor principal compacto */
+.content-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 16px;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 0;
+}
+
+/* Tabs compactos y profesionales */
+.tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--gray-200);
+    margin-bottom: 16px;
+}
+
+.tab {
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-600);
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tab:hover {
+    color: var(--primary);
+    background: var(--gray-50);
+}
+
+.tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.tab .badge {
+    background: var(--danger);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+/* Barra de filtros en una sola fila */
+.filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    align-items: center;
+}
+
+.filter-bar input[type="text"] {
+    flex: 1;
+    padding: 6px 12px;
+    border: 1px solid var(--gray-300);
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.filter-bar select {
+    padding: 6px 12px;
+    border: 1px solid var(--gray-300);
+    border-radius: 4px;
+    font-size: 13px;
+    min-width: 160px;
+}
+
+/* Cards */
+.card {
+    background: white;
+    border-radius: 6px;
+    border: 1px solid var(--gray-200);
+    overflow: hidden;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+/* Tabla compacta y profesional */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.table thead {
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.table th {
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--gray-700);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.table tbody tr:hover {
+    background: var(--gray-50);
+}
+
+.table td {
+    padding: 10px 12px;
+    color: var(--gray-700);
+}
+
+/* Celda de usuario con email y nombre apilados */
+.user-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.user-email {
+    font-weight: 600;
+    color: var(--gray-900);
+    font-size: 13px;
+}
+
+.user-name {
+    font-size: 12px;
+    color: var(--gray-600);
+}
+
+/* Badges compactos y profesionales */
+.status-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.status-badge.role-badge {
+    background: var(--gray-100);
+    color: var(--gray-700);
+}
+
+.status-badge.active {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-badge.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge.inactive {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* Iconos de estado */
+.icon-check {
+    color: var(--success);
+    font-size: 16px;
+}
+
+.icon-x {
+    color: var(--danger);
+    font-size: 16px;
+}
+
+/* Botones de acción como iconos */
+.action-buttons {
+    display: flex;
+    gap: 4px;
+    justify-content: flex-end;
+}
+
+.btn-icon {
+    padding: 4px 8px;
+    font-size: 14px;
+    border: 1px solid var(--gray-300);
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--gray-600);
+}
+
+.btn-icon:hover {
+    background: var(--gray-100);
+    border-color: var(--gray-400);
+}
+
+.btn-icon.btn-edit:hover {
+    background: #dbeafe;
+    border-color: #3b82f6;
+    color: #1e40af;
+}
+
+.btn-icon.btn-delete:hover {
+    background: #fee2e2;
+    border-color: #ef4444;
+    color: #991b1b;
+}
+
+.btn-icon.btn-approve:hover {
+    background: #d1fae5;
+    border-color: #10b981;
+    color: #065f46;
+}
+
+.btn-icon:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.no-permission {
+    font-size: 11px;
+    color: var(--gray-500);
+    font-style: italic;
+}
+
+/* Formulario de edición inline */
+.edit-form-row {
+    display: none;
+}
+
+.edit-form-row.active {
+    display: table-row;
+}
+
+.edit-form {
+    background: var(--gray-50);
+    padding: 12px;
+    border-radius: 4px;
+}
+
+.edit-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.edit-form label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray-600);
+    display: block;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.edit-form input,
+.edit-form select {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid var(--gray-300);
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.edit-form-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Botones estándar */
+.btn {
+    padding: 6px 12px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.btn-secondary {
+    background: var(--gray-200);
+    color: var(--gray-700);
+}
+
+.btn-secondary:hover {
+    background: var(--gray-300);
+}
+
+/* Estado vacío */
+.empty-state {
+    text-align: center;
+    padding: 48px 24px;
+}
+
+.empty-state i {
+    font-size: 48px;
+    color: var(--gray-400);
+    margin-bottom: 12px;
+}
+
+.empty-state p {
+    color: var(--gray-600);
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Tabs content */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="page-header">
+        <h1 class="page-title">{% trans "Gestión de Usuarios" %}</h1>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab {% if active_tab == 'registered' %}active{% endif %}" onclick="switchTab('registered')">
+            <i class="bi bi-people"></i>
+            <span>{% trans "Usuarios Registrados" %}</span>
+            <span style="color: var(--gray-400); font-weight: normal;">({{ registered_users.count }})</span>
+        </button>
+        <button class="tab {% if active_tab == 'new_users' %}active{% endif %}" onclick="switchTab('new_users')">
+            <i class="bi bi-person-plus"></i>
+            <span>{% trans "Nuevos Usuarios" %}</span>
+            {% if pending_new_users.count > 0 %}
+            <span class="badge">{{ pending_new_users.count }}</span>
+            {% else %}
+            <span style="color: var(--gray-400); font-weight: normal;">(0)</span>
+            {% endif %}
+        </button>
+    </div>
+
+    <!-- TAB 1: Usuarios Registrados -->
+    <div id="tab-registered" class="tab-content {% if active_tab == 'registered' %}active{% endif %}">
+        <!-- Filtros en una fila -->
+        <form method="get" class="filter-bar">
+            <input type="hidden" name="tab" value="registered">
+            
+            <input type="text" 
+                   name="search" 
+                   placeholder="Buscar email, nombre o empresa..." 
+                   value="{{ search_query }}">
+            
+            <select name="status">
+                <option value="">{% trans "Todos los estados" %}</option>
+                {% for value, label in status_choices %}
+                <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                    {{ label }}
+                </option>
+                {% endfor %}
+            </select>
+            
+            <button type="submit" class="btn btn-secondary">
+                <i class="bi bi-search"></i> {% trans "Filtrar" %}
+            </button>
+            
+            {% if search_query or status_filter %}
+            <a href="?tab=registered" class="btn btn-secondary">
+                <i class="bi bi-x"></i>
+            </a>
+            {% endif %}
+        </form>
+
+        {% if registered_users %}
+        <div class="card">
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Usuario" %}</th>
+                            <th>{% trans "Empresa" %}</th>
+                            <th>{% trans "Rol" %}</th>
+                            <th>{% trans "Estado" %}</th>
+                            <th style="text-align: center; width: 60px;">
+                                <i class="bi bi-envelope-check" title="{% trans 'Email Verificado' %}"></i>
+                            </th>
+                            <th style="width: 100px;">{% trans "Fecha" %}</th>
+                            <th style="text-align: right; width: 100px;">{% trans "Acciones" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in registered_users %}
+                        {# RBAC: Ocultar super_admin si el usuario logado NO es super_admin #}
+                        {% if user.role != 'super_admin' or user_is_super_admin %}
+                        <tr id="user-row-{{ user.id }}">
+                            <td>
+                                <div class="user-cell">
+                                    <span class="user-email">{{ user.email }}</span>
+                                    <span class="user-name">{{ user.full_name }}</span>
+                                </div>
+                            </td>
+                            <td>{{ user.company|default:"-" }}</td>
+                            <td>
+                                <span class="status-badge role-badge">
+                                    {{ user.get_role_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="status-badge {{ user.get_status_display_class }}">
+                                    {{ user.get_status_display }}
+                                </span>
+                            </td>
+                            <td style="text-align: center;">
+                                {% if user.email_verified %}
+                                <i class="bi bi-check-circle-fill icon-check"></i>
+                                {% else %}
+                                <i class="bi bi-x-circle-fill icon-x"></i>
+                                {% endif %}
+                            </td>
+                            <td>{{ user.date_joined|date:"d/m/Y" }}</td>
+                            <td>
+                                {# RBAC: ADMIN no puede editar/eliminar SUPER_ADMIN #}
+                                {% if user.role == 'super_admin' and not user_is_super_admin %}
+                                    <span class="no-permission">{% trans "Sin permisos" %}</span>
+                                {% else %}
+                                    <div class="action-buttons">
+                                        <button onclick="toggleEdit({{ user.id }})" class="btn-icon btn-edit" title="{% trans 'Editar' %}">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        {% if user.id != request.user.id %}
+                                        <button onclick="confirmDelete({{ user.id }}, '{{ user.email }}')" class="btn-icon btn-delete" title="{% trans 'Eliminar' %}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr id="edit-form-{{ user.id }}" class="edit-form-row">
+                            <td colspan="7">
+                                <div class="edit-form">
+                                    <form method="post" action="{% url 'accounts:user_update' user.id %}">
+                                        {% csrf_token %}
+                                        <div class="edit-form-grid">
+                                            <div>
+                                                <label>{% trans "Nombre completo" %}</label>
+                                                <input type="text" name="full_name" value="{{ user.full_name }}" required>
+                                            </div>
+                                            <div>
+                                                <label>{% trans "Empresa" %}</label>
+                                                <input type="text" name="company" value="{{ user.company }}">
+                                            </div>
+                                            <div>
+                                                <label>{% trans "Rol" %}</label>
+                                                <select name="role" {% if not user_is_super_admin and user.role == 'super_admin' %}disabled{% endif %}>
+                                                    {% for role_value, role_label in available_role_choices %}
+                                                    <option value="{{ role_value }}" {% if user.role == role_value %}selected{% endif %}>
+                                                        {{ role_label }}
+                                                    </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label>{% trans "Estado" %}</label>
+                                                <select name="status">
+                                                    {% for value, label in status_choices %}
+                                                    <option value="{{ value }}" {% if user.status == value %}selected{% endif %}>
+                                                        {{ label }}
+                                                    </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label>
+                                                    <input type="checkbox" name="email_verified" {% if user.email_verified %}checked{% endif %}>
+                                                    {% trans "Email verificado" %}
+                                                </label>
+                                            </div>
+                                            <div>
+                                                <label>
+                                                    <input type="checkbox" name="is_active" {% if user.is_active %}checked{% endif %}>
+                                                    {% trans "Acceso activo" %}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="edit-form-actions">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-check-circle"></i> {% trans "Guardar" %}
+                                            </button>
+                                            <button type="button" onclick="toggleEdit({{ user.id }})" class="btn btn-secondary">
+                                                <i class="bi bi-x-circle"></i> {% trans "Cancelar" %}
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <p>{% trans "No hay usuarios registrados" %}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- TAB 2: Nuevos Usuarios (Solicitudes Pendientes) -->
+    <div id="tab-new_users" class="tab-content {% if active_tab == 'new_users' %}active{% endif %}">
+        {% if pending_new_users %}
+        <div class="card">
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Usuario" %}</th>
+                            <th>{% trans "Empresa" %}</th>
+                            <th>{% trans "Rol" %}</th>
+                            <th style="text-align: center; width: 60px;">
+                                <i class="bi bi-envelope-check" title="{% trans 'Email Verificado' %}"></i>
+                            </th>
+                            <th style="width: 150px;">{% trans "Fecha" %}</th>
+                            <th style="text-align: right; width: 100px;">{% trans "Acciones" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in pending_new_users %}
+                        {# RBAC: Solo permitir aprobar/rechazar si se tiene permiso #}
+                        {% if user.role != 'super_admin' or user_is_super_admin %}
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <span class="user-email">{{ user.email }}</span>
+                                    <span class="user-name">{{ user.full_name }}</span>
+                                </div>
+                            </td>
+                            <td>{{ user.company|default:"-" }}</td>
+                            <td>
+                                <span class="status-badge role-badge">
+                                    {{ user.get_role_display }}
+                                </span>
+                            </td>
+                            <td style="text-align: center;">
+                                {% if user.email_verified %}
+                                <i class="bi bi-check-circle-fill icon-check"></i>
+                                {% else %}
+                                <i class="bi bi-x-circle-fill icon-x"></i>
+                                {% endif %}
+                            </td>
+                            <td>{{ user.date_joined|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                {% if user.email_verified %}
+                                    <div class="action-buttons">
+                                        <form method="post" action="{% url 'accounts:approve_user' user.id %}" style="display: inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn-icon btn-approve" title="{% trans 'Aprobar' %}" onclick="return confirm('{% trans "¿Aprobar a" %} {{ user.email }}?')">
+                                                <i class="bi bi-check-circle"></i>
+                                            </button>
+                                        </form>
+                                        <form method="post" action="{% url 'accounts:reject_user' user.id %}" style="display: inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn-icon btn-delete" title="{% trans 'Rechazar' %}" onclick="return confirm('{% trans "¿Rechazar a" %} {{ user.email }}?')">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                {% else %}
+                                    <span class="no-permission">{% trans "Email no verificado" %}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="empty-state">
+                <i class="bi bi-check-circle"></i>
+                <p>{% trans "No hay solicitudes pendientes" %}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Form oculto para eliminar usuarios -->
+<form id="deleteForm" method="post" style="display: none;">
+    {% csrf_token %}
+</form>
+
+<script>
+// Cambiar entre tabs
+function switchTab(tabName) {
+    const url = new URL(window.location);
+    url.searchParams.set('tab', tabName);
+    window.history.pushState({}, '', url);
+    
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    document.getElementById('tab-' + tabName).classList.add('active');
+    document.querySelector('.tab[onclick*="' + tabName + '"]').classList.add('active');
+}
+
+// Toggle formulario de edición
+function toggleEdit(userId) {
+    const editFormRow = document.getElementById('edit-form-' + userId);
+    const isActive = editFormRow.classList.contains('active');
+    
+    // Cerrar todos los formularios abiertos
+    document.querySelectorAll('.edit-form-row').forEach(row => {
+        row.classList.remove('active');
+    });
+    
+    // Toggle el formulario actual
+    if (!isActive) {
+        editFormRow.classList.add('active');
+    }
+}
+
+// Confirmar eliminación
+function confirmDelete(userId, userEmail) {
+    if (confirm('{% trans "¿Estás seguro de que deseas deshabilitar a" %} ' + userEmail + '?')) {
+        const form = document.getElementById('deleteForm');
+        form.action = '/accounts/user-approval/users/' + userId + '/delete/';
+        form.submit();
+    }
+}
+
+// Mantener tab activo después de acciones
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeTab = urlParams.get('tab');
+    if (activeTab) {
+        switchTab(activeTab);
+    }
+});
+</script>
+{% endblock %}
