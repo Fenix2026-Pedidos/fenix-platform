@@ -67,50 +67,72 @@ def get_dashboard_status(user):
     El HERO responde a: "¿Tengo algo urgente ahora mismo?"
     Las tarjetas responden a: "Si entro aquí, ¿qué veré?"
     
+    Estados:
+    - 🟢 OK (0 acciones): "Todo está en orden por ahora" + check-circle verde
+    - 🟡 ATENCIÓN (1-2 acciones): "Tienes acciones pendientes" + alert-circle amarillo
+    - 🔴 URGENTE (críticas): "Requiere atención inmediata" + alert-octagon rojo
+    
     Returns:
         dict: {
             'message': str,
-            'level': str ('success', 'warning', 'info', 'danger'),
-            'icon': str (emoji o clase FA)
+            'level': str ('success', 'warning', 'danger'),
+            'icon': str (nombre del icono SVG)
         }
     """
     from orders.models import Order
     from notifications.models import Notification
     
     try:
-        has_urgent_items = False
+        pending_count = 0
+        has_urgent = False
         
-        # Verificar si hay algo urgente (sin dar detalles operativos)
+        # Contar acciones pendientes
         if user.has_perm('orders.view_order'):
             pending_orders = Order.objects.filter(status='pending').count()
-            if pending_orders > 0:
-                has_urgent_items = True
+            pending_count += pending_orders
+            # Los pedidos pendientes de más de X días serían urgentes (ejemplo)
+            # Por ahora consideramos urgente si hay más de 5 pedidos
+            if pending_orders > 5:
+                has_urgent = True
         
         if hasattr(user, 'notifications'):
             unread = Notification.objects.filter(user=user, read=False).count()
-            if unread > 0:
-                has_urgent_items = True
+            pending_count += unread
+            # Notificaciones prioritarias serían urgentes
+            urgent_notifications = Notification.objects.filter(
+                user=user, read=False, priority='high'
+            ).exists() if hasattr(Notification, 'priority') else False
+            if urgent_notifications:
+                has_urgent = True
         
-        # Estado global - sin duplicar detalles de las tarjetas
-        if has_urgent_items:
+        # 🔴 ESTADO URGENTE - acciones críticas
+        if has_urgent:
             return {
-                'message': gettext("Hay elementos que requieren tu atención"),
-                'level': 'warning',
-                'icon': '⚠️'
+                'message': gettext("Requiere atención inmediata"),
+                'level': 'danger',
+                'icon': 'alert-octagon'
             }
         
-        # Estado tranquilo - mensaje global genérico
+        # 🟡 ESTADO ATENCIÓN - hay acciones pendientes
+        if pending_count > 0:
+            return {
+                'message': gettext("Tienes acciones pendientes"),
+                'level': 'warning',
+                'icon': 'alert-circle'
+            }
+        
+        # 🟢 ESTADO OK - todo en orden
         return {
             'message': gettext("Todo está en orden por ahora"),
             'level': 'success',
-            'icon': '✓'
+            'icon': 'check-circle'
         }
     except Exception:
-        # Fallback seguro - mensaje genérico, no operativo
+        # Fallback seguro - estado OK por defecto
         return {
             'message': gettext("Plataforma operativa"),
             'level': 'success',
-            'icon': '✓'
+            'icon': 'check-circle'
         }
 
 
