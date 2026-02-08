@@ -34,9 +34,9 @@ def log_profile_action(user, action, field_changed=None, old_value=None, new_val
     ProfileAuditLog.objects.create(
         user=user,
         action=action,
-        field_changed=field_changed,
-        old_value=str(old_value) if old_value else None,
-        new_value=str(new_value) if new_value else None,
+        field_changed=field_changed or '',
+        old_value=str(old_value) if old_value else '',
+        new_value=str(new_value) if new_value else '',
         ip_address=get_client_ip(request) if request else None,
         user_agent=request.META.get('HTTP_USER_AGENT', '') if request else ''
     )
@@ -365,14 +365,19 @@ def revoke_all_sessions(request):
 @login_required
 @require_http_methods(['GET', 'POST'])
 def upload_avatar(request):
-    """Subir avatar del usuario"""
+    """Subir foto de perfil del usuario"""
     if request.method == 'POST':
         form = AvatarUploadForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
+            # Guardar valor anterior antes de eliminar
+            old_avatar_name = request.user.avatar.name if request.user.avatar else ''
+            
             # Eliminar avatar anterior si existe
             if request.user.avatar:
-                old_avatar = request.user.avatar.path
-                request.user.avatar.delete(save=False)
+                try:
+                    request.user.avatar.delete(save=False)
+                except Exception:
+                    pass  # Si falla al eliminar, continuar igualmente
             
             user = form.save()
             
@@ -380,11 +385,12 @@ def upload_avatar(request):
                 user=user,
                 action='avatar_upload',
                 field_changed='avatar',
-                new_value=user.avatar.name if user.avatar else None,
+                old_value=old_avatar_name,
+                new_value=user.avatar.name if user.avatar else '',
                 request=request
             )
             
-            messages.success(request, _('Avatar actualizado correctamente'))
+            messages.success(request, _('Foto de perfil actualizada correctamente'))
             return redirect('accounts:profile_dashboard')
     else:
         form = AvatarUploadForm(instance=request.user)
@@ -395,18 +401,21 @@ def upload_avatar(request):
 @login_required
 @require_POST
 def delete_avatar(request):
-    """Eliminar avatar del usuario"""
+    """Eliminar foto de perfil del usuario"""
     if request.user.avatar:
+        old_avatar_name = request.user.avatar.name
         request.user.avatar.delete(save=True)
         
         log_profile_action(
             user=request.user,
             action='avatar_delete',
             field_changed='avatar',
+            old_value=old_avatar_name,
+            new_value='',
             request=request
         )
         
-        messages.success(request, _('Avatar eliminado correctamente'))
+        messages.success(request, _('Foto de perfil eliminada correctamente'))
     
     return redirect('accounts:profile_dashboard')
 

@@ -62,7 +62,10 @@ def get_user_greeting(user):
 
 def get_dashboard_status(user):
     """
-    Retorna información de estado operativo del dashboard según rol del usuario.
+    Retorna información de estado GLOBAL del dashboard (no operativo).
+    
+    El HERO responde a: "¿Tengo algo urgente ahora mismo?"
+    Las tarjetas responden a: "Si entro aquí, ¿qué veré?"
     
     Returns:
         dict: {
@@ -71,41 +74,41 @@ def get_dashboard_status(user):
             'icon': str (emoji o clase FA)
         }
     """
-    # Lógica básica - puedes extenderla según necesidades
     from orders.models import Order
     from notifications.models import Notification
     
     try:
-        # Usuarios con permisos de gestión ven más info
+        has_urgent_items = False
+        
+        # Verificar si hay algo urgente (sin dar detalles operativos)
         if user.has_perm('orders.view_order'):
             pending_orders = Order.objects.filter(status='pending').count()
             if pending_orders > 0:
-                return {
-                    'message': gettext(f"Tienes {pending_orders} pedido(s) pendiente(s) de procesar"),
-                    'level': 'warning',
-                    'icon': '⚠️'
-                }
+                has_urgent_items = True
         
-        # Notificaciones sin leer
         if hasattr(user, 'notifications'):
             unread = Notification.objects.filter(user=user, read=False).count()
             if unread > 0:
-                return {
-                    'message': gettext(f"Tienes {unread} notificación(es) sin leer"),
-                    'level': 'info',
-                    'icon': '🔔'
-                }
+                has_urgent_items = True
         
-        # Estado por defecto
+        # Estado global - sin duplicar detalles de las tarjetas
+        if has_urgent_items:
+            return {
+                'message': gettext("Hay elementos que requieren tu atención"),
+                'level': 'warning',
+                'icon': '⚠️'
+            }
+        
+        # Estado tranquilo - mensaje global genérico
         return {
             'message': gettext("Todo está en orden por ahora"),
             'level': 'success',
             'icon': '✓'
         }
     except Exception:
-        # Fallback seguro
+        # Fallback seguro - mensaje genérico, no operativo
         return {
-            'message': gettext("No tienes acciones pendientes"),
+            'message': gettext("Plataforma operativa"),
             'level': 'success',
             'icon': '✓'
         }

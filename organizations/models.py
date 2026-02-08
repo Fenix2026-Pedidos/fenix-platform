@@ -135,8 +135,8 @@ class Organization(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Organization'
-        verbose_name_plural = 'Organizations'
+        verbose_name = _('Organización')
+        verbose_name_plural = _('Organizaciones')
 
     def __str__(self) -> str:
         return self.name

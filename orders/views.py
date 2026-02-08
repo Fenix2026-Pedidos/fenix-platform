@@ -55,7 +55,7 @@ def cart_view(request):
 
 @require_POST
 def cart_add(request):
-    """Añade un producto al carrito"""
+    """Añade un producto al carrito (SUMA a cantidad existente)"""
     try:
         data = json.loads(request.body)
         product_id = str(data.get('product_id'))
@@ -65,7 +65,8 @@ def cart_add(request):
         
         cart = get_cart(request)
         current_quantity = cart.get(product_id, 0)
-        cart[product_id] = current_quantity + quantity
+        new_quantity = current_quantity + quantity
+        cart[product_id] = new_quantity
         save_cart(request, cart)
         
         # Obtener idioma del usuario para el mensaje
@@ -80,7 +81,8 @@ def cart_add(request):
         return JsonResponse({
             'success': True,
             'message': message,
-            'cart_count': sum(cart.values())
+            'product_quantity': new_quantity,  # Cantidad total del producto en cesta
+            'cart_count': sum(cart.values())   # Total de items en cesta
         })
     except Exception as e:
         error_msg = _('Error al añadir producto al carrito')

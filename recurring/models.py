@@ -20,17 +20,23 @@ class RecurringOrder(models.Model):
         User,
         on_delete=models.PROTECT,
         related_name='recurring_orders',
+        verbose_name=_('Cliente')
     )
-    is_active = models.BooleanField(default=True)
-    frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES)
-    start_date = models.DateField()
-    end_date = models.DateField(null=True, blank=True)
-    next_run_at = models.DateTimeField(null=True, blank=True)
-    delivery_window_hours = models.PositiveIntegerField(default=24)
-    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True, verbose_name=_('Activo'))
+    frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES, verbose_name=_('Frecuencia'))
+    start_date = models.DateField(verbose_name=_('Fecha Inicio'))
+    end_date = models.DateField(null=True, blank=True, verbose_name=_('Fecha Fin'))
+    next_run_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Próxima Ejecución'))
+    delivery_window_hours = models.PositiveIntegerField(default=24, verbose_name=_('Ventana Entrega (horas)'))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Fecha Creación'))
+
+    class Meta:
+        verbose_name = _('Pedido Recurrente')
+        verbose_name_plural = _('Pedidos Recurrentes')
+        ordering = ['-created_at']
 
     def __str__(self) -> str:
-        return f'Recurring {self.id} - {self.customer.email}'
+        return f'Recurrente {self.id} - {self.customer.email}'
 
 
 class RecurringOrderItem(models.Model):
@@ -38,15 +44,21 @@ class RecurringOrderItem(models.Model):
         RecurringOrder,
         on_delete=models.CASCADE,
         related_name='items',
+        verbose_name=_('Pedido Recurrente')
     )
     product = models.ForeignKey(
         Product,
         on_delete=models.PROTECT,
         related_name='recurring_items',
+        verbose_name=_('Producto')
     )
-    product_name_es = models.CharField(max_length=200)
-    product_name_zh_hans = models.CharField(max_length=200)
-    quantity = models.PositiveIntegerField()
+    product_name_es = models.CharField(max_length=200, verbose_name=_('Nombre (ES)'))
+    product_name_zh_hans = models.CharField(max_length=200, verbose_name=_('Nombre (中文)'))
+    quantity = models.PositiveIntegerField(verbose_name=_('Cantidad'))
+
+    class Meta:
+        verbose_name = _('Línea de Pedido Recurrente')
+        verbose_name_plural = _('Líneas de Pedidos Recurrentes')
 
     def __str__(self) -> str:
         return f'{self.product_name_es} x {self.quantity}'

@@ -189,9 +189,9 @@
                             
                             <!-- (e) Contenedor de acciones: Stepper centrado arriba, Botón Añadir centrado abajo -->
                             <div class="mt-3 w-full flex flex-col items-center gap-2">
-                                <!-- Stepper centrado -->
+                                <!-- Stepper centrado (botón - deshabilitado al inicio) -->
                                 <div class="w-full max-w-[260px] h-10 flex items-center justify-between rounded-lg border px-2 product-quantity-selector">
-                                    <button type="button" class="h-8 w-8 flex items-center justify-center rounded-md border qty-btn qty-minus" data-product-id="{{ product.pk }}" aria-label="{% trans 'Reducir cantidad' %}">
+                                    <button type="button" class="h-8 w-8 flex items-center justify-center rounded-md border qty-btn qty-minus disabled" data-product-id="{{ product.pk }}" aria-label="{% trans 'Reducir cantidad' %}" disabled>
                                         <i class="bi bi-dash"></i>
                                     </button>
                                     <input type="number" 
@@ -205,9 +205,9 @@
                                     </button>
                                 </div>
                                 
-                                <!-- Botón Añadir centrado -->
-                                <button type="button" class="w-full max-w-[260px] h-10 flex items-center justify-center gap-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 whitespace-nowrap btn-add-product" data-product-id="{{ product.pk }}">
-                                    <i class="bi bi-cart-plus"></i> {% trans "Añadir" %}
+                                <!-- Botón Añadir centrado (deshabilitado hasta seleccionar cantidad) -->
+                                <button type="button" class="w-full max-w-[260px] h-10 flex items-center justify-center gap-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 whitespace-nowrap btn-add-product disabled" data-product-id="{{ product.pk }}" disabled>
+                                    <i class="bi bi-cart-plus"></i> {% trans "Selecciona cantidad" %}
                                 </button>
                             </div>
                         </div>
@@ -239,10 +239,13 @@
 <script src="{% static 'js/catalog.js' %}"></script>
 <script src="{% static 'js/catalog-filters.js' %}"></script>
 <script>
-    // Inicializar carrito al cargar la página
+    // Inicializar catálogo al cargar la página
     document.addEventListener('DOMContentLoaded', function() {
         if (typeof CatalogCart !== 'undefined') {
-            // Cargar carrito inicial desde el servidor si existe
+            // Primero: inicializar CatalogCart (esto pone qtyLocal=0 para todas las cards)
+            CatalogCart.init();
+            
+            // Segundo: cargar carrito inicial desde el servidor (estado REAL de la cesta)
             try {
                 const initialCartDataElement = document.getElementById('initialCartData');
                 if (initialCartDataElement) {
@@ -250,61 +253,20 @@
                     if (cartDataText) {
                         const cartData = JSON.parse(cartDataText);
                         if (cartData && typeof cartData === 'object') {
+                            // Cargar cantidades REALES de la cesta (no afecta qtyLocal)
                             Object.keys(cartData).forEach(productId => {
                                 const quantity = parseInt(cartData[productId]) || 0;
                                 if (quantity > 0) {
                                     CatalogCart.setQuantity(productId, quantity);
                                 }
                             });
+                            // Actualizar badge del topbar con el total real
+                            CatalogCart.updateTopbarBadge();
                         }
                     }
                 }
             } catch (e) {
-                console.warn('No se pudo cargar el carrito inicial desde el servidor:', e);
-                // Continuar sin carrito inicial, se cargará desde la UI
-            }
-            CatalogCart.init();
-            
-            // Inicializar badge del topbar con el contador actual
-            const topbarBadge = document.getElementById('topbarCartBadge');
-            const topbarCartBtn = document.getElementById('topbarCartBtn');
-            if (topbarBadge) {
-                const currentCount = Object.values(CatalogCart.cart).reduce((sum, qty) => sum + qty, 0);
-                if (currentCount > 0) {
-                    topbarBadge.textContent = currentCount;
-                    topbarBadge.setAttribute('data-count', currentCount);
-                    topbarBadge.style.display = 'flex';
-                    
-                    // Ajustar tamaño del badge si el número es mayor a 9
-                    if (currentCount > 9) {
-                        topbarBadge.style.minWidth = '18px';
-                        topbarBadge.style.height = '18px';
-                        topbarBadge.style.fontSize = '12px';
-                        topbarBadge.style.padding = '0 5px';
-                    } else {
-                        topbarBadge.style.minWidth = '16px';
-                        topbarBadge.style.height = '16px';
-                        topbarBadge.style.fontSize = '11px';
-                        topbarBadge.style.padding = '0 4px';
-                    }
-                    
-                    // Actualizar aria-label y title
-                    if (topbarCartBtn) {
-                        const cartLabel = 'Carrito (' + currentCount + ')';
-                        topbarCartBtn.setAttribute('aria-label', cartLabel);
-                        topbarCartBtn.setAttribute('title', cartLabel);
-                    }
-                } else {
-                    topbarBadge.textContent = '';
-                    topbarBadge.setAttribute('data-count', '0');
-                    topbarBadge.style.display = 'none';
-                    
-                    // Actualizar aria-label y title cuando está vacío
-                    if (topbarCartBtn) {
-                        topbarCartBtn.setAttribute('aria-label', 'Carrito');
-                        topbarCartBtn.setAttribute('title', 'Carrito');
-                    }
-                }
+                console.warn('No se pudo cargar el carrito inicial:', e);
             }
         }
         

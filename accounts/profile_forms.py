@@ -6,9 +6,41 @@ from django.utils.translation import gettext_lazy as _
 from .models import User, UserPreferences, SecuritySettings
 from organizations.models import UserCompany
 
+# Timezones comunes
+TIMEZONE_CHOICES = [
+    ('Europe/Madrid', 'España (Madrid)'),
+    ('Europe/London', 'Reino Unido (Londres)'),
+    ('Europe/Paris', 'Francia (París)'),
+    ('Europe/Berlin', 'Alemania (Berlín)'),
+    ('Europe/Rome', 'Italia (Roma)'),
+    ('Europe/Lisbon', 'Portugal (Lisboa)'),
+    ('America/New_York', 'EE.UU. (Nueva York)'),
+    ('America/Chicago', 'EE.UU. (Chicago)'),
+    ('America/Denver', 'EE.UU. (Denver)'),
+    ('America/Los_Angeles', 'EE.UU. (Los Ángeles)'),
+    ('America/Mexico_City', 'México (Ciudad de México)'),
+    ('America/Bogota', 'Colombia (Bogotá)'),
+    ('America/Lima', 'Perú (Lima)'),
+    ('America/Santiago', 'Chile (Santiago)'),
+    ('America/Buenos_Aires', 'Argentina (Buenos Aires)'),
+    ('America/Sao_Paulo', 'Brasil (São Paulo)'),
+    ('Asia/Tokyo', 'Japón (Tokio)'),
+    ('Asia/Shanghai', 'China (Shanghai)'),
+    ('Asia/Dubai', 'Emiratos (Dubái)'),
+    ('Australia/Sydney', 'Australia (Sídney)'),
+    ('UTC', 'UTC'),
+]
+
 
 class PersonalDataForm(forms.ModelForm):
     """Formulario para editar datos personales del usuario"""
+    
+    timezone = forms.ChoiceField(
+        choices=TIMEZONE_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label=_('Zona Horaria'),
+        required=False
+    )
     
     class Meta:
         model = User
@@ -25,9 +57,6 @@ class PersonalDataForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': '+34 XXX XXX XXX'
-            }),
-            'timezone': forms.Select(attrs={
-                'class': 'form-control'
             }),
         }
         labels = {

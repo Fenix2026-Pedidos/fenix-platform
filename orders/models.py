@@ -26,24 +26,32 @@ class Order(models.Model):
         User,
         on_delete=models.PROTECT,
         related_name='orders',
+        verbose_name=_('Cliente')
     )
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
         default=STATUS_NEW,
+        verbose_name=_('Estado')
     )
-    eta_start = models.DateTimeField(null=True, blank=True)
-    eta_end = models.DateTimeField(null=True, blank=True)
-    total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    eta_start = models.DateTimeField(null=True, blank=True, verbose_name=_('ETA Inicio'))
+    eta_end = models.DateTimeField(null=True, blank=True, verbose_name=_('ETA Fin'))
+    total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name=_('Total'))
     stock_deducted = models.BooleanField(
         default=False,
         help_text='True cuando el stock se ha descontado al pasar a Preparando',
+        verbose_name=_('Stock Descontado')
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Fecha Creación'))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Última Actualización'))
+
+    class Meta:
+        verbose_name = _('Pedido')
+        verbose_name_plural = _('Pedidos')
+        ordering = ['-created_at']
 
     def __str__(self) -> str:
-        return f'Order {self.id} - {self.customer.email}'
+        return f'Pedido {self.id} - {self.customer.email}'
 
 
 class OrderItem(models.Model):
@@ -51,17 +59,23 @@ class OrderItem(models.Model):
         Order,
         on_delete=models.CASCADE,
         related_name='items',
+        verbose_name=_('Pedido')
     )
     product = models.ForeignKey(
         Product,
         on_delete=models.PROTECT,
         related_name='order_items',
+        verbose_name=_('Producto')
     )
-    product_name_es = models.CharField(max_length=200)
-    product_name_zh_hans = models.CharField(max_length=200)
-    quantity = models.PositiveIntegerField()
-    unit_price = models.DecimalField(max_digits=12, decimal_places=2)
-    line_total = models.DecimalField(max_digits=12, decimal_places=2)
+    product_name_es = models.CharField(max_length=200, verbose_name=_('Nombre (ES)'))
+    product_name_zh_hans = models.CharField(max_length=200, verbose_name=_('Nombre (中文)'))
+    quantity = models.PositiveIntegerField(verbose_name=_('Cantidad'))
+    unit_price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_('Precio Unitario'))
+    line_total = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_('Total Línea'))
+
+    class Meta:
+        verbose_name = _('Línea de Pedido')
+        verbose_name_plural = _('Líneas de Pedido')
 
     def save(self, *args, **kwargs):
         self.line_total = self.unit_price * self.quantity
@@ -76,17 +90,21 @@ class OrderEvent(models.Model):
         Order,
         on_delete=models.CASCADE,
         related_name='events',
+        verbose_name=_('Pedido')
     )
-    status = models.CharField(max_length=20, choices=Order.STATUS_CHOICES)
-    note = models.TextField(blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=Order.STATUS_CHOICES, verbose_name=_('Estado'))
+    note = models.TextField(blank=True, verbose_name=_('Nota'))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Fecha'))
     created_by = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
         related_name='order_events',
+        verbose_name=_('Creado por')
     )
 
     class Meta:
+        verbose_name = _('Evento de Pedido')
+        verbose_name_plural = _('Eventos de Pedidos')
         ordering = ['created_at']
 
     def __str__(self) -> str:

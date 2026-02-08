@@ -120,6 +120,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS: list[str] = ['full_name']
+    
+    class Meta:
+        verbose_name = _('Usuario')
+        verbose_name_plural = _('Usuarios')
+        ordering = ['-date_joined']
 
     def __str__(self) -> str:
         return self.email
@@ -184,6 +189,8 @@ class EmailVerificationToken(models.Model):
     is_used = models.BooleanField(default=False)
     
     class Meta:
+        verbose_name = _('Token de Verificación')
+        verbose_name_plural = _('Tokens de Verificación')
         ordering = ['-created_at']
     
     def save(self, *args, **kwargs):

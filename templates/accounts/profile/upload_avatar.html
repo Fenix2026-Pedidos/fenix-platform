@@ -1,16 +1,23 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}{% trans "Subir Avatar" %} - {{ block.super }}{% endblock %}
+{% block title %}{% trans "Cambiar Foto de Perfil" %} - {{ block.super }}{% endblock %}
 
 {% block content %}
 <div class="container py-4">
+    <!-- Botón Volver -->
+    <div class="mb-4">
+        <a href="{% url 'accounts:profile_dashboard' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>{% trans "Volver a Mi Perfil" %}
+        </a>
+    </div>
+
     <div class="row justify-content-center">
         <div class="col-12 col-lg-6">
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">
-                        <i class="fas fa-camera me-2"></i>{% trans "Subir Avatar" %}
+                        <i class="fas fa-camera me-2"></i>{% trans "Cambiar Foto de Perfil" %}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -19,22 +26,22 @@
                             <img src="{{ user.avatar.url }}" alt="{{ user.display_name }}" 
                                  class="rounded-circle img-thumbnail mb-2" 
                                  style="width: 150px; height: 150px; object-fit: cover;">
-                            <p class="text-muted">{% trans "Avatar actual" %}</p>
+                            <p class="text-muted">{% trans "Foto actual" %}</p>
                         {% else %}
                             <div class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center mb-2" 
                                  style="width: 150px; height: 150px;">
                                 <i class="fas fa-user fa-4x text-white"></i>
                             </div>
-                            <p class="text-muted">{% trans "Sin avatar" %}</p>
+                            <p class="text-muted">{% trans "Sin foto de perfil" %}</p>
                         {% endif %}
                     </div>
 
                     <div class="alert alert-info">
-                        <i class="fas fa-info-circle"></i>
+                        <i class="fas fa-info-circle me-1"></i>
                         {% trans "Tamaño máximo: 5MB. Formatos: JPG, PNG, GIF, WebP" %}
                     </div>
 
-                    <form method="post" enctype="multipart/form-data" novalidate>
+                    <form method="post" enctype="multipart/form-data" action="{% url 'accounts:upload_avatar' %}">
                         {% csrf_token %}
                         
                         {% if form.non_field_errors %}
@@ -45,7 +52,7 @@
 
                         <div class="mb-3">
                             <label for="{{ form.avatar.id_for_label }}" class="form-label">
-                                {{ form.avatar.label }}
+                                {% trans "Seleccionar imagen" %}
                             </label>
                             {{ form.avatar }}
                             {% if form.avatar.errors %}
@@ -53,12 +60,14 @@
                             {% endif %}
                         </div>
 
-                        <div class="d-flex justify-content-between mt-4">
-                            <a href="{% url 'accounts:profile_dashboard' %}" class="btn btn-secondary">
-                                <i class="fas fa-times"></i> {% trans "Cancelar" %}
+                        <hr class="my-4">
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'accounts:profile_dashboard' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i> {% trans "Cancelar" %}
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-upload"></i> {% trans "Subir Avatar" %}
+                                <i class="fas fa-upload me-1"></i> {% trans "Guardar Foto" %}
                             </button>
                         </div>
                     </form>
