@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'simple_history',  # Auditoría de cambios
     'accounts',
     'catalog',
     'orders',
@@ -60,6 +61,7 @@ INSTALLED_APPS = [
     'notifications',
     'core',  # Configuración global de plataforma
     'whatsapp',  # Integración WhatsApp Business Cloud API
+    'organizations',  # Gestión de empresas y multitenancy
 ]
 
 MIDDLEWARE = [
@@ -69,7 +71,9 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',  # Auditoría de cambios
     'accounts.middleware.UserApprovalMiddleware',  # Bloquea acceso si pending_approval=True
+    'accounts.middleware.SessionTrackingMiddleware',  # Tracking de sesiones
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -82,6 +86,7 @@ TEMPLATES = [
         'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
+            'debug': DEBUG,  # Deshabilita caché de templates en desarrollo
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.template.context_processors.i18n',
@@ -89,6 +94,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'orders.context_processors.cart_count',
                 'accounts.context_processors.user_language',  # Idioma del usuario
+                'accounts.context_processors.user_greeting',  # Saludo inteligente
             ],
         },
     },
@@ -138,6 +144,14 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'true').lower() in ('1', 'true', 'yes')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@fenix.com')
+
+# Admin email para notificaciones de aprobación
+ADMIN_APPROVAL_EMAIL = os.getenv('ADMIN_APPROVAL_EMAIL', 'admin@fenix.com')
+
+# Lista de administradores (también se puede usar para notificaciones)
+ADMINS = [
+    ('Admin Fenix', os.getenv('ADMIN_APPROVAL_EMAIL', 'admin@fenix.com')),
+]
 
 
 # Password validation
@@ -202,3 +216,16 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
+
+# Email configuration (development - console backend)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'noreply@fenix.com'
+
+# For production, use SMTP:
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'your-email@gmail.com'
+# EMAIL_HOST_PASSWORD = 'your-app-password'
+# DEFAULT_FROM_EMAIL = 'noreply@fenix.com'

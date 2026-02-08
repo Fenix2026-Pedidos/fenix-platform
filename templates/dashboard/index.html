@@ -5,306 +5,296 @@
 {% block title %}{% trans "Inicio" %} - {{ block.super }}{% endblock %}
 
 {% block content %}
-<!-- Hero Greeting Banner -->
-{% include 'components/hero_greeting.html' with subtitle="Esto es lo más relevante ahora mismo en Fénix" %}
+<!-- Hero Saludo Inteligente -->
+{% include 'components/hero_greeting.html' %}
 
-<div class="container-fluid py-4">
-    <!-- Grid 2x2 de Secciones Principales -->
-    <div class="row g-4">
-        <!-- SECCIÓN 1: Mis Pedidos -->
-        <div class="col-12 col-lg-6">
-            <a href="{% url 'orders:order_list' %}" class="dashboard-card card h-100 shadow-sm text-decoration-none">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-start mb-3">
-                        <div class="icon-wrapper bg-primary-soft me-3">
-                            <i class="fas fa-box fa-2x text-primary"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h5 class="card-title mb-1">
-                                <i class="fas fa-box me-2"></i>{% trans "Mis Pedidos" %}
-                            </h5>
-                            <p class="text-muted small mb-0">{% trans "Estado de tus pedidos actuales" %}</p>
-                        </div>
+<!-- Dashboard Grid 2x2 -->
+<div class="dashboard-container">
+    <div class="dashboard-grid">
+        <!-- Card 1: Mis Pedidos -->
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <span class="dash-icon dash-icon-blue"></span>
+                <div class="dash-header-text">
+                    <h3>{% trans "Mis Pedidos" %}</h3>
+                    <p>{% trans "Estado de tus pedidos actuales" %}</p>
+                </div>
+            </div>
+            <div class="dash-card-body">
+                <div class="dash-stats">
+                    <div class="dash-stat-box">
+                        <span class="dash-stat-number">{{ active_orders_count }}</span>
+                        <span class="dash-stat-label">{% trans "Pedidos activos" %}</span>
                     </div>
-                    
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <div class="stat-value text-primary">{{ active_orders_count }}</div>
-                            <div class="stat-label">{% trans "Pedidos activos" %}</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value text-warning">{{ pending_orders_count }}</div>
-                            <div class="stat-label">{% trans "Pendientes" %}</div>
-                        </div>
-                    </div>
-                    
-                    {% if last_order %}
-                    <div class="mt-3 pt-3 border-top">
-                        <small class="text-muted">{% trans "Último pedido" %}:</small>
-                        <div class="fw-semibold">#{{ last_order.id }} - {{ last_order.created_at|date:"d/m/Y" }}</div>
-                    </div>
-                    {% endif %}
-                    
-                    <div class="mt-3">
-                        <span class="btn btn-sm btn-primary">
-                            {% trans "Ver pedidos" %} <i class="fas fa-arrow-right ms-1"></i>
-                        </span>
+                    <div class="dash-stat-box">
+                        <span class="dash-stat-number">{{ pending_orders_count }}</span>
+                        <span class="dash-stat-label">{% trans "Pendientes" %}</span>
                     </div>
                 </div>
-            </a>
-        </div>
-
-        <!-- SECCIÓN 2: Acciones Pendientes -->
-        <div class="col-12 col-lg-6">
-            <div class="dashboard-card card h-100 shadow-sm">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-start mb-3">
-                        <div class="icon-wrapper bg-warning-soft me-3">
-                            <i class="fas fa-clock fa-2x text-warning"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h5 class="card-title mb-1">
-                                <i class="fas fa-clock me-2"></i>{% trans "Acciones Pendientes" %}
-                            </h5>
-                            <p class="text-muted small mb-0">{% trans "Tareas que requieren tu atención" %}</p>
-                        </div>
-                    </div>
-                    
-                    {% if pending_actions_count > 0 %}
-                    <div class="alert alert-warning mb-3">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        {% blocktrans count counter=pending_actions_count %}
-                            Tienes {{ counter }} acción pendiente
-                        {% plural %}
-                            Tienes {{ counter }} acciones pendientes
-                        {% endblocktrans %}
-                    </div>
-                    
-                    <div class="mt-3">
-                        <a href="#" class="btn btn-sm btn-warning">
-                            {% trans "Ver acciones" %} <i class="fas fa-arrow-right ms-1"></i>
-                        </a>
-                    </div>
-                    {% else %}
-                    <div class="alert alert-success mb-0">
-                        <i class="fas fa-check-circle me-2"></i>
-                        {% trans "No tienes acciones pendientes" %}
-                    </div>
-                    {% endif %}
-                </div>
+                {% if last_order %}
+                <p class="dash-info">{% trans "Último pedido" %}: #{{ last_order.id }} - {{ last_order.created_at|date:"d/m/Y" }}</p>
+                {% endif %}
+                <a href="{% url 'orders:order_list' %}" class="dash-btn">{% trans "Ver pedidos" %}</a>
             </div>
         </div>
 
-        <!-- SECCIÓN 3: Actividad Reciente -->
-        <div class="col-12 col-lg-6">
-            <div class="dashboard-card card h-100 shadow-sm">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-start mb-3">
-                        <div class="icon-wrapper bg-info-soft me-3">
-                            <i class="fas fa-history fa-2x text-info"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h5 class="card-title mb-1">
-                                <i class="fas fa-history me-2"></i>{% trans "Actividad Reciente" %}
-                            </h5>
-                            <p class="text-muted small mb-0">{% trans "Tu última actividad en la plataforma" %}</p>
-                        </div>
-                    </div>
-                    
-                    {% if recent_order %}
-                    <div class="activity-item">
-                        <div class="d-flex align-items-start">
-                            <div class="activity-icon bg-success text-white">
-                                <i class="fas fa-check"></i>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <div class="fw-semibold">{% trans "Pedido actualizado" %}</div>
-                                <div class="text-muted small">
-                                    #{{ recent_order.id }} - 
-                                    <span class="badge bg-{{ recent_order.status|lower }}">
-                                        {{ recent_order.get_status_display }}
-                                    </span>
-                                </div>
-                                <div class="text-muted small">
-                                    {{ recent_order.updated_at|timesince }} {% trans "atrás" %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% else %}
-                    <div class="text-muted">
-                        <i class="fas fa-info-circle me-2"></i>
-                        {% trans "No hay actividad reciente" %}
-                    </div>
-                    {% endif %}
+        <!-- Card 2: Oferta Especial -->
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <span class="dash-icon dash-icon-yellow"></span>
+                <div class="dash-header-text">
+                    <h3>{% trans "Oferta especial" %}</h3>
+                    <p>{% trans "Oferta especial activa" %}</p>
                 </div>
+            </div>
+            <div class="dash-card-body">
+                {% if active_promotion %}
+                <div class="dash-promo">
+                    <p>{{ active_promotion.description }}</p>
+                </div>
+                {% else %}
+                <p class="dash-empty">{% trans "No hay promociones activas en este momento" %}</p>
+                {% endif %}
             </div>
         </div>
 
-        <!-- SECCIÓN 4: Destacado / Promoción -->
-        {% if active_promotion %}
-        <div class="col-12 col-lg-6">
-            <a href="{% url active_promotion.url %}" class="dashboard-card card h-100 shadow-sm text-decoration-none promotion-card">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-start mb-3">
-                        <div class="icon-wrapper bg-success-soft me-3">
-                            <span style="font-size: 2rem;">{{ active_promotion.icon }}</span>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h5 class="card-title mb-1">
-                                {{ active_promotion.icon }} {{ active_promotion.title }}
-                            </h5>
-                            <p class="text-muted small mb-0">{% trans "Oferta especial activa" %}</p>
-                        </div>
-                    </div>
-                    
-                    <div class="promotion-content">
-                        <p class="lead mb-0">{{ active_promotion.description }}</p>
-                    </div>
-                    
-                    <div class="mt-3">
-                        <span class="btn btn-sm btn-success">
-                            {% trans "Ver oferta" %} <i class="fas fa-arrow-right ms-1"></i>
-                        </span>
-                    </div>
-                </div>
-            </a>
-        </div>
-        {% else %}
-        <div class="col-12 col-lg-6">
-            <div class="dashboard-card card h-100 shadow-sm">
-                <div class="card-body p-4 d-flex align-items-center justify-content-center text-center">
-                    <div>
-                        <i class="fas fa-sparkles fa-3x text-muted mb-3"></i>
-                        <p class="text-muted mb-0">{% trans "No hay promociones activas en este momento" %}</p>
-                    </div>
+        <!-- Card 3: Acciones Pendientes -->
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <span class="dash-icon dash-icon-cyan"></span>
+                <div class="dash-header-text">
+                    <h3>{% trans "Acciones Pendientes" %}</h3>
+                    <p>{% trans "Tareas que requieren tu atención" %}</p>
                 </div>
             </div>
+            <div class="dash-card-body">
+                {% if pending_actions_count > 0 %}
+                <div class="dash-alert dash-alert-warning">
+                    {% blocktrans count counter=pending_actions_count %}
+                        Tienes {{ counter }} acción pendiente
+                    {% plural %}
+                        Tienes {{ counter }} acciones pendientes
+                    {% endblocktrans %}
+                </div>
+                {% else %}
+                <div class="dash-alert dash-alert-success">
+                    {% trans "No tienes acciones pendientes" %}
+                </div>
+                {% endif %}
+            </div>
         </div>
-        {% endif %}
+
+        <!-- Card 4: Actividad Reciente -->
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <span class="dash-icon dash-icon-green"></span>
+                <div class="dash-header-text">
+                    <h3>{% trans "Actividad Reciente" %}</h3>
+                    <p>{% trans "Tu última actividad en la plataforma" %}</p>
+                </div>
+            </div>
+            <div class="dash-card-body">
+                {% if recent_order %}
+                <p class="dash-activity-title">{% trans "Pedido actualizado" %}</p>
+                <p class="dash-activity-detail">#{{ recent_order.id }} - {{ recent_order.get_status_display }}</p>
+                <p class="dash-activity-time">{{ recent_order.updated_at|timesince }} {% trans "atrás" %}</p>
+                {% else %}
+                <p class="dash-empty">{% trans "No hay actividad reciente" %}</p>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
 
 <style>
-/* Dashboard Cards */
-.dashboard-card {
-    transition: all 0.3s ease;
-    border: 1px solid #e5e7eb;
-    background: #ffffff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+/* ===== DASHBOARD CONTAINER ===== */
+.dashboard-container {
+    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.dashboard-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-    border-color: #d1d5db;
-}
-
-a.dashboard-card {
-    color: inherit;
-    display: block;
-}
-
-a.dashboard-card:hover {
-    text-decoration: none;
-}
-
-/* Icon Wrappers */
-.icon-wrapper {
-    width: 64px;
-    height: 64px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.bg-primary-soft {
-    background-color: rgba(13, 110, 253, 0.1);
-}
-
-.bg-warning-soft {
-    background-color: rgba(255, 193, 7, 0.1);
-}
-
-.bg-info-soft {
-    background-color: rgba(13, 202, 240, 0.1);
-}
-
-.bg-success-soft {
-    background-color: rgba(25, 135, 84, 0.1);
-}
-
-/* Stats Grid */
-.stats-grid {
+/* ===== GRID 2x2 ===== */
+.dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: 1rem;
-    margin-top: 1rem;
 }
 
-.stat-item {
-    text-align: center;
-    padding: 1rem;
-    background: #f8f9fa;
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== CARD BASE ===== */
+.dash-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
     border-radius: 8px;
+    padding: 1.25rem;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
 }
 
-.stat-value {
+/* ===== CARD HEADER ===== */
+.dash-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.dash-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.dash-icon-blue { background: #4dabf7; }
+.dash-icon-yellow { background: #ffd43b; }
+.dash-icon-cyan { background: #22b8cf; }
+.dash-icon-green { background: #69db7c; }
+
+.dash-header-text h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #212529;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.3;
+}
+
+.dash-header-text p {
+    font-size: 0.8125rem;
+    color: #868e96;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* ===== CARD BODY ===== */
+.dash-card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== STATS ===== */
+.dash-stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.dash-stat-box {
+    flex: 1;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 1rem 0.75rem;
+    text-align: center;
+}
+
+.dash-stat-number {
+    display: block;
     font-size: 2rem;
     font-weight: 700;
+    color: #228be6;
     line-height: 1;
     margin-bottom: 0.5rem;
 }
 
-.stat-label {
+.dash-stat-label {
+    display: block;
+    font-size: 0.75rem;
+    color: #868e96;
+}
+
+/* ===== INFO & BUTTON ===== */
+.dash-info {
+    font-size: 0.8125rem;
+    color: #495057;
+    margin: 0 0 1rem 0;
+}
+
+.dash-btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: #228be6;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
     font-size: 0.875rem;
-    color: #6c757d;
+    font-weight: 500;
+    margin-top: auto;
+    align-self: flex-start;
 }
 
-/* Activity Item */
-.activity-item {
-    padding: 1rem;
+.dash-btn:hover {
+    background: #1c7ed6;
+    color: #fff;
+}
+
+/* ===== PROMO ===== */
+.dash-promo {
     background: #f8f9fa;
-    border-radius: 8px;
-}
-
-.activity-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-/* Promotion Card */
-.promotion-card {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-}
-
-.promotion-content {
+    border-left: 3px solid #40c057;
     padding: 1rem;
-    background: white;
-    border-radius: 8px;
-    border-left: 4px solid #198754;
+    border-radius: 4px;
 }
 
-/* Responsive */
-@media (max-width: 991px) {
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .icon-wrapper {
-        width: 48px;
-        height: 48px;
-    }
-    
-    .icon-wrapper i {
-        font-size: 1.5rem !important;
-    }
+.dash-promo p {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: #212529;
+}
+
+/* ===== EMPTY STATE ===== */
+.dash-empty {
+    color: #868e96;
+    font-size: 0.875rem;
+    text-align: center;
+    padding: 2rem 0;
+    margin: 0;
+}
+
+/* ===== ALERTS ===== */
+.dash-alert {
+    padding: 0.875rem 1rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.dash-alert-success {
+    background: #d3f9d8;
+    color: #2b8a3e;
+}
+
+.dash-alert-warning {
+    background: #fff3bf;
+    color: #e67700;
+}
+
+/* ===== ACTIVITY ===== */
+.dash-activity-title {
+    font-weight: 600;
+    color: #212529;
+    margin: 0 0 0.25rem 0;
+    font-size: 0.875rem;
+}
+
+.dash-activity-detail {
+    color: #495057;
+    margin: 0 0 0.25rem 0;
+    font-size: 0.8125rem;
+}
+
+.dash-activity-time {
+    color: #868e96;
+    margin: 0;
+    font-size: 0.8125rem;
 }
 </style>
 {% endblock %}

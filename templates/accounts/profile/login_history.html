@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Historial de Inicios de Sesión" %} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history me-2"></i>{% trans "Historial de Inicios de Sesión" %}
+                    </h5>
+                    <a href="{% url 'accounts:profile_dashboard' %}" class="btn btn-sm btn-light">
+                        <i class="fas fa-arrow-left"></i> {% trans "Volver" %}
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if page_obj %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>{% trans "Estado" %}</th>
+                                        <th>{% trans "Fecha" %}</th>
+                                        <th>{% trans "IP" %}</th>
+                                        <th>{% trans "Ubicación" %}</th>
+                                        <th>{% trans "Navegador" %}</th>
+                                        <th>{% trans "Motivo" %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for login in page_obj %}
+                                    <tr>
+                                        <td>
+                                            {% if login.success %}
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check"></i> {% trans "Exitoso" %}
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-danger">
+                                                    <i class="fas fa-times"></i> {% trans "Fallido" %}
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ login.created_at|date:"d/m/Y H:i:s" }}</td>
+                                        <td><code>{{ login.ip_address }}</code></td>
+                                        <td>{{ login.location|default:"-" }}</td>
+                                        <td class="small text-muted">{{ login.user_agent|truncatewords:5 }}</td>
+                                        <td>
+                                            {% if not login.success %}
+                                                <span class="text-danger">{{ login.failure_reason }}</span>
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Paginación -->
+                        {% if page_obj.has_other_pages %}
+                        <nav aria-label="{% trans 'Paginación' %}">
+                            <ul class="pagination justify-content-center">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                                            {% trans "Anterior" %}
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == num %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                                            {% trans "Siguiente" %}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center py-5 text-muted">
+                            <i class="fas fa-history fa-3x mb-3 opacity-25"></i>
+                            <p>{% trans "No hay historial de inicios de sesión" %}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

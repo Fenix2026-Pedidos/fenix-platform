@@ -1,74 +1,174 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}{% trans "Registrarse" %} - Fenix{% endblock %}
+{% block title %}{% trans "Crear Cuenta" %} - Fenix{% endblock %}
 
 {% block content %}
-<div style="max-width: 500px; margin: 60px auto;">
+<div style="max-width: 540px; margin: 60px auto;">
     <div class="card">
         <div class="card-body" style="padding: 40px;">
+            <!-- Header -->
             <div style="text-align: center; margin-bottom: 32px;">
                 <div style="width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: white; font-size: 28px;">
                     <i class="bi bi-person-plus"></i>
                 </div>
-                <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">{% trans "Crear Cuenta" %}</h2>
+                <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">{% trans "Bienvenido" %}</h2>
                 <p class="text-muted">{% trans "Regístrate para comenzar a usar Fenix" %}</p>
             </div>
             
-            <form method="post">
+            <!-- Formulario -->
+            <form method="post" id="registerForm">
                 {% csrf_token %}
-                <div class="form-group">
-                    <label class="form-label">{% trans "Email" %}</label>
-                    {{ form.email }}
-                    {% if form.email.errors %}
-                        <div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.email.errors }}</div>
-                    {% endif %}
-                </div>
                 
+                <!-- Nombre completo -->
                 <div class="form-group">
-                    <label class="form-label">{% trans "Nombre Completo" %}</label>
+                    <label class="form-label">
+                        <i class="bi bi-person" style="margin-right: 6px;"></i>
+                        {% trans "Nombre completo" %}
+                    </label>
                     {{ form.full_name }}
                     {% if form.full_name.errors %}
-                        <div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.full_name.errors }}</div>
+                        <div style="color: var(--danger); font-size: 12px; margin-top: 4px;">
+                            {{ form.full_name.errors }}
+                        </div>
                     {% endif %}
                 </div>
                 
+                <!-- Correo electrónico -->
                 <div class="form-group">
-                    <label class="form-label">{% trans "Idioma" %}</label>
-                    {{ form.language }}
-                    {% if form.language.errors %}
-                        <div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.language.errors }}</div>
+                    <label class="form-label">
+                        <i class="bi bi-envelope" style="margin-right: 6px;"></i>
+                        {% trans "Correo electrónico" %}
+                    </label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <div style="color: var(--danger); font-size: 12px; margin-top: 4px;">
+                            {{ form.email.errors }}
+                        </div>
                     {% endif %}
                 </div>
                 
+                <!-- Empresa -->
                 <div class="form-group">
-                    <label class="form-label">{% trans "Contraseña" %}</label>
-                    {{ form.password1 }}
+                    <label class="form-label">
+                        <i class="bi bi-building" style="margin-right: 6px;"></i>
+                        {% trans "Empresa" %}
+                    </label>
+                    {{ form.company }}
+                    {% if form.company.errors %}
+                        <div style="color: var(--danger); font-size: 12px; margin-top: 4px;">
+                            {{ form.company.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Contraseña -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="bi bi-lock" style="margin-right: 6px;"></i>
+                        {% trans "Contraseña" %}
+                    </label>
+                    <div style="position: relative;">
+                        {{ form.password1 }}
+                        <button type="button" class="toggle-password" data-target="id_password1" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--gray-600); cursor: pointer; padding: 4px;" aria-label="Mostrar contraseña">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
                     {% if form.password1.errors %}
-                        <div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.password1.errors }}</div>
+                        <div style="color: var(--danger); font-size: 12px; margin-top: 4px;">
+                            {{ form.password1.errors }}
+                        </div>
                     {% endif %}
                 </div>
                 
+                <!-- Confirmar Contraseña -->
                 <div class="form-group">
-                    <label class="form-label">{% trans "Confirmar Contraseña" %}</label>
-                    {{ form.password2 }}
+                    <label class="form-label">
+                        <i class="bi bi-lock-fill" style="margin-right: 6px;"></i>
+                        {% trans "Confirmar Contraseña" %}
+                    </label>
+                    <div style="position: relative;">
+                        {{ form.password2 }}
+                        <button type="button" class="toggle-password" data-target="id_password2" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--gray-600); cursor: pointer; padding: 4px;" aria-label="Mostrar contraseña">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
                     {% if form.password2.errors %}
-                        <div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.password2.errors }}</div>
+                        <div style="color: var(--danger); font-size: 12px; margin-top: 4px;">
+                            {{ form.password2.errors }}
+                        </div>
                     {% endif %}
                 </div>
                 
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
-                    {% trans "Registrarse" %}
+                <!-- Botón Submit -->
+                <button type="submit" class="btn btn-primary" id="submitBtn" style="width: 100%; margin-top: 16px;">
+                    <i class="bi bi-person-plus-fill" style="margin-right: 6px;"></i>
+                    {% trans "Crear cuenta" %}
                 </button>
             </form>
             
-            <div style="text-align: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--gray-200);">
-                <p style="color: var(--gray-600); margin: 0;">
+            <!-- Alerta informativa -->
+            <div style="background: var(--primary-50); border-left: 4px solid var(--primary-500); border-radius: 8px; padding: 16px; margin-top: 24px;">
+                <div style="display: flex; align-items: start; gap: 12px;">
+                    <i class="bi bi-info-circle" style="color: var(--primary-600); font-size: 20px; margin-top: 2px;"></i>
+                    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: var(--gray-700);">
+                        <strong>{% trans "Proceso de registro:" %}</strong> {% trans "Al crear tu cuenta, recibirás un correo de confirmación. Una vez validado, un administrador revisará y activará tu acceso." %}
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Links de navegación -->
+            <div style="text-align: center; margin-top: 24px;">
+                <a href="{% url 'catalog:product_list' %}" style="color: var(--primary-600); text-decoration: none; font-size: 14px; display: block; margin-bottom: 12px;">
+                    <i class="bi bi-arrow-left" style="margin-right: 6px;"></i>
+                    {% trans "Volver a la home" %}
+                </a>
+            </div>
+            
+            <div style="text-align: center; padding-top: 20px; border-top: 1px solid var(--gray-200);">
+                <p style="color: var(--gray-600); margin: 0; font-size: 14px;">
                     {% trans "¿Ya tienes cuenta?" %} 
-                    <a href="{% url 'accounts:login' %}" style="color: var(--primary-600); text-decoration: none; font-weight: 500;">{% trans "Inicia sesión aquí" %}</a>
+                    <a href="{% url 'accounts:login' %}" style="color: var(--primary-600); text-decoration: none; font-weight: 500;">{% trans "Inicia sesión" %}</a>
                 </p>
             </div>
         </div>
+        
+        <!-- Footer -->
+        <div style="text-align: center; padding: 20px; background: var(--gray-50); border-top: 1px solid var(--gray-200); border-radius: 0 0 12px 12px;">
+            <p style="margin: 0; font-size: 13px; color: var(--gray-500);">
+                © 2026 Fenix. {% trans "Todos los derechos reservados" %}
+            </p>
+        </div>
     </div>
 </div>
+
+<script>
+// Toggle mostrar/ocultar contraseña
+document.querySelectorAll('.toggle-password').forEach(button => {
+    button.addEventListener('click', function() {
+        const targetId = this.getAttribute('data-target');
+        const passwordField = document.getElementById(targetId);
+        const icon = this.querySelector('i');
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+            this.setAttribute('aria-label', 'Ocultar contraseña');
+        } else {
+            passwordField.type = 'password';
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+            this.setAttribute('aria-label', 'Mostrar contraseña');
+        }
+    });
+});
+
+// Loading spinner en submit
+document.getElementById('registerForm').addEventListener('submit', function() {
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" style="margin-right: 8px;"></span>{% trans "Creando cuenta..." %}';
+});
+</script>
 {% endblock %}

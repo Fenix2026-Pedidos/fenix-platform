@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Pendiente de Aprobación" %} - Fenix{% endblock %}
+
+{% block content %}
+<div style="max-width: 540px; margin: 60px auto;">
+    <div class="card">
+        <div class="card-body" style="padding: 40px; text-align: center;">
+            <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--info-100); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; color: var(--info-600); font-size: 36px;">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            
+            <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 16px;">
+                {% trans "Cuenta Pendiente de Aprobación" %}
+            </h2>
+            
+            <p style="color: var(--gray-600); margin-bottom: 24px; line-height: 1.6;">
+                {% trans "Tu cuenta ha sido registrada exitosamente y tu email ha sido verificado." %}
+            </p>
+            
+            <div style="background: var(--info-50); border-radius: 8px; padding: 20px; margin-bottom: 24px; border-left: 4px solid var(--info-500);">
+                <p style="color: var(--gray-700); margin: 0; line-height: 1.6;">
+                    {% trans "Un administrador debe aprobar tu cuenta antes de que puedas acceder a la plataforma. Recibirás un email cuando tu cuenta sea aprobada." %}
+                </p>
+            </div>
+            
+            <div style="text-align: left; background: var(--gray-50); border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+                <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">
+                    {% trans "Próximos pasos:" %}
+                </h3>
+                <ul style="margin: 0; padding-left: 20px; color: var(--gray-600);">
+                    <li style="margin-bottom: 8px;">{% trans "Espera la aprobación del administrador" %}</li>
+                    <li style="margin-bottom: 8px;">{% trans "Recibirás un email de notificación" %}</li>
+                    <li style="margin-bottom: 0;">{% trans "Podrás iniciar sesión una vez aprobado" %}</li>
+                </ul>
+            </div>
+            
+            <div style="margin-top: 24px;">
+                <a href="{% url 'accounts:login' %}" class="btn btn-primary">
+                    <i class="bi bi-arrow-left" style="margin-right: 6px;"></i>
+                    {% trans "Volver al inicio de sesión" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

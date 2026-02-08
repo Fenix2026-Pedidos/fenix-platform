@@ -117,3 +117,9 @@ class AuditLog(models.Model):
             ip_address=ip_address,
             user_agent=user_agent
         )
+
+
+# Helper function for backward compatibility
+def log_action(user, action, description, object_type='', object_id=None, request=None):
+    """Helper function to create an audit log entry"""
+    return AuditLog.log(user, action, description, object_type, object_id, request)

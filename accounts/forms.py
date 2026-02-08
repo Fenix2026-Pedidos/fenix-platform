@@ -24,35 +24,43 @@ class LoginForm(AuthenticationForm):
 
 class RegisterForm(forms.ModelForm):
     password1 = forms.CharField(
-        label='Contraseña',
+        label=_('Contraseña'),
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Contraseña'
+            'placeholder': _('Contraseña'),
+            'id': 'id_password1'
         })
     )
     password2 = forms.CharField(
-        label='Confirmar contraseña',
+        label=_('Confirmar contraseña'),
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Confirmar contraseña'
+            'placeholder': _('Confirmar contraseña'),
+            'id': 'id_password2'
         })
     )
 
     class Meta:
         model = User
-        fields = ('email', 'full_name', 'language')
+        fields = ('full_name', 'email', 'company')
         widgets = {
-            'email': forms.EmailInput(attrs={
-                'class': 'form-control',
-                'placeholder': _('Email')
-            }),
             'full_name': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': _('Nombre completo')
+                'placeholder': _('Tu nombre completo')
             }),
-            'language': forms.Select(attrs={
-                'class': 'form-select'
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': _('tu@email.com')
             }),
+            'company': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': _('Nombre de tu empresa')
+            }),
+        }
+        labels = {
+            'full_name': _('Nombre completo'),
+            'email': _('Correo electrónico'),
+            'company': _('Empresa'),
         }
 
     def clean_password2(self):
@@ -61,10 +69,17 @@ class RegisterForm(forms.ModelForm):
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError(_('Las contraseñas no coinciden.'))
         return password2
+    
+    def clean_company(self):
+        company = self.cleaned_data.get('company')
+        if not company:
+            raise forms.ValidationError(_('La empresa es obligatoria.'))
+        return company
 
     def save(self, commit=True):
         user = super().save(commit=False)
         user.set_password(self.cleaned_data['password1'])
+        user.language = User.LANGUAGE_ES  # Default español
         if commit:
             user.save()
         return user

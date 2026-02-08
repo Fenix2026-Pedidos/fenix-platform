@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Verificación de Email" %} - Fenix{% endblock %}
+
+{% block content %}
+<div style="max-width: 540px; margin: 60px auto;">
+    <div class="card">
+        <div class="card-body" style="padding: 40px; text-align: center;">
+            <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--warning-100); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; color: var(--warning-600); font-size: 36px;">
+                <i class="bi bi-envelope-check"></i>
+            </div>
+            
+            <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 16px;">
+                {% trans "Verifica tu Email" %}
+            </h2>
+            
+            <p style="color: var(--gray-600); margin-bottom: 24px; line-height: 1.6;">
+                {% trans "Hemos enviado un enlace de verificación a" %} <strong>{{ email }}</strong>.
+                {% trans "Por favor revisa tu bandeja de entrada y haz clic en el enlace para verificar tu cuenta." %}
+            </p>
+            
+            <div style="background: var(--gray-50); border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+                <p style="color: var(--gray-700); margin: 0; font-size: 14px;">
+                    <i class="bi bi-info-circle" style="margin-right: 8px;"></i>
+                    {% trans "El enlace de verificación expira en 24 horas" %}
+                </p>
+            </div>
+            
+            <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--gray-200);">
+                <p style="color: var(--gray-600); margin-bottom: 16px; font-size: 14px;">
+                    {% trans "¿No recibiste el email?" %}
+                </p>
+                <button id="resendBtn" class="btn btn-outline-primary" onclick="resendConfirmation()">
+                    <i class="bi bi-arrow-clockwise" style="margin-right: 6px;"></i>
+                    {% trans "Reenviar Email de Verificación" %}
+                </button>
+                <div id="resendMessage" style="margin-top: 12px; font-size: 14px;"></div>
+            </div>
+            
+            <div style="margin-top: 24px;">
+                <a href="{% url 'accounts:login' %}" style="color: var(--primary-600); text-decoration: none; font-size: 14px;">
+                    <i class="bi bi-arrow-left" style="margin-right: 6px;"></i>
+                    {% trans "Volver al inicio de sesión" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function resendConfirmation() {
+    const btn = document.getElementById('resendBtn');
+    const messageDiv = document.getElementById('resendMessage');
+    
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" style="margin-right: 6px;"></span>{% trans "Enviando..." %}';
+    
+    fetch('{% url "accounts:resend_confirmation" %}', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'email={{ email }}'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            messageDiv.innerHTML = '<div style="color: var(--success); font-weight: 500;"><i class="bi bi-check-circle" style="margin-right: 6px;"></i>' + data.message + '</div>';
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-arrow-clockwise" style="margin-right: 6px;"></i>{% trans "Reenviar Email de Verificación" %}';
+            }, 60000); // Habilitar después de 1 minuto
+        } else {
+            messageDiv.innerHTML = '<div style="color: var(--danger);"><i class="bi bi-exclamation-circle" style="margin-right: 6px;"></i>' + data.error + '</div>';
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-arrow-clockwise" style="margin-right: 6px;"></i>{% trans "Reenviar Email de Verificación" %}';
+        }
+    })
+    .catch(error => {
+        messageDiv.innerHTML = '<div style="color: var(--danger);">{% trans "Error al enviar el email. Inténtalo de nuevo." %}</div>';
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-arrow-clockwise" style="margin-right: 6px;"></i>{% trans "Reenviar Email de Verificación" %}';
+    });
+}
+</script>
+{% endblock %}

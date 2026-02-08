@@ -1,7 +1,7 @@
 {% load i18n %}
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <a href="{% url 'catalog:product_list' %}" class="sidebar-logo">
+        <a href="{% url 'accounts:dashboard' %}" class="sidebar-logo">
             <i class="bi bi-fire sidebar-logo-icon"></i>
             <span class="sidebar-menu-text">Fenix</span>
         </a>
@@ -11,9 +11,19 @@
     </div>
     
     <nav class="sidebar-menu">
+        {% if user.is_authenticated %}
+        <!-- NUEVO: Inicio / Dashboard -->
+        <div class="sidebar-menu-item">
+            <a href="{% url 'accounts:dashboard' %}" class="sidebar-menu-link {% if request.resolver_match.url_name == 'dashboard' or request.resolver_match.url_name == 'dashboard_alt' %}active{% endif %}">
+                <i class="bi bi-house-door sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">{% trans "Inicio" %}</span>
+            </a>
+        </div>
+        {% endif %}
+        
         <!-- Link simple a Catálogo (sin accordion) -->
         <div class="sidebar-menu-item">
-            <a href="{% url 'catalog:product_list' %}" class="sidebar-menu-link {% if request.resolver_match.url_name == 'product_list' or request.path == '/' %}active{% endif %}">
+            <a href="{% url 'catalog:product_list' %}" class="sidebar-menu-link {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}">
                 <i class="bi bi-grid sidebar-menu-icon"></i>
                 <span class="sidebar-menu-text">{% trans "Catálogo" %}</span>
             </a>
@@ -38,17 +48,21 @@
         </div>
         {% endif %}
         
-        {% if user.is_staff or user.role == 'manager' or user.role == 'super_admin' %}
+        {# RBAC: Solo SUPER_ADMIN y ADMIN pueden ver Gestión de Usuarios #}
+        {% if user.role == 'super_admin' or user.role == 'admin' %}
         <div class="sidebar-menu-item">
             <a href="{% url 'accounts:user_approval_list' %}" class="sidebar-menu-link {% if 'approval' in request.resolver_match.url_name %}active{% endif %}">
                 <i class="bi bi-person-check sidebar-menu-icon"></i>
-                <span class="sidebar-menu-text">{% trans "Aprobación de Usuarios" %}</span>
+                <span class="sidebar-menu-text">{% trans "Gestión de Usuarios" %}</span>
                 {% if 'approval' in request.resolver_match.url_name %}
                 <div style="width: 8px; height: 8px; background: hsl(var(--primary)); border-radius: 50%; margin-left: auto; flex-shrink: 0;"></div>
                 {% endif %}
             </a>
         </div>
+        {% endif %}
         
+        {# Administración Django (solo para staff) #}
+        {% if user.is_staff %}
         <div class="sidebar-menu-item">
             <a href="{% url 'admin:index' %}" class="sidebar-menu-link" target="_blank" rel="noopener noreferrer">
                 <i class="bi bi-gear sidebar-menu-icon"></i>

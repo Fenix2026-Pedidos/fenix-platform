@@ -89,7 +89,6 @@ def login_view(request):
                 return redirect('accounts:pending_approval')
             else:
                 login(request, user)
-                messages.success(request, _('Bienvenido, %(name)s!') % {'name': user.full_name})
                 next_url = request.GET.get('next')
                 if next_url:
                     return redirect(next_url)
