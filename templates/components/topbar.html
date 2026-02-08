@@ -1,10 +1,17 @@
 {% load i18n %}
 <div class="topbar">
     <div class="topbar-left">
-        <button class="btn btn-sm btn-outline d-md-none" id="mobile-menu-toggle" style="border: none; background: transparent; color: var(--gray-700);">
-            <i class="bi bi-list" style="font-size: 20px;"></i>
-        </button>
-        <h1 class="topbar-title">{% block page_title %}{% trans "Dashboard" %}{% endblock %}</h1>
+        <!-- Buscador Global Inteligente -->
+        <div class="global-search-wrapper">
+            <i class="bi bi-search search-icon"></i>
+            <input 
+                type="search" 
+                class="global-search-input" 
+                placeholder="{% trans '🔍 Buscar pedidos, productos o acciones…' %}" 
+                id="globalSearchInput"
+                autocomplete="off"
+            >
+        </div>
     </div>
     
     <div class="topbar-right">
@@ -127,3 +134,36 @@
 })();
 </script>
 <!-- CSRF logout fallback end -->
+
+<!-- Global Search Script -->
+<script>
+(function() {
+  const searchInput = document.getElementById('globalSearchInput');
+  if (!searchInput) return;
+  
+  // Preparado para búsqueda inteligente (por implementar)
+  searchInput.addEventListener('input', function(e) {
+    const query = e.target.value.trim();
+    
+    // TODO: Implementar búsqueda en tiempo real
+    // - Búsqueda de pedidos por número
+    // - Búsqueda de productos por nombre
+    // - Búsqueda de acciones pendientes
+    // - Sugerencias inteligentes con dropdown
+    
+    if (query.length >= 3) {
+      console.log('Buscando:', query);
+      // Aquí se agregarán llamadas AJAX/Fetch para búsqueda en tiempo real
+    }
+  });
+  
+  // Atajos de teclado (Ctrl+K o Cmd+K para enfocar búsqueda)
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      searchInput.focus();
+    }
+  });
+})();
+</script>
+<!-- End Global Search Script -->

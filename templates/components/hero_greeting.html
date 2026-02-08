@@ -1,0 +1,136 @@
+{% load i18n %}
+
+<!-- Hero Banner con Saludo Inteligente -->
+<div class="hero-greeting-banner">
+    <div class="container-fluid">
+        <div class="hero-content">
+            <div class="greeting-section">
+                <h1 class="greeting-title">{{ user_greeting }}</h1>
+                <p class="greeting-subtitle">
+                    {% if subtitle %}
+                        {{ subtitle }}
+                    {% else %}
+                        {% trans "Aquí tienes un resumen del estado actual de" %} 
+                        <strong>{% trans "tu proceso de Reclutamiento y Selección" %}</strong>
+                    {% endif %}
+                </p>
+                
+                {% if dashboard_status %}
+                <div class="status-indicator status-{{ dashboard_status.level }}">
+                    <span class="status-icon">{{ dashboard_status.icon }}</span>
+                    <span class="status-message">{{ dashboard_status.message }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hero-greeting-banner {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    color: white;
+    padding: 1.5rem 0;
+    margin-bottom: 2rem;
+    border-radius: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.hero-content {
+    padding: 0 1.5rem;
+}
+
+.greeting-section {
+    text-align: left;
+    max-width: none;
+}
+
+.greeting-title {
+    font-size: 1.875rem;
+    font-weight: 600;
+    margin-bottom: 0.625rem;
+    color: white;
+    text-shadow: none;
+}
+
+.greeting-subtitle {
+    font-size: 1rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+    line-height: 1.5;
+}
+
+.greeting-subtitle strong {
+    font-weight: 600;
+}
+
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.status-indicator.status-success {
+    background-color: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.4);
+}
+
+.status-indicator.status-warning {
+    background-color: rgba(245, 158, 11, 0.2);
+    border-color: rgba(245, 158, 11, 0.4);
+}
+
+.status-indicator.status-info {
+    background-color: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+.status-indicator.status-danger {
+    background-color: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+}
+
+.status-icon {
+    font-size: 1.125rem;
+    line-height: 1;
+}
+
+.status-message {
+    line-height: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-greeting-banner {
+        padding: 1.5rem 0;
+    }
+    
+    .greeting-title {
+        font-size: 1.5rem;
+    }
+    
+    .greeting-subtitle {
+        font-size: 0.875rem;
+    }
+    
+    .status-indicator {
+        font-size: 0.8125rem;
+        padding: 0.4rem 0.75rem;
+    }
+}
+
+/* Dark mode compatible */
+@media (prefers-color-scheme: dark) {
+    .hero-greeting-banner {
+        background: linear-gradient(135deg, #4c5fd7 0%, #5a3d7a 100%);
+    }
+}
+</style>
