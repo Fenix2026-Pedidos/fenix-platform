@@ -1,0 +1,18 @@
+{% load i18n %}
+<div class="auth-modal" id="authRequiredModal" aria-hidden="true">
+    <div class="auth-modal__overlay" data-modal-close></div>
+    <div class="auth-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+        <button type="button" class="auth-modal__close" data-modal-close aria-label="{% trans 'Cerrar' %}">
+            <i class="bi bi-x"></i>
+        </button>
+        <div class="auth-modal__icon">
+            <i class="bi bi-lock-fill"></i>
+        </div>
+        <h2 id="authModalTitle">{% trans "Regístrate o inicia sesión para realizar pedidos" %}</h2>
+        <p class="auth-modal__text">{% trans "Necesitas una cuenta aprobada para añadir productos al carrito y completar pedidos." %}</p>
+        <div class="auth-modal__actions">
+            <a href="{% url 'accounts:login' %}" class="btn btn-outline">{% trans "Iniciar sesión" %}</a>
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary">{% trans "Registrarse" %}</a>
+        </div>
+    </div>
+</div>

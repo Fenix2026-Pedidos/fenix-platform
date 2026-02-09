@@ -11,6 +11,7 @@
                 id="globalSearchInput"
                 autocomplete="off"
             >
+            <div class="global-search-results" id="globalSearchResults" hidden></div>
         </div>
     </div>
     
@@ -138,32 +139,183 @@
 <!-- Global Search Script -->
 <script>
 (function() {
-  const searchInput = document.getElementById('globalSearchInput');
-  if (!searchInput) return;
-  
-  // Preparado para búsqueda inteligente (por implementar)
-  searchInput.addEventListener('input', function(e) {
-    const query = e.target.value.trim();
-    
-    // TODO: Implementar búsqueda en tiempo real
-    // - Búsqueda de pedidos por número
-    // - Búsqueda de productos por nombre
-    // - Búsqueda de acciones pendientes
-    // - Sugerencias inteligentes con dropdown
-    
-    if (query.length >= 3) {
-      console.log('Buscando:', query);
-      // Aquí se agregarán llamadas AJAX/Fetch para búsqueda en tiempo real
-    }
-  });
-  
-  // Atajos de teclado (Ctrl+K o Cmd+K para enfocar búsqueda)
-  document.addEventListener('keydown', function(e) {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-      e.preventDefault();
-      searchInput.focus();
-    }
-  });
+    const searchInput = document.getElementById('globalSearchInput');
+    const resultsPanel = document.getElementById('globalSearchResults');
+    const wrapper = searchInput ? searchInput.closest('.global-search-wrapper') : null;
+    if (!searchInput || !resultsPanel || !wrapper) return;
+
+    const MIN_QUERY_LENGTH = 2;
+    const searchEndpoint = "{% url 'global_search' %}";
+    const labels = {
+        orders: "{{ _('Mis Pedidos')|escapejs }}",
+        products: "{{ _('Productos')|escapejs }}",
+        actions: "{{ _('Acciones Pendientes')|escapejs }}",
+        empty: "{{ _('No se encontraron resultados')|escapejs }}",
+        hint: "{{ _('Escribe al menos 2 caracteres para buscar')|escapejs }}",
+        error: "{{ _('Ha ocurrido un error')|escapejs }}",
+        loading: "{{ _('Cargando...')|escapejs }}",
+    };
+
+    let debounceTimer = null;
+    let activeController = null;
+    let lastResults = [];
+    let currentQuery = '';
+
+    const escapeHtml = (value = '') => value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
+    const hideResults = () => {
+        resultsPanel.hidden = true;
+    };
+
+    const showMessage = (message) => {
+        resultsPanel.innerHTML = `<div class="search-empty">${escapeHtml(message)}</div>`;
+        resultsPanel.hidden = false;
+    };
+
+    const renderResults = (results, query) => {
+        lastResults = [];
+        const sections = [];
+        const headingMap = {
+            orders: labels.orders,
+            products: labels.products,
+            actions: labels.actions,
+        };
+
+        ['orders', 'products', 'actions'].forEach((type) => {
+            const items = results?.[type] || [];
+            if (!items.length) {
+                return;
+            }
+
+            lastResults = lastResults.concat(items);
+
+            const itemsMarkup = items.map((item) => `
+                <li class="search-result-item">
+                    <a class="search-result-link" href="${item.url}">
+                        <span class="result-title">${escapeHtml(item.title)}</span>
+                        ${item.subtitle ? `<span class="result-subtitle">${escapeHtml(item.subtitle)}</span>` : ''}
+                    </a>
+                </li>
+            `).join('');
+
+            sections.push(`
+                <div class="search-section">
+                    <p class="search-section-title">${headingMap[type]}</p>
+                    <ul class="search-results-list">${itemsMarkup}</ul>
+                </div>
+            `);
+        });
+
+        if (!sections.length) {
+            showMessage(labels.empty);
+            return;
+        }
+
+        resultsPanel.innerHTML = sections.join('');
+        resultsPanel.hidden = false;
+    };
+
+    const performSearch = (query) => {
+        currentQuery = query;
+        if (activeController) {
+            activeController.abort();
+        }
+        activeController = new AbortController();
+
+        showMessage(labels.loading);
+
+        fetch(`${searchEndpoint}?q=${encodeURIComponent(query)}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            credentials: 'same-origin',
+            signal: activeController.signal,
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Response not OK');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                if (query !== currentQuery) {
+                    return;
+                }
+                renderResults(data?.results, query);
+            })
+            .catch((error) => {
+                if (error.name === 'AbortError') {
+                    return;
+                }
+                console.error('Global search error', error);
+                showMessage(labels.error);
+            });
+    };
+
+    searchInput.addEventListener('input', (event) => {
+        const value = event.target.value.trim();
+        clearTimeout(debounceTimer);
+
+        if (!value) {
+            currentQuery = '';
+            lastResults = [];
+            hideResults();
+            return;
+        }
+
+        if (value.length < MIN_QUERY_LENGTH) {
+            showMessage(labels.hint);
+            return;
+        }
+
+        debounceTimer = setTimeout(() => performSearch(value), 250);
+    });
+
+    searchInput.addEventListener('keydown', (event) => {
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+            event.preventDefault();
+            searchInput.focus();
+            return;
+        }
+
+        if (event.key === 'Escape') {
+            hideResults();
+            searchInput.blur();
+            return;
+        }
+
+        if (event.key === 'Enter' && lastResults.length) {
+            window.location.href = lastResults[0].url;
+        }
+    });
+
+    searchInput.addEventListener('focus', () => {
+        if (resultsPanel.innerHTML.trim()) {
+            resultsPanel.hidden = false;
+        }
+    });
+
+    searchInput.addEventListener('blur', () => {
+        setTimeout(() => hideResults(), 120);
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+            event.preventDefault();
+            searchInput.focus();
+        }
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!wrapper.contains(event.target)) {
+            hideResults();
+        }
+    });
 })();
 </script>
 <!-- End Global Search Script -->

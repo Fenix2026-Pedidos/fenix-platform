@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n static %}
+{% load i18n static catalog_extras %}
 
 {% block page_title %}{% trans "Catálogo de Productos" %}{% endblock %}
 {% block title %}{% trans "Catálogo de Productos" %} - Fenix{% endblock %}
@@ -12,25 +12,30 @@
 <!-- Token CSRF para AJAX -->
 {% csrf_token %}
 
-<div class="catalog-container">
-    <!-- Header con búsqueda y botón de filtros -->
-    <div class="catalog-header">
-        <h1 class="catalog-title">{% trans "Catálogo de Productos" %}</h1>
-        <div class="catalog-header-actions">
-            <form method="get" class="catalog-search" id="searchForm">
-                <input type="text" name="q" value="{{ search_query }}" class="form-control catalog-search-input" 
-                       placeholder="{% trans 'Buscar productos...' %}" id="searchInput">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-search"></i>
-                </button>
-            </form>
-            <button type="button" class="btn btn-outline btn-filters-toggle" id="filtersToggle">
-                <i class="bi bi-sliders"></i>
-                <span class="d-none d-md-inline">{% trans "Filtros" %}</span>
-            </button>
-        </div>
-    </div>
+<div class="catalog-page" data-authenticated="{{ request.user.is_authenticated|yesno:'true,false' }}">
+    {% if not request.user.is_authenticated %}
+        {% include 'components/hero_public.html' with featured_products=products|slice:":3" %}
+    {% endif %}
 
+    <section class="catalog-shell" aria-labelledby="catalogSectionTitle">
+        <div class="catalog-shell__intro">
+            <div>
+                <p class="catalog-shell__eyebrow">{% trans "Catálogo actualizado" %}</p>
+                <h2 id="catalogSectionTitle" class="catalog-shell__title">{% trans "Catálogo de Productos" %}</h2>
+            </div>
+            <p class="catalog-shell__subtitle">
+                {% if request.user.is_authenticated %}
+                    {% trans "Selecciona cantidades y añade tus básicos al carrito inteligente." %}
+                {% else %}
+                    {% trans "Explora el surtido completo y crea tu cuenta para comprar." %}
+                {% endif %}
+            </p>
+        </div>
+
+        {% include 'components/category_tabs.html' with search_query=search_query %}
+    </section>
+
+    <div class="catalog-container">
     <!-- Panel de filtros desplegable -->
     <aside class="catalog-filters-panel" id="filtersPanel">
         <div class="filters-header">
@@ -139,10 +144,11 @@
                 {% if products %}
                     {% for product in products %}
                     <div class="product-card flex flex-col h-full overflow-hidden" 
-                         data-product-id="{{ product.pk }}" 
-                         data-product-price="{{ product.price }}"
-                         data-product-type="{% cycle 'charcuteria' 'curados' 'ibericos' 'jamon-cocido' 'jamon-curado' 'pavo-pollo' 'platos-preparados' 'salchichas' %}"
-                         data-product-features="{% cycle 'sin-lactosa,sin-conservantes' 'natural' 'sin-colorantes' 'sin-azucares' 'bajo-carbohidratos' 'apto-diabeticos' 'natural,sin-lactosa' '' %}">
+                        data-product-id="{{ product.pk }}" 
+                        data-product-price="{{ product.price }}"
+                        data-category="{{ product|product_category }}"
+                        data-product-type="{% cycle 'charcuteria' 'curados' 'ibericos' 'jamon-cocido' 'jamon-curado' 'pavo-pollo' 'platos-preparados' 'salchichas' %}"
+                        data-product-features="{% cycle 'sin-lactosa,sin-conservantes' 'natural' 'sin-colorantes' 'sin-azucares' 'bajo-carbohidratos' 'apto-diabeticos' 'natural,sin-lactosa' '' %}">
                         <!-- Contenido de la card (orden específico) -->
                         <div class="product-card-content flex flex-col h-full pb-4">
                             <!-- (a) Nombre del producto -->
@@ -207,7 +213,7 @@
                                 
                                 <!-- Botón Añadir centrado (deshabilitado hasta seleccionar cantidad) -->
                                 <button type="button" class="w-full max-w-[260px] h-10 flex items-center justify-center gap-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 whitespace-nowrap btn-add-product disabled" data-product-id="{{ product.pk }}" disabled>
-                                    <i class="bi bi-cart-plus"></i> {% trans "Selecciona cantidad" %}
+                                    <i class="bi bi-cart-plus"></i> {% trans "Añadir al carrito" %}
                                 </button>
                             </div>
                         </div>
@@ -228,7 +234,18 @@
             </div>
         </div>
     </div>
+    </div>
+
+    {% if not request.user.is_authenticated %}
+        {% include 'components/trust_bar.html' %}
+    {% endif %}
+
+    {% include 'components/public_footer.html' %}
 </div>
+
+{% if not request.user.is_authenticated %}
+    {% include 'components/auth_required_modal.html' %}
+{% endif %}
 
 <!-- Datos iniciales del carrito para JavaScript -->
 {{ cart|json_script:"initialCartData" }}
@@ -236,6 +253,10 @@
 {% endblock %}
 
 {% block extra_js %}
+<script>
+    window.Fenix = window.Fenix || {};
+    window.Fenix.isAuthenticated = {{ request.user.is_authenticated|yesno:'true,false' }};
+</script>
 <script src="{% static 'js/catalog.js' %}"></script>
 <script src="{% static 'js/catalog-filters.js' %}"></script>
 <script>
@@ -292,6 +313,61 @@
             // Reemplazar el contenido del precio completo con parte entera y decimales
             priceFull.outerHTML = '<span class="price-int">' + intPart + '</span><span class="price-dec">,' + decPart + '</span>';
         });
+
+        const tabsController = (function() {
+            const tabButtons = Array.from(document.querySelectorAll('[data-category-tab]'));
+            const cards = Array.from(document.querySelectorAll('.product-card'));
+
+            if (!tabButtons.length || !cards.length) {
+                return;
+            }
+
+            const setActiveTab = (slug) => {
+                tabButtons.forEach(btn => {
+                    const isActive = btn.getAttribute('data-category-tab') === slug;
+                    btn.classList.toggle('is-active', isActive);
+                    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                });
+            };
+
+            const filterCards = (slug) => {
+                cards.forEach(card => {
+                    const categories = (card.getAttribute('data-category') || 'todos').split(',');
+                    const matches = slug === 'todos' || categories.includes(slug);
+                    card.style.display = matches ? '' : 'none';
+                });
+            };
+
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const slug = btn.getAttribute('data-category-tab');
+                    setActiveTab(slug);
+                    filterCards(slug);
+                });
+            });
+        })();
+
+        const authModalController = (function() {
+            const modal = document.getElementById('authRequiredModal');
+            if (!modal) {
+                return;
+            }
+
+            const toggle = (show) => {
+                modal.setAttribute('aria-hidden', show ? 'false' : 'true');
+                modal.classList.toggle('is-open', show);
+            };
+
+            modal.querySelectorAll('[data-modal-close]').forEach(btn => {
+                btn.addEventListener('click', () => toggle(false));
+            });
+
+            window.Fenix.publicModals = window.Fenix.publicModals || {};
+            window.Fenix.publicModals.requireAuth = {
+                open: () => toggle(true),
+                close: () => toggle(false),
+            };
+        })();
     });
 </script>
 {% endblock %}

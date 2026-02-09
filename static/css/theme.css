@@ -456,6 +456,85 @@ body {
         font-size: 14px;
     }
 }
+
+.global-search-results {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    width: min(420px, 100vw - 24px);
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    padding: 0.75rem 0;
+    max-height: 420px;
+    overflow-y: auto;
+    z-index: 2000;
+}
+
+.global-search-results[hidden] {
+    display: none;
+}
+
+.search-section {
+    padding: 0.25rem 0 0.5rem 0;
+}
+
+.search-section + .search-section {
+    border-top: 1px solid var(--gray-100);
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+}
+
+.search-section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 1rem 0.25rem;
+}
+
+.search-results-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.search-result-item + .search-result-item {
+    border-top: 1px solid var(--gray-100);
+}
+
+.search-result-link {
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    color: var(--gray-800);
+    transition: background-color var(--transition), color var(--transition);
+}
+
+.search-result-link:hover {
+    background-color: var(--gray-50);
+}
+
+.result-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 0.15rem;
+}
+
+.result-subtitle {
+    font-size: 0.78rem;
+    color: var(--gray-500);
+}
+
+.search-empty {
+    font-size: 0.85rem;
+    color: var(--gray-500);
+    padding: 0.75rem 1rem;
+}
 /* Fin Buscador Global */
 
 .topbar-title {
@@ -1017,6 +1096,24 @@ body {
     font-size: 24px;
     font-weight: 700;
     color: var(--gray-900);
+}
+
+.public-static-page {
+    background: white;
+    border-radius: 24px;
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-md);
+    padding: clamp(24px, 4vw, 48px);
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.public-static-page__card {
+    margin-top: 24px;
+    padding: 20px;
+    border-radius: 16px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
 }
 
 .text-muted {

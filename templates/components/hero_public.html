@@ -1,0 +1,55 @@
+{% load i18n static %}
+<section class="public-hero" aria-labelledby="publicHeroTitle">
+    <div class="public-hero__inner">
+        <div class="public-hero__copy">
+            <p class="public-hero__eyebrow">{% trans "Fenix Distribuciones" %}</p>
+            <h1 id="publicHeroTitle">{% trans "Pedidos recurrentes para tu negocio, sin complicaciones" %}</h1>
+            <p class="public-hero__subline">{% trans "Compra rápida" %} &middot; {% trans "Entrega programada" %} &middot; {% trans "Control de stock" %}</p>
+            <p class="public-hero__body">{% trans "Pide online tus productos de siempre con entregas periódicas y sin preocupaciones." %}</p>
+            <div class="public-hero__cta">
+                <a href="{% url 'accounts:register' %}" class="btn btn-cta">
+                    <i class="bi bi-arrow-right-circle"></i>
+                    {% trans "Crea tu cuenta gratis" %}
+                </a>
+            </div>
+        </div>
+        <div class="public-hero__visual" aria-hidden="true">
+            <div class="public-hero__cards">
+                {% with featured_products=featured_products|default:products|slice:":3" %}
+                    {% if featured_products %}
+                        {% for product in featured_products %}
+                        <article class="hero-product-card">
+                            <div class="hero-product-card__image">
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="" loading="lazy">
+                                {% else %}
+                                    <div class="hero-product-card__placeholder">
+                                        <i class="bi bi-box"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="hero-product-card__info">
+                                <p class="hero-product-card__name">
+                                    {% if lang == 'zh-hans' %}
+                                        {{ product.name_zh_hans|default:product.name_es }}
+                                    {% else %}
+                                        {{ product.name_es|default:product.name_zh_hans }}
+                                    {% endif %}
+                                </p>
+                                <p class="hero-product-card__price">{{ product.price }} €</p>
+                            </div>
+                        </article>
+                        {% endfor %}
+                    {% else %}
+                        <div class="hero-product-card hero-product-card--placeholder">
+                            <div class="hero-product-card__placeholder">
+                                <i class="bi bi-image"></i>
+                            </div>
+                            <p class="hero-product-card__name">{% trans "Catálogo listo para tu negocio" %}</p>
+                        </div>
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+</section>

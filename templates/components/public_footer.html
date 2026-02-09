@@ -1,0 +1,26 @@
+{% load i18n static %}
+<footer class="public-footer" aria-label="{% trans 'Información legal y de contacto' %}">
+    <div class="public-footer__content">
+        <div class="public-footer__brand">
+            <div class="public-footer__logo">
+                <img src="{% static 'img/fenix-logo.svg' %}" alt="Logo Fenix" loading="lazy">
+            </div>
+            <div class="public-footer__info">
+                <p class="public-footer__title">FENIX DISTRIBUCIONES S.L.</p>
+                <p class="public-footer__text"><a href="mailto:info@fenixdistribuciones.com">info@fenixdistribuciones.com</a></p>
+                <p class="public-footer__text"><a href="tel:+34622593887">+34 622 59 38 87</a></p>
+            </div>
+        </div>
+        <div class="public-footer__list" aria-label="{% trans 'Enlaces legales' %}">
+            <p class="public-footer__list-title">{% trans "Textos legales" %}</p>
+            <ul>
+                <li><a href="{% url 'public_about' %}">{% trans "Quiénes somos" %}</a></li>
+                <li><a href="{% url 'public_legal' %}">{% trans "Aviso legal" %}</a></li>
+                <li><a href="{% url 'public_privacy' %}">{% trans "Política de privacidad" %}</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="public-footer__bottom">
+        <p>© {% now "Y" %} Fenix Distribuciones · {% trans "Todos los derechos reservados" %}</p>
+    </div>
+</footer>

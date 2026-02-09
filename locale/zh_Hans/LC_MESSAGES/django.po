@@ -2605,6 +2605,14 @@ msgstr "退出登录"
 msgid "🔍 Buscar pedidos, productos o acciones…"
 msgstr "🔍 搜索订单、产品或操作…"
 
+#: .\templates\components\topbar.html:153
+msgid "No se encontraron resultados"
+msgstr "未找到结果"
+
+#: .\templates\components\topbar.html:154
+msgid "Escribe al menos 2 caracteres para buscar"
+msgstr "请输入至少 2 个字符进行搜索"
+
 #: .\templates\dashboard\index.html:20
 msgid "Estado de tus pedidos actuales"
 msgstr "您当前订单的状态"

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}Fenix - {% trans "Quiénes somos" %}{% endblock %}
+
+{% block content %}
+<section class="public-static-page">
+    <h1>{% trans "Quiénes somos" %}</h1>
+    <p>{% trans "Somos Fenix Distribuciones, especialistas en surtido cárnico para negocios con necesidades recurrentes." %}</p>
+    <p>{% trans "Gestionamos pedidos programados y controlados para que nunca te falte producto." %}</p>
+    <div class="public-static-page__card">
+        <p><strong>{% trans "Email" %}:</strong> info@fenixdistribuciones.com</p>
+        <p><strong>{% trans "Teléfono" %}:</strong> +34 600 159 456</p>
+    </div>
+</section>
+{% endblock %}

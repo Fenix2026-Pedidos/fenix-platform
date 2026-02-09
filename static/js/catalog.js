@@ -107,6 +107,18 @@ const CatalogCart = {
             });
         });
     },
+
+    isUserAuthenticated: function() {
+        return Boolean(window.Fenix && window.Fenix.isAuthenticated);
+    },
+
+    promptAuth: function() {
+        if (window.Fenix && window.Fenix.publicModals && window.Fenix.publicModals.requireAuth) {
+            window.Fenix.publicModals.requireAuth.open();
+        } else {
+            this.showToast('Inicia sesión o regístrate para continuar', 'info');
+        }
+    },
     
     /**
      * Incrementa qtyLocal (SOLO UI, NUNCA toca servidor)
@@ -143,6 +155,11 @@ const CatalogCart = {
         // Si la cantidad local es 0, no hacer nada
         if (localQty === 0) {
             this.showToast('Selecciona una cantidad primero', 'warning');
+            return;
+        }
+
+        if (!this.isUserAuthenticated()) {
+            this.promptAuth();
             return;
         }
         
@@ -202,7 +219,7 @@ const CatalogCart = {
             // Restaurar botón
             if (btn) {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="bi bi-cart-plus"></i> Añadir';
+                btn.innerHTML = '<i class="bi bi-cart-plus"></i> Añadir al carrito';
                 this.updateAddButtonState(productId);
             }
         });
@@ -246,7 +263,7 @@ const CatalogCart = {
         if (localQty === 0) {
             btn.disabled = true;
             btn.classList.add('disabled');
-            btn.innerHTML = '<i class="bi bi-cart-plus"></i> Selecciona cantidad';
+            btn.innerHTML = '<i class="bi bi-cart-plus"></i> Añadir al carrito';
         } else {
             btn.disabled = false;
             btn.classList.remove('disabled');
