@@ -38,14 +38,14 @@
                             <span>{{ item.product.name_es }}</span>
                         </div>
                     </td>
-                    <td>{{ item.product.price }} €</td>
+                    <td>{{ item.product.price|floatformat:2 }} €</td>
                     <td>
                         <input type="number" class="form-control quantity-input" 
                                value="{{ item.quantity }}" min="1" 
                                data-product-id="{{ item.product.pk }}" 
                                style="width: 80px; display: inline-block;">
                     </td>
-                    <td style="font-weight: 600;">{{ item.item_total }} €</td>
+                    <td style="font-weight: 600;">{{ item.item_total|floatformat:2 }} €</td>
                     <td style="text-align: right;">
                         <button class="btn btn-danger btn-sm remove-item" 
                                 data-product-id="{{ item.product.pk }}">
@@ -58,7 +58,7 @@
             <tfoot style="background-color: var(--gray-50);">
                 <tr>
                     <th colspan="3" style="text-align: right; padding: 20px 16px;">{% trans "Total:" %}</th>
-                    <th style="font-size: 20px; padding: 20px 16px;">{{ total }} €</th>
+                    <th style="font-size: 20px; padding: 20px 16px;">{{ total|floatformat:2 }} €</th>
                     <th></th>
                 </tr>
             </tfoot>

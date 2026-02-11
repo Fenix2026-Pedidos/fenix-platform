@@ -13,6 +13,7 @@ class PlatformSettingsAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Idioma', {'fields': ('default_language',)}),
         ('Email (notificaciones)', {'fields': ('email_from', 'email_from_name')}),
+        ('Pedidos', {'fields': ('order_notification_email',)}),
         ('Entrega', {'fields': ('default_delivery_window_hours',)}),
         ('Auditoría', {'fields': ('created_at', 'updated_at')}),
     )

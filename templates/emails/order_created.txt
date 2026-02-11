@@ -1,0 +1,18 @@
+Hola equipo,
+
+Se ha generado un nuevo pedido en la plataforma Fenix.
+
+Pedido #{{ order.id }}
+Cliente: {{ customer_name }}
+Email cliente: {{ customer_email }}
+Fecha y hora: {{ order_datetime|date:"Y-m-d H:i" }}
+Estado inicial: {{ status_label }}
+Moneda: {{ currency }}
+
+Detalle del pedido:
+{% for item in items %}- {{ item.name }} | Cantidad: {{ item.quantity }} | Precio unitario: {{ item.unit_price }} | Subtotal: {{ item.subtotal }}
+{% empty %}- No hay productos asociados al pedido.
+{% endfor %}
+Total del pedido: {{ total }}
+
+Este pedido ha sido generado desde la plataforma Fenix.

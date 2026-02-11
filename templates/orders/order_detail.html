@@ -37,7 +37,7 @@
                         <tr>
                             <td style="font-weight: 500;">{{ item.product_name_es }}</td>
                             <td>{{ item.quantity }}</td>
-                            <td>{{ item.unit_price }} €</td>
+                            <td>{{ item.unit_price|floatformat:2 }} €</td>
                             <td style="text-align: right; font-weight: 600;">{{ item.line_total }} €</td>
                         </tr>
                         {% endfor %}

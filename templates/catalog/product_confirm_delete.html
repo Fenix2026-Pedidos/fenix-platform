@@ -24,7 +24,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <strong>{% translate "Precio" %}:</strong> ${{ product.price }}
+                        <strong>{% translate "Precio" %}:</strong> {{ product.price|floatformat:2 }} €
                     </div>
 
                     <div class="mb-3">

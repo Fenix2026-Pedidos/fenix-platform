@@ -36,7 +36,7 @@
                                         {{ product.name_es|default:product.name_zh_hans }}
                                     {% endif %}
                                 </p>
-                                <p class="hero-product-card__price">{{ product.price }} €</p>
+                                <p class="hero-product-card__price">{{ product.price|floatformat:2 }} €</p>
                             </div>
                         </article>
                         {% endfor %}

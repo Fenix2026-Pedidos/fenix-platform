@@ -144,6 +144,8 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'true').lower() in ('1', 'true', 'yes')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@fenix.com')
+DEFAULT_ORDER_NOTIFICATION_EMAIL = os.getenv('DEFAULT_ORDER_NOTIFICATION_EMAIL', 'plataformafenix2026@gmail.com')
+DEFAULT_ORDER_CURRENCY = os.getenv('DEFAULT_ORDER_CURRENCY', 'EUR')
 
 # Admin email para notificaciones de aprobación
 ADMIN_APPROVAL_EMAIL = os.getenv('ADMIN_APPROVAL_EMAIL', 'admin@fenix.com')
@@ -217,15 +219,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
 
-# Email configuration (development - console backend)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'noreply@fenix.com'
-
-# For production, use SMTP:
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'your-email@gmail.com'
-# EMAIL_HOST_PASSWORD = 'your-app-password'
-# DEFAULT_FROM_EMAIL = 'noreply@fenix.com'
+# Mantén la configuración anterior como referencia en .env para evitar sobreescrituras involuntarias

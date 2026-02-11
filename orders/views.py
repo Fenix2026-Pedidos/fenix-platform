@@ -13,6 +13,7 @@ from .models import Order, OrderItem, OrderEvent, OrderDocument
 from .forms import OrderStatusUpdateForm, OrderETAForm, OrderDocumentForm
 from catalog.models import Product
 from accounts.utils import is_manager_or_admin
+from .services import enqueue_order_confirmation_email
 
 
 def get_cart(request):
@@ -168,6 +169,8 @@ def order_create(request):
     
     order.total_amount = total
     order.save()
+
+    transaction.on_commit(lambda: enqueue_order_confirmation_email(order.id))
     
     # Limpiar el carrito
     request.session['cart'] = {}

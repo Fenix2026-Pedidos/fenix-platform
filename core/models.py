@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -30,6 +31,11 @@ class PlatformSettings(models.Model):
         default='FENIX',
         help_text='Nombre del remitente',
     )
+    order_notification_email = models.EmailField(
+        blank=True,
+        default='',
+        help_text='Email que recibe las notificaciones automáticas de pedidos',
+    )
     default_delivery_window_hours = models.PositiveIntegerField(
         default=24,
         help_text='Ventana de entrega por defecto (horas)',
@@ -53,6 +59,13 @@ class PlatformSettings(models.Model):
     def get_settings(cls):
         """Obtener o crear la configuración única"""
         obj, _ = cls.objects.get_or_create(pk=1)
+        if not obj.order_notification_email:
+            obj.order_notification_email = getattr(
+                settings,
+                'DEFAULT_ORDER_NOTIFICATION_EMAIL',
+                'plataformafenix2026@gmail.com',
+            )
+            obj.save(update_fields=['order_notification_email'])
         return obj
 
 

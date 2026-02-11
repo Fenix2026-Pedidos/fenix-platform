@@ -48,7 +48,7 @@
                         </tr>
                         <tr>
                             <th>{% translate "Precio" %}:</th>
-                            <td class="h4">${{ product.price }}</td>
+                            <td class="h4">{{ product.price|floatformat:2 }} €</td>
                         </tr>
                         <tr>
                             <th>{% translate "Stock Disponible" %}:</th>

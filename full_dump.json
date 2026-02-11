@@ -1,0 +1,2424 @@
+[
+  {
+    "model": "accounts.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$Du1aQjNrGGieZsvHLyjnRx$XwCGeUmM0ejfK6t97dQKefoQXsWkX60J1Wi2nlK3VDA=",
+      "last_login": "2026-02-09T12:22:29.738Z",
+      "is_superuser": true,
+      "uuid": "f93aaf5a-4ffc-46f4-a4c9-d7f119ff4a53",
+      "email": "plataformafenix2026@gmail.com",
+      "full_name": "Vladimir Marfetan",
+      "first_name": "Vladimir",
+      "last_name": "Marfetan Morales",
+      "phone": "+34649586937",
+      "avatar": "",
+      "company": "Fenix",
+      "role": "super_admin",
+      "language": "es",
+      "timezone": "Europe/Madrid",
+      "status": "active",
+      "email_verified": true,
+      "pending_approval": false,
+      "is_active": true,
+      "is_staff": true,
+      "date_joined": "2026-01-25T08:06:09.615Z",
+      "updated_at": "2026-02-08T02:55:02.998Z",
+      "last_login_at": "2026-02-09T12:26:46.789Z",
+      "last_login_ip": "127.0.0.1",
+      "approved_by": null,
+      "approved_at": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "accounts.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$0MaASgKA1kICX2YBgpxqGV$sRpOgk0cHIm0ODmYSiTjMTxR/gws08kfhM2KinWfPZ8=",
+      "last_login": "2026-02-09T10:21:34.720Z",
+      "is_superuser": false,
+      "uuid": "f93aaf5a-4ffc-46f4-a4c9-d7f119ff4a53",
+      "email": "vmarfetanmorales@gmail.com",
+      "full_name": "Vladi",
+      "first_name": "",
+      "last_name": "",
+      "phone": "",
+      "avatar": "",
+      "company": "Synerg-IA",
+      "role": "user",
+      "language": "es",
+      "timezone": "Europe/Madrid",
+      "status": "active",
+      "email_verified": true,
+      "pending_approval": false,
+      "is_active": true,
+      "is_staff": false,
+      "date_joined": "2026-02-03T17:51:05.680Z",
+      "updated_at": "2026-02-08T21:17:52.702Z",
+      "last_login_at": "2026-02-09T10:50:45.218Z",
+      "last_login_ip": "127.0.0.1",
+      "approved_by": null,
+      "approved_at": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "accounts.userpreferences",
+    "pk": 1,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "theme": "system",
+      "language": "es",
+      "timezone": "Europe/Madrid",
+      "email_notifications": true,
+      "platform_notifications": true,
+      "marketing_emails": false,
+      "ai_language": "es",
+      "ai_detail_level": "medium",
+      "ai_format": "structured",
+      "created_at": "2026-02-04T22:10:41.233Z",
+      "updated_at": "2026-02-04T22:10:41.233Z"
+    }
+  },
+  {
+    "model": "accounts.userpreferences",
+    "pk": 2,
+    "fields": {
+      "user": [
+        "vmarfetanmorales@gmail.com"
+      ],
+      "theme": "system",
+      "language": "es",
+      "timezone": "Europe/Madrid",
+      "email_notifications": true,
+      "platform_notifications": true,
+      "marketing_emails": false,
+      "ai_language": "es",
+      "ai_detail_level": "medium",
+      "ai_format": "structured",
+      "created_at": "2026-02-09T10:21:41.714Z",
+      "updated_at": "2026-02-09T10:21:41.714Z"
+    }
+  },
+  {
+    "model": "accounts.securitysettings",
+    "pk": 1,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "two_factor_enabled": true,
+      "two_factor_method": "totp",
+      "two_factor_secret": "LHU3_0WAbKCGc2Ffptv_hSFKXRkBltoZ794pm4_T1oc",
+      "api_token": "XaVfrt9CJiMT0PMWVNhK7TzSTfZs_pUvNuRaF9GB7qw",
+      "api_token_created_at": "2026-02-08T02:33:34.169Z",
+      "api_token_last_used": null,
+      "max_concurrent_sessions": 3,
+      "session_timeout_minutes": 60,
+      "password_changed_at": null,
+      "password_expires_at": null,
+      "created_at": "2026-02-04T22:10:41.240Z",
+      "updated_at": "2026-02-08T02:33:34.169Z"
+    }
+  },
+  {
+    "model": "accounts.securitysettings",
+    "pk": 2,
+    "fields": {
+      "user": [
+        "vmarfetanmorales@gmail.com"
+      ],
+      "two_factor_enabled": false,
+      "two_factor_method": "",
+      "two_factor_secret": "",
+      "api_token": "",
+      "api_token_created_at": null,
+      "api_token_last_used": null,
+      "max_concurrent_sessions": 3,
+      "session_timeout_minutes": 60,
+      "password_changed_at": null,
+      "password_expires_at": null,
+      "created_at": "2026-02-09T10:21:41.722Z",
+      "updated_at": "2026-02-09T10:21:41.722Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 1,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "dety44lpadc6pn5i6at8mnztbe9wlt79",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": false,
+      "created_at": "2026-02-04T21:53:05.500Z",
+      "last_activity": "2026-02-04T21:53:44.289Z",
+      "expires_at": "2026-02-05T21:53:44.288Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 2,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "gfbks98mwd253znfuz6yjczyomm0g47v",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": false,
+      "created_at": "2026-02-04T22:03:01.446Z",
+      "last_activity": "2026-02-04T22:04:44.392Z",
+      "expires_at": "2026-02-05T22:04:44.391Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 3,
+    "fields": {
+      "user": [
+        "vmarfetanmorales@gmail.com"
+      ],
+      "session_key": "2l8lo928z4lumte5ibhdc670g3b2ju2x",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": true,
+      "created_at": "2026-02-04T22:04:55.826Z",
+      "last_activity": "2026-02-04T22:05:01.440Z",
+      "expires_at": "2026-02-05T22:05:01.439Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 4,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "i45s7bx7ch3pggcybucsbo02awgi3ix9",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": false,
+      "created_at": "2026-02-04T22:05:09.053Z",
+      "last_activity": "2026-02-04T22:31:09.576Z",
+      "expires_at": "2026-02-05T22:31:09.575Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 5,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "8kx7sb9qgzpw346t6cez5npivki9q03f",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": false,
+      "created_at": "2026-02-04T22:10:41.212Z",
+      "last_activity": "2026-02-04T22:39:16.899Z",
+      "expires_at": "2026-02-05T22:39:16.898Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 6,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "mmh0f4kwlnx28heta498ztb1ugn1bxai",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": false,
+      "created_at": "2026-02-04T22:39:31.232Z",
+      "last_activity": "2026-02-05T11:22:11.873Z",
+      "expires_at": "2026-02-06T11:22:11.871Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 7,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "goca6raj02224mt02uey0xczlthgcu4k",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": false,
+      "created_at": "2026-02-05T11:15:19.537Z",
+      "last_activity": "2026-02-05T11:40:46.150Z",
+      "expires_at": "2026-02-06T11:40:46.148Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 8,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "kxiuv1b8bln772u0tcytoqs2kykmqoe9",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36 Edg/144.0.0.0",
+      "device_type": "desktop",
+      "browser": "Edge",
+      "os": "Windows",
+      "is_active": false,
+      "created_at": "2026-02-05T11:22:36.923Z",
+      "last_activity": "2026-02-05T11:22:36.923Z",
+      "expires_at": "2026-02-06T11:22:36.921Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 9,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "bv6e3eespk4ftejvbk399otq02tnpzha",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": false,
+      "created_at": "2026-02-05T12:11:19.487Z",
+      "last_activity": "2026-02-06T10:05:43.539Z",
+      "expires_at": "2026-02-07T10:05:43.534Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 10,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "oewcokosi4f0xnxfdxzmh7ykhp5dn1x2",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": false,
+      "created_at": "2026-02-06T10:06:00.830Z",
+      "last_activity": "2026-02-06T10:07:49.143Z",
+      "expires_at": "2026-02-07T10:07:49.141Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 11,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "y8fd4hrx4jpl4juwuy27yrnqc80lt8i7",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": true,
+      "created_at": "2026-02-08T00:00:14.848Z",
+      "last_activity": "2026-02-09T10:55:25.598Z",
+      "expires_at": "2026-02-10T10:55:25.597Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 12,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "vtpvvzd4bxlsy3narobu2zes0tlcctqb",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": false,
+      "created_at": "2026-02-08T00:07:09.625Z",
+      "last_activity": "2026-02-08T00:32:47.046Z",
+      "expires_at": "2026-02-09T00:32:47.042Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 13,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "qdmgt1vjw341v71rxtg9sh87tletqgup",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": false,
+      "created_at": "2026-02-08T00:32:59.414Z",
+      "last_activity": "2026-02-08T01:29:31.423Z",
+      "expires_at": "2026-02-09T01:29:31.421Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 14,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "v6rn39bvjqjbcjzzass7cluc3ratsf3d",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": false,
+      "created_at": "2026-02-08T01:30:02.631Z",
+      "last_activity": "2026-02-08T01:34:03.317Z",
+      "expires_at": "2026-02-09T01:34:03.315Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 15,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "mi9umkzla1s2l655lf8d0md1lnauj6ps",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": false,
+      "created_at": "2026-02-08T01:34:09.759Z",
+      "last_activity": "2026-02-08T01:34:17.591Z",
+      "expires_at": "2026-02-09T01:34:17.588Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 16,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "64b3mi24condcemk0bjehrfrc5ih826h",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": false,
+      "created_at": "2026-02-08T01:34:23.173Z",
+      "last_activity": "2026-02-08T01:37:12.637Z",
+      "expires_at": "2026-02-09T01:37:12.634Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 17,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "wd9jmdy99aud8q0njpv75eg402vt6tts",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": false,
+      "created_at": "2026-02-08T01:37:22.083Z",
+      "last_activity": "2026-02-08T01:48:46.509Z",
+      "expires_at": "2026-02-09T01:48:46.506Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 18,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "0tlvw8qg906aofkgki96suqugxr7z7z4",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": false,
+      "created_at": "2026-02-08T01:48:59.492Z",
+      "last_activity": "2026-02-08T02:26:06.945Z",
+      "expires_at": "2026-02-09T02:26:06.944Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 19,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "lc4qowmhqx03jy9cnwoovnf0ha9t5r05",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": true,
+      "created_at": "2026-02-08T02:26:11.407Z",
+      "last_activity": "2026-02-08T02:33:52.571Z",
+      "expires_at": "2026-02-09T02:33:52.569Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 20,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "35feqhi0e8ujfz3q4qh3wdb2kh71e0p0",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": true,
+      "created_at": "2026-02-08T02:33:58.579Z",
+      "last_activity": "2026-02-08T02:49:16.361Z",
+      "expires_at": "2026-02-09T02:49:16.360Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 21,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "5q00meyroe8x19jp59e4oxqtd5xmebi0",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": true,
+      "created_at": "2026-02-08T02:49:25.674Z",
+      "last_activity": "2026-02-08T19:56:14.700Z",
+      "expires_at": "2026-02-09T19:56:14.698Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 22,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "i8tea6av8f6p1xgxi5yeuawao6e2rp8r",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": true,
+      "created_at": "2026-02-08T21:16:41.498Z",
+      "last_activity": "2026-02-08T23:15:17.693Z",
+      "expires_at": "2026-02-09T23:15:17.692Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 23,
+    "fields": {
+      "user": [
+        "vmarfetanmorales@gmail.com"
+      ],
+      "session_key": "f3edsgd6y402kn5pc3wwn3gi62cweq68",
+      "ip_address": "127.0.0.1",
+      "user_agent": "",
+      "device_type": "desktop",
+      "browser": "Other",
+      "os": "Other",
+      "is_active": true,
+      "created_at": "2026-02-09T00:15:03.168Z",
+      "last_activity": "2026-02-09T00:15:03.168Z",
+      "expires_at": "2026-02-10T00:15:03.166Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 24,
+    "fields": {
+      "user": [
+        "vmarfetanmorales@gmail.com"
+      ],
+      "session_key": "kn3hd8gouse4xtyy6qjhifiey7pdwx75",
+      "ip_address": "127.0.0.1",
+      "user_agent": "",
+      "device_type": "desktop",
+      "browser": "Other",
+      "os": "Other",
+      "is_active": true,
+      "created_at": "2026-02-09T00:15:29.486Z",
+      "last_activity": "2026-02-09T00:15:29.486Z",
+      "expires_at": "2026-02-10T00:15:29.484Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 25,
+    "fields": {
+      "user": [
+        "vmarfetanmorales@gmail.com"
+      ],
+      "session_key": "01mpsrthda0561ssr4lk78mcpg9b5oa5",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": true,
+      "created_at": "2026-02-09T10:21:34.912Z",
+      "last_activity": "2026-02-09T10:53:43.984Z",
+      "expires_at": "2026-02-10T10:53:43.982Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 26,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "c7srmj88kx5i3jzx7wi4eets20jlecbo",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": true,
+      "created_at": "2026-02-09T10:53:52.876Z",
+      "last_activity": "2026-02-09T12:08:39.916Z",
+      "expires_at": "2026-02-10T12:08:39.910Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 27,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "shimbv44kd42cvocj5ukm1knqq9bodr8",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": true,
+      "created_at": "2026-02-09T12:11:31.697Z",
+      "last_activity": "2026-02-09T12:22:23.026Z",
+      "expires_at": "2026-02-10T12:22:23.025Z"
+    }
+  },
+  {
+    "model": "accounts.usersession",
+    "pk": 28,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "session_key": "g18vo7bellk3lyko9bdn9y1h6svqzsp7",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "device_type": "desktop",
+      "browser": "Chrome",
+      "os": "Windows",
+      "is_active": true,
+      "created_at": "2026-02-09T12:22:29.763Z",
+      "last_activity": "2026-02-09T12:26:46.784Z",
+      "expires_at": "2026-02-10T12:26:46.782Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 1,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-04T21:53:05.516Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 2,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-04T22:03:01.458Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 3,
+    "fields": {
+      "user": [
+        "vmarfetanmorales@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-04T22:04:55.847Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 4,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-04T22:10:41.225Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 5,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-04T22:29:58.273Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 6,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-04T22:39:12.608Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 7,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-04T22:44:30.334Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 8,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-05T11:14:57.325Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 9,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-05T11:20:25.091Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 10,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-05T11:40:45.854Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 11,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-05T12:11:19.503Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 12,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-06T09:05:13.333Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 13,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-06T10:05:37.899Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 14,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T00:00:14.867Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 15,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T00:07:09.650Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 16,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T00:12:13.222Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 17,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T00:20:26.265Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 18,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T00:25:30.138Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 19,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T00:32:14.212Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 20,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T00:43:54.878Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 21,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T01:02:20.249Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 22,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T01:14:18.004Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 23,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T01:20:26.978Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 24,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T01:25:59.504Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 25,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T01:34:01.144Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 26,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T01:39:09.868Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 27,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T01:48:36.907Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 28,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T01:56:44.497Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 29,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T02:02:39.461Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 30,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T02:11:29.430Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 31,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T02:17:06.335Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 32,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T02:22:16.017Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 33,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T02:27:44.995Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 34,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T02:32:50.987Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 35,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T02:39:35.035Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 36,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T02:49:16.375Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 37,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T02:54:40.066Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 38,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T03:04:59.271Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 39,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T03:15:41.520Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 40,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T03:28:12.567Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 41,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T19:54:59.743Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 42,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T21:16:41.513Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 43,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T23:05:02.198Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 44,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-08T23:15:17.705Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 45,
+    "fields": {
+      "user": [
+        "vmarfetanmorales@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "",
+      "location": "",
+      "created_at": "2026-02-09T00:15:03.185Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 46,
+    "fields": {
+      "user": [
+        "vmarfetanmorales@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-09T10:21:34.924Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 47,
+    "fields": {
+      "user": [
+        "vmarfetanmorales@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-09T10:34:10.210Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 48,
+    "fields": {
+      "user": [
+        "vmarfetanmorales@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-09T10:50:45.224Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 49,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-09T10:53:52.897Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 50,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-09T11:05:16.883Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 51,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-09T11:30:34.332Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 52,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-09T11:51:38.140Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 53,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-09T12:08:39.934Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 54,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-09T12:15:33.570Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 55,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-09T12:21:41.851Z"
+    }
+  },
+  {
+    "model": "accounts.loginhistory",
+    "pk": 56,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "success": true,
+      "failure_reason": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "location": "",
+      "created_at": "2026-02-09T12:26:46.794Z"
+    }
+  },
+  {
+    "model": "accounts.profileauditlog",
+    "pk": 1,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "action": "update_personal",
+      "field_changed": "first_name",
+      "old_value": "Vladimir",
+      "new_value": "Vladimir",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "created_at": "2026-02-08T02:22:25.030Z"
+    }
+  },
+  {
+    "model": "accounts.profileauditlog",
+    "pk": 2,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "action": "update_personal",
+      "field_changed": "last_name",
+      "old_value": "Marfetan",
+      "new_value": "Marfetan",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "created_at": "2026-02-08T02:22:25.034Z"
+    }
+  },
+  {
+    "model": "accounts.profileauditlog",
+    "pk": 3,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "action": "update_personal",
+      "field_changed": "phone",
+      "old_value": "+34649586937",
+      "new_value": "+34649586937",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "created_at": "2026-02-08T02:22:25.037Z"
+    }
+  },
+  {
+    "model": "accounts.profileauditlog",
+    "pk": 4,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "action": "update_personal",
+      "field_changed": "last_name",
+      "old_value": "Marfetan Morales",
+      "new_value": "Marfetan Morales",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "created_at": "2026-02-08T02:22:43.883Z"
+    }
+  },
+  {
+    "model": "accounts.profileauditlog",
+    "pk": 5,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "action": "enable_2fa",
+      "field_changed": "two_factor_method",
+      "old_value": "",
+      "new_value": "totp",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "created_at": "2026-02-08T02:33:05.662Z"
+    }
+  },
+  {
+    "model": "accounts.profileauditlog",
+    "pk": 6,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "action": "avatar_upload",
+      "field_changed": "avatar",
+      "old_value": "Vladimir 2026.jpeg",
+      "new_value": "",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+      "created_at": "2026-02-08T02:54:53.239Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 1,
+    "fields": {
+      "name_es": "Jamon Cocido",
+      "name_zh_hans": "示例产品",
+      "description_es": "Descripción inicial",
+      "description_zh_hans": "",
+      "image": "products/Imagen_1.png",
+      "price": "1.50",
+      "is_active": true,
+      "stock_available": 200,
+      "stock_min_threshold": 200,
+      "stock_status": "low",
+      "created_at": "2026-01-25T08:14:48.289Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+      "name_es": "Jamon Cocido mas Jugoso",
+      "name_zh_hans": "P2",
+      "description_es": "Producto 2",
+      "description_zh_hans": "",
+      "image": "products/Imagen_2.png",
+      "price": "2.00",
+      "is_active": true,
+      "stock_available": 110,
+      "stock_min_threshold": 110,
+      "stock_status": "low",
+      "created_at": "2026-01-25T14:50:44.922Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 3,
+    "fields": {
+      "name_es": "Pechuga de Pavo mas jugosa",
+      "name_zh_hans": "P3",
+      "description_es": "Producto 2",
+      "description_zh_hans": "",
+      "image": "products/Imagen_3_ndGNP91.png",
+      "price": "2.00",
+      "is_active": true,
+      "stock_available": 110,
+      "stock_min_threshold": 110,
+      "stock_status": "low",
+      "created_at": "2026-01-25T14:50:46.311Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 4,
+    "fields": {
+      "name_es": "Pechuga de pavo",
+      "name_zh_hans": "P4",
+      "description_es": "",
+      "description_zh_hans": "",
+      "image": "products/Imagen_4_yyW8byp.png",
+      "price": "3.00",
+      "is_active": true,
+      "stock_available": 200,
+      "stock_min_threshold": 10,
+      "stock_status": "ok",
+      "created_at": "2026-01-25T16:07:29.551Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 5,
+    "fields": {
+      "name_es": "Jamon Curado",
+      "name_zh_hans": "p5",
+      "description_es": "Ibericos",
+      "description_zh_hans": "",
+      "image": "products/Imagen_9.png",
+      "price": "4.00",
+      "is_active": true,
+      "stock_available": 0,
+      "stock_min_threshold": 0,
+      "stock_status": "out",
+      "created_at": "2026-01-25T18:44:43.353Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 6,
+    "fields": {
+      "name_es": "Frankfurt Pack3",
+      "name_zh_hans": "Frankfurt Pack3",
+      "description_es": "",
+      "description_zh_hans": "",
+      "image": "products/Imagen_8.png",
+      "price": "4.00",
+      "is_active": true,
+      "stock_available": 0,
+      "stock_min_threshold": 0,
+      "stock_status": "out",
+      "created_at": "2026-01-25T22:21:43.324Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 7,
+    "fields": {
+      "name_es": "Chorizo Pamplona",
+      "name_zh_hans": "Chorizo Pamplona",
+      "description_es": "",
+      "description_zh_hans": "",
+      "image": "products/Imagen_5.png",
+      "price": "3.00",
+      "is_active": true,
+      "stock_available": 0,
+      "stock_min_threshold": 0,
+      "stock_status": "out",
+      "created_at": "2026-02-09T12:21:53.782Z"
+    }
+  },
+  {
+    "model": "orders.order",
+    "pk": 1,
+    "fields": {
+      "customer": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "status": "new",
+      "eta_start": "2026-01-31T11:00:00Z",
+      "eta_end": "2026-02-04T11:00:00Z",
+      "total_amount": "0.00",
+      "stock_deducted": false,
+      "created_at": "2026-01-25T08:23:20.962Z",
+      "updated_at": "2026-01-25T08:23:20.962Z"
+    }
+  },
+  {
+    "model": "orders.order",
+    "pk": 2,
+    "fields": {
+      "customer": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "status": "new",
+      "eta_start": null,
+      "eta_end": null,
+      "total_amount": "22.50",
+      "stock_deducted": false,
+      "created_at": "2026-01-25T13:34:35.512Z",
+      "updated_at": "2026-01-25T13:35:17.768Z"
+    }
+  },
+  {
+    "model": "orders.order",
+    "pk": 3,
+    "fields": {
+      "customer": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "status": "new",
+      "eta_start": null,
+      "eta_end": null,
+      "total_amount": "7.00",
+      "stock_deducted": false,
+      "created_at": "2026-01-25T18:19:57.174Z",
+      "updated_at": "2026-01-25T18:20:39.637Z"
+    }
+  },
+  {
+    "model": "orders.order",
+    "pk": 4,
+    "fields": {
+      "customer": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "status": "new",
+      "eta_start": null,
+      "eta_end": null,
+      "total_amount": "26.00",
+      "stock_deducted": false,
+      "created_at": "2026-01-25T18:39:57.553Z",
+      "updated_at": "2026-01-25T18:40:39.687Z"
+    }
+  },
+  {
+    "model": "orders.order",
+    "pk": 5,
+    "fields": {
+      "customer": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "status": "new",
+      "eta_start": null,
+      "eta_end": null,
+      "total_amount": "61.00",
+      "stock_deducted": false,
+      "created_at": "2026-01-26T20:29:03.583Z",
+      "updated_at": "2026-01-26T20:29:45.718Z"
+    }
+  },
+  {
+    "model": "orders.order",
+    "pk": 6,
+    "fields": {
+      "customer": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "status": "new",
+      "eta_start": null,
+      "eta_end": null,
+      "total_amount": "12.00",
+      "stock_deducted": false,
+      "created_at": "2026-02-06T10:06:29.552Z",
+      "updated_at": "2026-02-06T10:06:29.893Z"
+    }
+  },
+  {
+    "model": "orders.order",
+    "pk": 7,
+    "fields": {
+      "customer": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "status": "new",
+      "eta_start": null,
+      "eta_end": null,
+      "total_amount": "16.00",
+      "stock_deducted": false,
+      "created_at": "2026-02-08T21:17:10.997Z",
+      "updated_at": "2026-02-08T21:17:11.080Z"
+    }
+  },
+  {
+    "model": "orders.order",
+    "pk": 8,
+    "fields": {
+      "customer": [
+        "vmarfetanmorales@gmail.com"
+      ],
+      "status": "new",
+      "eta_start": null,
+      "eta_end": null,
+      "total_amount": "8.00",
+      "stock_deducted": false,
+      "created_at": "2026-02-09T10:22:05.470Z",
+      "updated_at": "2026-02-09T10:22:05.498Z"
+    }
+  },
+  {
+    "model": "orders.order",
+    "pk": 9,
+    "fields": {
+      "customer": [
+        "vmarfetanmorales@gmail.com"
+      ],
+      "status": "new",
+      "eta_start": null,
+      "eta_end": null,
+      "total_amount": "168.00",
+      "stock_deducted": false,
+      "created_at": "2026-02-09T10:51:46.164Z",
+      "updated_at": "2026-02-09T10:51:46.186Z"
+    }
+  },
+  {
+    "model": "orders.order",
+    "pk": 10,
+    "fields": {
+      "customer": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "status": "new",
+      "eta_start": null,
+      "eta_end": null,
+      "total_amount": "52.00",
+      "stock_deducted": false,
+      "created_at": "2026-02-09T10:56:03.109Z",
+      "updated_at": "2026-02-09T10:56:03.136Z"
+    }
+  },
+  {
+    "model": "orders.order",
+    "pk": 11,
+    "fields": {
+      "customer": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "status": "new",
+      "eta_start": null,
+      "eta_end": null,
+      "total_amount": "15.00",
+      "stock_deducted": false,
+      "created_at": "2026-02-09T11:05:27.151Z",
+      "updated_at": "2026-02-09T11:05:27.183Z"
+    }
+  },
+  {
+    "model": "orders.order",
+    "pk": 12,
+    "fields": {
+      "customer": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "status": "new",
+      "eta_start": null,
+      "eta_end": null,
+      "total_amount": "16.00",
+      "stock_deducted": false,
+      "created_at": "2026-02-09T11:51:59.366Z",
+      "updated_at": "2026-02-09T11:52:00.216Z"
+    }
+  },
+  {
+    "model": "orders.order",
+    "pk": 13,
+    "fields": {
+      "customer": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "status": "new",
+      "eta_start": null,
+      "eta_end": null,
+      "total_amount": "15.00",
+      "stock_deducted": false,
+      "created_at": "2026-02-09T12:23:20.037Z",
+      "updated_at": "2026-02-09T12:23:20.796Z"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 1,
+    "fields": {
+      "order": 1,
+      "product": 1,
+      "product_name_es": "P1",
+      "product_name_zh_hans": "P1",
+      "quantity": 5,
+      "unit_price": "1.50",
+      "line_total": "7.50"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 2,
+    "fields": {
+      "order": 2,
+      "product": 1,
+      "product_name_es": "Embutido Prime",
+      "product_name_zh_hans": "示例产品",
+      "quantity": 15,
+      "unit_price": "1.50",
+      "line_total": "22.50"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 3,
+    "fields": {
+      "order": 3,
+      "product": 4,
+      "product_name_es": "Pechuga de pavo",
+      "product_name_zh_hans": "P4",
+      "quantity": 1,
+      "unit_price": "3.00",
+      "line_total": "3.00"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 4,
+    "fields": {
+      "order": 3,
+      "product": 3,
+      "product_name_es": "Pechuga de Pavo mas jugosa",
+      "product_name_zh_hans": "P3",
+      "quantity": 1,
+      "unit_price": "2.00",
+      "line_total": "2.00"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 5,
+    "fields": {
+      "order": 3,
+      "product": 2,
+      "product_name_es": "Jamon Cocido mas Jugoso",
+      "product_name_zh_hans": "P2",
+      "quantity": 1,
+      "unit_price": "2.00",
+      "line_total": "2.00"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 6,
+    "fields": {
+      "order": 4,
+      "product": 4,
+      "product_name_es": "Pechuga de pavo",
+      "product_name_zh_hans": "P4",
+      "quantity": 2,
+      "unit_price": "3.00",
+      "line_total": "6.00"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 7,
+    "fields": {
+      "order": 4,
+      "product": 3,
+      "product_name_es": "Pechuga de Pavo mas jugosa",
+      "product_name_zh_hans": "P3",
+      "quantity": 6,
+      "unit_price": "2.00",
+      "line_total": "12.00"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 8,
+    "fields": {
+      "order": 4,
+      "product": 2,
+      "product_name_es": "Jamon Cocido mas Jugoso",
+      "product_name_zh_hans": "P2",
+      "quantity": 4,
+      "unit_price": "2.00",
+      "line_total": "8.00"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 9,
+    "fields": {
+      "order": 5,
+      "product": 6,
+      "product_name_es": "Frankfurt Pack3",
+      "product_name_zh_hans": "Frankfurt Pack3",
+      "quantity": 4,
+      "unit_price": "4.00",
+      "line_total": "16.00"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 10,
+    "fields": {
+      "order": 5,
+      "product": 5,
+      "product_name_es": "Jamon Curado",
+      "product_name_zh_hans": "p5",
+      "quantity": 9,
+      "unit_price": "4.00",
+      "line_total": "36.00"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 11,
+    "fields": {
+      "order": 5,
+      "product": 4,
+      "product_name_es": "Pechuga de pavo",
+      "product_name_zh_hans": "P4",
+      "quantity": 3,
+      "unit_price": "3.00",
+      "line_total": "9.00"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 12,
+    "fields": {
+      "order": 6,
+      "product": 5,
+      "product_name_es": "Jamon Curado",
+      "product_name_zh_hans": "p5",
+      "quantity": 3,
+      "unit_price": "4.00",
+      "line_total": "12.00"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 13,
+    "fields": {
+      "order": 7,
+      "product": 3,
+      "product_name_es": "Pechuga de Pavo mas jugosa",
+      "product_name_zh_hans": "P3",
+      "quantity": 2,
+      "unit_price": "2.00",
+      "line_total": "4.00"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 14,
+    "fields": {
+      "order": 7,
+      "product": 4,
+      "product_name_es": "Pechuga de pavo",
+      "product_name_zh_hans": "P4",
+      "quantity": 4,
+      "unit_price": "3.00",
+      "line_total": "12.00"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 15,
+    "fields": {
+      "order": 8,
+      "product": 6,
+      "product_name_es": "Frankfurt Pack3",
+      "product_name_zh_hans": "Frankfurt Pack3",
+      "quantity": 2,
+      "unit_price": "4.00",
+      "line_total": "8.00"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 16,
+    "fields": {
+      "order": 9,
+      "product": 6,
+      "product_name_es": "Frankfurt Pack3",
+      "product_name_zh_hans": "Frankfurt Pack3",
+      "quantity": 42,
+      "unit_price": "4.00",
+      "line_total": "168.00"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 17,
+    "fields": {
+      "order": 10,
+      "product": 5,
+      "product_name_es": "Jamon Curado",
+      "product_name_zh_hans": "p5",
+      "quantity": 13,
+      "unit_price": "4.00",
+      "line_total": "52.00"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 18,
+    "fields": {
+      "order": 11,
+      "product": 4,
+      "product_name_es": "Pechuga de pavo",
+      "product_name_zh_hans": "P4",
+      "quantity": 5,
+      "unit_price": "3.00",
+      "line_total": "15.00"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 19,
+    "fields": {
+      "order": 12,
+      "product": 5,
+      "product_name_es": "Jamon Curado",
+      "product_name_zh_hans": "p5",
+      "quantity": 4,
+      "unit_price": "4.00",
+      "line_total": "16.00"
+    }
+  },
+  {
+    "model": "orders.orderitem",
+    "pk": 20,
+    "fields": {
+      "order": 13,
+      "product": 7,
+      "product_name_es": "Chorizo Pamplona",
+      "product_name_zh_hans": "Chorizo Pamplona",
+      "quantity": 5,
+      "unit_price": "3.00",
+      "line_total": "15.00"
+    }
+  },
+  {
+    "model": "notifications.notification",
+    "pk": 1,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "event_type": "order_created",
+      "subject_es": "Pedido #1 creado",
+      "subject_zh_hans": "订单 #1 已创建",
+      "message_es": "Su pedido #1 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+      "message_zh_hans": "您的订单 #1 已成功登记。您将收到电子邮件更新。",
+      "is_read": false,
+      "created_at": "2026-01-25T08:23:20.965Z"
+    }
+  },
+  {
+    "model": "notifications.notification",
+    "pk": 2,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "event_type": "order_created",
+      "subject_es": "Pedido #2 creado",
+      "subject_zh_hans": "订单 #2 已创建",
+      "message_es": "Su pedido #2 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+      "message_zh_hans": "您的订单 #2 已成功登记。您将收到电子邮件更新。",
+      "is_read": false,
+      "created_at": "2026-01-25T13:34:35.529Z"
+    }
+  },
+  {
+    "model": "notifications.notification",
+    "pk": 3,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "event_type": "order_created",
+      "subject_es": "Pedido #3 creado",
+      "subject_zh_hans": "订单 #3 已创建",
+      "message_es": "Su pedido #3 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+      "message_zh_hans": "您的订单 #3 已成功登记。您将收到电子邮件更新。",
+      "is_read": false,
+      "created_at": "2026-01-25T18:19:57.286Z"
+    }
+  },
+  {
+    "model": "notifications.notification",
+    "pk": 4,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "event_type": "order_created",
+      "subject_es": "Pedido #4 creado",
+      "subject_zh_hans": "订单 #4 已创建",
+      "message_es": "Su pedido #4 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+      "message_zh_hans": "您的订单 #4 已成功登记。您将收到电子邮件更新。",
+      "is_read": false,
+      "created_at": "2026-01-25T18:39:57.564Z"
+    }
+  },
+  {
+    "model": "notifications.notification",
+    "pk": 5,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "event_type": "order_created",
+      "subject_es": "Pedido #5 creado",
+      "subject_zh_hans": "订单 #5 已创建",
+      "message_es": "Su pedido #5 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+      "message_zh_hans": "您的订单 #5 已成功登记。您将收到电子邮件更新。",
+      "is_read": false,
+      "created_at": "2026-01-26T20:29:03.588Z"
+    }
+  },
+  {
+    "model": "notifications.notification",
+    "pk": 6,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "event_type": "order_created",
+      "subject_es": "Pedido #6 creado",
+      "subject_zh_hans": "订单 #6 已创建",
+      "message_es": "Su pedido #6 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+      "message_zh_hans": "您的订单 #6 已成功登记。您将收到电子邮件更新。",
+      "is_read": false,
+      "created_at": "2026-02-06T10:06:29.562Z"
+    }
+  },
+  {
+    "model": "notifications.notification",
+    "pk": 7,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "event_type": "order_created",
+      "subject_es": "Pedido #7 creado",
+      "subject_zh_hans": "订单 #7 已创建",
+      "message_es": "Su pedido #7 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+      "message_zh_hans": "您的订单 #7 已成功登记。您将收到电子邮件更新。",
+      "is_read": false,
+      "created_at": "2026-02-08T21:17:11.000Z"
+    }
+  },
+  {
+    "model": "notifications.notification",
+    "pk": 8,
+    "fields": {
+      "user": [
+        "vmarfetanmorales@gmail.com"
+      ],
+      "event_type": "order_created",
+      "subject_es": "Pedido #8 creado",
+      "subject_zh_hans": "订单 #8 已创建",
+      "message_es": "Su pedido #8 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+      "message_zh_hans": "您的订单 #8 已成功登记。您将收到电子邮件更新。",
+      "is_read": false,
+      "created_at": "2026-02-09T10:22:05.472Z"
+    }
+  },
+  {
+    "model": "notifications.notification",
+    "pk": 9,
+    "fields": {
+      "user": [
+        "vmarfetanmorales@gmail.com"
+      ],
+      "event_type": "order_created",
+      "subject_es": "Pedido #9 creado",
+      "subject_zh_hans": "订单 #9 已创建",
+      "message_es": "Su pedido #9 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+      "message_zh_hans": "您的订单 #9 已成功登记。您将收到电子邮件更新。",
+      "is_read": false,
+      "created_at": "2026-02-09T10:51:46.166Z"
+    }
+  },
+  {
+    "model": "notifications.notification",
+    "pk": 10,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "event_type": "order_created",
+      "subject_es": "Pedido #10 creado",
+      "subject_zh_hans": "订单 #10 已创建",
+      "message_es": "Su pedido #10 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+      "message_zh_hans": "您的订单 #10 已成功登记。您将收到电子邮件更新。",
+      "is_read": false,
+      "created_at": "2026-02-09T10:56:03.115Z"
+    }
+  },
+  {
+    "model": "notifications.notification",
+    "pk": 11,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "event_type": "order_created",
+      "subject_es": "Pedido #11 creado",
+      "subject_zh_hans": "订单 #11 已创建",
+      "message_es": "Su pedido #11 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+      "message_zh_hans": "您的订单 #11 已成功登记。您将收到电子邮件更新。",
+      "is_read": false,
+      "created_at": "2026-02-09T11:05:27.156Z"
+    }
+  },
+  {
+    "model": "notifications.notification",
+    "pk": 12,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "event_type": "order_created",
+      "subject_es": "Pedido #12 creado",
+      "subject_zh_hans": "订单 #12 已创建",
+      "message_es": "Su pedido #12 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+      "message_zh_hans": "您的订单 #12 已成功登记。您将收到电子邮件更新。",
+      "is_read": false,
+      "created_at": "2026-02-09T11:51:59.369Z"
+    }
+  },
+  {
+    "model": "notifications.notification",
+    "pk": 13,
+    "fields": {
+      "user": [
+        "plataformafenix2026@gmail.com"
+      ],
+      "event_type": "order_created",
+      "subject_es": "Pedido #13 creado",
+      "subject_zh_hans": "订单 #13 已创建",
+      "message_es": "Su pedido #13 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+      "message_zh_hans": "您的订单 #13 已成功登记。您将收到电子邮件更新。",
+      "is_read": false,
+      "created_at": "2026-02-09T12:23:20.040Z"
+    }
+  },
+  {
+    "model": "core.platformsettings",
+    "pk": 1,
+    "fields": {
+      "default_language": "es",
+      "email_from": "plataformafenix2026@gmail.com",
+      "email_from_name": "FENIX",
+      "order_notification_email": "plataformafenix2026@gmail.com",
+      "default_delivery_window_hours": 24,
+      "created_at": "2026-01-25T08:12:38.461Z",
+      "updated_at": "2026-02-09T10:55:49.014Z"
+    }
+  }
+]

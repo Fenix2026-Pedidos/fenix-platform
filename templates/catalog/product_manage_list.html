@@ -68,7 +68,7 @@
                                 <strong>{{ product.name_es }}</strong><br>
                                 <small class="text-muted">{{ product.name_zh_hans }}</small>
                             </td>
-                            <td>${{ product.price }}</td>
+                            <td>{{ product.price|floatformat:2 }} €</td>
                             <td>{{ product.stock_available }}</td>
                             <td>
                                 {% if product.stock_status == 'ok' %}
