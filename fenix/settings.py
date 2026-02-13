@@ -95,6 +95,7 @@ TEMPLATES = [
                 'orders.context_processors.cart_count',
                 'accounts.context_processors.user_language',  # Idioma del usuario
                 'accounts.context_processors.user_greeting',  # Saludo inteligente
+                'accounts.context_processors.show_prices',  # Visibilidad de precios
             ],
         },
     },

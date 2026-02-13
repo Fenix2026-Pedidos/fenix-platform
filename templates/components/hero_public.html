@@ -36,7 +36,11 @@
                                         {{ product.name_es|default:product.name_zh_hans }}
                                     {% endif %}
                                 </p>
-                                <p class="hero-product-card__price">{{ product.price|floatformat:2 }} €</p>
+                                {% if show_prices %}
+                                    <p class="hero-product-card__price">{{ product.price|floatformat:2 }} €</p>
+                                {% else %}
+                                    <p class="hero-product-card__price" style="opacity: 0.6; font-style: italic;">{% trans "Inicia sesión para ver precios" %}</p>
+                                {% endif %}
                             </div>
                         </article>
                         {% endfor %}

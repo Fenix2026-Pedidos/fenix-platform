@@ -884,13 +884,13 @@
     border-radius: var(--radius-md);
     box-shadow: var(--shadow);
     border: 1px solid var(--gray-200);
-    overflow: hidden;
+    overflow: visible;
     transition: all var(--transition);
     display: flex;
     flex-direction: column;
-    height: var(--catalog-card-height-fixed);
+    height: auto;
     min-height: var(--catalog-card-height-fixed);
-    max-height: var(--catalog-card-height-fixed);
+    max-height: none;
     position: relative;
     width: 100%;
     min-width: 0; /* Permitir compresión en grid de 5 columnas */
@@ -1104,7 +1104,7 @@
     height: 100%;
     object-fit: contain;
     object-position: center;
-    padding: 10px;
+    padding: 4px;
     background: var(--gray-100);
 }
 

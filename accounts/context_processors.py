@@ -46,3 +46,14 @@ def user_greeting(request):
         'user_greeting': get_user_greeting(request.user),
         'dashboard_status': get_dashboard_status(request.user),
     }
+
+
+def show_prices(request):
+    """
+    Context processor que determina si se deben mostrar precios.
+    Solo usuarios autenticados pueden ver precios.
+    Disponible en todos los templates como {{ show_prices }}.
+    """
+    return {
+        'show_prices': request.user.is_authenticated,
+    }
