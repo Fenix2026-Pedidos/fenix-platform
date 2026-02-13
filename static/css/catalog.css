@@ -7,7 +7,7 @@
     --catalog-card-height: 300px;
     --catalog-card-min-height: 450px;
     --catalog-card-height-fixed: 450px;
-    --catalog-card-min-width: 220px;
+    --catalog-card-min-width: 240px;
     --catalog-image-height: 250px;
     --catalog-card-padding: 12px;
     --catalog-card-padding-bottom: 2px;
@@ -774,29 +774,24 @@
     overflow: visible;
 }
 
-/* Grid de productos - Forzar 5 columnas en laptops y pantallas grandes */
+/* Grid de productos */
 .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(var(--catalog-card-min-width), 1fr));
     gap: var(--catalog-gap);
-    padding-bottom: 100px;
+    padding-bottom: 60px;
     width: 100%;
     align-items: start;
 }
 
-/* Laptop 15" y pantallas grandes (≥1200px): 5 columnas forzadas */
+/* Laptop 15" y pantallas grandes (≥1200px): 4 columnas */
 @media (min-width: 1200px) {
     .products-grid {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-    }
-    
-    /* Asegurar ancho mínimo de card para evitar compresión excesiva */
-    .product-card {
-        min-width: 0; /* Permitir que se comprima ligeramente si es necesario */
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 }
 
-/* Pantallas muy grandes (≥1400px): mantener 5 columnas con más espacio */
+/* Pantallas muy grandes (≥1400px): 5 columnas */
 @media (min-width: 1400px) {
     .products-grid {
         grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -851,233 +846,121 @@
     }
 }
 
-/* Responsive: Fila de acciones en móvil */
-@media (max-width: 767.98px) {
-    .product-actions-row {
-        flex-wrap: wrap;
-    }
-    
-    .product-stepper-wrap {
-        width: auto;
-        max-width: none;
-        min-width: 120px;
-        flex: 0 0 auto;
-    }
-    
-    .product-add-wrap {
-        width: 100%;
-        flex: 0 0 100%;
-        justify-content: stretch;
-        margin-top: 8px;
-        min-width: 0;
-    }
-    
-    .product-add-wrap .btn-add-product {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-}
+/* Responsive: Fila de acciones en móvil - Legacy limpiado */
 
-/* Card de producto - Compacta y optimizada con altura fija */
+/* ============================================
+   CARD DE PRODUCTO - Diseño ecommerce moderno
+   ============================================ */
+
 .product-card {
-    background: white;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow);
+    background: #fff;
+    border-radius: 16px;
     border: 1px solid var(--gray-200);
-    overflow: visible;
-    transition: all var(--transition);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     display: flex;
     flex-direction: column;
-    height: auto;
-    min-height: var(--catalog-card-height-fixed);
-    max-height: none;
+    padding: 16px;
+    gap: 10px;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
     position: relative;
     width: 100%;
-    min-width: 0; /* Permitir compresión en grid de 5 columnas */
-    max-width: 100%;
     box-sizing: border-box;
-}
-
-/* Asegurar que el contenido de la card no se corte */
-.product-card > .product-card-content {
-    overflow: visible;
-}
-
-/* Permitir overflow visible solo para el badge overlay */
-.product-image-container {
-    position: relative;
-    overflow: visible;
+    min-width: 0;
 }
 
 .product-card:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--primary-300);
 }
 
 .product-card.hidden {
     display: none;
 }
 
-/* Contenido de la card (orden específico) */
-.product-card-content {
-    padding: var(--catalog-card-padding) var(--catalog-card-padding) 1rem var(--catalog-card-padding);
+/* 1. Header: Título (izq) + Referencia (der) */
+.card-header-row {
     display: flex;
-    flex-direction: column;
-    flex: 1;
-    gap: 4px;
-    height: 100%;
-    overflow: visible;
-    box-sizing: border-box;
-    width: 100%;
-    min-height: unset;
-    justify-content: flex-start;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 0;
 }
 
-/* (a) Nombre del producto */
-.product-name {
-    font-size: 13px;
+.card-product-name {
+    font-size: 14px;
     font-weight: 600;
     color: var(--gray-900);
     margin: 0;
-    line-height: 1.3;
+    line-height: 1.35;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-height: 2.6em;
-    max-height: 2.6em;
-    flex-shrink: 0;
+    flex: 1;
+    min-width: 0;
 }
 
-/* (c) Fila de precio (izq) + referencia (der) */
-.product-meta-row {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 12px;
-    flex-shrink: 0;
-    margin: 2px 0 4px 0;
-    width: 100%;
-}
-
-/* Precio destacado estilo Amazon */
-.product-price-section {
-    display: flex;
-    flex-direction: row;
-    align-items: baseline;
-    flex-shrink: 0;
-    gap: 4px;
-    flex-wrap: wrap;
-}
-
-/* Referencia/ID del producto (a la derecha del precio) */
-.product-reference {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex-shrink: 0;
-    white-space: nowrap;
-}
-
-.product-ref-label {
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--gray-500);
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-}
-
-.product-ref-value {
+.card-ref {
     font-size: 11px;
-    font-weight: 600;
-    color: var(--gray-600);
-    font-family: var(--font-mono);
-    letter-spacing: 0.5px;
-}
-
-.product-price-main {
-    display: flex;
-    align-items: baseline;
-    gap: 2px;
-    line-height: 1;
-    flex-wrap: wrap;
-}
-
-/* Precio completo (se parseará con JS) */
-.price-full {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--primary-600);
-    line-height: 1;
-}
-
-/* Parte entera del precio (grande) */
-.price-int {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--primary-600);
-    line-height: 1;
-}
-
-/* Decimales del precio */
-.price-dec {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--primary-600);
-    line-height: 1;
-}
-
-/* Símbolo de moneda */
-.price-cur {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--primary-600);
-    line-height: 1;
-    margin-left: 2px;
-}
-
-/* Unidad/gramos (discreto, a la derecha) */
-.price-unit {
-    font-size: 12px;
-    color: var(--gray-500);
-    font-weight: 400;
-    margin-left: 8px;
+    font-weight: 500;
+    color: var(--gray-400);
     white-space: nowrap;
+    flex-shrink: 0;
+    letter-spacing: 0.3px;
+    padding-top: 2px;
 }
 
-/* (d) Imagen del producto (grande, protagonista) con badge overlay */
-.product-image-container {
+/* 2. Imagen protagonista */
+.card-image-wrap {
+    position: relative;
     width: 100%;
-    height: var(--catalog-image-height);
-    min-height: var(--catalog-image-height);
-    background: var(--gray-100);
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--gray-50);
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-    overflow: hidden;
-    border-radius: var(--radius);
-    margin: 4px 0 0 0;
-    margin-bottom: 0;
-    position: relative;
 }
 
-/* Badge overlay "En carrito: X" en la esquina superior derecha */
+.card-product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    padding: 8px;
+}
+
+.card-image-empty {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    color: var(--gray-300);
+}
+
+.card-image-empty i {
+    font-size: 48px;
+}
+
+/* Badge overlay "En carrito: X" */
 .product-cart-badge-overlay {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(14, 165, 233, 0.95);
-    backdrop-filter: blur(4px);
+    top: 8px;
+    right: 8px;
+    background: rgba(14, 165, 233, 0.92);
+    backdrop-filter: blur(6px);
     color: white;
-    padding: 6px 10px;
-    border-radius: 12px;
+    padding: 5px 10px;
+    border-radius: 10px;
     font-size: 11px;
     font-weight: 600;
     line-height: 1.2;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     z-index: 10;
     display: none;
     align-items: center;
@@ -1099,248 +982,196 @@
     font-weight: 700;
 }
 
-.product-image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    object-position: center;
-    padding: 4px;
-    background: var(--gray-100);
+/* 3. Precio centrado */
+.card-price-block {
+    text-align: center;
+    padding: 2px 0;
 }
 
-.product-image-placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
+.card-price-main {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 3px;
     justify-content: center;
-    background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+    line-height: 1;
+}
+
+.card-price-main .price-full {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gray-900);
+    line-height: 1;
+}
+
+/* Parte entera del precio (generada por JS) */
+.card-price-main .price-int {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gray-900);
+    line-height: 1;
+}
+
+/* Decimales del precio (generadas por JS) */
+.card-price-main .price-dec {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gray-900);
+    line-height: 1;
+    vertical-align: top;
+}
+
+.card-price-main .price-currency {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-left: 2px;
+}
+
+.card-price-main .price-weight {
+    font-size: 12px;
+    font-weight: 400;
     color: var(--gray-400);
+    margin-left: 4px;
 }
 
-.product-image-placeholder i {
-    font-size: 40px;
+.card-price-hidden {
+    opacity: 0.55;
 }
 
-/* (e) Contenedor de acciones: Stepper y Botón en columna siempre */
-/* Layout ahora manejado con clases Tailwind en el template */
-/* Implementación de utilidades Tailwind usadas en el template */
-
-/* Clases de utilidad Tailwind */
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.flex-row { flex-direction: row; }
-.w-full { width: 100%; }
-.h-full { height: 100%; }
-.gap-2 { gap: 0.5rem; }
-.gap-3 { gap: 0.75rem; }
-.mt-4 { margin-top: 1rem; }
-.items-center { align-items: center; }
-.justify-center { justify-content: center; }
-.justify-between { justify-content: space-between; }
-.rounded-lg { border-radius: var(--radius-md); }
-.border { border: 1px solid var(--gray-300); }
-.px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
-.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
-.text-white { color: white; }
-.bg-blue-600 { background-color: #2563eb; }
-.hover\:bg-blue-700:hover { background-color: #1d4ed8; }
-.overflow-hidden { overflow: hidden; }
-
-/* max-w-[240px] - Ancho máximo de 240px */
-.max-w-\[240px\] {
-    max-width: 240px;
+.price-login-hint {
+    font-size: 13px;
+    font-style: italic;
+    color: var(--gray-500);
 }
 
-/* Contenedor de acciones - Siempre en columna */
-.mt-3.w-full.flex.flex-col.items-center.gap-2 {
-    margin-top: 0.75rem;
+/* 4. Stepper de cantidad */
+.card-qty-row {
     display: flex;
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    flex-shrink: 0;
-    box-sizing: border-box;
-    overflow: visible;
+    justify-content: center;
 }
 
-/* Clases de utilidad adicionales */
-.mt-3 { margin-top: 0.75rem; }
-.pb-4 { padding-bottom: 1rem; }
-.gap-2 { gap: 0.5rem; }
-.h-10 { height: 2.5rem; }
-.h-8 { height: 2rem; }
-.w-8 { width: 2rem; }
-.w-10 { width: 2.5rem; }
-.text-sm { font-size: 0.875rem; }
-.whitespace-nowrap { white-space: nowrap; }
-.max-w-\[260px\] { max-width: 260px; }
-
-/* Selector de cantidad - ahora es el contenedor directo con clases Tailwind */
-/* Clases: w-full max-w-[260px] h-10 flex items-center justify-between rounded-lg border px-2 */
-.product-quantity-selector {
+.card-qty-stepper {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 6px;
-    margin: 0;
     width: 100%;
-    max-width: 260px;
-    height: 2.5rem;
+    max-width: 180px;
+    height: 40px;
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    background: var(--gray-50);
+    padding: 0 4px;
     box-sizing: border-box;
-    border: 1px solid var(--gray-300);
-    border-radius: var(--radius-md);
-    padding: 0 0.5rem;
-    background: white;
-    overflow: visible;
-    min-width: 0;
-    flex-shrink: 0;
 }
 
 .qty-btn {
-    width: 2rem;
-    height: 2rem;
-    border: 1px solid var(--gray-300);
+    width: 32px;
+    height: 32px;
+    border: none;
     background: white;
-    border-radius: var(--radius);
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all var(--transition);
-    color: var(--gray-700);
-    font-size: 14px;
+    transition: all 0.15s ease;
+    color: var(--gray-600);
+    font-size: 16px;
     flex-shrink: 0;
-    flex-grow: 0;
-    min-width: 2rem;
-    max-width: 2rem;
     padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-}
-
-/* Botones con clases h-8 w-8 */
-.h-8.w-8.qty-btn {
-    height: 2rem;
-    width: 2rem;
-    min-width: 2rem;
-    max-width: 2rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
 }
 
 .qty-btn:hover {
-    background: var(--gray-50);
-    border-color: var(--primary-500);
+    background: var(--primary-50);
     color: var(--primary-600);
 }
 
 .qty-btn:active {
-    transform: scale(0.95);
+    transform: scale(0.93);
 }
 
 .qty-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
+    box-shadow: none;
 }
 
 .qty-input {
-    flex: 0 0 auto;
+    flex: 1;
     text-align: center;
     border: none;
-    border-radius: 0;
-    padding: 0;
-    font-size: 0.875rem;
+    background: transparent;
+    font-size: 15px;
     font-weight: 600;
     color: var(--gray-900);
-    background: transparent;
-    width: 2.5rem;
-    height: auto;
-    box-sizing: border-box;
-    flex-shrink: 0;
-}
-
-/* Input con clases w-10 text-center text-sm */
-.w-10.text-center.text-sm.qty-input {
-    width: 2.5rem;
-    text-align: center;
-    font-size: 0.875rem;
-}
-
-.qty-input:focus {
-    outline: none;
-    border-color: var(--primary-500);
-    box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1);
-}
-
-/* (f) Botón Añadir - Dentro del wrapper, ocupa el espacio disponible sin recorte */
-/* Estilos para el botón Añadir con las nuevas clases Tailwind */
-/* El botón ahora tiene clases: w-full max-w-[260px] h-10 flex items-center justify-center gap-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 whitespace-nowrap */
-button.btn-add-product.w-full {
-    width: 100%;
-    max-width: 260px;
-    height: 2.5rem;
+    padding: 0;
+    width: 40px;
     min-width: 0;
-    padding: 0 1rem;
-    font-size: 14px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: all var(--transition);
+    outline: none;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* 5. Botón Añadir al carrito */
+.card-add-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    border-radius: var(--radius-md);
-    background-color: #2563eb; /* bg-blue-600 */
-    color: white;
+    gap: 8px;
+    width: 100%;
+    height: 42px;
+    border: none;
+    border-radius: 12px;
+    background: var(--gray-100);
+    color: var(--gray-700);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    padding: 0 16px;
     box-sizing: border-box;
     white-space: nowrap;
-    overflow: visible;
-    flex-shrink: 0;
 }
 
-button.btn-add-product.w-full:hover {
-    background-color: #1d4ed8; /* hover:bg-blue-700 */
+.card-add-btn i {
+    font-size: 16px;
 }
 
-/* Estado disabled del botón Añadir */
-button.btn-add-product.w-full:disabled,
-button.btn-add-product.w-full.disabled {
-    background-color: #9ca3af; /* gris */
-    cursor: not-allowed;
-    opacity: 0.7;
+/* Hover solo cuando NO está disabled */
+.card-add-btn:not(:disabled):not(.disabled):hover {
+    background: var(--gray-200);
+    color: var(--gray-900);
 }
 
-button.btn-add-product.w-full:disabled:hover,
-button.btn-add-product.w-full.disabled:hover {
-    background-color: #9ca3af; /* mantener gris en hover */
+/* Estado disabled (qty=0): gris y sin cursor */
+.card-add-btn:disabled,
+.card-add-btn.disabled {
+    background: var(--gray-100) !important;
+    color: var(--gray-400) !important;
+    cursor: not-allowed !important;
 }
 
-/* Estilos legacy para compatibilidad */
-.product-add-wrap .btn-add-product {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    padding: 8px 16px !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    margin: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 6px !important;
-    height: 32px !important;
-    min-height: 32px !important;
-    max-height: 32px !important;
-    box-sizing: border-box !important;
-    white-space: nowrap !important;
-    overflow: visible !important;
-    text-overflow: clip !important;
-    border-radius: var(--radius) !important;
-    position: relative !important;
-    float: none !important;
-    transform: none !important;
+/* Estado activo (qty>0): azul primary */
+.card-add-btn.active {
+    background: #2563eb !important;
+    color: white !important;
+    cursor: pointer !important;
 }
+
+.card-add-btn.active:hover {
+    background: #1d4ed8 !important;
+}
+
+/* ============================================
+   FIN - Card de producto
+   ============================================ */
 
 /* Feedback de carrito ELIMINADO - ahora se usa badge overlay en imagen */
 

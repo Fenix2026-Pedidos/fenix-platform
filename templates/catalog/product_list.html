@@ -143,88 +143,71 @@
         <div class="products-grid" id="productsGrid">
                 {% if products %}
                     {% for product in products %}
-                    <div class="product-card flex flex-col h-full overflow-hidden" 
+                    <div class="product-card" 
                         data-product-id="{{ product.pk }}" 
                         {% if show_prices %}data-product-price="{{ product.price|unlocalize }}"{% endif %}
                         data-category="{{ product|product_category }}"
                         data-product-type="{% cycle 'charcuteria' 'curados' 'ibericos' 'jamon-cocido' 'jamon-curado' 'pavo-pollo' 'platos-preparados' 'salchichas' %}"
                         data-product-features="{% cycle 'sin-lactosa,sin-conservantes' 'natural' 'sin-colorantes' 'sin-azucares' 'bajo-carbohidratos' 'apto-diabeticos' 'natural,sin-lactosa' '' %}">
-                        <!-- Contenido de la card (orden específico) -->
-                        <div class="product-card-content flex flex-col h-full pb-4">
-                            <!-- (a) Nombre del producto -->
-                            <h3 class="product-name">
-                                {% if lang == 'zh-hans' %}
-                                    {{ product.name_zh_hans }}
-                                {% else %}
-                                    {{ product.name_es }}
-                                {% endif %}
+
+                        <!-- 1. Header: Título + Referencia en la misma línea -->
+                        <div class="card-header-row">
+                            <h3 class="card-product-name">
+                                {% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif %}
                             </h3>
-                            
-                            <!-- (c) Fila de precio (izq) + referencia (der) -->
-                            <div class="product-meta-row">
-                                {% if show_prices %}
-                                <div class="product-price-section">
-                                    <div class="product-price-main" data-price="{{ product.price|unlocalize }}">
-                                        <span class="price-full">{{ product.price|floatformat:2 }}</span>
-                                        <span class="price-cur">€</span>
-                                        <span class="price-unit">/ {% cycle '150 g' '200 g' '100 g' '250 g' '300 g' '180 g' '120 g' '160 g' %}</span>
-                                    </div>
-                                </div>
-                                {% else %}
-                                <div class="product-price-section">
-                                    <div class="product-price-main" style="opacity: 0.6;">
-                                        <span class="price-full" style="font-size: 0.85rem; font-style: italic;">{% trans "Inicia sesión" %}</span>
-                                    </div>
-                                </div>
-                                {% endif %}
-                                <!-- Referencia a la derecha -->
-                                <div class="product-reference">
-                                    <span class="product-ref-label">{% trans "REF:" %}</span>
-                                    <span class="product-ref-value">P{{ product.pk|stringformat:"05d" }}</span>
-                                </div>
+                            <span class="card-ref">REF: P{{ product.pk|stringformat:"05d" }}</span>
+                        </div>
+
+                        <!-- 2. Imagen protagonista -->
+                        <div class="card-image-wrap">
+                            {% if product.image %}
+                            <img src="{{ product.image.url }}" 
+                                 alt="{% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif %}" 
+                                 class="card-product-img" loading="lazy">
+                            {% else %}
+                            <div class="card-image-empty">
+                                <i class="bi bi-image"></i>
                             </div>
-                            
-                            <!-- (d) Imagen del producto (grande, protagonista) con badge overlay -->
-                            <div class="product-image-container">
-                                {% if product.image %}
-                                <img src="{{ product.image.url }}" 
-                                     alt="{% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif %}" 
-                                     class="product-image">
-                                {% else %}
-                                <div class="product-image-placeholder">
-                                    <i class="bi bi-image"></i>
-                                </div>
-                                {% endif %}
-                                <!-- Badge overlay "En carrito: X" -->
-                                <div class="product-cart-badge-overlay" data-product-id="{{ product.pk }}" style="display: none;">
-                                    <span class="cart-badge-text">{% trans "En carrito:" %} <strong class="cart-badge-quantity">0</strong></span>
-                                </div>
+                            {% endif %}
+                            <!-- Badge overlay "En carrito: X" -->
+                            <div class="product-cart-badge-overlay" data-product-id="{{ product.pk }}" style="display: none;">
+                                <span class="cart-badge-text">{% trans "En carrito:" %} <strong class="cart-badge-quantity">0</strong></span>
                             </div>
-                            
-                            <!-- (e) Contenedor de acciones: Stepper centrado arriba, Botón Añadir centrado abajo -->
-                            <div class="mt-3 w-full flex flex-col items-center gap-2">
-                                <!-- Stepper centrado (botón - deshabilitado al inicio) -->
-                                <div class="w-full max-w-[260px] h-10 flex items-center justify-between rounded-lg border px-2 product-quantity-selector">
-                                    <button type="button" class="h-8 w-8 flex items-center justify-center rounded-md border qty-btn qty-minus disabled" data-product-id="{{ product.pk }}" aria-label="{% trans 'Reducir cantidad' %}" disabled>
-                                        <i class="bi bi-dash"></i>
-                                    </button>
-                                    <input type="number" 
-                                           class="w-10 text-center text-sm qty-input" 
-                                           data-product-id="{{ product.pk }}"
-                                           value="0" 
-                                           min="0" 
-                                           readonly>
-                                    <button type="button" class="h-8 w-8 flex items-center justify-center rounded-md border qty-btn qty-plus" data-product-id="{{ product.pk }}" aria-label="{% trans 'Aumentar cantidad' %}">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                </div>
-                                
-                                <!-- Botón Añadir centrado (deshabilitado hasta seleccionar cantidad) -->
-                                <button type="button" class="w-full max-w-[260px] h-10 flex items-center justify-center gap-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 whitespace-nowrap btn-add-product disabled" data-product-id="{{ product.pk }}" disabled>
-                                    <i class="bi bi-cart-plus"></i> {% trans "Añadir al carrito" %}
+                        </div>
+
+                        <!-- 3. Precio centrado -->
+                        <div class="card-price-block">
+                            {% if show_prices %}
+                            <div class="card-price-main" data-price="{{ product.price|unlocalize }}">
+                                <span class="price-full">{{ product.price|floatformat:2 }}</span>
+                                <span class="price-currency">€</span>
+                                <span class="price-weight">/ {% cycle '150 g' '200 g' '100 g' '250 g' '300 g' '180 g' '120 g' '160 g' %}</span>
+                            </div>
+                            {% else %}
+                            <div class="card-price-main card-price-hidden">
+                                <span class="price-login-hint">{% trans "Inicia sesión para ver precios" %}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- 4. Stepper de cantidad -->
+                        <div class="card-qty-row">
+                            <div class="card-qty-stepper product-quantity-selector">
+                                <button type="button" class="qty-btn qty-minus disabled" data-product-id="{{ product.pk }}" aria-label="{% trans 'Reducir cantidad' %}" disabled>
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <input type="number" class="qty-input" data-product-id="{{ product.pk }}" value="0" min="0" readonly>
+                                <button type="button" class="qty-btn qty-plus" data-product-id="{{ product.pk }}" aria-label="{% trans 'Aumentar cantidad' %}">
+                                    <i class="bi bi-plus"></i>
                                 </button>
                             </div>
                         </div>
+
+                        <!-- 5. Botón Añadir al carrito -->
+                        <button type="button" class="card-add-btn btn-add-product disabled" data-product-id="{{ product.pk }}" disabled>
+                            <i class="bi bi-cart-plus"></i>
+                            <span>{% trans "Añadir al carrito" %}</span>
+                        </button>
                     </div>
                     {% endfor %}
                 {% else %}
@@ -305,7 +288,7 @@
         }
         
         // Parsear precios estilo Amazon (separar parte entera y decimales)
-        document.querySelectorAll('.product-price-main[data-price]').forEach(function(priceElement) {
+        document.querySelectorAll('.card-price-main[data-price]').forEach(function(priceElement) {
             const priceValue = parseFloat(priceElement.getAttribute('data-price'));
             if (isNaN(priceValue)) return;
             

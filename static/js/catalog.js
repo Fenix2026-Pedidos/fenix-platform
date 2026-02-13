@@ -253,6 +253,8 @@ const CatalogCart = {
     
     /**
      * Actualiza el estado del botón "Añadir"
+     * - qty=0: gris disabled
+     * - qty>0: azul enabled con texto "Añadir (N)"
      */
     updateAddButtonState: function(productId) {
         const btn = document.querySelector(`.btn-add-product[data-product-id="${productId}"]`);
@@ -261,12 +263,16 @@ const CatalogCart = {
         const localQty = this.qtyLocal[productId] || 0;
         
         if (localQty === 0) {
+            // Estado: qty=0 -> gris disabled
             btn.disabled = true;
             btn.classList.add('disabled');
+            btn.classList.remove('active');
             btn.innerHTML = '<i class="bi bi-cart-plus"></i> Añadir al carrito';
         } else {
+            // Estado: qty>0 -> azul enabled
             btn.disabled = false;
             btn.classList.remove('disabled');
+            btn.classList.add('active');
             btn.innerHTML = `<i class="bi bi-cart-plus"></i> Añadir (${localQty})`;
         }
     },

@@ -54,14 +54,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'simple_history',  # Auditoría de cambios
-    'accounts',
-    'catalog',
-    'orders',
-    'recurring',
-    'notifications',
-    'core',  # Configuración global de plataforma
+    # Apps propias en orden de visualización en admin:
+    'catalog',  # Catálogo
+    'orders',  # Pedidos
+    'recurring',  # Pedidos Recurrentes
+    'notifications',  # Notificaciones
+    'organizations',  # Organizaciones
+    'accounts',  # Cuentas
+    'core',  # Configuración de plataforma
     'whatsapp',  # Integración WhatsApp Business Cloud API
-    'organizations',  # Gestión de empresas y multitenancy
 ]
 
 MIDDLEWARE = [

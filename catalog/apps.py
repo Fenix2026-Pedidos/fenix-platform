@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class CatalogConfig(AppConfig):
     name = 'catalog'
-    verbose_name = 'Catálogo'
+    verbose_name = '1. Catálogo'
