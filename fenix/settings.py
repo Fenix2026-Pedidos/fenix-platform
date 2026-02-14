@@ -150,11 +150,11 @@ DEFAULT_ORDER_NOTIFICATION_EMAIL = os.getenv('DEFAULT_ORDER_NOTIFICATION_EMAIL',
 DEFAULT_ORDER_CURRENCY = os.getenv('DEFAULT_ORDER_CURRENCY', 'EUR')
 
 # Admin email para notificaciones de aprobación
-ADMIN_APPROVAL_EMAIL = os.getenv('ADMIN_APPROVAL_EMAIL', 'admin@fenix.com')
+ADMIN_APPROVAL_EMAIL = os.getenv('ADMIN_APPROVAL_EMAIL', 'plataformafenix2026@gmail.com')
 
 # Lista de administradores (también se puede usar para notificaciones)
 ADMINS = [
-    ('Admin Fenix', os.getenv('ADMIN_APPROVAL_EMAIL', 'admin@fenix.com')),
+    ('Admin Fenix', os.getenv('ADMIN_APPROVAL_EMAIL', 'plataformafenix2026@gmail.com')),
 ]
 
 

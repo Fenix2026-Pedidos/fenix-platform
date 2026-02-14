@@ -13,7 +13,7 @@ from django.views.decorators.http import require_http_methods, require_POST
 from .models import User, UserSession, LoginHistory, ProfileAuditLog, SecuritySettings
 from .profile_forms import (
     PersonalDataForm, CompanyDataForm, PreferencesForm,
-    SecurityForm, PasswordChangeForm, AvatarUploadForm
+    SecurityForm, PasswordChangeForm, AvatarUploadForm, OperativeProfileForm
 )
 from organizations.models import UserCompany
 from core.audit import log_action
@@ -495,3 +495,108 @@ def revoke_api_token(request):
         messages.success(request, _('Token de API revocado correctamente'))
     
     return redirect('accounts:profile_dashboard')
+
+
+@login_required
+@require_http_methods(['GET', 'POST'])
+def update_operative_profile(request):
+    """Actualizar perfil operativo del usuario"""
+    user = request.user
+    
+    if request.method == 'POST':
+        form = OperativeProfileForm(request.POST, instance=user)
+        if form.is_valid():
+            old_values = {
+                field: getattr(user, field)
+                for field in form.changed_data
+            }
+            
+            user = form.save()
+            
+            # Registrar cambios en el log
+            for field in form.changed_data:
+                log_profile_action(
+                    user=user,
+                    action='update_operative_profile',
+                    field_changed=field,
+                    old_value=old_values.get(field),
+                    new_value=getattr(user, field),
+                    request=request
+                )
+            
+            messages.success(request, _('Perfil operativo actualizado correctamente'))
+            return redirect('accounts:profile_dashboard')
+    else:
+        form = OperativeProfileForm(instance=user)
+    
+    return render(request, 'accounts/profile/edit_operative.html', {
+        'form': form,
+        'user': user
+    })
+
+
+@login_required
+def operative_profile_edit(request):
+    """Alias para compatibility - redirige a update_operative_profile"""
+    return update_operative_profile(request)
+
+@login_required
+@require_http_methods(['GET', 'POST'])
+def update_complete_profile(request):
+    """Actualizar perfil completo del usuario (datos personales + perfil operativo)"""
+    user = request.user
+    
+    if request.method == 'POST':
+        form_personal = PersonalDataForm(request.POST, instance=user)
+        form_operative = OperativeProfileForm(request.POST, instance=user)
+        
+        if form_personal.is_valid() and form_operative.is_valid():
+            # Guardar datos personales
+            old_values_personal = {
+                field: getattr(user, field)
+                for field in form_personal.changed_data
+            }
+            
+            user = form_personal.save()
+            
+            # Registrar cambios de datos personales
+            for field in form_personal.changed_data:
+                log_profile_action(
+                    user=user,
+                    action='update_complete_profile',
+                    field_changed=field,
+                    old_value=old_values_personal.get(field),
+                    new_value=getattr(user, field),
+                    request=request
+                )
+            
+            # Guardar datos operativos
+            old_values_operative = {
+                field: getattr(user, field)
+                for field in form_operative.changed_data
+            }
+            
+            user = form_operative.save()
+            
+            # Registrar cambios de perfil operativo
+            for field in form_operative.changed_data:
+                log_profile_action(
+                    user=user,
+                    action='update_complete_profile',
+                    field_changed=field,
+                    old_value=old_values_operative.get(field),
+                    new_value=getattr(user, field),
+                    request=request
+                )
+            
+            messages.success(request, _('Tu perfil ha sido actualizado correctamente'))
+            return redirect('accounts:profile_dashboard')
+    else:
+        form_personal = PersonalDataForm(instance=user)
+        form_operative = OperativeProfileForm(instance=user)
+    
+    return render(request, 'accounts/profile/edit_complete_profile.html', {
+        'form_personal': form_personal,
+        'form_operative': form_operative,
+        'user': user
+    })

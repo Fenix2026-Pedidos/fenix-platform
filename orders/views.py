@@ -144,6 +144,17 @@ def order_create(request):
         messages.warning(request, 'Tu carrito está vacío.')
         return redirect('orders:cart')
     
+    # Verificar que el perfil operativo esté completo
+    if not request.user.check_profile_completed():
+        messages.error(
+            request,
+            _('Debes completar tu perfil operativo antes de crear un pedido. '
+              'Campos faltantes: %(missing_fields)s') % {
+                'missing_fields': ', '.join(request.user.missing_fields)
+            }
+        )
+        return redirect('accounts:operative_profile_edit')
+    
     # Crear el pedido
     order = Order.objects.create(
         customer=request.user,

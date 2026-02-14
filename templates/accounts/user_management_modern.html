@@ -1,0 +1,1448 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Gestión de Usuarios" %} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<main class="page">
+    <header class="page-header">
+        <!-- Header -->
+        <div class="management-header">
+            <h1>{% trans "Gestión de Usuarios" %}</h1>
+            <p>{% trans "Administra todos los usuarios de la plataforma" %}</p>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs-wrapper">
+            <div class="tabs-header">
+                <button class="tab-button {% if active_tab == 'registered' %}active{% endif %}" 
+                    onclick="switchTab(event, 'registered')">
+                    <i class="bi bi-check-circle"></i>
+                    {% trans "Usuarios Registrados" %}
+                    <span class="tab-count">({{ paginator_registered.count }})</span>
+                </button>
+                <button class="tab-button {% if active_tab == 'pending' %}active{% endif %}" 
+                    onclick="switchTab(event, 'pending')">
+                    <i class="bi bi-hourglass"></i>
+                    {% trans "Nuevos Usuarios" %}
+                    <span class="tab-count">({{ paginator_pending.count }})</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="page-body">
+        <div class="page-body-inner">
+            <!-- TAB 1: USUARIOS REGISTRADOS -->
+            <div id="tab-registered" class="tab-panel {% if active_tab == 'registered' %}active{% endif %}">
+                <div class="table-card">
+                    <!-- Filtros y Opciones -->
+                    <div class="table-toolbar">
+            <div class="controls-left">
+                <!-- Búsqueda -->
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <form method="get" class="search-form">
+                        <input type="hidden" name="tab" value="registered">
+                        <input type="hidden" name="per_page" value="{{ per_page }}">
+                        <input 
+                            type="text" 
+                            name="search" 
+                            placeholder="{% trans 'Buscar por nombre, email o empresa...' %}"
+                            value="{{ search_query }}"
+                        >
+                        <button type="submit" class="btn-search">{% trans "Buscar" %}</button>
+                    </form>
+                </div>
+
+                <!-- Status Filter -->
+                <form method="get" class="filter-form">
+                    <input type="hidden" name="tab" value="registered">
+                    <input type="hidden" name="per_page" value="{{ per_page }}">
+                    <input type="hidden" name="search" value="{{ search_query }}">
+                    <select name="status" onchange="this.form.submit()">
+                        <option value="">{% trans "Todos los estados" %}</option>
+                        {% for status_value, status_label in status_choices %}
+                        <option value="{{ status_value }}" {% if status_filter == status_value %}selected{% endif %}>
+                            {{ status_label }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+
+            <div class="controls-right">
+                <!-- Per Page Selector -->
+                <form method="get" class="per-page-form">
+                    <input type="hidden" name="tab" value="registered">
+                    <input type="hidden" name="status" value="{{ status_filter }}">
+                    <input type="hidden" name="search" value="{{ search_query }}">
+                    <label for="per_page">{% trans "Usuarios por página:" %}</label>
+                    <select name="per_page" id="per_page" onchange="this.form.submit()">
+                        {% for choice in per_page_choices %}
+                        <option value="{{ choice }}" {% if per_page == choice %}selected{% endif %}>
+                            {{ choice }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabla Moderna -->
+        {% if page_registered.object_list %}
+        <div class="table-scroll-x">
+            <div class="table-scroll-y">
+                <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th class="col-checkbox">
+                            <input type="checkbox" class="checkbox-all" onchange="toggleSelectAll(this)">
+                        </th>
+                        <th class="col-user">{% trans "Usuario" %}</th>
+                        <th class="col-empresa">{% trans "Empresa" %}</th>
+                        <th class="col-email">{% trans "Email" %}</th>
+                        <th class="col-fecha">{% trans "Fecha de Solicitud" %}</th>
+                        <th class="col-estado">{% trans "Estado" %}</th>
+                        <th class="col-procesado">{% trans "Procesado por" %}</th>
+                        <th class="col-actions">{% trans "Acciones" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in page_registered.object_list %}
+                    <tr class="table-row" data-user-id="{{ user.id }}">
+                        <td class="col-checkbox">
+                            <input type="checkbox" class="row-checkbox" value="{{ user.id }}">
+                        </td>
+                        <td class="col-user">
+                            <div class="user-info">
+                                <strong>{{ user.get_full_name|default:user.email }}</strong>
+                                <span class="user-role">{{ user.get_role_display }}</span>
+                            </div>
+                        </td>
+                        <td class="col-empresa">{{ user.company|default:"—" }}</td>
+                        <td class="col-email">
+                            <span class="email-text" title="{{ user.email }}">{{ user.email }}</span>
+                        </td>
+                        <td class="col-fecha">
+                            <span class="fecha-badge">{{ user.date_joined|date:"d/m/Y H:i" }}</span>
+                        </td>
+                        <td class="col-estado">
+                            {% if user.status == 'active' %}
+                                <span class="badge badge-success">{% trans "Activo" %}</span>
+                            {% elif user.status == 'disabled' %}
+                                <span class="badge badge-danger">{% trans "Deshabilitado" %}</span>
+                            {% elif user.status == 'pending' %}
+                                <span class="badge badge-warning">{% trans "Pendiente" %}</span>
+                            {% else %}
+                                <span class="badge badge-secondary">{{ user.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="col-procesado">
+                            {% if user.approved_by %}
+                                {{ user.approved_by.get_full_name|default:user.approved_by.email }}
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="col-actions">
+                            <div class="actions-menu">
+                                <button
+                                    class="btn-kebab"
+                                    data-menu="registered"
+                                    data-view-url="{% url 'admin:accounts_user_change' user.id %}"
+                                    data-edit-url="{% url 'accounts:user_update' user.id %}"
+                                    data-delete-url="{% url 'accounts:user_delete' user.id %}"
+                                    data-delete-email="{{ user.email }}"
+                                    onclick="openActionMenu(event, this)"
+                                >
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Paginación -->
+        <div class="table-footer">
+            <div class="pagination-info">
+                {% if page_registered.has_other_pages %}
+                    {% blocktrans count counter=page_registered.paginator.count %}
+                        {{ page_registered.start_index }}–{{ page_registered.end_index }} de {{ counter }} usuario
+                    {% plural %}
+                        {{ page_registered.start_index }}–{{ page_registered.end_index }} de {{ counter }} usuarios
+                    {% endblocktrans %}
+                {% else %}
+                    {% blocktrans count counter=paginator_registered.count %}
+                        {{ counter }} usuario
+                    {% plural %}
+                        {{ counter }} usuarios
+                    {% endblocktrans %}
+                {% endif %}
+            </div>
+
+            <div class="pagination-controls">
+                {% if page_registered.has_previous %}
+                    <a href="?page=1&{{ query_string }}" class="btn-pagination">
+                        <i class="bi bi-chevron-double-left"></i>
+                    </a>
+                    <a href="?page={{ page_registered.previous_page_number }}&{{ query_string }}" class="btn-pagination">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                {% else %}
+                    <button class="btn-pagination" disabled>
+                        <i class="bi bi-chevron-double-left"></i>
+                    </button>
+                    <button class="btn-pagination" disabled>
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                {% endif %}
+
+                <span class="pagination-page">
+                    {% trans "Página" %} {{ page_registered.number }} {% trans "de" %} {{ paginator_registered.num_pages }}
+                </span>
+
+                {% if page_registered.has_next %}
+                    <a href="?page={{ page_registered.next_page_number }}&{{ query_string }}" class="btn-pagination">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                    <a href="?page={{ paginator_registered.num_pages }}&{{ query_string }}" class="btn-pagination">
+                        <i class="bi bi-chevron-double-right"></i>
+                    </a>
+                {% else %}
+                    <button class="btn-pagination" disabled>
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                    <button class="btn-pagination" disabled>
+                        <i class="bi bi-chevron-double-right"></i>
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <p>{% trans "No hay usuarios para mostrar" %}</p>
+        </div>
+        {% endif %}
+    </div>
+    </div>
+
+    <!-- TAB 2: NUEVOS USUARIOS PENDIENTES -->
+    <div id="tab-pending" class="tab-panel {% if active_tab == 'pending' %}active{% endif %}">
+        <div class="table-card">
+            <!-- Per Page Selector para Pendientes -->
+            <div class="table-toolbar">
+                <div class="controls-left">
+                    <p class="info-text">{% trans "Los usuarios se muestran solo tras verificar su email" %}</p>
+                </div>
+                <div class="controls-right">
+                    <form method="get" class="per-page-form">
+                        <input type="hidden" name="tab" value="pending">
+                        <label for="per_page_pending">{% trans "Usuarios por página:" %}</label>
+                        <select name="per_page" id="per_page_pending" onchange="this.form.submit()">
+                            {% for choice in per_page_choices %}
+                            <option value="{{ choice }}" {% if per_page == choice %}selected{% endif %}>
+                                {{ choice }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tabla Pendientes -->
+            {% if page_pending.object_list %}
+            <div class="table-scroll-x">
+                <div class="table-scroll-y">
+                    <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th class="col-checkbox">
+                            <input type="checkbox" class="checkbox-all" onchange="toggleSelectAll(this)">
+                        </th>
+                        <th class="col-user">{% trans "Usuario" %}</th>
+                        <th class="col-empresa">{% trans "Empresa" %}</th>
+                        <th class="col-email">{% trans "Email" %}</th>
+                        <th class="col-fecha">{% trans "Fecha de Solicitud" %}</th>
+                        <th class="col-estado">{% trans "Estado" %}</th>
+                        <th class="col-actions">{% trans "Acciones" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in page_pending.object_list %}
+                    <tr class="table-row" data-user-id="{{ user.id }}">
+                        <td class="col-checkbox">
+                            <input type="checkbox" class="row-checkbox" value="{{ user.id }}">
+                        </td>
+                        <td class="col-user">
+                            <div class="user-info">
+                                <strong>{{ user.get_full_name|default:user.email }}</strong>
+                            </div>
+                        </td>
+                        <td class="col-empresa">{{ user.company|default:"—" }}</td>
+                        <td class="col-email">
+                            <span class="email-text" title="{{ user.email }}">{{ user.email }}</span>
+                        </td>
+                        <td class="col-fecha">
+                            <span class="fecha-badge">{{ user.date_joined|date:"d/m/Y H:i" }}</span>
+                        </td>
+                        <td class="col-estado">
+                            {% if user.status == 'active' %}
+                                <span class="badge badge-success">{% trans "Activo" %}</span>
+                            {% elif user.status == 'rejected' %}
+                                <span class="badge badge-danger">{% trans "Rechazado" %}</span>
+                            {% elif user.status == 'disabled' %}
+                                <span class="badge badge-secondary">{% trans "Deshabilitado" %}</span>
+                            {% else %}
+                                <span class="badge badge-warning">{% trans "Pendiente" %}</span>
+                            {% endif %}
+                            <div class="text-muted text-small">
+                                {% if user.email_verified %}
+                                    {% trans "Email verificado" %}
+                                {% else %}
+                                    {% trans "Email sin verificar" %}
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="col-actions">
+                            <div class="actions-menu">
+                                <form method="post" action="{% url 'accounts:approve_user' user.id %}" style="display: none;" id="approve-form-{{ user.id }}">
+                                    {% csrf_token %}
+                                </form>
+                                <form method="post" action="{% url 'accounts:reject_user' user.id %}" style="display: none;" id="reject-form-{{ user.id }}">
+                                    {% csrf_token %}
+                                </form>
+                                <button
+                                    class="btn-kebab"
+                                    data-menu="pending"
+                                    data-approve-form="approve-form-{{ user.id }}"
+                                    data-reject-form="reject-form-{{ user.id }}"
+                                    data-user-email="{{ user.email }}"
+                                    data-user-id="{{ user.id }}"
+                                    data-user-status="{{ user.status }}"
+                                    data-user-role="{{ user.role }}"
+                                    data-user-email-verified="{{ user.email_verified|yesno:'true,false' }}"
+                                    onclick="openActionMenu(event, this)"
+                                >
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Paginación Pendientes -->
+            <div class="table-footer">
+            <div class="pagination-info">
+                {% if page_pending.has_other_pages %}
+                    {% blocktrans count counter=page_pending.paginator.count %}
+                        {{ page_pending.start_index }}–{{ page_pending.end_index }} de {{ counter }} usuario
+                    {% plural %}
+                        {{ page_pending.start_index }}–{{ page_pending.end_index }} de {{ counter }} usuarios
+                    {% endblocktrans %}
+                {% else %}
+                    {% blocktrans count counter=paginator_pending.count %}
+                        {{ counter }} usuario
+                    {% plural %}
+                        {{ counter }} usuarios
+                    {% endblocktrans %}
+                {% endif %}
+            </div>
+
+            <div class="pagination-controls">
+                {% if page_pending.has_previous %}
+                    <a href="?page=1&tab=pending&per_page={{ per_page }}" class="btn-pagination">
+                        <i class="bi bi-chevron-double-left"></i>
+                    </a>
+                    <a href="?page={{ page_pending.previous_page_number }}&tab=pending&per_page={{ per_page }}" class="btn-pagination">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                {% else %}
+                    <button class="btn-pagination" disabled>
+                        <i class="bi bi-chevron-double-left"></i>
+                    </button>
+                    <button class="btn-pagination" disabled>
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                {% endif %}
+
+                <span class="pagination-page">
+                    {% trans "Página" %} {{ page_pending.number }} {% trans "de" %} {{ paginator_pending.num_pages }}
+                </span>
+
+                {% if page_pending.has_next %}
+                    <a href="?page={{ page_pending.next_page_number }}&tab=pending&per_page={{ per_page }}" class="btn-pagination">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                    <a href="?page={{ paginator_pending.num_pages }}&tab=pending&per_page={{ per_page }}" class="btn-pagination">
+                        <i class="bi bi-chevron-double-right"></i>
+                    </a>
+                {% else %}
+                    <button class="btn-pagination" disabled>
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                    <button class="btn-pagination" disabled>
+                        <i class="bi bi-chevron-double-right"></i>
+                    </button>
+                {% endif %}
+            </div>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <p>{% trans "No hay solicitudes pendientes" %}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+        </div>
+    </section>
+</main>
+
+<!-- Dropdown Global de Acciones -->
+<div id="actionDropdown" class="action-dropdown" aria-hidden="true"></div>
+
+<!-- Modal Editar Solicitud -->
+<div id="requestModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <h3 id="requestModalTitle">{% trans "Editar solicitud" %}</h3>
+        <p class="text-muted" id="requestModalSubtitle"></p>
+        <form method="post" action="{% url 'accounts:update_pending_request' %}" id="requestForm">
+            {% csrf_token %}
+            <input type="hidden" name="user_id" id="requestUserId">
+
+            <div class="form-group">
+                <label for="requestStatus">{% trans "Estado" %}</label>
+                <select name="status" id="requestStatus" class="form-select" required>
+                    {% for status_value, status_label in status_choices %}
+                    <option value="{{ status_value }}">{{ status_label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="requestRole">{% trans "Rol a asignar" %}</label>
+                <select name="role" id="requestRole" class="form-select" required>
+                    {% for role_value, role_label in available_role_choices %}
+                    <option value="{{ role_value }}">{{ role_label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group checkbox-group">
+                <label>
+                    <input type="checkbox" name="email_verified" id="requestEmailVerified">
+                    {% trans "Email verificado" %}
+                </label>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeRequestModal()">{% trans "Cancelar" %}</button>
+                <button type="submit" class="btn btn-primary">{% trans "Guardar" %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal de Confirmación Genérico -->
+<div id="confirmModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <h3 id="modalTitle"></h3>
+        <p id="modalMessage"></p>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal()">{% trans "Cancelar" %}</button>
+            <button id="modalConfirmBtn" class="btn btn-danger">{% trans "Confirmar" %}</button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* ========== LAYOUT GENERAL ========== */
+:root {
+    --app-header-height: 64px;
+}
+
+.page {
+    height: calc(100vh - var(--app-header-height));
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1rem 1rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.page-header {
+    flex: 0 0 auto;
+}
+
+.page-body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    overflow: hidden;
+}
+
+.page-body-inner {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.management-header {
+    margin-bottom: 2rem;
+}
+
+.management-header h1 {
+    font-size: 1.875rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 0.5rem 0;
+}
+
+.management-header p {
+    color: #64748b;
+    margin: 0;
+}
+
+/* ========== TABS ========== */
+.tabs-wrapper {
+    margin-bottom: 1.5rem;
+}
+
+.tabs-header {
+    display: flex;
+    gap: 1rem;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.tab-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: #64748b;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: -3px;
+}
+
+.tab-button:hover {
+    color: #334155;
+}
+
+.tab-button.active {
+    color: #007bff;
+    border-bottom-color: #007bff;
+    font-weight: 600;
+}
+
+.tab-count {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+}
+
+.tab-panel {
+    display: none;
+    flex: 1;
+    min-height: 0;
+}
+
+.tab-panel.active {
+    display: flex;
+    flex-direction: column;
+}
+
+.table-card {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    width: 100%;
+}
+
+/* ========== CONTROLES DE TABLA ========== */
+.table-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.controls-left {
+    display: flex;
+    gap: 1rem;
+    flex: 1;
+    min-width: 300px;
+}
+
+.controls-right {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+}
+
+.search-form {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 0.625rem 1rem 0.625rem 2.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: border-color 0.2s;
+}
+
+.search-form input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.btn-search {
+    padding: 0.625rem 1rem;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background 0.2s;
+}
+
+.btn-search:hover {
+    background: #0056b3;
+}
+
+.filter-form select,
+.per-page-form select {
+    padding: 0.625rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    background: white;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.filter-form select:focus,
+.per-page-form select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.per-page-form {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.per-page-form label {
+    font-size: 0.875rem;
+    color: #475569;
+}
+
+.info-text {
+    color: #64748b;
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+/* ========== TABLA ========== */
+.table-scroll-x {
+    overflow-x: auto;
+    min-height: 0;
+    flex: 1;
+    display: flex;
+}
+
+.table-scroll-y {
+    overflow-y: auto;
+    min-height: 0;
+    height: 100%;
+    max-height: 100%;
+    flex: 1;
+    width: 100%;
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.modern-table thead {
+    background: #f8fafc;
+    border-bottom: 2px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.modern-table th {
+    padding: 1rem 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    color: #334155;
+    white-space: nowrap;
+}
+
+.modern-table td {
+    padding: 1rem 0.75rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.modern-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.modern-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Columnas */
+.col-checkbox {
+    width: 40px;
+    text-align: center;
+}
+
+.col-checkbox input[type="checkbox"] {
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+}
+
+.col-user {
+    min-width: 180px;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.user-info strong {
+    color: #1e293b;
+}
+
+.user-role {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    background: #f1f5f9;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    width: fit-content;
+}
+
+.col-empresa {
+    min-width: 120px;
+}
+
+.col-email {
+    min-width: 150px;
+}
+
+.email-text {
+    color: #0056b3;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+.col-fecha {
+    min-width: 130px;
+}
+
+.fecha-badge {
+    color: #64748b;
+    font-size: 0.8125rem;
+}
+
+.col-estado {
+    min-width: 100px;
+}
+
+.col-procesado {
+    min-width: 120px;
+}
+
+.col-actions {
+    width: 60px;
+    text-align: right;
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.badge-success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge-danger {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.badge-warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge-secondary {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+/* ========== MENÚ ACCIONES (KEBAB) ========== */
+.actions-menu {
+    position: relative;
+}
+
+.btn-kebab {
+    background: none;
+    border: 1px solid #cbd5e1;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    width: 32px;
+    height: 32px;
+}
+
+.btn-kebab:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #334155;
+}
+
+.action-dropdown {
+    position: fixed;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    min-width: 180px;
+    z-index: 9999;
+    display: none;
+    padding: 0.25rem 0;
+}
+
+.action-dropdown.show {
+    display: block;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    color: #475569;
+    font-size: 0.875rem;
+    transition: background 0.2s;
+}
+
+.dropdown-item:first-child {
+    border-radius: 0.375rem 0.375rem 0 0;
+}
+
+.dropdown-item:last-child {
+    border-radius: 0 0 0.375rem 0.375rem;
+}
+
+.dropdown-item:hover:not(.item-delete) {
+    background: #f8fafc;
+}
+
+.dropdown-item.item-delete {
+    color: #dc2626;
+}
+
+.dropdown-item.item-delete:hover {
+    background: #fee2e2;
+}
+
+.dropdown-item i {
+    font-size: 1rem;
+}
+
+/* ========== PAGINACIÓN ========== */
+.table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.pagination-info {
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-pagination {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    background: white;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-pagination:hover:not(:disabled) {
+    background: #f8fafc;
+    border-color: #94a3b8;
+}
+
+.btn-pagination:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-page {
+    font-size: 0.875rem;
+    color: #475569;
+    padding: 0 0.75rem;
+}
+
+/* ========== ESTADO VACÍO ========== */
+.empty-state {
+    padding: 3rem 2rem;
+    text-align: center;
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.text-muted {
+    color: #94a3b8;
+}
+
+.text-small {
+    font-size: 0.75rem;
+}
+
+/* ========== MODAL ========== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 90%;
+}
+
+.modal-content h3 {
+    margin: 0 0 1rem 0;
+    color: #1e293b;
+}
+
+.modal-content p {
+    margin: 0 0 1.5rem 0;
+    color: #64748b;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 0.625rem 1rem;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.btn-secondary {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+.btn-secondary:hover {
+    background: #cbd5e1;
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    color: #334155;
+}
+
+.form-select {
+    padding: 0.625rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    background: white;
+    font-size: 0.875rem;
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .page {
+        padding: 1rem;
+    }
+
+    .management-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .table-toolbar {
+        flex-direction: column;
+    }
+
+    .controls-left {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .search-form {
+        flex-direction: column;
+    }
+
+    .controls-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .modern-table {
+        font-size: 0.8125rem;
+    }
+
+    .modern-table th,
+    .modern-table td {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .col-user {
+        min-width: 120px;
+    }
+
+    .table-footer {
+        flex-direction: column;
+    }
+
+    .pagination-controls {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+
+<script>
+// ========== FUNCIONES JAVASCRIPT ==========
+
+// Cambiar entre tabs
+function switchTab(event, tabName) {
+    // Ocultar todos los tabs
+    document.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.classList.remove('active');
+    });
+    
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Mostrar tab seleccionado
+    document.getElementById('tab-' + tabName).classList.add('active');
+    event.target.closest('.tab-button').classList.add('active');
+    
+    // Actualizar URL sin recargar
+    const url = new URL(window.location);
+    url.searchParams.set('tab', tabName);
+    window.history.replaceState({}, '', url);
+}
+
+const actionDropdown = document.getElementById('actionDropdown');
+let activeActionButton = null;
+
+function openActionMenu(event, button) {
+    event.stopPropagation();
+
+    if (activeActionButton === button && actionDropdown.classList.contains('show')) {
+        closeActionMenu();
+        return;
+    }
+
+    activeActionButton = button;
+    const menuType = button.dataset.menu;
+
+    if (menuType === 'registered') {
+        actionDropdown.innerHTML = `
+            <a class="dropdown-item" href="${button.dataset.viewUrl}">
+                <i class="bi bi-eye"></i>
+                <span>Ver usuario</span>
+            </a>
+            <a class="dropdown-item" href="${button.dataset.editUrl}">
+                <i class="bi bi-pencil"></i>
+                <span>Editar</span>
+            </a>
+            <button type="button" class="dropdown-item item-delete" data-action="delete" data-delete-url="${button.dataset.deleteUrl}" data-delete-email="${button.dataset.deleteEmail}">
+                <i class="bi bi-trash"></i>
+                <span>Eliminar</span>
+            </button>
+        `;
+    } else if (menuType === 'pending') {
+        actionDropdown.innerHTML = `
+            <button type="button" class="dropdown-item" data-action="edit-request">
+                <i class="bi bi-pencil"></i>
+                <span>Editar solicitud</span>
+            </button>
+            <button type="button" class="dropdown-item" data-action="approve" data-form-id="${button.dataset.approveForm}" data-user-email="${button.dataset.userEmail}">
+                <i class="bi bi-check-circle"></i>
+                <span>Aprobar</span>
+            </button>
+            <button type="button" class="dropdown-item item-delete" data-action="reject" data-form-id="${button.dataset.rejectForm}" data-user-email="${button.dataset.userEmail}">
+                <i class="bi bi-x-circle"></i>
+                <span>Rechazar</span>
+            </button>
+        `;
+    }
+
+    actionDropdown.classList.add('show');
+    positionDropdown(button);
+}
+
+function positionDropdown(button) {
+    const rect = button.getBoundingClientRect();
+    const dropdownRect = actionDropdown.getBoundingClientRect();
+
+    let top = rect.bottom + 8;
+    let left = rect.right - dropdownRect.width;
+
+    if (top + dropdownRect.height > window.innerHeight - 8) {
+        top = rect.top - dropdownRect.height - 8;
+    }
+
+    if (left < 8) {
+        left = 8;
+    }
+
+    if (left + dropdownRect.width > window.innerWidth - 8) {
+        left = window.innerWidth - dropdownRect.width - 8;
+    }
+
+    actionDropdown.style.top = `${top}px`;
+    actionDropdown.style.left = `${left}px`;
+}
+
+function closeActionMenu() {
+    actionDropdown.classList.remove('show');
+    actionDropdown.style.top = '';
+    actionDropdown.style.left = '';
+    activeActionButton = null;
+}
+
+actionDropdown.addEventListener('click', function(event) {
+    const actionItem = event.target.closest('[data-action]');
+    if (!actionItem) {
+        return;
+    }
+
+    const action = actionItem.dataset.action;
+    if (action === 'edit-request') {
+        openRequestModal(activeActionButton);
+        closeActionMenu();
+        return;
+    }
+    if (action === 'delete') {
+        confirmDelete(actionItem.dataset.deleteUrl, actionItem.dataset.deleteEmail);
+    }
+    if (action === 'approve' || action === 'reject') {
+        confirmAction(actionItem.dataset.formId, action, actionItem.dataset.userEmail);
+    }
+
+    closeActionMenu();
+});
+
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.actions-menu') && !event.target.closest('#actionDropdown')) {
+        closeActionMenu();
+    }
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeActionMenu();
+        closeRequestModal();
+        closeModal();
+    }
+});
+
+window.addEventListener('resize', function() {
+    if (actionDropdown.classList.contains('show') && activeActionButton) {
+        positionDropdown(activeActionButton);
+    }
+});
+
+window.addEventListener('scroll', function() {
+    if (actionDropdown.classList.contains('show')) {
+        closeActionMenu();
+    }
+}, true);
+
+// Select All checkboxes
+function toggleSelectAll(checkbox) {
+    const table = checkbox.closest('table');
+    table.querySelectorAll('.row-checkbox').forEach(cb => {
+        cb.checked = checkbox.checked;
+    });
+}
+
+// Modal Editar Solicitud
+function openRequestModal(button) {
+    const modal = document.getElementById('requestModal');
+    const title = document.getElementById('requestModalTitle');
+    const subtitle = document.getElementById('requestModalSubtitle');
+    const userIdInput = document.getElementById('requestUserId');
+    const statusSelect = document.getElementById('requestStatus');
+    const roleSelect = document.getElementById('requestRole');
+    const emailVerified = document.getElementById('requestEmailVerified');
+
+    const userEmail = button.dataset.userEmail;
+    title.textContent = `Editar solicitud`;
+    subtitle.textContent = userEmail;
+
+    userIdInput.value = button.dataset.userId;
+    statusSelect.value = button.dataset.userStatus || 'pending';
+    roleSelect.value = button.dataset.userRole || roleSelect.value;
+    emailVerified.checked = button.dataset.userEmailVerified === 'true';
+
+    modal.style.display = 'flex';
+}
+
+function closeRequestModal() {
+    document.getElementById('requestModal').style.display = 'none';
+}
+
+document.getElementById('requestModal')?.addEventListener('click', function(event) {
+    if (event.target === this) {
+        closeRequestModal();
+    }
+});
+
+// Confirmar acción (Aprobar/Rechazar)
+function confirmAction(formId, action, userEmail) {
+    const modal = document.getElementById('confirmModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+    
+    modalTitle.textContent = action === 'approve' ? `Aprobar ${userEmail}` : `Rechazar ${userEmail}`;
+    
+    if (action === 'approve') {
+        modalMessage.textContent = '¿Estás seguro de que deseas aprobar a este usuario?';
+        modalConfirmBtn.textContent = 'Aprobar';
+        modalConfirmBtn.className = 'btn btn-danger';
+        modalConfirmBtn.onclick = function() {
+            document.getElementById(formId).submit();
+        };
+    } else if (action === 'reject') {
+        modalMessage.textContent = '¿Estás seguro de que deseas rechazar a este usuario?';
+        modalConfirmBtn.textContent = 'Rechazar';
+        modalConfirmBtn.className = 'btn btn-danger';
+        modalConfirmBtn.onclick = function() {
+            document.getElementById(formId).submit();
+        };
+    }
+    
+    modal.style.display = 'flex';
+}
+
+// Confirmar eliminación
+function confirmDelete(deleteUrl, userEmail) {
+    const modal = document.getElementById('confirmModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+    
+    modalTitle.textContent = '¿Eliminar usuario?';
+    modalMessage.textContent = '¿Estás seguro de que deseas eliminar a ' + userEmail + '?';
+    modalConfirmBtn.textContent = 'Eliminar';
+    modalConfirmBtn.className = 'btn btn-danger';
+    modalConfirmBtn.onclick = function() {
+        // Hacer DELETE request
+        fetch(deleteUrl, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                              document.cookie.split('; ').find(row => row.startsWith('csrftoken='))?.split('=')[1]
+            }
+        }).then(() => {
+            window.location.reload();
+        }).catch(err => {
+            alert('Error al eliminar usuario');
+            console.error(err);
+        });
+        closeModal();
+    };
+    
+    modal.style.display = 'flex';
+}
+
+// Cerrar modal
+function closeModal() {
+    document.getElementById('confirmModal').style.display = 'none';
+}
+
+// Cerrar modal al hacer click fuera
+document.getElementById('confirmModal')?.addEventListener('click', function(event) {
+    if (event.target === this) {
+        closeModal();
+    }
+});
+
+// Restaurar tab activa al cargar
+document.addEventListener('DOMContentLoaded', function() {
+    const url = new URL(window.location);
+    const activeTab = url.searchParams.get('tab') || 'registered';
+    
+    const tabButton = document.querySelector(`.tab-button[onclick*="'${activeTab}'"]`);
+    if (tabButton) {
+        tabButton.classList.add('active');
+    }
+});
+</script>
+
+{% endblock %}

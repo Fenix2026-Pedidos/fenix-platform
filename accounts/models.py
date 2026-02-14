@@ -74,6 +74,126 @@ class User(AbstractBaseUser, PermissionsMixin):
     # EMPRESA (legacy - mantener)
     company = models.CharField(max_length=200, blank=True, default='')
     
+    # ============================================================================
+    # PERFIL OPERATIVO - Campos obligatorios para realizar pedidos
+    # ============================================================================
+    
+    # CONTACTO
+    telefono_empresa = models.CharField(
+        max_length=20, 
+        blank=True, 
+        verbose_name=_('Teléfono empresa'),
+        help_text=_('Teléfono de contacto de la empresa')
+    )
+    telefono_reparto = models.CharField(
+        max_length=20, 
+        blank=True,  # blank=True para migración, required en formulario
+        verbose_name=_('Teléfono reparto'),
+        help_text=_('Teléfono de contacto para el reparto (OBLIGATORIO)')
+    )
+    
+    # DIRECCIÓN FISCAL / LOCAL (OBLIGATORIOS)
+    direccion_local = models.CharField(
+        max_length=300, 
+        blank=True, 
+        verbose_name=_('Dirección local'),
+        help_text=_('Dirección fiscal o del local (OBLIGATORIO)')
+    )
+    ciudad = models.CharField(
+        max_length=100, 
+        blank=True, 
+        verbose_name=_('Ciudad'),
+        help_text=_('Ciudad del local (OBLIGATORIO)')
+    )
+    provincia = models.CharField(
+        max_length=100, 
+        blank=True, 
+        verbose_name=_('Provincia'),
+        help_text=_('Provincia del local (OBLIGATORIO)')
+    )
+    codigo_postal = models.CharField(
+        max_length=10, 
+        blank=True, 
+        verbose_name=_('Código postal'),
+        help_text=_('Código postal del local (OBLIGATORIO)')
+    )
+    pais = models.CharField(
+        max_length=100, 
+        default='España', 
+        verbose_name=_('País'),
+        help_text=_('País del local')
+    )
+    
+    # DIRECCIÓN DE ENTREGA (OBLIGATORIOS)
+    TIPO_ENTREGA_RECOGIDA = 'recogida'
+    TIPO_ENTREGA_ENVIO = 'envio'
+    
+    TIPO_ENTREGA_CHOICES = [
+        (TIPO_ENTREGA_RECOGIDA, _('Recogida en local')),
+        (TIPO_ENTREGA_ENVIO, _('Envío a domicilio')),
+    ]
+    
+    tipo_entrega = models.CharField(
+        max_length=20,
+        choices=TIPO_ENTREGA_CHOICES,
+        blank=True,
+        verbose_name=_('Tipo de entrega'),
+        help_text=_('Método de entrega preferido (OBLIGATORIO)')
+    )
+    direccion_entrega = models.CharField(
+        max_length=300, 
+        blank=True, 
+        verbose_name=_('Dirección de entrega'),
+        help_text=_('Dirección donde se realizará la entrega (OBLIGATORIO)')
+    )
+    ciudad_entrega = models.CharField(
+        max_length=100, 
+        blank=True, 
+        verbose_name=_('Ciudad entrega'),
+        help_text=_('Ciudad de entrega (OBLIGATORIO)')
+    )
+    provincia_entrega = models.CharField(
+        max_length=100, 
+        blank=True, 
+        verbose_name=_('Provincia entrega'),
+        help_text=_('Provincia de entrega (OBLIGATORIO)')
+    )
+    codigo_postal_entrega = models.CharField(
+        max_length=10, 
+        blank=True, 
+        verbose_name=_('Código postal entrega'),
+        help_text=_('Código postal de entrega (OBLIGATORIO)')
+    )
+    ventana_entrega = models.CharField(
+        max_length=200, 
+        blank=True, 
+        verbose_name=_('Ventana de entrega'),
+        help_text=_('Horario o ventana de entrega preferida (opcional)')
+    )
+    observaciones_entrega = models.TextField(
+        blank=True, 
+        verbose_name=_('Observaciones de entrega'),
+        help_text=_('Instrucciones especiales para la entrega (opcional)')
+    )
+    
+    # CONTEXTO OPERATIVO
+    items_count = models.IntegerField(
+        default=0, 
+        verbose_name=_('Contador de items'),
+        help_text=_('Número de items en el perfil operativo')
+    )
+    
+    # CONTROL DE COMPLETITUD
+    profile_completed = models.BooleanField(
+        default=False,
+        verbose_name=_('Perfil completado'),
+        help_text=_('Indica si el perfil operativo está completo para realizar pedidos')
+    )
+    
+    # ============================================================================
+    # FIN PERFIL OPERATIVO
+    # ============================================================================
+    
     # SISTEMA
     role = models.CharField(
         max_length=20,
@@ -174,6 +294,85 @@ class User(AbstractBaseUser, PermissionsMixin):
         from accounts.models import SecuritySettings
         security, created = SecuritySettings.objects.get_or_create(user=self)
         return security
+    
+    # ============================================================================
+    # MÉTODOS PARA VALIDACIÓN DE PERFIL OPERATIVO
+    # ============================================================================
+    
+    def check_profile_completed(self):
+        """
+        Verifica si el perfil operativo está completo.
+        
+        Retorna True si todos los campos obligatorios están completados:
+        - telefono_reparto
+        - direccion_local, ciudad, provincia, codigo_postal
+        - tipo_entrega
+        - direccion_entrega, ciudad_entrega, provincia_entrega, codigo_postal_entrega
+        """
+        required_fields = [
+            self.telefono_reparto,
+            self.direccion_local,
+            self.ciudad,
+            self.provincia,
+            self.codigo_postal,
+            self.tipo_entrega,
+            self.direccion_entrega,
+            self.ciudad_entrega,
+            self.provincia_entrega,
+            self.codigo_postal_entrega,
+        ]
+        # Todos los campos deben tener contenido (no vacíos ni None)
+        return all(field and str(field).strip() for field in required_fields)
+    
+    @property
+    def missing_fields(self):
+        """
+        Retorna lista de nombres de campos obligatorios que faltan por completar.
+        
+        Se usa para mostrar feedback al usuario sobre qué campos necesita completar.
+        """
+        missing = []
+
+        if not self.telefono_reparto or not str(self.telefono_reparto).strip():
+            missing.append(_("Teléfono de reparto"))
+
+        if not self.direccion_local or not str(self.direccion_local).strip():
+            missing.append(_("Dirección local"))
+
+        if not self.ciudad or not str(self.ciudad).strip():
+            missing.append(_("Ciudad"))
+
+        if not self.provincia or not str(self.provincia).strip():
+            missing.append(_("Provincia"))
+
+        if not self.codigo_postal or not str(self.codigo_postal).strip():
+            missing.append(_("Código postal"))
+
+        if not self.tipo_entrega or not str(self.tipo_entrega).strip():
+            missing.append(_("Tipo de entrega"))
+
+        if not self.direccion_entrega or not str(self.direccion_entrega).strip():
+            missing.append(_("Dirección de entrega"))
+
+        if not self.ciudad_entrega or not str(self.ciudad_entrega).strip():
+            missing.append(_("Ciudad de entrega"))
+
+        if not self.provincia_entrega or not str(self.provincia_entrega).strip():
+            missing.append(_("Provincia de entrega"))
+
+        if not self.codigo_postal_entrega or not str(self.codigo_postal_entrega).strip():
+            missing.append(_("Código postal de entrega"))
+
+        return missing
+    
+    def save(self, *args, **kwargs):
+        """
+        Sobrescribe save para actualizar automáticamente profile_completed
+        cada vez que se guarda el usuario.
+        """
+        # Actualizar el flag de completitud antes de guardar
+        self.profile_completed = self.check_profile_completed()
+        super().save(*args, **kwargs)
 
 
 class EmailVerificationToken(models.Model):

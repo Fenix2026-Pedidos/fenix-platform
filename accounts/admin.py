@@ -10,12 +10,12 @@ from .models import (
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    list_display = ('email', 'display_name', 'company', 'role', 'status', 'language', 'is_active', 'date_joined')
-    list_filter = ('role', 'status', 'language', 'is_active', 'is_staff', 'email_verified')
-    search_fields = ('email', 'full_name', 'first_name', 'last_name', 'company', 'phone')
+    list_display = ('email', 'display_name', 'company', 'role', 'status', 'profile_completed_badge', 'language', 'is_active', 'date_joined')
+    list_filter = ('role', 'status', 'language', 'is_active', 'is_staff', 'email_verified', 'profile_completed')
+    search_fields = ('email', 'full_name', 'first_name', 'last_name', 'company', 'phone', 'ciudad', 'provincia')
     ordering = ('-date_joined',)
     filter_horizontal = ()
-    readonly_fields = ('uuid', 'last_login', 'last_login_at', 'last_login_ip', 'date_joined', 'updated_at')
+    readonly_fields = ('uuid', 'last_login', 'last_login_at', 'last_login_ip', 'date_joined', 'updated_at', 'profile_completed')
 
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
@@ -24,6 +24,23 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('first_name', 'last_name', 'full_name', 'phone', 'avatar')
         }),
         ('Empresa', {'fields': ('company',)}),
+        ('Contacto Operativo', {
+            'fields': ('telefono_empresa', 'telefono_reparto'),
+            'description': 'Datos de contacto obligatorios para gestión de pedidos'
+        }),
+        ('Dirección Local/Fiscal', {
+            'fields': ('direccion_local', 'ciudad', 'provincia', 'codigo_postal', 'pais'),
+            'description': 'Datos obligatorios para facturación'
+        }),
+        ('Dirección de Entrega', {
+            'fields': ('tipo_entrega', 'direccion_entrega', 'ciudad_entrega', 'provincia_entrega', 'codigo_postal_entrega', 'ventana_entrega', 'observaciones_entrega'),
+            'description': 'Datos obligatorios para la entrega de pedidos'
+        }),
+        ('Control de Perfil Operativo', {
+            'fields': ('profile_completed', 'items_count'),
+            'description': 'Estado y métricas del perfil operativo',
+            'classes': ('collapse',)
+        }),
         ('Sistema', {
             'fields': ('role', 'status', 'language', 'timezone')
         }),
@@ -59,6 +76,24 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('is_active', 'is_staff', 'email_verified')
         }),
     )
+    
+    def profile_completed_badge(self, obj):
+        """Muestra badge visual del estado del perfil operativo"""
+        if obj.profile_completed:
+            return format_html(
+                '<span style="padding: 3px 10px; background-color: #dcfce7; color: #166534; border-radius: 12px; font-size: 11px; font-weight: 600;">'
+                '✓ Completo'
+                '</span>'
+            )
+        else:
+            missing = len(obj.missing_fields)
+            return format_html(
+                '<span style="padding: 3px 10px; background-color: #fef2f2; color: #991b1b; border-radius: 12px; font-size: 11px; font-weight: 600;">'
+                '⚠ Incompleto ({} campos)'
+                '</span>',
+                missing
+            )
+    profile_completed_badge.short_description = 'Perfil Operativo'
 
 
 @admin.register(EmailVerificationToken)

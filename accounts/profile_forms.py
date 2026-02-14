@@ -199,3 +199,173 @@ class AvatarUploadForm(forms.ModelForm):
                 raise ValidationError(_('Tipo de archivo no permitido. Use JPG, PNG, GIF o WebP'))
         
         return avatar
+
+
+# ============================================================================
+# FORMULARIO PARA PERFIL OPERATIVO (NUEVO)
+# ============================================================================
+
+class OperativeProfileForm(forms.ModelForm):
+    """
+    Formulario para editar el perfil operativo del usuario.
+    
+    Todos los campos marcados aquí como required=True son OBLIGATORIOS
+    para poder crear pedidos.
+    
+    Los campos se organizan en 4 secciones visuales:
+    1. Contacto
+    2. Dirección fiscal/local
+    3. Dirección de entrega
+    """
+    
+    class Meta:
+        model = User
+        fields = [
+            # Contacto
+            'telefono_empresa',
+            'telefono_reparto',
+            # Dirección fiscal/local
+            'direccion_local',
+            'ciudad',
+            'provincia',
+            'codigo_postal',
+            'pais',
+            # Dirección de entrega
+            'tipo_entrega',
+            'direccion_entrega',
+            'ciudad_entrega',
+            'provincia_entrega',
+            'codigo_postal_entrega',
+            'ventana_entrega',
+            'observaciones_entrega',
+        ]
+        widgets = {
+            # ========== CONTACTO ==========
+            'telefono_empresa': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': '+34 XXX XXX XXX',
+                'type': 'tel'
+            }),
+            'telefono_reparto': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': '+34 XXX XXX XXX (OBLIGATORIO)',
+                'type': 'tel',
+                'aria-required': 'true',
+            }),
+            
+            # ========== DIRECCIÓN FISCAL/LOCAL ==========
+            'direccion_local': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': 'Calle, número y piso (OBLIGATORIO)',
+            }),
+            'ciudad': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': 'Ciudad (OBLIGATORIO)',
+            }),
+            'provincia': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': 'Provincia (OBLIGATORIO)',
+            }),
+            'codigo_postal': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': '28001 (OBLIGATORIO)',
+                'maxlength': '10',
+            }),
+            'pais': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': 'España',
+            }),
+            
+            # ========== DIRECCIÓN DE ENTREGA ==========
+            'tipo_entrega': forms.Select(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white',
+            }),
+            'direccion_entrega': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': 'Calle, número y piso (OBLIGATORIO)',
+            }),
+            'ciudad_entrega': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': 'Ciudad (OBLIGATORIO)',
+            }),
+            'provincia_entrega': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': 'Provincia (OBLIGATORIO)',
+            }),
+            'codigo_postal_entrega': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': '28001 (OBLIGATORIO)',
+                'maxlength': '10',
+            }),
+            'ventana_entrega': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': 'Ej: Lunes 9:00-13:00 (opcional)',
+            }),
+            'observaciones_entrega': forms.Textarea(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': 'Instrucciones especiales para la entrega (opcional)',
+                'rows': 3,
+            }),
+        }
+        labels = {
+            # Contacto
+            'telefono_empresa': _('Teléfono de empresa'),
+            'telefono_reparto': _('Teléfono de reparto *'),
+            # Dirección fiscal/local
+            'direccion_local': _('Dirección local *'),
+            'ciudad': _('Ciudad *'),
+            'provincia': _('Provincia *'),
+            'codigo_postal': _('Código postal *'),
+            'pais': _('País'),
+            # Dirección de entrega
+            'tipo_entrega': _('Tipo de entrega *'),
+            'direccion_entrega': _('Dirección de entrega *'),
+            'ciudad_entrega': _('Ciudad de entrega *'),
+            'provincia_entrega': _('Provincia de entrega *'),
+            'codigo_postal_entrega': _('Código postal de entrega *'),
+            'ventana_entrega': _('Ventana de entrega'),
+            'observaciones_entrega': _('Observaciones'),
+        }
+        help_texts = {
+            'telefono_reparto': _('Teléfono de contacto para confirmar la entrega'),
+            'tipo_entrega': _('Selecciona si prefieres recoger en el local o que se envíe a domicilio'),
+            'ventana_entrega': _('Ej: Lunes a viernes 9:00-14:00'),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Marcar campos obligatorios
+        obligatorios = [
+            'telefono_reparto',
+            'direccion_local',
+            'ciudad',
+            'provincia',
+            'codigo_postal',
+            'tipo_entrega',
+            'direccion_entrega',
+            'ciudad_entrega',
+            'provincia_entrega',
+            'codigo_postal_entrega',
+        ]
+        
+        for field_name in obligatorios:
+            self.fields[field_name].required = True
+            # Añadir clase CSS de error si el campo tiene errores
+            if field_name in self.errors:
+                current_class = self.fields[field_name].widget.attrs.get('class', '')
+                self.fields[field_name].widget.attrs['class'] = current_class + ' border-red-500'
+    
+    def clean(self):
+        """Validación adicional a nivel de formulario"""
+        cleaned_data = super().clean()
+        
+        # Si tipo_entrega es "envio", ambas direcciones deben ser diferentes
+        tipo_entrega = cleaned_data.get('tipo_entrega')
+        if tipo_entrega == User.TIPO_ENTREGA_ENVIO:
+            dir_local = cleaned_data.get('direccion_local')
+            dir_entrega = cleaned_data.get('direccion_entrega')
+            
+            # Podrían ser iguales (ej: llevar a la misma dirección), así que no validamos
+        
+        return cleaned_data

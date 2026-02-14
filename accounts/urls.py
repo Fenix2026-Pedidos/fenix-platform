@@ -18,8 +18,10 @@ urlpatterns = [
     # Nuevo módulo de perfil enterprise (Dashboard completo)
     path('profile/', profile_views.profile_dashboard, name='profile'),  # Nueva vista principal
     path('profile/dashboard/', profile_views.profile_dashboard, name='profile_dashboard'),  # Alias
+    path('profile/edit/', profile_views.update_complete_profile, name='update_complete_profile'),
     path('profile/personal/edit/', profile_views.update_personal_data, name='update_personal_data'),
     path('profile/company/edit/', profile_views.update_company_data, name='update_company_data'),
+    path('profile/operative/edit/', profile_views.update_operative_profile, name='update_operative_profile'),
     path('profile/preferences/edit/', profile_views.update_preferences, name='update_preferences'),
     path('profile/security/edit/', profile_views.update_security, name='update_security'),
     path('profile/password/change/', profile_views.change_password, name='change_password'),
@@ -35,6 +37,9 @@ urlpatterns = [
     path('profile/api-token/generate/', profile_views.generate_api_token, name='generate_api_token'),
     path('profile/api-token/revoke/', profile_views.revoke_api_token, name='revoke_api_token'),
     
+    # Perfil operativo (requerido para crear pedidos)
+    path('operative-profile/edit/', profile_views.operative_profile_edit, name='operative_profile_edit'),
+    
     # User approval dashboard (nuevo)
     path('user-approval/', views.user_approval_list, name='user_approval_dashboard'),
     path('approval/', views.user_approval_list, name='user_approval_list'),  # Alias por compatibilidad con URL vieja
@@ -46,6 +51,7 @@ urlpatterns = [
     # Aprobación/rechazo de nuevos usuarios
     path('user-approval/new/<int:user_id>/approve/', views.approve_user_view, name='approve_user'),
     path('user-approval/new/<int:user_id>/reject/', views.reject_user_view, name='reject_user'),
+    path('user-approval/request/update/', views.update_pending_request, name='update_pending_request'),
     
     # Email verification
     path('email-verification/', views.email_verification_view, name='email_verification'),

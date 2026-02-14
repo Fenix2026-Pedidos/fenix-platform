@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.db.models import Q
 from django.http import JsonResponse
+from django.urls import reverse
 from django.views.decorators.http import require_POST
 from .models import User, EmailVerificationToken
 from .forms import LoginForm, RegisterForm
@@ -244,29 +245,44 @@ def profile_view(request):
 
 @login_required
 @admin_required
+@login_required
+@admin_required
 def user_approval_list(request):
     """
-    Vista MEJORADA: Dashboard de gestión de usuarios con 2 pestañas.
-    TAB 1: Usuarios registrados (CRUD completo) - NO incluye pendientes
-    TAB 2: Nuevos usuarios pendientes (aprobación) - SOLO pendientes
+    Vista MEJORADA: Dashboard de gestión de usuarios con paginación moderna.
     
-    RBAC:
-    - SUPER_ADMIN ve todos los usuarios
-    - ADMIN ve todos EXCEPTO super_admin
+    Features:
+    - PAGINACIÓN: query params ?per_page=10&page=2
+    - FILTROS: status, search (preservados en paginación)
+    - RBAC: SUPER_ADMIN ve todos, ADMIN ve todos menos super_admin
+    - TABS: Usuarios registrados | Nuevos usuarios pendientes (aprobación)
     """
-    # Base queryset de usuarios registrados (no pending)
+    from django.core.paginator import Paginator
+    
+    # Obtener parámetros
+    per_page = request.GET.get('per_page', '10')
+    try:
+        per_page = int(per_page)
+        if per_page not in [10, 20, 50, 100]:
+            per_page = 10
+    except (ValueError, TypeError):
+        per_page = 10
+    
+    current_page = request.GET.get('page', '1')
+    status_filter = request.GET.get('status', '')
+    search_query = request.GET.get('search', '')
+    active_tab = request.GET.get('tab', 'registered')
+    
+    # ========== TAB 1: USUARIOS REGISTRADOS ==========
     base_registered = User.objects.filter(
         status__in=[User.STATUS_ACTIVE, User.STATUS_DISABLED, User.STATUS_REJECTED]
     )
     
-    # Filtrar según rol del usuario logado
+    # Filtrar según RBAC
     registered_users = get_visible_users_queryset(request.user, base_registered)
     registered_users = registered_users.order_by('-date_joined')
     
-    # Filtros para TAB 1
-    status_filter = request.GET.get('status', '')
-    search_query = request.GET.get('search', '')
-    
+    # Aplicar filtros
     if status_filter and status_filter in [User.STATUS_ACTIVE, User.STATUS_DISABLED, User.STATUS_REJECTED]:
         registered_users = registered_users.filter(status=status_filter)
     
@@ -277,31 +293,65 @@ def user_approval_list(request):
             Q(company__icontains=search_query)
         )
     
-    # TAB 2: SOLO nuevos usuarios pendientes (status='pending' y role='user')
-    # Los pending solo deberían ser users, no admin ni super_admin
+    # PAGINACIÓN TAB 1
+    paginator_registered = Paginator(registered_users, per_page)
+    try:
+        page_registered = paginator_registered.page(current_page)
+    except Exception:
+        page_registered = paginator_registered.page(1)
+    
+    # ========== TAB 2: USUARIOS PENDIENTES ==========
     pending_new_users = User.objects.filter(
         status=User.STATUS_PENDING,
-        role=User.ROLE_USER  # Solo mostrar users en aprobación
+        role=User.ROLE_USER
     ).order_by('-date_joined')
     
-    # Obtener opciones de roles que el usuario puede asignar
+    # PAGINACIÓN TAB 2
+    paginator_pending = Paginator(pending_new_users, per_page)
+    try:
+        page_pending = paginator_pending.page(current_page)
+    except Exception:
+        page_pending = paginator_pending.page(1)
+    
+    # Construir query string para preservar filtros
+    query_params = {
+        'per_page': per_page,
+        'status': status_filter,
+        'search': search_query,
+        'tab': active_tab,
+    }
+    query_string = '&'.join(f'{k}={v}' for k, v in query_params.items() if v)
+    
+    # Obtener opciones de roles
     available_role_choices = get_role_choices_for_user(request.user)
     
     context = {
-        'registered_users': registered_users,
-        'pending_new_users': pending_new_users,
+        # TAB 1: Usuarios registrados (paginado)
+        'page_registered': page_registered,
+        'paginator_registered': paginator_registered,
+        
+        # TAB 2: Usuarios pendientes (paginado)
+        'page_pending': page_pending,
+        'paginator_pending': paginator_pending,
+        
+        # Parámetros
+        'per_page': per_page,
+        'per_page_choices': [10, 20, 50, 100],
         'status_filter': status_filter,
         'search_query': search_query,
+        'query_string': query_string,
+        'active_tab': active_tab,
+        
+        # Opciones
         'status_choices': [
             (User.STATUS_ACTIVE, _('Activo')),
             (User.STATUS_DISABLED, _('Deshabilitado')),
             (User.STATUS_REJECTED, _('Rechazado')),
         ],
         'available_role_choices': available_role_choices,
-        'active_tab': request.GET.get('tab', 'registered'),
         'user_is_super_admin': request.user.is_super_admin(),
     }
-    return render(request, 'accounts/user_approval_dashboard.html', context)
+    return render(request, 'accounts/user_management_modern.html', context)
 
 
 @login_required
@@ -376,7 +426,7 @@ def user_update_view(request, user_id):
 @require_POST
 def user_delete_view(request, user_id):
     """
-    Elimina un usuario (soft delete cambiando status a disabled).
+    Elimina un usuario (hard delete).
     
     RBAC:
     - SUPER_ADMIN puede eliminar cualquiera (excepto a sí mismo)
@@ -389,14 +439,12 @@ def user_delete_view(request, user_id):
         messages.error(request, _('No tienes permiso para eliminar este usuario.'))
         return redirect('accounts:user_approval_dashboard')
     
-    # Soft delete: cambiar status y desactivar
-    user_to_delete.status = User.STATUS_DISABLED
-    user_to_delete.is_active = False
-    user_to_delete.save()
+    # Hard delete: eliminar el registro
+    user_to_delete.delete()
     
     messages.success(
         request,
-        _('Usuario %(email)s deshabilitado correctamente.') % {'email': user_to_delete.email}
+        _('Usuario %(email)s eliminado correctamente.') % {'email': user_to_delete.email}
     )
     return redirect('accounts:user_approval_dashboard')
 
@@ -416,7 +464,7 @@ def approve_user_view(request, user_id):
     # Solo se pueden aprobar usuarios con status='pending'
     if user_to_approve.status != User.STATUS_PENDING:
         messages.warning(request, _('Este usuario ya fue procesado.'))
-        return redirect('accounts:user_approval_dashboard' + '?tab=new_users')
+        return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
     
     # Cambiar estado a activo (el role permanece como 'user')
     user_to_approve.status = User.STATUS_ACTIVE
@@ -443,7 +491,64 @@ def approve_user_view(request, user_id):
             {'email': user_to_approve.email, 'error': str(e)}
         )
     
-    return redirect('accounts:user_approval_dashboard' + '?tab=new_users')
+    return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
+
+
+@login_required
+@admin_required
+@require_POST
+def update_pending_request(request):
+    """
+    Actualiza estado/rol/email_verificado de una solicitud pendiente.
+    Permite aprobación manual incluso sin verificación previa.
+    """
+    user_id = request.POST.get('user_id')
+    status = request.POST.get('status')
+    role = request.POST.get('role')
+    email_verified = request.POST.get('email_verified') == 'on'
+
+    user_to_update = get_object_or_404(User, pk=user_id)
+
+    if not can_edit_target(request.user, user_to_update):
+        messages.error(request, _('No tienes permiso para editar este usuario.'))
+        return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
+
+    if status not in dict(User.STATUS_CHOICES):
+        messages.error(request, _('Estado inválido.'))
+        return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
+
+    if role and role not in dict(User.ROLE_CHOICES):
+        messages.error(request, _('Rol inválido.'))
+        return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
+
+    if role and role != user_to_update.role:
+        if not can_assign_role(request.user, role):
+            messages.error(request, _('No tienes permiso para asignar este rol.'))
+            return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
+
+    user_to_update.status = status
+    if role:
+        user_to_update.role = role
+
+    if status == User.STATUS_ACTIVE:
+        user_to_update.pending_approval = False
+        user_to_update.is_active = True
+        user_to_update.approved_by = request.user
+        user_to_update.approved_at = timezone.now()
+        user_to_update.email_verified = True
+    elif status in (User.STATUS_REJECTED, User.STATUS_DISABLED):
+        user_to_update.pending_approval = False
+        user_to_update.is_active = False
+        user_to_update.email_verified = email_verified
+    else:
+        user_to_update.pending_approval = True
+        user_to_update.is_active = True
+        user_to_update.email_verified = email_verified
+
+    user_to_update.save()
+
+    messages.success(request, _('Solicitud actualizada correctamente.'))
+    return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
 
 
 @login_required
@@ -459,7 +564,7 @@ def reject_user_view(request, user_id):
     # Solo se pueden rechazar usuarios con status='pending'
     if user_to_reject.status != User.STATUS_PENDING:
         messages.warning(request, _('Este usuario ya fue procesado.'))
-        return redirect('accounts:user_approval_dashboard' + '?tab=new_users')
+        return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
     
     # Cambiar estado a rechazado
     user_to_reject.status = User.STATUS_REJECTED
@@ -483,7 +588,7 @@ def reject_user_view(request, user_id):
             {'error': str(e)}
         )
     
-    return redirect('accounts:user_approval_dashboard' + '?tab=new_users')
+    return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
 
 
 # Vista antigua de user_approve eliminada - usar approve_user_view y reject_user_view
