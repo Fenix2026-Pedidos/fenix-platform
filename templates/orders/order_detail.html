@@ -57,7 +57,13 @@
                             {% trans "Cliente" %}
                         </dt>
                         <dd style="font-weight: 600; margin: 0;">
-                            {{ customer.full_name|default:customer.get_full_name|default:"—" }}
+                            {% if customer.full_name %}
+                                {{ customer.full_name }}
+                            {% elif customer.first_name or customer.last_name %}
+                                {{ customer.first_name }} {{ customer.last_name }}
+                            {% else %}
+                                {{ customer.email }}
+                            {% endif %}
                         </dd>
                     </div>
                     
