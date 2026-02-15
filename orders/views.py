@@ -8,9 +8,11 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.db.models import Count, Sum, Q
 from django.db.models.functions import TruncMonth
+from django.core.paginator import Paginator, Page
 from decimal import Decimal
 import json
-from datetime import datetime
+from datetime import datetime, date
+from calendar import monthrange
 
 from .models import Order, OrderItem, OrderEvent, OrderDocument
 from .forms import OrderStatusUpdateForm, OrderETAForm, OrderDocumentForm
@@ -19,6 +21,115 @@ from accounts.models import User
 from accounts.utils import is_manager_or_admin
 from .services import enqueue_order_confirmation_email
 
+
+# ============================================================
+# Utility Functions for Orders
+# ============================================================
+
+def get_orders_month_year_data(queryset):
+    """
+    Extrae meses y años únicos disponibles del queryset de orders
+    Retorna: (months, years, months_with_year)
+    """
+    from django.db.models.functions import TruncMonth
+    
+    dates = queryset.annotate(month_date=TruncMonth('created_at')).values_list(
+        'month_date', flat=True
+    ).distinct().order_by('-month_date')
+    
+    months_with_year = []
+    years_set = set()
+    
+    months_labels = {
+        1: _('Enero'),
+        2: _('Febrero'),
+        3: _('Marzo'),
+        4: _('Abril'),
+        5: _('Mayo'),
+        6: _('Junio'),
+        7: _('Julio'),
+        8: _('Agosto'),
+        9: _('Septiembre'),
+        10: _('Octubre'),
+        11: _('Noviembre'),
+        12: _('Diciembre'),
+    }
+    
+    for dt in dates:
+        if dt:
+            year = dt.year
+            month = dt.month
+            years_set.add(year)
+            months_with_year.append({
+                'value': f'{year}-{month:02d}',
+                'label': f'{months_labels[month]} {year}'
+            })
+    
+    years = sorted(list(years_set), reverse=True)
+    
+    return months_with_year, years
+
+
+def get_month_label(month_str):
+    """
+    Convierte formato YYYY-MM a etiqueta legible 'Mes YYYY-MM'
+    """
+    if not month_str:
+        return None
+    
+    try:
+        year, month = map(int, month_str.split('-'))
+        months_labels = {
+            1: _('Enero'),
+            2: _('Febrero'),
+            3: _('Marzo'),
+            4: _('Abril'),
+            5: _('Mayo'),
+            6: _('Junio'),
+            7: _('Julio'),
+            8: _('Agosto'),
+            9: _('Septiembre'),
+            10: _('Octubre'),
+            11: _('Noviembre'),
+            12: _('Diciembre'),
+        }
+        return f"{months_labels[month]} {year}"
+    except (ValueError, IndexError, KeyError):
+        return None
+
+
+def filter_orders_by_month_year(queryset, month=None, year=None):
+    """
+    Filtra queryset por mes y año si se proporcionan
+    month: formato 'MM' (01-12) o 'YYYY-MM'
+    year: formato 'YYYY'
+    """
+    if month and len(month) == 7:  # Formato YYYY-MM
+        try:
+            y, m = map(int, month.split('-'))
+            queryset = queryset.filter(created_at__year=y, created_at__month=m)
+        except (ValueError, IndexError):
+            pass
+    elif month and year:  # Formatos separados
+        try:
+            m = int(month)
+            y = int(year)
+            queryset = queryset.filter(created_at__year=y, created_at__month=m)
+        except ValueError:
+            pass
+    elif year:
+        try:
+            y = int(year)
+            queryset = queryset.filter(created_at__year=y)
+        except ValueError:
+            pass
+    
+    return queryset
+
+
+# ============================================================
+# Cart Functions
+# ============================================================
 
 def get_cart(request):
     """Obtiene el carrito de la sesión"""
@@ -196,111 +307,176 @@ def order_create(request):
 
 
 @login_required
-@login_required
 def order_list(request):
     """
-    Lista de pedidos según rol:
-    - Clientes: solo sus pedidos (tabla simple)
-    - Admin/Superadmin: vista agregada por cliente y mes
+    Vista unificada de pedidos con paginación y filtros.
+    
+    Comportamiento:
+    - Clientes: ven solo sus pedidos con filtros por mes/año
+    - Admin/Manager: ven vista agregada por cliente (últimos meses)
+    
+    Parámetros GET:
+    - month: formato YYYY-MM para filtrar por mes
+    - year: formato YYYY para filtrar por año
+    - page: número de página (por defecto 1)
+    - per_page: items por página (10, 25, 50; por defecto 10)
+    - client_id: (admin solo) ID de cliente para filtro
     """
     user = request.user
     is_admin = is_manager_or_admin(user)
     
-    # VISTA ADMIN: Agregación por cliente y mes
-    if is_admin:
-        # Obtener filtros (solo admins pueden filtrar)
+    # Parámetros de paginación y filtros
+    selected_month = request.GET.get('month', '')
+    selected_year = request.GET.get('year', str(timezone.now().year))
+    per_page = request.GET.get('per_page', 10)
+    current_page = request.GET.get('page', 1)
+    
+    try:
+        per_page = int(per_page)
+        if per_page not in [10, 25, 50]:
+            per_page = 10
+    except (ValueError, TypeError):
+        per_page = 10
+    
+    # Construct querystring for pagination links
+    querystring_parts = []
+    if selected_month:
+        querystring_parts.append(f'month={selected_month}')
+    if selected_year:
+        querystring_parts.append(f'year={selected_year}')
+    if per_page != 10:
+        querystring_parts.append(f'per_page={per_page}')
+    querystring = '&' + '&'.join(querystring_parts) if querystring_parts else ''
+    
+    # ====================================================================
+    # VISTA USUARIO: Pedidos personales con filtros por mes/año
+    # ====================================================================
+    if not is_admin:
+        # Obtener pedidos del usuario
+        orders_qs = Order.objects.filter(customer=user).select_related('customer')
+        
+        # Aplicar filtros
+        orders_qs = filter_orders_by_month_year(orders_qs, month=selected_month, year=selected_year)
+        
+        # Ordenar por fecha descendente
+        orders_qs = orders_qs.order_by('-created_at')
+        
+        # Obtener datos para dropdown de meses
+        user_orders = Order.objects.filter(customer=user)
+        months_available, years_available = get_orders_month_year_data(user_orders)
+        
+        # Contar total de pedidos en el rango
+        total_count = orders_qs.count()
+        
+        # Etiqueta del mes seleccionado
+        month_label = get_month_label(selected_month) if selected_month else _('Todos')
+        
+        # Paginación
+        paginator = Paginator(orders_qs, per_page)
+        try:
+            page_obj = paginator.page(current_page)
+        except:
+            page_obj = paginator.page(1)
+        
+        context = {
+            'page_obj': page_obj,
+            'paginator': paginator,
+            'orders': page_obj.object_list,  # Para compatibilidad con templates antiguos
+            'is_admin_view': False,
+            'is_manager': False,  # Para compatibilidad
+            'client_name': user.full_name or user.email,
+            'month_label': month_label,
+            'total_count': total_count,
+            'selected_month': selected_month,
+            'selected_year': selected_year,
+            'months_available': months_available,
+            'years_available': years_available,
+            'per_page': per_page,
+            'querystring': querystring,
+        }
+        
+        return render(request, 'orders/order_list.html', context)
+    
+    # ====================================================================
+    # VISTA ADMIN: Pedidos de todos con opciones de filtrado
+    # ====================================================================
+    else:
         client_id = request.GET.get('client_id')
-        month_filter = request.GET.get('month')  # Formato: YYYY-MM
-        year_filter = request.GET.get('year', str(timezone.now().year))
         
-        # Si viene client_id y month, mostrar detalle de pedidos
-        if client_id and month_filter:
-            try:
-                year, month = map(int, month_filter.split('-'))
-                client = get_object_or_404(User, pk=client_id)
-                
-                # Filtrar pedidos del cliente en ese mes
-                orders = Order.objects.filter(
-                    customer=client,
-                    created_at__year=year,
-                    created_at__month=month
-                ).select_related('customer').order_by('-created_at')
-                
-                context = {
-                    'orders': orders,
-                    'is_manager': True,
-                    'client': client,
-                    'month': month_filter,
-                    'view_mode': 'detail',
-                }
-                return render(request, 'orders/order_list.html', context)
-                
-            except (ValueError, TypeError):
-                messages.error(request, _('Filtro de mes inválido.'))
+        # Obtener base de pedidos
+        orders_qs = Order.objects.all().select_related('customer')
         
-        # Vista agregada por cliente y mes
-        queryset = Order.objects.all().select_related('customer')
-        
-        # Filtros opcionales
+        # Filtrar por cliente si se especifica
         if client_id:
-            queryset = queryset.filter(customer_id=client_id)
-        
-        if year_filter:
             try:
-                queryset = queryset.filter(created_at__year=int(year_filter))
-            except ValueError:
-                pass
+                orders_qs = orders_qs.filter(customer_id=int(client_id))
+                client_name = get_object_or_404(User, pk=client_id)
+                client_name = client_name.full_name or client_name.email
+            except (ValueError, User.DoesNotExist):
+                client_id = None
+                client_name = _('Todos los clientes')
+        else:
+            client_name = _('Todos los clientes')
         
-        # Agrupar por cliente y mes
-        summary = queryset.annotate(
-            month=TruncMonth('created_at')
-        ).values(
-            'customer', 'customer__email', 'customer__full_name', 'customer__company', 'month'
-        ).annotate(
-            total_orders=Count('id'),
-            delivered_count=Count('id', filter=Q(status=Order.STATUS_DELIVERED)),
-            pending_count=Count('id', filter=~Q(status=Order.STATUS_DELIVERED)),
-            total_amount_sum=Sum('total_amount')
-        ).order_by('customer', '-month')  # Ordenar por customer, luego por mes desc
+        # Aplicar filtros de mes/año
+        orders_qs = filter_orders_by_month_year(orders_qs, month=selected_month, year=selected_year)
         
-        # Filtrar solo el último mes por cliente
-        summary_list = list(summary)
-        seen_customers = set()
-        summary_filtered = []
+        # Ordenar por fecha descendente
+        orders_qs = orders_qs.order_by('-created_at')
         
-        for row in summary_list:
-            customer_id = row['customer']
-            if customer_id not in seen_customers:
-                summary_filtered.append(row)
-                seen_customers.add(customer_id)
+        # Obtener datos para dropdowns
+        all_orders = Order.objects.all()
+        months_available, years_available = get_orders_month_year_data(all_orders)
         
-        summary = summary_filtered
-        
-        # Obtener lista de clientes para filtro
+        # Clientes disponibles (con pedidos)
         clients = User.objects.filter(orders__isnull=False).distinct().order_by('email')
         
-        # Rango de años disponibles
-        years = Order.objects.dates('created_at', 'year', order='DESC')
+        # Contar total de pedidos en el rango
+        total_count = orders_qs.count()
+        
+        # Etiqueta del mes seleccionado
+        month_label = get_month_label(selected_month) if selected_month else _('Todos')
+        
+        # Paginación
+        paginator = Paginator(orders_qs, per_page)
+        try:
+            page_obj = paginator.page(current_page)
+        except:
+            page_obj = paginator.page(1)
+        
+        # Construir querystring incluyendo filtro de cliente si existe
+        querystring_parts = []
+        if client_id:
+            querystring_parts.append(f'client_id={client_id}')
+        if selected_month:
+            querystring_parts.append(f'month={selected_month}')
+        if selected_year:
+            querystring_parts.append(f'year={selected_year}')
+        if per_page != 10:
+            querystring_parts.append(f'per_page={per_page}')
+        querystring = '&' + '&'.join(querystring_parts) if querystring_parts else ''
         
         context = {
-            'summary': summary,
-            'clients': clients,
-            'years': years,
+            'page_obj': page_obj,
+            'paginator': paginator,
+            'orders': page_obj.object_list,  # Para compatibilidad
+            'is_admin_view': True,
+            'is_manager': True,  # Para compatibilidad
+            'client_name': client_name,
+            'month_label': month_label,
+            'total_count': total_count,
+            'selected_month': selected_month,
+            'selected_year': selected_year,
             'selected_client': client_id,
-            'selected_year': year_filter,
-            'view_mode': 'summary',
+            'clients': clients,
+            'months_available': months_available,
+            'years_available': years_available,
+            'per_page': per_page,
+            'querystring': querystring,
         }
-        return render(request, 'orders/orders_admin_summary.html', context)
-    
-    # VISTA CLIENTE: Solo sus pedidos (vista actual)
-    else:
-        orders = Order.objects.filter(customer=user).order_by('-created_at')
         
-        context = {
-            'orders': orders,
-            'is_manager': False,
-        }
         return render(request, 'orders/order_list.html', context)
+
 
 
 @login_required
