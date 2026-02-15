@@ -69,6 +69,26 @@ def profile_dashboard(request):
         user=user
     ).order_by('-created_at')[:10]
     
+    # Detectar campos obligatorios faltantes
+    required_fields = [
+        'telefono_reparto',
+        'direccion_local',
+        'ciudad',
+        'provincia',
+        'codigo_postal',
+        'tipo_entrega',
+        'direccion_entrega',
+        'ciudad_entrega',
+        'provincia_entrega',
+        'codigo_postal_entrega',
+    ]
+    
+    missing_fields = []
+    for field in required_fields:
+        value = getattr(user, field, None)
+        if not value or (isinstance(value, str) and not value.strip()):
+            missing_fields.append(field)
+    
     context = {
         'user': user,
         'preferences': preferences,
@@ -77,9 +97,11 @@ def profile_dashboard(request):
         'active_sessions': active_sessions,
         'recent_logins': recent_logins,
         'session_count': active_sessions.count(),
+        'edit_mode': False,
+        'missing_fields': missing_fields,
     }
     
-    return render(request, 'accounts/profile/profile_dashboard.html', context)
+    return render(request, 'accounts/profile/profile_dashboard_new.html', context)
 
 
 @login_required
@@ -547,56 +569,93 @@ def update_complete_profile(request):
     user = request.user
     
     if request.method == 'POST':
-        form_personal = PersonalDataForm(request.POST, instance=user)
-        form_operative = OperativeProfileForm(request.POST, instance=user)
+        # Actualizar todos los campos del formulario
+        # Datos personales
+        user.first_name = request.POST.get('first_name', '').strip()
+        user.last_name = request.POST.get('last_name', '').strip()
+        user.company = request.POST.get('company', '').strip()
+        user.phone = request.POST.get('phone', '').strip()
         
-        if form_personal.is_valid() and form_operative.is_valid():
-            # Guardar datos personales
-            old_values_personal = {
-                field: getattr(user, field)
-                for field in form_personal.changed_data
-            }
+        # Contacto operativo
+        user.telefono_empresa = request.POST.get('telefono_empresa', '').strip()
+        user.telefono_reparto = request.POST.get('telefono_reparto', '').strip()
+        
+        # Dirección local/fiscal
+        user.direccion_local = request.POST.get('direccion_local', '').strip()
+        user.ciudad = request.POST.get('ciudad', '').strip()
+        user.provincia = request.POST.get('provincia', '').strip()
+        user.codigo_postal = request.POST.get('codigo_postal', '').strip()
+        user.pais = request.POST.get('pais', 'España').strip()
+        
+        # Dirección de entrega
+        user.tipo_entrega = request.POST.get('tipo_entrega', '').strip()
+        user.direccion_entrega = request.POST.get('direccion_entrega', '').strip()
+        user.ciudad_entrega = request.POST.get('ciudad_entrega', '').strip()
+        user.provincia_entrega = request.POST.get('provincia_entrega', '').strip()
+        user.codigo_postal_entrega = request.POST.get('codigo_postal_entrega', '').strip()
+        user.ventana_entrega = request.POST.get('ventana_entrega', '').strip()
+        user.observaciones_entrega = request.POST.get('observaciones_entrega', '').strip()
+        
+        # Validar campos obligatorios
+        required_fields = {
+            'telefono_reparto': _('Teléfono de reparto'),
+            'direccion_local': _('Dirección local'),
+            'ciudad': _('Ciudad'),
+            'provincia': _('Provincia'),
+            'codigo_postal': _('Código postal'),
+            'tipo_entrega': _('Tipo de entrega'),
+            'direccion_entrega': _('Dirección de entrega'),
+            'ciudad_entrega': _('Ciudad de entrega'),
+            'provincia_entrega': _('Provincia de entrega'),
+            'codigo_postal_entrega': _('Código postal de entrega'),
+        }
+        
+        errors = []
+        for field, label in required_fields.items():
+            value = getattr(user, field)
+            if not value or (isinstance(value, str) and not value.strip()):
+                errors.append(f'{label}')
+        
+        if errors:
+            messages.error(request, _('Por favor completa los siguientes campos obligatorios: ') + ', '.join(errors))
+        else:
+            user.save()
             
-            user = form_personal.save()
-            
-            # Registrar cambios de datos personales
-            for field in form_personal.changed_data:
-                log_profile_action(
-                    user=user,
-                    action='update_complete_profile',
-                    field_changed=field,
-                    old_value=old_values_personal.get(field),
-                    new_value=getattr(user, field),
-                    request=request
-                )
-            
-            # Guardar datos operativos
-            old_values_operative = {
-                field: getattr(user, field)
-                for field in form_operative.changed_data
-            }
-            
-            user = form_operative.save()
-            
-            # Registrar cambios de perfil operativo
-            for field in form_operative.changed_data:
-                log_profile_action(
-                    user=user,
-                    action='update_complete_profile',
-                    field_changed=field,
-                    old_value=old_values_operative.get(field),
-                    new_value=getattr(user, field),
-                    request=request
-                )
+            # Log action
+            log_profile_action(
+                user=user,
+                action='update_complete_profile',
+                field_changed='multiple',
+                request=request
+            )
             
             messages.success(request, _('Tu perfil ha sido actualizado correctamente'))
             return redirect('accounts:profile_dashboard')
-    else:
-        form_personal = PersonalDataForm(instance=user)
-        form_operative = OperativeProfileForm(instance=user)
     
-    return render(request, 'accounts/profile/edit_complete_profile.html', {
-        'form_personal': form_personal,
-        'form_operative': form_operative,
-        'user': user
-    })
+    # Detectar campos faltantes
+    required_fields_list = [
+        'telefono_reparto',
+        'direccion_local',
+        'ciudad',
+        'provincia',
+        'codigo_postal',
+        'tipo_entrega',
+        'direccion_entrega',
+        'ciudad_entrega',
+        'provincia_entrega',
+        'codigo_postal_entrega',
+    ]
+    
+    missing_fields = []
+    for field in required_fields_list:
+        value = getattr(user, field, None)
+        if not value or (isinstance(value, str) and not value.strip()):
+            missing_fields.append(field)
+    
+    context = {
+        'user': user,
+        'edit_mode': True,
+        'missing_fields': missing_fields,
+    }
+    
+    return render(request, 'accounts/profile/profile_dashboard_new.html', context)

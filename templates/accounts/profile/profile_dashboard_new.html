@@ -1,0 +1,1077 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Mi Perfil" %} - {{ block.super }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ============================================================================
+       PERFIL - ESTILO HR TALENT (IBERLAM)
+       ============================================================================ */
+    
+    :root {
+        --color-primary: #2563eb;
+        --color-primary-hover: #1d4ed8;
+        --color-success: #10b981;
+        --color-danger: #ef4444;
+        --color-warning: #f59e0b;
+        --color-gray-50: #f9fafb;
+        --color-gray-100: #f3f4f6;
+        --color-gray-200: #e5e7eb;
+        --color-gray-300: #d1d5db;
+        --color-gray-400: #9ca3af;
+        --color-gray-500: #6b7280;
+        --color-gray-600: #4b5563;
+        --color-gray-700: #374151;
+        --color-gray-800: #1f2937;
+        --color-gray-900: #111827;
+    }
+    
+    /* Container principal */
+    .profile-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: var(--color-gray-50);
+        min-height: 100vh;
+    }
+    
+    /* =========== HEADER =========== */
+    .profile-top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        gap: 1rem;
+    }
+    
+    .profile-back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: white;
+        border: 1px solid var(--color-gray-200);
+        border-radius: 0.5rem;
+        color: var(--color-gray-700);
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.15s;
+    }
+    
+    .profile-back-btn:hover {
+        background: var(--color-gray-50);
+        border-color: var(--color-gray-300);
+    }
+    
+    .profile-header-main {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+        border: 1px solid var(--color-gray-200);
+        border-radius: 0.75rem;
+        padding: 1.5rem 2rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    
+    .profile-header-left h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--color-gray-900);
+        margin: 0 0 0.25rem 0;
+    }
+    
+    .profile-header-subtitle {
+        color: var(--color-gray-500);
+        font-size: 0.875rem;
+        margin: 0;
+    }
+    
+    .profile-header-right {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .profile-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.375rem 0.875rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        background: #dcfce7;
+        color: #166534;
+    }
+    
+    .profile-status-badge.status-active {
+        background: #dcfce7;
+        color: #166534;
+    }
+    
+    .profile-status-badge.status-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+    
+    /* =========== TABS =========== */
+    .profile-tabs {
+        background: white;
+        border: 1px solid var(--color-gray-200);
+        border-radius: 0.75rem;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+    
+    .profile-tabs-nav {
+        display: flex;
+        border-bottom: 1px solid var(--color-gray-200);
+        overflow-x: auto;
+    }
+    
+    .profile-tab-btn {
+        flex: 1;
+        padding: 1rem 1.5rem;
+        background: transparent;
+        border: none;
+        border-bottom: 3px solid transparent;
+        color: var(--color-gray-600);
+        font-size: 0.9375rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+        white-space: nowrap;
+    }
+    
+    .profile-tab-btn:hover {
+        color: var(--color-primary);
+        background: var(--color-gray-50);
+    }
+    
+    .profile-tab-btn.active {
+        color: var(--color-primary);
+        border-bottom-color: var(--color-primary);
+        background: var(--color-gray-50);
+    }
+    
+    .profile-tab-content {
+        display: none;
+        padding: 2rem;
+    }
+    
+    .profile-tab-content.active {
+        display: block;
+    }
+    
+    /* =========== CARDS =========== */
+    .profile-section {
+        background: white;
+        border: 1px solid var(--color-gray-200);
+        border-radius: 0.75rem;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+    
+    .profile-section-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--color-gray-200);
+        background: var(--color-gray-50);
+    }
+    
+    .profile-section-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--color-gray-900);
+        margin: 0;
+    }
+    
+    .profile-section-body {
+        padding: 1.5rem;
+    }
+    
+    /* =========== GRID DE CAMPOS =========== */
+    .profile-fields-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+    
+    @media (max-width: 1024px) {
+        .profile-fields-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .profile-fields-grid-3col {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    @media (max-width: 1200px) {
+        .profile-fields-grid-3col {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .profile-fields-grid-3col {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    /* =========== FIELD COMPONENT =========== */
+    .profile-field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .profile-field-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--color-gray-700);
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+    
+    .profile-field-label svg {
+        width: 16px;
+        height: 16px;
+        color: var(--color-gray-400);
+    }
+    
+    .profile-field-value {
+        font-size: 0.9375rem;
+        color: var(--color-gray-900);
+        padding: 0.5rem 0;
+    }
+    
+    .profile-field-value.empty {
+        color: var(--color-gray-400);
+        font-style: italic;
+    }
+    
+    /* =========== INPUTS (MODO EDICIÓN) =========== */
+    .profile-input {
+        width: 100%;
+        padding: 0.625rem 0.875rem;
+        font-size: 0.9375rem;
+        border: 1px solid var(--color-gray-300);
+        border-radius: 0.5rem;
+        background: white;
+        color: var(--color-gray-900);
+        transition: all 0.15s;
+    }
+    
+    .profile-input:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .profile-input::placeholder {
+        color: var(--color-gray-400);
+    }
+    
+    /* Estado de error */
+    .profile-input.error,
+    .profile-input.is-invalid {
+        border-color: var(--color-danger);
+        background: #fef2f2;
+    }
+    
+    .profile-input.error::placeholder {
+        color: var(--color-danger);
+    }
+    
+    .profile-field-error {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        margin-top: 0.375rem;
+        font-size: 0.8125rem;
+        color: var(--color-danger);
+    }
+    
+    .profile-field-error svg {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+    }
+    
+    .profile-field-help {
+        margin-top: 0.375rem;
+        font-size: 0.8125rem;
+        color: var(--color-gray-500);
+    }
+    
+    /* Select */
+    select.profile-input {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+    }
+    
+    /* Textarea */
+    textarea.profile-input {
+        resize: vertical;
+        min-height: 80px;
+    }
+    
+    /* =========== BOTONES =========== */
+    .profile-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1.5rem;
+        border-top: 1px solid var(--color-gray-200);
+        background: var(--color-gray-50);
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
+    }
+    
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.625rem 1.25rem;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.15s;
+        text-decoration: none;
+    }
+    
+    .btn-primary {
+        background: var(--color-primary);
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: var(--color-primary-hover);
+        color: white;
+    }
+    
+    .btn-secondary {
+        background: white;
+        color: var(--color-gray-700);
+        border: 1px solid var(--color-gray-300);
+    }
+    
+    .btn-secondary:hover {
+        background: var(--color-gray-50);
+        border-color: var(--color-gray-400);
+    }
+    
+    .btn svg {
+        width: 18px;
+        height: 18px;
+    }
+    
+    /* =========== ALERT COMPACTO =========== */
+    .profile-completion-alert {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1.5rem;
+        background: #fef3c7;
+        border: 1px solid #fbbf24;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        color: #92400e;
+    }
+    
+    .profile-completion-alert svg {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+    }
+    
+    .profile-completion-alert strong {
+        font-weight: 600;
+    }
+    
+    /* =========== RESPONSIVE =========== */
+    @media (max-width: 768px) {
+        .profile-container {
+            padding: 1rem;
+        }
+        
+        .profile-top-bar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .profile-header-main {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .profile-tabs-nav {
+            flex-direction: column;
+        }
+        
+        .profile-tab-btn {
+            text-align: left;
+            border-bottom: 1px solid var(--color-gray-200);
+            border-left: 3px solid transparent;
+        }
+        
+        .profile-tab-btn.active {
+            border-bottom-color: var(--color-gray-200);
+            border-left-color: var(--color-primary);
+        }
+        
+        .profile-actions {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            width: 100%;
+        }
+    }
+    
+    /* =========== MODO VISTA (READ-ONLY) =========== */
+    .profile-view-mode .profile-actions {
+        justify-content: space-between;
+    }
+    
+    /* =========== HIDE/SHOW =========== */
+    .hidden {
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <!-- Top Bar: Back Button + Header -->
+    <div class="profile-top-bar">
+        <a href="{% url 'dashboard' %}" class="profile-back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            {% trans "Volver" %}
+        </a>
+        
+        <div class="profile-header-main">
+            <div class="profile-header-left">
+                <h1>{{ user.full_name|default:user.email }}</h1>
+                <p class="profile-header-subtitle">{{ user.company|default:"Fenix" }}</p>
+            </div>
+            <div class="profile-header-right">
+                <span class="profile-status-badge status-active">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    {% trans "Activo" %}
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Alert compacto si faltan campos (solo en modo vista) -->
+    {% if missing_fields and not edit_mode %}
+    <div class="profile-completion-alert">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+        <div>
+            <strong>{% trans "Faltan" %} {{ missing_fields|length }} {% trans "campos obligatorios" %}</strong>
+            <span> - {% trans "Completa tu perfil para poder crear pedidos" %}</span>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Tabs Container -->
+    <div class="profile-tabs">
+        <!-- Tabs Navigation -->
+        <div class="profile-tabs-nav">
+            <button class="profile-tab-btn active" data-tab="info-general">
+                {% trans "Información General" %}
+            </button>
+            <button class="profile-tab-btn" data-tab="direccion">
+                {% trans "Dirección" %}
+            </button>
+            <button class="profile-tab-btn" data-tab="entrega">
+                {% trans "Entrega" %}
+            </button>
+            <button class="profile-tab-btn" data-tab="preferencias">
+                {% trans "Preferencias" %}
+            </button>
+        </div>
+        
+        <form method="post" id="profileForm" novalidate>
+            {% csrf_token %}
+            
+            <!-- TAB 1: INFORMACIÓN GENERAL -->
+            <div class="profile-tab-content active" data-tab-content="info-general">
+                <!-- Card: Información Básica -->
+                <div class="profile-section">
+                    <div class="profile-section-header">
+                        <h2 class="profile-section-title">{% trans "Información Básica" %}</h2>
+                    </div>
+                    <div class="profile-section-body">
+                        <div class="profile-fields-grid-3col">
+                            <!-- Nombre -->
+                            <div class="profile-field">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                    {% trans "Nombre" %}
+                                </label>
+                                {% if edit_mode %}
+                                    <input type="text" name="first_name" class="profile-input" value="{{ user.first_name }}" placeholder="Nombre">
+                                {% else %}
+                                    <div class="profile-field-value">{{ user.first_name|default:"—" }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Apellido -->
+                            <div class="profile-field">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                    {% trans "Apellido" %}
+                                </label>
+                                {% if edit_mode %}
+                                    <input type="text" name="last_name" class="profile-input" value="{{ user.last_name }}" placeholder="Apellido">
+                                {% else %}
+                                    <div class="profile-field-value">{{ user.last_name|default:"—" }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Correo electrónico -->
+                            <div class="profile-field">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                                    {% trans "Correo electrónico" %}
+                                </label>
+                                <div class="profile-field-value">{{ user.email }}</div>
+                            </div>
+                            
+                            <!-- Empresa -->
+                            <div class="profile-field">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M4 18h16M6 18V9M10 18V9M14 18V9M18 18V9M12 3L6 9h12L12 3Z"/></svg>
+                                    {% trans "Empresa" %}
+                                </label>
+                                {% if edit_mode %}
+                                    <input type="text" name="company" class="profile-input" value="{{ user.company }}" placeholder="Nombre de la empresa">
+                                {% else %}
+                                    <div class="profile-field-value">{{ user.company|default:"—" }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Teléfono -->
+                            <div class="profile-field">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                    {% trans "Teléfono" %}
+                                </label>
+                                {% if edit_mode %}
+                                    <input type="tel" name="phone" class="profile-input" value="{{ user.phone }}" placeholder="+34 XXX XXX XXX">
+                                {% else %}
+                                    <div class="profile-field-value">{{ user.phone|default:"—" }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Zona Horaria -->
+                            <div class="profile-field">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    {% trans "Zona Horaria" %}
+                                </label>
+                                <div class="profile-field-value">Europe/Madrid</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card: Contacto Operativo -->
+                <div class="profile-section">
+                    <div class="profile-section-header">
+                        <h2 class="profile-section-title">{% trans "Contacto Operativo" %}</h2>
+                    </div>
+                    <div class="profile-section-body">
+                        <div class="profile-fields-grid">
+                            <!-- Teléfono de empresa -->
+                            <div class="profile-field">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                    {% trans "Teléfono de empresa" %}
+                                </label>
+                                {% if edit_mode %}
+                                    <input type="tel" name="telefono_empresa" class="profile-input" value="{{ user.telefono_empresa }}" placeholder="+34 XXX XXX XXX">
+                                {% else %}
+                                    <div class="profile-field-value">{{ user.telefono_empresa|default:"—" }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Teléfono de reparto (OBLIGATORIO) -->
+                            <div class="profile-field">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/></svg>
+                                    {% trans "Teléfono de reparto" %} *
+                                </label>
+                                {% if edit_mode %}
+                                    <input type="tel" name="telefono_reparto" 
+                                           class="profile-input {% if not user.telefono_reparto %}error{% endif %}" 
+                                           value="{{ user.telefono_reparto }}" 
+                                           placeholder="{% if not user.telefono_reparto %}+34 XXX XXX XXX (OBLIGATORIO){% else %}+34 XXX XXX XXX{% endif %}"
+                                           required>
+                                    {% if not user.telefono_reparto %}
+                                    <div class="profile-field-error">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                                        {% trans "Este campo es obligatorio" %}
+                                    </div>
+                                    {% endif %}
+                                    <div class="profile-field-help">{% trans "Teléfono de contacto para confirmar la entrega" %}</div>
+                                {% else %}
+                                    <div class="profile-field-value {% if not user.telefono_reparto %}empty{% endif %}">
+                                        {{ user.telefono_reparto|default:"—" }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TAB 2: DIRECCIÓN -->
+            <div class="profile-tab-content" data-tab-content="direccion">
+                <div class="profile-section">
+                    <div class="profile-section-header">
+                        <h2 class="profile-section-title">{% trans "Dirección Local / Fiscal" %}</h2>
+                    </div>
+                    <div class="profile-section-body">
+                        <div class="profile-fields-grid">
+                            <!-- Dirección local -->
+                            <div class="profile-field" style="grid-column: 1 / -1;">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                                    {% trans "Dirección local" %} *
+                                </label>
+                                {% if edit_mode %}
+                                    <input type="text" name="direccion_local" 
+                                           class="profile-input {% if not user.direccion_local %}error{% endif %}" 
+                                           value="{{ user.direccion_local }}" 
+                                           placeholder="{% if not user.direccion_local %}Calle, número y piso (OBLIGATORIO){% else %}Calle, número y piso{% endif %}"
+                                           required>
+                                    {% if not user.direccion_local %}
+                                    <div class="profile-field-error">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                                        {% trans "Este campo es obligatorio" %}
+                                    </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="profile-field-value {% if not user.direccion_local %}empty{% endif %}">{{ user.direccion_local|default:"—" }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Ciudad -->
+                            <div class="profile-field">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M4 18h16M6 18V9M10 18V9M14 18V9M18 18V9M12 3L6 9h12L12 3Z"/></svg>
+                                    {% trans "Ciudad" %} *
+                                </label>
+                                {% if edit_mode %}
+                                    <input type="text" name="ciudad" 
+                                           class="profile-input {% if not user.ciudad %}error{% endif %}" 
+                                           value="{{ user.ciudad }}" 
+                                           placeholder="{% if not user.ciudad %}Ciudad (OBLIGATORIO){% else %}Ciudad{% endif %}"
+                                           required>
+                                    {% if not user.ciudad %}
+                                    <div class="profile-field-error">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                                        {% trans "Este campo es obligatorio" %}
+                                    </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="profile-field-value {% if not user.ciudad %}empty{% endif %}">{{ user.ciudad|default:"—" }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Provincia -->
+                            <div class="profile-field">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+                                    {% trans "Provincia" %} *
+                                </label>
+                                {% if edit_mode %}
+                                    <input type="text" name="provincia" 
+                                           class="profile-input {% if not user.provincia %}error{% endif %}" 
+                                           value="{{ user.provincia }}" 
+                                           placeholder="{% if not user.provincia %}Provincia (OBLIGATORIO){% else %}Provincia{% endif %}"
+                                           required>
+                                    {% if not user.provincia %}
+                                    <div class="profile-field-error">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                                        {% trans "Este campo es obligatorio" %}
+                                    </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="profile-field-value {% if not user.provincia %}empty{% endif %}">{{ user.provincia|default:"—" }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Código postal -->
+                            <div class="profile-field">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/></svg>
+                                    {% trans "Código postal" %} *
+                                </label>
+                                {% if edit_mode %}
+                                    <input type="text" name="codigo_postal" 
+                                           class="profile-input {% if not user.codigo_postal %}error{% endif %}" 
+                                           value="{{ user.codigo_postal }}" 
+                                           placeholder="{% if not user.codigo_postal %}28001 (OBLIGATORIO){% else %}28001{% endif %}"
+                                           maxlength="10"
+                                           required>
+                                    {% if not user.codigo_postal %}
+                                    <div class="profile-field-error">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                                        {% trans "Este campo es obligatorio" %}
+                                    </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="profile-field-value {% if not user.codigo_postal %}empty{% endif %}">{{ user.codigo_postal|default:"—" }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- País -->
+                            <div class="profile-field">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                                    {% trans "País" %}
+                                </label>
+                                {% if edit_mode %}
+                                    <input type="text" name="pais" class="profile-input" value="{{ user.pais|default:'España' }}" placeholder="España">
+                                {% else %}
+                                    <div class="profile-field-value">{{ user.pais|default:"España" }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TAB 3: ENTREGA -->
+            <div class="profile-tab-content" data-tab-content="entrega">
+                <div class="profile-section">
+                    <div class="profile-section-header">
+                        <h2 class="profile-section-title">{% trans "Dirección de Entrega" %}</h2>
+                    </div>
+                    <div class="profile-section-body">
+                        <div class="profile-fields-grid">
+                            <!-- Tipo de entrega -->
+                            <div class="profile-field" style="grid-column: 1 / -1;">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="1" y="4" rx="2"/><path d="M17 4h4v13H7"/><path d="M14 13h3"/><path d="M5 9 2 17h15l-3-8"/><path d="M6 17v4"/><path d="M16 17v4"/></svg>
+                                    {% trans "Tipo de entrega" %} *
+                                </label>
+                                {% if edit_mode %}
+                                    <select name="tipo_entrega" 
+                                            class="profile-input {% if not user.tipo_entrega %}error{% endif %}" 
+                                            required>
+                                        <option value="">{% trans "Selecciona una opción" %}</option>
+                                        <option value="recogida" {% if user.tipo_entrega == 'recogida' %}selected{% endif %}>{% trans "Recogida en local" %}</option>
+                                        <option value="envio" {% if user.tipo_entrega == 'envio' %}selected{% endif %}>{% trans "Envío a domicilio" %}</option>
+                                    </select>
+                                    {% if not user.tipo_entrega %}
+                                    <div class="profile-field-error">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                                        {% trans "Este campo es obligatorio" %}
+                                    </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="profile-field-value {% if not user.tipo_entrega %}empty{% endif %}">
+                                        {% if user.tipo_entrega == 'recogida' %}{% trans "Recogida en local" %}
+                                        {% elif user.tipo_entrega == 'envio' %}{% trans "Envío a domicilio" %}
+                                        {% else %}—{% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Dirección entrega -->
+                            <div class="profile-field" style="grid-column: 1 / -1;">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                                    {% trans "Dirección de entrega" %} *
+                                </label>
+                                {% if edit_mode %}
+                                    <input type="text" name="direccion_entrega" 
+                                           class="profile-input {% if not user.direccion_entrega %}error{% endif %}" 
+                                           value="{{ user.direccion_entrega }}" 
+                                           placeholder="{% if not user.direccion_entrega %}Calle, número y piso (OBLIGATORIO){% else %}Calle, número y piso{% endif %}"
+                                           required>
+                                    {% if not user.direccion_entrega %}
+                                    <div class="profile-field-error">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                                        {% trans "Este campo es obligatorio" %}
+                                    </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="profile-field-value {% if not user.direccion_entrega %}empty{% endif %}">{{ user.direccion_entrega|default:"—" }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Ciudad entrega -->
+                            <div class="profile-field">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M4 18h16M6 18V9M10 18V9M14 18V9M18 18V9M12 3L6 9h12L12 3Z"/></svg>
+                                    {% trans "Ciudad de entrega" %} *
+                                </label>
+                                {% if edit_mode %}
+                                    <input type="text" name="ciudad_entrega" 
+                                           class="profile-input {% if not user.ciudad_entrega %}error{% endif %}" 
+                                           value="{{ user.ciudad_entrega }}" 
+                                           placeholder="{% if not user.ciudad_entrega %}Ciudad (OBLIGATORIO){% else %}Ciudad{% endif %}"
+                                           required>
+                                    {% if not user.ciudad_entrega %}
+                                    <div class="profile-field-error">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                                        {% trans "Este campo es obligatorio" %}
+                                    </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="profile-field-value {% if not user.ciudad_entrega %}empty{% endif %}">{{ user.ciudad_entrega|default:"—" }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Provincia entrega -->
+                            <div class="profile-field">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+                                    {% trans "Provincia de entrega" %} *
+                                </label>
+                                {% if edit_mode %}
+                                    <input type="text" name="provincia_entrega" 
+                                           class="profile-input {% if not user.provincia_entrega %}error{% endif %}" 
+                                           value="{{ user.provincia_entrega }}" 
+                                           placeholder="{% if not user.provincia_entrega %}Provincia (OBLIGATORIO){% else %}Provincia{% endif %}"
+                                           required>
+                                    {% if not user.provincia_entrega %}
+                                    <div class="profile-field-error">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                                        {% trans "Este campo es obligatorio" %}
+                                    </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="profile-field-value {% if not user.provincia_entrega %}empty{% endif %}">{{ user.provincia_entrega|default:"—" }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Código postal entrega -->
+                            <div class="profile-field">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/></svg>
+                                    {% trans "Código postal entrega" %} *
+                                </label>
+                                {% if edit_mode %}
+                                    <input type="text" name="codigo_postal_entrega" 
+                                           class="profile-input {% if not user.codigo_postal_entrega %}error{% endif %}" 
+                                           value="{{ user.codigo_postal_entrega }}" 
+                                           placeholder="{% if not user.codigo_postal_entrega %}28001 (OBLIGATORIO){% else %}28001{% endif %}"
+                                           maxlength="10"
+                                           required>
+                                    {% if not user.codigo_postal_entrega %}
+                                    <div class="profile-field-error">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                                        {% trans "Este campo es obligatorio" %}
+                                    </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="profile-field-value {% if not user.codigo_postal_entrega %}empty{% endif %}">{{ user.codigo_postal_entrega|default:"—" }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card: Preferencias de Entrega -->
+                <div class="profile-section">
+                    <div class="profile-section-header">
+                        <h2 class="profile-section-title">{% trans "Preferencias de Entrega" %}</h2>
+                    </div>
+                    <div class="profile-section-body">
+                        <div class="profile-fields-grid">
+                            <!-- Ventana de entrega -->
+                            <div class="profile-field">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    {% trans "Ventana de entrega" %}
+                                </label>
+                                {% if edit_mode %}
+                                    <input type="text" name="ventana_entrega" class="profile-input" value="{{ user.ventana_entrega }}" placeholder="Ej: Lunes 9:00-13:00 (opcional)">
+                                    <div class="profile-field-help">{% trans "Ej: Lunes a viernes 9:00-14:00" %}</div>
+                                {% else %}
+                                    <div class="profile-field-value">{{ user.ventana_entrega|default:"—" }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Observaciones -->
+                            <div class="profile-field" style="grid-column: 1 / -1;">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                    {% trans "Observaciones" %}
+                                </label>
+                                {% if edit_mode %}
+                                    <textarea name="observaciones_entrega" class="profile-input" rows="3" placeholder="Instrucciones especiales para la entrega (opcional)">{{ user.observaciones_entrega }}</textarea>
+                                {% else %}
+                                    <div class="profile-field-value">{{ user.observaciones_entrega|default:"—" }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TAB 4: PREFERENCIAS -->
+            <div class="profile-tab-content" data-tab-content="preferencias">
+                <div class="profile-section">
+                    <div class="profile-section-header">
+                        <h2 class="profile-section-title">{% trans "Preferencias de Idioma" %}</h2>
+                    </div>
+                    <div class="profile-section-body">
+                        <div class="profile-fields-grid">
+                            <!-- Idioma -->
+                            <div class="profile-field">
+                                <label class="profile-field-label">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                                    {% trans "Idioma" %}
+                                </label>
+                                <div class="profile-field-value">{% trans "Español" %}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Actions (modo edición) -->
+            {% if edit_mode %}
+            <div class="profile-actions">
+                <a href="{% url 'accounts:profile_dashboard' %}" class="btn btn-secondary">
+                    {% trans "Cancelar" %}
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    {% trans "Guardar cambios" %}
+                </button>
+            </div>
+            {% else %}
+            <div class="profile-actions profile-view-mode">
+                <a href="{% url 'accounts:update_complete_profile' %}" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                    {% trans "Editar perfil" %}
+                </a>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<!-- JavaScript para Tabs + Scroll al Error -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // ========== TABS FUNCTIONALITY ==========
+    const tabButtons = document.querySelectorAll('.profile-tab-btn');
+    const tabContents = document.querySelectorAll('.profile-tab-content');
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabName = button.getAttribute('data-tab');
+            
+            // Remove active class from all buttons and contents
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Add active class to clicked button and corresponding content
+            button.classList.add('active');
+            document.querySelector(`[data-tab-content="${tabName}"]`).classList.add('active');
+        });
+    });
+    
+    // ========== FORM VALIDATION + SCROLL TO ERROR ==========
+    const form = document.getElementById('profileForm');
+    
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const requiredInputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+            let firstError = null;
+            let hasErrors = false;
+            
+            requiredInputs.forEach(input => {
+                if (!input.value || input.value.trim() === '') {
+                    hasErrors = true;
+                    input.classList.add('error');
+                    
+                    if (!firstError) {
+                        firstError = input;
+                    }
+                } else {
+                    input.classList.remove('error');
+                }
+            });
+            
+            if (hasErrors && firstError) {
+                e.preventDefault();
+                
+                // Scroll to first error with smooth animation
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Focus the input after scrolling
+                setTimeout(() => {
+                    firstError.focus();
+                }, 500);
+                
+                // Activate the tab containing the first error
+                const errorTab = firstError.closest('.profile-tab-content');
+                if (errorTab) {
+                    const tabName = errorTab.getAttribute('data-tab-content');
+                    const tabButton = document.querySelector(`[data-tab="${tabName}"]`);
+                    
+                    if (tabButton) {
+                        tabButtons.forEach(btn => btn.classList.remove('active'));
+                        tabContents.forEach(content => content.classList.remove('active'));
+                        
+                        tabButton.classList.add('active');
+                        errorTab.classList.add('active');
+                    }
+                }
+                
+                // Show alert
+                alert('Por favor, completa todos los campos obligatorios marcados en rojo.');
+            }
+        });
+        
+        // Remove error class on input change
+        const allInputs = form.querySelectorAll('.profile-input');
+        allInputs.forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.value && this.value.trim() !== '') {
+                    this.classList.remove('error');
+                    
+                    // Remove error message if exists
+                    const errorMsg = this.parentElement.querySelector('.profile-field-error');
+                    if (errorMsg) {
+                        errorMsg.style.display = 'none';
+                    }
+                }
+            });
+        });
+    }
+});
+</script>
+{% endblock %}
