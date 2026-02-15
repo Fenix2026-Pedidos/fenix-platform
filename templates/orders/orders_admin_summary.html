@@ -16,12 +16,12 @@
         <form method="get" action="{% url 'orders:order_list' %}">
             <div class="row g-3">
                 <div class="col-md-4">
-                    <label for="client_id" class="form-label">{% trans "Cliente (opcional)" %}</label>
+                    <label for="client_id" class="form-label">{% trans "Empresa / Cliente (opcional)" %}</label>
                     <select name="client_id" id="client_id" class="form-select">
                         <option value="">{% trans "Todos los clientes" %}</option>
                         {% for client in clients %}
                         <option value="{{ client.id }}" {% if selected_client == client.id|stringformat:"s" %}selected{% endif %}>
-                            {{ client.full_name|default:client.email }} ({{ client.email }})
+                            {{ client.company|default:client.full_name|default:client.email }}
                         </option>
                         {% endfor %}
                     </select>
@@ -58,7 +58,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>{% trans "Cliente" %}</th>
+                    <th>{% trans "Empresa / Cliente" %}</th>
                     <th>{% trans "Mes" %}</th>
                     <th style="text-align: center;">{% trans "Nº Pedidos" %}</th>
                     <th style="text-align: center;">{% trans "Entregados" %}</th>
@@ -71,9 +71,9 @@
                 {% for row in summary %}
                 <tr>
                     <td style="font-weight: 500;">
-                        {{ row.customer__full_name|default:row.customer__email }}
+                        {{ row.customer__company|default:row.customer__email }}
                         <br>
-                        <small class="text-muted">ID: {{ row.customer }}</small>
+                        <small class="text-muted">{{ row.customer__full_name|default:row.customer__email }}</small>
                     </td>
                     <td style="font-weight: 600;">
                         {{ row.month|date:"Y-m" }}

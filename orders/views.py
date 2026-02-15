@@ -255,13 +255,13 @@ def order_list(request):
         summary = queryset.annotate(
             month=TruncMonth('created_at')
         ).values(
-            'customer', 'customer__email', 'customer__full_name', 'month'
+            'customer', 'customer__email', 'customer__full_name', 'customer__company', 'month'
         ).annotate(
             total_orders=Count('id'),
             delivered_count=Count('id', filter=Q(status=Order.STATUS_DELIVERED)),
             pending_count=Count('id', filter=~Q(status=Order.STATUS_DELIVERED)),
             total_amount_sum=Sum('total_amount')
-        ).order_by('-month', 'customer__email')
+        ).order_by('-month', 'customer__company', 'customer__email')
         
         # Obtener lista de clientes para filtro
         clients = User.objects.filter(orders__isnull=False).distinct().order_by('email')
