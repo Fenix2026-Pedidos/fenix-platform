@@ -417,6 +417,7 @@
                 {% include 'components/profile_field.html' with icon='user' label=_("Nombre") value=user.first_name %}
                 {% include 'components/profile_field.html' with icon='user' label=_("Apellido") value=user.last_name %}
                 {% include 'components/profile_field.html' with icon='mail' label=_("Email") value=user.email %}
+                {% include 'components/profile_field.html' with icon='briefcase' label=_("Empresa") value=user.company %}
                 
                 <!-- Cuenta -->
                 {% include 'components/profile_field.html' with icon='shield' label=_("Rol") value=user.get_role_display badge="info" %}

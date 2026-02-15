@@ -42,6 +42,28 @@ class PersonalDataForm(forms.ModelForm):
         required=False
     )
     
+    # Campos readonly que no se pueden editar desde el formulario
+    email = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'readonly': 'readonly',
+            'style': 'background-color: #f8f9fa; cursor: not-allowed;'
+        }),
+        label=_('Email')
+    )
+    
+    company = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'readonly': 'readonly',
+            'style': 'background-color: #f8f9fa; cursor: not-allowed;',
+            'placeholder': _('Configurable por administrador')
+        }),
+        label=_('Empresa')
+    )
+    
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'phone', 'timezone']
@@ -65,6 +87,21 @@ class PersonalDataForm(forms.ModelForm):
             'phone': _('Teléfono'),
             'timezone': _('Zona Horaria'),
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Pre-popular campos readonly con valores actuales
+        if self.instance and self.instance.pk:
+            self.fields['email'].initial = self.instance.email
+            self.fields['company'].initial = self.instance.company or '-'
+    
+    def save(self, commit=True):
+        # No permitir que se actualicen email ni company desde este formulario
+        if 'email' in self.changed_data:
+            self.changed_data.remove('email')
+        if 'company' in self.changed_data:
+            self.changed_data.remove('company')
+        return super().save(commit=commit)
 
 
 class CompanyDataForm(forms.ModelForm):

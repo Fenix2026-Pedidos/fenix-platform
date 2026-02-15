@@ -324,6 +324,8 @@
                                     data-reject-form="reject-form-{{ user.id }}"
                                     data-user-email="{{ user.email }}"
                                     data-user-id="{{ user.id }}"
+                                    data-user-full-name="{{ user.full_name }}"
+                                    data-user-company="{{ user.company }}"
                                     data-user-status="{{ user.status }}"
                                     data-user-role="{{ user.role }}"
                                     data-user-email-verified="{{ user.email_verified|yesno:'true,false' }}"
@@ -420,6 +422,16 @@
         <form method="post" action="{% url 'accounts:update_pending_request' %}" id="requestForm">
             {% csrf_token %}
             <input type="hidden" name="user_id" id="requestUserId">
+
+            <div class="form-group">
+                <label for="requestFullName">{% trans "Nombre completo" %}</label>
+                <input type="text" name="full_name" id="requestFullName" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="requestCompany">{% trans "Empresa" %}</label>
+                <input type="text" name="company" id="requestCompany" class="form-control" placeholder="{% trans 'Nombre de la empresa' %}">
+            </div>
 
             <div class="form-group">
                 <label for="requestStatus">{% trans "Estado" %}</label>
@@ -1336,6 +1348,8 @@ function openRequestModal(button) {
     const title = document.getElementById('requestModalTitle');
     const subtitle = document.getElementById('requestModalSubtitle');
     const userIdInput = document.getElementById('requestUserId');
+    const fullNameInput = document.getElementById('requestFullName');
+    const companyInput = document.getElementById('requestCompany');
     const statusSelect = document.getElementById('requestStatus');
     const roleSelect = document.getElementById('requestRole');
     const emailVerified = document.getElementById('requestEmailVerified');
@@ -1345,6 +1359,8 @@ function openRequestModal(button) {
     subtitle.textContent = userEmail;
 
     userIdInput.value = button.dataset.userId;
+    fullNameInput.value = button.dataset.userFullName || '';
+    companyInput.value = button.dataset.userCompany || '';
     statusSelect.value = button.dataset.userStatus || 'pending';
     roleSelect.value = button.dataset.userRole || roleSelect.value;
     emailVerified.checked = button.dataset.userEmailVerified === 'true';
