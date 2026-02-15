@@ -1,12 +1,38 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block page_title %}{% trans "Mis Pedidos" %}{% endblock %}
-{% block title %}{% trans "Mis Pedidos" %} - Fenix{% endblock %}
+{% block page_title %}
+    {% if view_mode == 'detail' %}
+        {% trans "Detalle de Pedidos" %}
+    {% else %}
+        {% trans "Mis Pedidos" %}
+    {% endif %}
+{% endblock %}
+
+{% block title %}
+    {% if view_mode == 'detail' %}
+        {% trans "Detalle de Pedidos" %} - Fenix
+    {% else %}
+        {% trans "Mis Pedidos" %} - Fenix
+    {% endif %}
+{% endblock %}
 
 {% block content %}
 <div class="page-header">
-    <h1 class="page-title">{% trans "Mis Pedidos" %}</h1>
+    {% if view_mode == 'detail' %}
+        <!-- Breadcrumb para vista de detalle admin -->
+        <div class="mb-3">
+            <a href="{% url 'orders:order_list' %}" class="text-decoration-none text-muted">
+                <i class="bi bi-arrow-left"></i> {% trans "Volver a resumen" %}
+            </a>
+        </div>
+        <h1 class="page-title">
+            {% trans "Pedidos de" %} {{ client.full_name|default:client.email }}
+        </h1>
+        <p class="text-muted">{% trans "Mes:" %} {{ month }} | {% trans "Total:" %} {{ orders|length }} {% trans "pedidos" %}</p>
+    {% else %}
+        <h1 class="page-title">{% trans "Mis Pedidos" %}</h1>
+    {% endif %}
 </div>
 
 {% if orders %}
@@ -54,10 +80,18 @@
 <div class="card">
     <div class="card-body" style="text-align: center; padding: 48px;">
         <i class="bi bi-receipt" style="font-size: 48px; color: var(--gray-400); margin-bottom: 16px;"></i>
-        <p class="text-muted mb-3">{% trans "No tienes pedidos aún." %}</p>
+        <p class="text-muted mb-3">
+            {% if view_mode == 'detail' %}
+                {% trans "No hay pedidos en este período." %}
+            {% else %}
+                {% trans "No tienes pedidos aún." %}
+            {% endif %}
+        </p>
+        {% if not is_manager %}
         <a href="{% url 'catalog:product_list' %}" class="btn btn-primary">
             <i class="bi bi-grid"></i> {% trans "Ver Catálogo" %}
         </a>
+        {% endif %}
     </div>
 </div>
 {% endif %}

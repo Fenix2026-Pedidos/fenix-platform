@@ -6,12 +6,16 @@ from django.views.decorators.http import require_POST
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from django.db.models import Count, Sum, Q
+from django.db.models.functions import TruncMonth
 from decimal import Decimal
 import json
+from datetime import datetime
 
 from .models import Order, OrderItem, OrderEvent, OrderDocument
 from .forms import OrderStatusUpdateForm, OrderETAForm, OrderDocumentForm
 from catalog.models import Product
+from accounts.models import User
 from accounts.utils import is_manager_or_admin
 from .services import enqueue_order_confirmation_email
 
@@ -192,14 +196,98 @@ def order_create(request):
 
 
 @login_required
+@login_required
 def order_list(request):
-    """Lista de pedidos del usuario"""
-    orders = Order.objects.filter(customer=request.user).order_by('-created_at')
+    """
+    Lista de pedidos según rol:
+    - Clientes: solo sus pedidos (tabla simple)
+    - Admin/Superadmin: vista agregada por cliente y mes
+    """
+    user = request.user
+    is_admin = is_manager_or_admin(user)
     
-    context = {
-        'orders': orders,
-    }
-    return render(request, 'orders/order_list.html', context)
+    # VISTA ADMIN: Agregación por cliente y mes
+    if is_admin:
+        # Obtener filtros (solo admins pueden filtrar)
+        client_id = request.GET.get('client_id')
+        month_filter = request.GET.get('month')  # Formato: YYYY-MM
+        year_filter = request.GET.get('year', str(timezone.now().year))
+        
+        # Si viene client_id y month, mostrar detalle de pedidos
+        if client_id and month_filter:
+            try:
+                year, month = map(int, month_filter.split('-'))
+                client = get_object_or_404(User, pk=client_id)
+                
+                # Filtrar pedidos del cliente en ese mes
+                orders = Order.objects.filter(
+                    customer=client,
+                    created_at__year=year,
+                    created_at__month=month
+                ).select_related('customer').order_by('-created_at')
+                
+                context = {
+                    'orders': orders,
+                    'is_manager': True,
+                    'client': client,
+                    'month': month_filter,
+                    'view_mode': 'detail',
+                }
+                return render(request, 'orders/order_list.html', context)
+                
+            except (ValueError, TypeError):
+                messages.error(request, _('Filtro de mes inválido.'))
+        
+        # Vista agregada por cliente y mes
+        queryset = Order.objects.all().select_related('customer')
+        
+        # Filtros opcionales
+        if client_id:
+            queryset = queryset.filter(customer_id=client_id)
+        
+        if year_filter:
+            try:
+                queryset = queryset.filter(created_at__year=int(year_filter))
+            except ValueError:
+                pass
+        
+        # Agrupar por cliente y mes
+        summary = queryset.annotate(
+            month=TruncMonth('created_at')
+        ).values(
+            'customer', 'customer__email', 'customer__full_name', 'month'
+        ).annotate(
+            total_orders=Count('id'),
+            delivered_count=Count('id', filter=Q(status=Order.STATUS_DELIVERED)),
+            pending_count=Count('id', filter=~Q(status=Order.STATUS_DELIVERED)),
+            total_amount_sum=Sum('total_amount')
+        ).order_by('-month', 'customer__email')
+        
+        # Obtener lista de clientes para filtro
+        clients = User.objects.filter(orders__isnull=False).distinct().order_by('email')
+        
+        # Rango de años disponibles
+        years = Order.objects.dates('created_at', 'year', order='DESC')
+        
+        context = {
+            'summary': summary,
+            'clients': clients,
+            'years': years,
+            'selected_client': client_id,
+            'selected_year': year_filter,
+            'view_mode': 'summary',
+        }
+        return render(request, 'orders/orders_admin_summary.html', context)
+    
+    # VISTA CLIENTE: Solo sus pedidos (vista actual)
+    else:
+        orders = Order.objects.filter(customer=user).order_by('-created_at')
+        
+        context = {
+            'orders': orders,
+            'is_manager': False,
+        }
+        return render(request, 'orders/order_list.html', context)
 
 
 @login_required

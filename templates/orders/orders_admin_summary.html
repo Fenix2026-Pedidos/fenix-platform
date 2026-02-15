@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Gestión de Pedidos" %}{% endblock %}
+{% block title %}{% trans "Gestión de Pedidos" %} - Fenix{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">{% trans "Gestión de Pedidos - Vista Agregada" %}</h1>
+    <p class="text-muted">{% trans "Resumen de pedidos agrupados por cliente y mes" %}</p>
+</div>
+
+<!-- Filtros -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" action="{% url 'orders:order_list' %}">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="client_id" class="form-label">{% trans "Cliente (opcional)" %}</label>
+                    <select name="client_id" id="client_id" class="form-select">
+                        <option value="">{% trans "Todos los clientes" %}</option>
+                        {% for client in clients %}
+                        <option value="{{ client.id }}" {% if selected_client == client.id|stringformat:"s" %}selected{% endif %}>
+                            {{ client.full_name|default:client.email }} ({{ client.email }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="year" class="form-label">{% trans "Año" %}</label>
+                    <select name="year" id="year" class="form-select">
+                        {% for year in years %}
+                        <option value="{{ year.year }}" {% if selected_year == year.year|stringformat:"s" %}selected{% endif %}>
+                            {{ year.year }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="bi bi-funnel"></i> {% trans "Filtrar" %}
+                    </button>
+                    <a href="{% url 'orders:order_list' %}" class="btn btn-outline">
+                        <i class="bi bi-x-circle"></i> {% trans "Limpiar" %}
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tabla Agregada -->
+{% if summary %}
+<div class="card">
+    <div class="table-wrapper">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>{% trans "Cliente" %}</th>
+                    <th>{% trans "Mes" %}</th>
+                    <th style="text-align: center;">{% trans "Nº Pedidos" %}</th>
+                    <th style="text-align: center;">{% trans "Entregados" %}</th>
+                    <th style="text-align: center;">{% trans "Pendientes" %}</th>
+                    <th style="text-align: right;">{% trans "Total €" %}</th>
+                    <th style="text-align: right;">{% trans "Acciones" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in summary %}
+                <tr>
+                    <td style="font-weight: 500;">
+                        {{ row.customer__full_name|default:row.customer__email }}
+                        <br>
+                        <small class="text-muted">ID: {{ row.customer }}</small>
+                    </td>
+                    <td style="font-weight: 600;">
+                        {{ row.month|date:"Y-m" }}
+                        <br>
+                        <small class="text-muted">{{ row.month|date:"F Y" }}</small>
+                    </td>
+                    <td style="text-align: center; font-weight: 600; color: var(--primary-600);">
+                        {{ row.total_orders }}
+                    </td>
+                    <td style="text-align: center;">
+                        <span class="badge bg-success">{{ row.delivered_count }}</span>
+                    </td>
+                    <td style="text-align: center;">
+                        <span class="badge bg-warning">{{ row.pending_count }}</span>
+                    </td>
+                    <td style="text-align: right; font-weight: 600; color: var(--success-600);">
+                        {{ row.total_amount_sum|floatformat:2 }} €
+                    </td>
+                    <td style="text-align: right;">
+                        <a href="{% url 'orders:order_list' %}?client_id={{ row.customer }}&month={{ row.month|date:"Y-m" }}" 
+                           class="btn btn-outline btn-sm">
+                            <i class="bi bi-list-ul"></i> {% trans "Ver detalle" %}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body" style="text-align: center; padding: 48px;">
+        <i class="bi bi-inbox" style="font-size: 48px; color: var(--gray-400); margin-bottom: 16px;"></i>
+        <p class="text-muted mb-3">{% trans "No hay pedidos que coincidan con los filtros." %}</p>
+    </div>
+</div>
+{% endif %}
+
+<style>
+    .form-select {
+        border: 1px solid var(--gray-300);
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+    
+    .form-select:focus {
+        border-color: var(--primary-500);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .form-label {
+        font-weight: 500;
+        color: var(--gray-700);
+        margin-bottom: 6px;
+        font-size: 14px;
+    }
+    
+    .badge {
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 13px;
+    }
+    
+    .badge.bg-success {
+        background-color: #10b981 !important;
+        color: white;
+    }
+    
+    .badge.bg-warning {
+        background-color: #f59e0b !important;
+        color: white;
+    }
+    
+    .table tbody tr:hover {
+        background-color: var(--gray-50);
+    }
+</style>
+{% endblock %}

@@ -37,15 +37,16 @@ class OrderEventInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'customer', 'status', 'total_amount', 'stock_deducted', 'created_at')
+    list_display = ('id', 'customer', 'status', 'total_amount', 'delivered_at', 'stock_deducted', 'created_at')
     list_filter = ('status', 'stock_deducted')
     search_fields = ('customer__email', 'customer__full_name')
-    readonly_fields = ('total_amount', 'stock_deducted', 'created_at', 'updated_at')
+    readonly_fields = ('total_amount', 'stock_deducted', 'delivered_at', 'created_at', 'updated_at')
     raw_id_fields = ('customer',)
     inlines = (OrderItemInline, OrderEventInline)
     fieldsets = (
         (None, {'fields': ('customer', 'status', 'total_amount', 'stock_deducted')}),
         ('ETA', {'fields': ('eta_start', 'eta_end')}),
+        ('Entrega', {'fields': ('delivered_at',)}),
         ('Auditoría', {'fields': ('created_at', 'updated_at')}),
     )
 

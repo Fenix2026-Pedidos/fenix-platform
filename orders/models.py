@@ -42,6 +42,12 @@ class Order(models.Model):
         help_text='True cuando el stock se ha descontado al pasar a Preparando',
         verbose_name=_('Stock Descontado')
     )
+    delivered_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_('Fecha de Entrega'),
+        help_text='Fecha y hora en que el pedido fue entregado (auto-set cuando status=DELIVERED)'
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Fecha Creación'))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Última Actualización'))
 

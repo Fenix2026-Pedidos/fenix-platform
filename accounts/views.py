@@ -27,12 +27,26 @@ def dashboard_view(request):
     """Vista principal del Dashboard/Inicio de Fénix"""
     from orders.models import Order
     from notifications.models import Notification
+    from datetime import datetime
     
     user = request.user
     
+    # Calcular límites del mes en curso
+    now = timezone.now()
+    month_start = datetime(now.year, now.month, 1, 0, 0, 0, tzinfo=now.tzinfo)
+    
     # Mis Pedidos (Order usa 'customer' no 'user')
-    active_orders = Order.objects.filter(customer=user, status__in=['pending', 'processing']).count()
-    pending_orders = Order.objects.filter(customer=user, status='pending').count()
+    # "Pedidos en mes en curso" = pedidos entregados con delivered_at dentro del mes en curso
+    delivered_this_month_count = Order.objects.filter(
+        customer=user,
+        status=Order.STATUS_DELIVERED,
+        delivered_at__gte=month_start,
+        delivered_at__lte=now
+    ).count()
+    
+    # "Pendientes" = pedidos no entregados (cualquier estado excepto DELIVERED)
+    pending_orders = Order.objects.filter(customer=user).exclude(status=Order.STATUS_DELIVERED).count()
+    
     last_order = Order.objects.filter(customer=user).order_by('-created_at').first()
     
     # Acciones Pendientes (notificaciones sin leer)
@@ -54,7 +68,7 @@ def dashboard_view(request):
     }
     
     context = {
-        'active_orders_count': active_orders,
+        'delivered_this_month_count': delivered_this_month_count,
         'pending_orders_count': pending_orders,
         'last_order': last_order,
         'pending_actions_count': pending_actions,

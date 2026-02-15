@@ -73,5 +73,11 @@ def on_order_saved(sender, instance: Order, created, **kwargs):
             Order.objects.filter(pk=instance.pk).update(stock_deducted=True)
             logger.info('Stock descontado por pedido %s: %s', instance.pk, updated_products)
 
-    # 2. Notificaciones por email
+    # 2. Auto-set delivered_at cuando el estado cambia a DELIVERED
+    if instance.status == Order.STATUS_DELIVERED and not instance.delivered_at:
+        from django.utils import timezone
+        Order.objects.filter(pk=instance.pk).update(delivered_at=timezone.now())
+        logger.info('delivered_at auto-set para pedido %s', instance.pk)
+
+    # 3. Notificaciones por email
     _emit_order_notifications(instance, created)
