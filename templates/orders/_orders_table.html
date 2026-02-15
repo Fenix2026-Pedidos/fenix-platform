@@ -67,35 +67,33 @@
         </div>
 
         <!-- Active Filters Chips -->
-        {% if selected_month or selected_year as has_filters %}
-            {% if has_filters %}
-            <div class="filter-chips">
-                <span class="chips-label">{% trans "Filtros activos:" %}</span>
-                <div class="chips-container">
-                    {% if selected_month %}
+        {% if selected_month or selected_year %}
+        <div class="filter-chips">
+            <span class="chips-label">{% trans "Filtros activos:" %}</span>
+            <div class="chips-container">
+                {% if selected_month %}
                         {% for m in months_available %}
                             {% if m.value == selected_month %}
                             <div class="chip">
                                 <span class="chip-label">{{ m.label }}</span>
-                                <a href="?{% query_string_without 'month' %}" class="chip-remove" aria-label="{% trans 'Remover filtro de mes' %}">
+                                <a href="?{% query_string_without request 'month' %}" class="chip-remove" aria-label="{% trans 'Remover filtro de mes' %}">
                                     <i class="bi bi-x"></i>
                                 </a>
                             </div>
                             {% endif %}
                         {% endfor %}
-                    {% endif %}
-                    
-                    {% if selected_year %}
-                    <div class="chip">
-                        <span class="chip-label">{% trans "Año" %}: {{ selected_year }}</span>
-                        <a href="?{% query_string_without 'year' %}" class="chip-remove" aria-label="{% trans 'Remover filtro de año' %}">
-                            <i class="bi bi-x"></i>
-                        </a>
-                    </div>
-                    {% endif %}
+                {% endif %}
+                
+                {% if selected_year %}
+                <div class="chip">
+                    <span class="chip-label">{% trans "Año" %}: {{ selected_year }}</span>
+                    <a href="?{% query_string_without request 'year' %}" class="chip-remove" aria-label="{% trans 'Remover filtro de año' %}">
+                        <i class="bi bi-x"></i>
+                    </a>
                 </div>
+                {% endif %}
             </div>
-            {% endif %}
+        </div>
         {% endif %}
     </form>
 </div>
