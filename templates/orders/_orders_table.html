@@ -66,12 +66,12 @@
             </div>
         </div>
 
-        <!-- Active Filters Chips -->
-        {% if selected_month or selected_year %}
+        <!-- Active Filters Chips (solo mostrar si hay filtros explícitos aplicados) -->
+        {% if request.GET.month or request.GET.year %}
         <div class="filter-chips">
             <span class="chips-label">{% trans "Filtros activos:" %}</span>
             <div class="chips-container">
-                {% if selected_month %}
+                {% if request.GET.month %}
                         {% for m in months_available %}
                             {% if m.value == selected_month %}
                             <div class="chip">
@@ -84,7 +84,7 @@
                         {% endfor %}
                 {% endif %}
                 
-                {% if selected_year %}
+                {% if request.GET.year %}
                 <div class="chip">
                     <span class="chip-label">{% trans "Año" %}: {{ selected_year }}</span>
                     <a href="?{% query_string_without request 'year' %}" class="chip-remove" aria-label="{% trans 'Remover filtro de año' %}">
