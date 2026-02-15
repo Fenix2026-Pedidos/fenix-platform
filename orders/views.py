@@ -488,17 +488,30 @@ def order_detail(request, pk):
     """
     if is_manager_or_admin(request.user):
         # Managers y Super Admin pueden ver cualquier pedido
-        order = get_object_or_404(Order, pk=pk)
+        order = get_object_or_404(Order.objects.select_related('customer'), pk=pk)
     else:
         # Clientes solo pueden ver sus propios pedidos
-        order = get_object_or_404(Order, pk=pk, customer=request.user)
+        order = get_object_or_404(Order.objects.select_related('customer'), pk=pk, customer=request.user)
+    
+    # Obtener items del pedido con información del producto
+    items = order.items.select_related('product').all()
     
     # Obtener documentos del pedido
     documents = order.documents.all()
     
+    # Información del cliente
+    customer = order.customer
+    
+    # Calcular subtotal (en caso de que haya gastos de envío en el futuro)
+    subtotal = sum(item.line_total for item in items)
+    shipping_cost = 0  # TODO: Implementar gastos de envío si es necesario
+    
     context = {
         'order': order,
-        'items': order.items.all(),
+        'items': items,
+        'customer': customer,
+        'subtotal': subtotal,
+        'shipping_cost': shipping_cost,
         'events': order.events.all(),
         'documents': documents,
         'is_manager': is_manager_or_admin(request.user),
