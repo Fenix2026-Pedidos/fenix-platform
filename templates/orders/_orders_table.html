@@ -122,11 +122,11 @@
                 <tr>
                     {% if is_admin_view %}
                     <th class="col-cliente">{% trans "Cliente" %}</th>
-                    <th class="col-ciudad">{% trans "Ciudad" %}</th>
+                    <th class="col-ciudad" style="text-align: center;">{% trans "Ciudad" %}</th>
                     {% endif %}
-                    <th class="col-id">{% trans "ID (Nº Pedido)" %}</th>
-                    <th class="col-fecha">{% trans "Fecha" %}</th>
-                    <th class="col-estado">{% trans "Estado" %}</th>
+                    <th class="col-id" style="text-align: center;">{% trans "ID (Nº Pedido)" %}</th>
+                    <th class="col-fecha" style="text-align: center;">{% trans "Fecha" %}</th>
+                    <th class="col-estado" style="text-align: center;">{% trans "Estado" %}</th>
                     <th class="col-total" style="text-align: center;">{% trans "Total" %}</th>
                     <th class="col-acciones" style="text-align: right;">{% trans "Acciones" %}</th>
                 </tr>
@@ -612,18 +612,22 @@
 
     .col-id {
         min-width: 80px;
+        text-align: center;
     }
 
     .col-ciudad {
         min-width: 120px;
+        text-align: center;
     }
 
     .col-fecha {
         min-width: 150px;
+        text-align: center;
     }
 
     .col-estado {
         min-width: 130px;
+        text-align: center;
     }
 
     .col-total {
