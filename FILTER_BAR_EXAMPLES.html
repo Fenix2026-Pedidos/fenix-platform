@@ -1,0 +1,400 @@
+<!-- 
+================================================================================
+MODERN FILTER BAR - EJEMPLOS DE IMPLEMENTACIÓN
+Rediseño compacto tipo SaaS Dashboard para "Gestión de Pedidos General"
+================================================================================
+-->
+
+<!-- 
+ESCENARIO 1: SIN FILTROS APLICADOS
+Altura: ~64px
+Muestra solo la barra de filtros + summary
+═══════════════════════════════════════════════════════════════════════════
+-->
+
+<div class="filter-bar">
+    <form method="get" action="/orders/" class="filter-form" id="orders-filter-form">
+        <div class="filter-bar-header">
+            <div class="filter-bar-title">
+                <i class="bi bi-funnel"></i>
+                Filtros
+            </div>
+            
+            <div class="filter-controls">
+                <select name="month" id="month" class="filter-input">
+                    <option value="">Todos los meses</option>
+                    <option value="2026-02">Febrero 2026</option>
+                    <option value="2026-01">Enero 2026</option>
+                </select>
+
+                <select name="year" id="year" class="filter-input">
+                    <option value="2026" selected>2026</option>
+                    <option value="2025">2025</option>
+                </select>
+
+                <select name="per_page" id="per_page" class="filter-input per-page-select">
+                    <option value="10" selected>10 / página</option>
+                    <option value="25">25 / página</option>
+                    <option value="50">50 / página</option>
+                </select>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn-primary-filter">
+                        <i class="bi bi-check2"></i>
+                        <span class="btn-text">Filtrar</span>
+                    </button>
+                    <a href="/orders/" class="btn-ghost-filter">
+                        <i class="bi bi-x-circle"></i>
+                        <span class="btn-text">Limpiar</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="summary-bar">
+    <div class="summary-stats">
+        <span class="stat-item">
+            <i class="bi bi-calendar2-check"></i>
+            <span class="stat-label">Todos</span>
+        </span>
+        <span class="stat-divider">•</span>
+        <span class="stat-item">
+            <i class="bi bi-list-ul"></i>
+            <span class="stat-value">42 pedidos</span>
+        </span>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<!-- 
+ESCENARIO 2: CON FILTROS APLICADOS
+Altura: ~120px (64px filter-bar + 56px chips)
+Muestra filtros + chips activos removibles
+═══════════════════════════════════════════════════════════════════════════
+-->
+
+<div class="filter-bar">
+    <form method="get" action="/orders/" class="filter-form" id="orders-filter-form">
+        <div class="filter-bar-header">
+            <div class="filter-bar-title">
+                <i class="bi bi-funnel"></i>
+                Filtros
+            </div>
+            
+            <div class="filter-controls">
+                <select name="month" id="month" class="filter-input">
+                    <option value="">Todos los meses</option>
+                    <option value="2026-02" selected>Febrero 2026</option>
+                    <option value="2026-01">Enero 2026</option>
+                </select>
+
+                <select name="year" id="year" class="filter-input">
+                    <option value="2026" selected>2026</option>
+                    <option value="2025">2025</option>
+                </select>
+
+                <select name="per_page" id="per_page" class="filter-input per-page-select">
+                    <option value="10" selected>10 / página</option>
+                    <option value="25">25 / página</option>
+                    <option value="50">50 / página</option>
+                </select>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn-primary-filter">
+                        <i class="bi bi-check2"></i>
+                        <span class="btn-text">Filtrar</span>
+                    </button>
+                    <a href="/orders/" class="btn-ghost-filter">
+                        <i class="bi bi-x-circle"></i>
+                        <span class="btn-text">Limpiar</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chips de filtros activos (aparecen con animación) -->
+        <div class="filter-chips">
+            <span class="chips-label">Filtros activos:</span>
+            <div class="chips-container">
+                <div class="chip">
+                    <span class="chip-label">Febrero 2026</span>
+                    <a href="?year=2026" class="chip-remove" aria-label="Remover filtro de mes">
+                        <i class="bi bi-x"></i>
+                    </a>
+                </div>
+                
+                <div class="chip">
+                    <span class="chip-label">Año: 2026</span>
+                    <a href="?month=2026-02" class="chip-remove" aria-label="Remover filtro de año">
+                        <i class="bi bi-x"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="summary-bar">
+    <div class="summary-stats">
+        <span class="stat-item">
+            <i class="bi bi-calendar2-check"></i>
+            <span class="stat-label">Febrero 2026</span>
+        </span>
+        <span class="stat-divider">•</span>
+        <span class="stat-item">
+            <i class="bi bi-list-ul"></i>
+            <span class="stat-value">8 pedidos</span>
+        </span>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<!-- 
+COMPONENTES INDIVIDUALES Y CLASES CSS DISPONIBLES
+═══════════════════════════════════════════════════════════════════════════
+-->
+
+<!-- Filter Input (Select) con estilos -->
+<select class="filter-input">
+    <option>Clase: filter-input</option>
+    <option>Estilos: padding 8px, border-radius 6px, hover/focus incluidos</option>
+</select>
+
+<!-- Primary Button -->
+<button type="submit" class="btn-primary-filter">
+    <i class="bi bi-check2"></i>
+    <span class="btn-text">Filtrar</span>
+</button>
+<!-- 
+    - Fondo: #2563eb (azul)
+    - Hover: #1d4ed8 (azul oscuro)
+    - Sombra suave en hover
+    - Responsive: en mobile se muestra solo el icono
+-->
+
+<!-- Ghost Button -->
+<a href="#" class="btn-ghost-filter">
+    <i class="bi bi-x-circle"></i>
+    <span class="btn-text">Limpiar</span>
+</a>
+<!-- 
+    - Fondo: white con borde gris
+    - Hover: gris claro
+    - Sin sombra
+    - Responsive: en mobile se muestra solo el icono
+-->
+
+<!-- Chip (Filtro activo) -->
+<div class="chip">
+    <span class="chip-label">Febrero 2026</span>
+    <a href="#" class="chip-remove">
+        <i class="bi bi-x"></i>
+    </a>
+</div>
+<!-- 
+    - Fondo: white con borde gris
+    - Hover: gris claro con icono rojo
+    - Animated con slideDown al aparecer
+    - Click en X-icono permite remover el filtro manteniendo otros
+-->
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<!-- 
+ATRIBUTOS Y VARIABLES DJANGO DISPONIBLES EN CONTEXTO
+═══════════════════════════════════════════════════════════════════════════
+-->
+
+<!--
+selected_month       = String     # "2026-02" o vacío
+selected_year        = String     # "2026"
+per_page             = Integer    # 10, 25 o 50
+month_label          = String     # "Febrero 2026" o "Todos"
+total_count          = Integer    # Total de pedidos en el filtro
+months_available     = List       # [{'value': '2026-02', 'label': 'Febrero 2026'}, ...]
+years_available      = List       # ['2026', '2025', '2024']
+is_admin_view        = Boolean    # True si es admin, False si es usuario
+selected_client      = Integer    # ID del cliente (solo admins)
+-->
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<!-- 
+CÁLCULO DE QUERYSTRING DINÁMICO CON TEMPLATE FILTER
+═══════════════════════════════════════════════════════════════════════════
+-->
+
+<!--
+Template Filter Django:
+  {% query_string_without 'month' %}
+  
+Retorna: 'year=2026&per_page=10' (sin el parámetro month)
+
+Caso de uso en chip-remove:
+  <a href="?{% query_string_without 'month' %}" class="chip-remove">
+  
+Resultado completo:
+  href="?year=2026&per_page=10"
+-->
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<!-- 
+BREAKPOINTS RESPONSIVE
+═══════════════════════════════════════════════════════════════════════════
+-->
+
+<!--
+DESKTOP (>1024px):
+- Filter bar horizontal en una línea
+- Título + Selects + Botones alineados
+- Altura: ~72px
+- Todos los labels y text visibles
+
+TABLET (768px - 1024px):
+- Algunos selects pueden comenzar a empilarse
+- Botones en línea pero comprimidos
+- Altura: ~90px aprox
+
+MOBILE (<768px):
+- Selects 100% ancho
+- Botones apilados o lado a lado comprimido
+- Sin labels (solo icons en buttons)
+- Altura: ~120-160px
+- Chips se deslizan hacia la línea 2
+
+MOBILE PEQUEÑO (<480px):
+- Selects muy comprimidos
+- Chips truncados con ellipsis
+- Altura: ~140-180px
+-->
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<!-- 
+ANIMACIONES DISPONIBLES
+═══════════════════════════════════════════════════════════════════════════
+-->
+
+<!--
+@keyframes slideDown:
+- Entrada de chips con animación suave
+- Duración: 0.3s
+- Efecto: Fade + Slide hacia abajo
+
+Hover Effects:
+- Filtros: cambio de color de borde y fondo
+- Botones: cambio de background y sombra
+- Chips: background gris claro, X icono rojo
+- Transiciones: todas 0.2s ease
+-->
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<!-- 
+EJEMPLO COMPLETO CON CONTEXTO DJANGO
+═══════════════════════════════════════════════════════════════════════════
+-->
+
+{% load i18n orders_filters %}
+
+<div class="filter-bar">
+    <form method="get" action="{% url 'orders:order_list' %}" class="filter-form" id="orders-filter-form">
+        <div class="filter-bar-header">
+            <div class="filter-bar-title">
+                <i class="bi bi-funnel"></i>
+                {% trans "Filtros" %}
+            </div>
+            
+            <div class="filter-controls">
+                <select name="month" id="month" class="filter-input">
+                    <option value="">{% trans "Todos los meses" %}</option>
+                    {% for m in months_available %}
+                    <option value="{{ m.value }}" {% if selected_month == m.value %}selected{% endif %}>
+                        {{ m.label }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <select name="year" id="year" class="filter-input">
+                    {% for y in years_available %}
+                    <option value="{{ y }}" {% if selected_year|stringformat:"s" == y|stringformat:"s" %}selected{% endif %}>
+                        {{ y }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <select name="per_page" id="per_page" class="filter-input per-page-select">
+                    <option value="10" {% if per_page == 10 %}selected{% endif %}>10 / {% trans "página" %}</option>
+                    <option value="25" {% if per_page == 25 %}selected{% endif %}>25 / {% trans "página" %}</option>
+                    <option value="50" {% if per_page == 50 %}selected{% endif %}>50 / {% trans "página" %}</option>
+                </select>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn-primary-filter">
+                        <i class="bi bi-check2"></i>
+                        <span class="btn-text">{% trans "Filtrar" %}</span>
+                    </button>
+                    <a href="{% url 'orders:order_list' %}" class="btn-ghost-filter">
+                        <i class="bi bi-x-circle"></i>
+                        <span class="btn-text">{% trans "Limpiar" %}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chips de filtros activos -->
+        {% if selected_month or selected_year %}
+            <div class="filter-chips">
+                <span class="chips-label">{% trans "Filtros activos:" %}</span>
+                <div class="chips-container">
+                    {% if selected_month %}
+                        {% for m in months_available %}
+                            {% if m.value == selected_month %}
+                            <div class="chip">
+                                <span class="chip-label">{{ m.label }}</span>
+                                <a href="?{% query_string_without request 'month' %}" class="chip-remove">
+                                    <i class="bi bi-x"></i>
+                                </a>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    
+                    {% if selected_year %}
+                    <div class="chip">
+                        <span class="chip-label">{% trans "Año" %}: {{ selected_year }}</span>
+                        <a href="?{% query_string_without request 'year' %}" class="chip-remove">
+                            <i class="bi bi-x"></i>
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </form>
+</div>
+
+<div class="summary-bar">
+    <div class="summary-stats">
+        <span class="stat-item">
+            <i class="bi bi-calendar2-check"></i>
+            <span class="stat-label">{{ month_label|default:_("Todos") }}</span>
+        </span>
+        <span class="stat-divider">•</span>
+        <span class="stat-item">
+            <i class="bi bi-list-ul"></i>
+            <span class="stat-value">{{ total_count }} 
+                {% if total_count == 1 %}
+                    {% trans "pedido" %}
+                {% else %}
+                    {% trans "pedidos" %}
+                {% endif %}
+            </span>
+        </span>
+    </div>
+</div>
