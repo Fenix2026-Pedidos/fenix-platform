@@ -81,17 +81,17 @@ def get_status_color(status):
 
 
 @register.simple_tag
-def get_status_bg_color(status):
+def query_string_without(request, *args):
     """
-    Retorna el color de fondo HEX para el estado
-    Uso: style="background-color: {% get_status_bg_color order.status %}"
+    Retorna el querystring actual sin los parámetros especificados.
+    Uso: {% query_string_without 'month' 'year' %}
     """
-    color_map = {
-        'new': '#dbeafe',  # Light blue
-        'confirmed': '#e0e7ff',  # Light indigo
-        'preparing': '#fef3c7',  # Light amber
-        'out_for_delivery': '#fed7aa',  # Light orange
-        'delivered': '#dcfce7',  # Light green
-        'cancelled': '#fee2e2',  # Light red
-    }
-    return color_map.get(status, '#dbeafe')
+    from urllib.parse import urlencode
+    
+    query_dict = request.GET.copy()
+    for param in args:
+        query_dict.pop(param, None)
+    
+    if query_dict:
+        return urlencode(query_dict)
+    return ''
