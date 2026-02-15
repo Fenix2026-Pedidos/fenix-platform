@@ -6,16 +6,16 @@
 
 {% block content %}
 <div class="page-header">
-    <h1 class="page-title">{% trans "Gestión de Pedidos - Vista Agregada" %}</h1>
-    <p class="text-muted">{% trans "Resumen de pedidos agrupados por cliente y mes" %}</p>
+    <h1 class="page-title">{% trans "Gestión de Pedidos General" %}</h1>
+    <p class="text-muted">{% trans "Resumen de pedidos por cliente" %}</p>
 </div>
 
 <!-- Filtros -->
 <div class="card mb-4">
     <div class="card-body">
         <form method="get" action="{% url 'orders:order_list' %}">
-            <div class="row g-3">
-                <div class="col-md-4">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-5">
                     <label for="client_id" class="form-label">{% trans "Empresa / Cliente (opcional)" %}</label>
                     <select name="client_id" id="client_id" class="form-select">
                         <option value="">{% trans "Todos los clientes" %}</option>
@@ -27,7 +27,7 @@
                     </select>
                 </div>
                 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label for="year" class="form-label">{% trans "Año" %}</label>
                     <select name="year" id="year" class="form-select">
                         {% for year in years %}
@@ -38,7 +38,7 @@
                     </select>
                 </div>
                 
-                <div class="col-md-4 d-flex align-items-end">
+                <div class="col-md-4">
                     <button type="submit" class="btn btn-primary me-2">
                         <i class="bi bi-funnel"></i> {% trans "Filtrar" %}
                     </button>

@@ -261,7 +261,20 @@ def order_list(request):
             delivered_count=Count('id', filter=Q(status=Order.STATUS_DELIVERED)),
             pending_count=Count('id', filter=~Q(status=Order.STATUS_DELIVERED)),
             total_amount_sum=Sum('total_amount')
-        ).order_by('-month', 'customer__company', 'customer__email')
+        ).order_by('customer', '-month')  # Ordenar por customer, luego por mes desc
+        
+        # Filtrar solo el último mes por cliente
+        summary_list = list(summary)
+        seen_customers = set()
+        summary_filtered = []
+        
+        for row in summary_list:
+            customer_id = row['customer']
+            if customer_id not in seen_customers:
+                summary_filtered.append(row)
+                seen_customers.add(customer_id)
+        
+        summary = summary_filtered
         
         # Obtener lista de clientes para filtro
         clients = User.objects.filter(orders__isnull=False).distinct().order_by('email')
