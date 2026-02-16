@@ -99,13 +99,13 @@
                         <th class="col-checkbox">
                             <input type="checkbox" class="checkbox-all" onchange="toggleSelectAll(this)">
                         </th>
-                        <th class="col-user">{% trans "Usuario" %}</th>
-                        <th class="col-empresa">{% trans "Empresa" %}</th>
-                        <th class="col-email">{% trans "Email" %}</th>
-                        <th class="col-fecha">{% trans "Fecha de Solicitud" %}</th>
-                        <th class="col-estado">{% trans "Estado" %}</th>
-                        <th class="col-procesado">{% trans "Procesado por" %}</th>
-                        <th class="col-actions">{% trans "Acciones" %}</th>
+                        <th class="col-user" style="text-align: left;">{% trans "Usuario" %}</th>
+                        <th class="col-empresa" style="text-align: center;">{% trans "Empresa" %}</th>
+                        <th class="col-email" style="text-align: center;">{% trans "Correo electrónico" %}</th>
+                        <th class="col-fecha" style="text-align: center;">{% trans "Fecha de Solicitud" %}</th>
+                        <th class="col-estado" style="text-align: center;">{% trans "Estado" %}</th>
+                        <th class="col-procesado" style="text-align: center;">{% trans "Procesado por" %}</th>
+                        <th class="col-actions" style="text-align: right;">{% trans "Acciones" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -114,20 +114,23 @@
                         <td class="col-checkbox">
                             <input type="checkbox" class="row-checkbox" value="{{ user.id }}">
                         </td>
-                        <td class="col-user">
-                            <div class="user-info">
-                                <strong>{{ user.get_full_name|default:user.email }}</strong>
-                                <span class="user-role">{{ user.get_role_display }}</span>
-                            </div>
+                        <td class="col-user" style="text-align: left;">
+                            {% if user.first_name and user.last_name %}
+                                <strong>{{ user.first_name }} {{ user.last_name }}</strong>
+                            {% elif user.full_name %}
+                                <strong>{{ user.full_name }}</strong>
+                            {% else %}
+                                <span style="color: #9CA3AF; font-style: italic;">{% trans "Usuario sin nombre" %}</span>
+                            {% endif %}
                         </td>
-                        <td class="col-empresa">{{ user.company|default:"—" }}</td>
-                        <td class="col-email">
-                            <span class="email-text" title="{{ user.email }}">{{ user.email }}</span>
+                        <td class="col-empresa" style="text-align: center;">{{ user.company|default:"—" }}</td>
+                        <td class="col-email" style="text-align: center;">
+                            <span class="email-text" title="{{ user.email }}" style="font-size: 12px;">{{ user.email }}</span>
                         </td>
-                        <td class="col-fecha">
+                        <td class="col-fecha" style="text-align: center;">
                             <span class="fecha-badge">{{ user.date_joined|date:"d/m/Y H:i" }}</span>
                         </td>
-                        <td class="col-estado">
+                        <td class="col-estado" style="text-align: center;">
                             {% if user.status == 'active' %}
                                 <span class="badge badge-success">{% trans "Activo" %}</span>
                             {% elif user.status == 'disabled' %}
@@ -138,14 +141,14 @@
                                 <span class="badge badge-secondary">{{ user.get_status_display }}</span>
                             {% endif %}
                         </td>
-                        <td class="col-procesado">
+                        <td class="col-procesado" style="text-align: center;">
                             {% if user.approved_by %}
-                                {{ user.approved_by.get_full_name|default:user.approved_by.email }}
+                                <span class="badge badge-secondary">{{ user.approved_by.get_role_display }}</span>
                             {% else %}
                                 <span class="text-muted">—</span>
                             {% endif %}
                         </td>
-                        <td class="col-actions">
+                        <td class="col-actions" style="text-align: right;">
                             <div class="actions-menu">
                                 <button
                                     class="btn-kebab"
@@ -265,12 +268,12 @@
                         <th class="col-checkbox">
                             <input type="checkbox" class="checkbox-all" onchange="toggleSelectAll(this)">
                         </th>
-                        <th class="col-user">{% trans "Usuario" %}</th>
-                        <th class="col-empresa">{% trans "Empresa" %}</th>
-                        <th class="col-email">{% trans "Email" %}</th>
-                        <th class="col-fecha">{% trans "Fecha de Solicitud" %}</th>
-                        <th class="col-estado">{% trans "Estado" %}</th>
-                        <th class="col-actions">{% trans "Acciones" %}</th>
+                        <th class="col-user" style="text-align: left;">{% trans "Usuario" %}</th>
+                        <th class="col-empresa" style="text-align: center;">{% trans "Empresa" %}</th>
+                        <th class="col-email" style="text-align: center;">{% trans "Correo electrónico" %}</th>
+                        <th class="col-fecha" style="text-align: center;">{% trans "Fecha de Solicitud" %}</th>
+                        <th class="col-estado" style="text-align: center;">{% trans "Estado" %}</th>
+                        <th class="col-actions" style="text-align: right;">{% trans "Acciones" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -279,19 +282,23 @@
                         <td class="col-checkbox">
                             <input type="checkbox" class="row-checkbox" value="{{ user.id }}">
                         </td>
-                        <td class="col-user">
-                            <div class="user-info">
-                                <strong>{{ user.get_full_name|default:user.email }}</strong>
-                            </div>
+                        <td class="col-user" style="text-align: left;">
+                            {% if user.first_name and user.last_name %}
+                                <strong>{{ user.first_name }} {{ user.last_name }}</strong>
+                            {% elif user.full_name %}
+                                <strong>{{ user.full_name }}</strong>
+                            {% else %}
+                                <span style="color: #9CA3AF; font-style: italic;">{% trans "Usuario sin nombre" %}</span>
+                            {% endif %}
                         </td>
-                        <td class="col-empresa">{{ user.company|default:"—" }}</td>
-                        <td class="col-email">
-                            <span class="email-text" title="{{ user.email }}">{{ user.email }}</span>
+                        <td class="col-empresa" style="text-align: center;">{{ user.company|default:"—" }}</td>
+                        <td class="col-email" style="text-align: center;">
+                            <span class="email-text" title="{{ user.email }}" style="font-size: 12px;">{{ user.email }}</span>
                         </td>
-                        <td class="col-fecha">
+                        <td class="col-fecha" style="text-align: center;">
                             <span class="fecha-badge">{{ user.date_joined|date:"d/m/Y H:i" }}</span>
                         </td>
-                        <td class="col-estado">
+                        <td class="col-estado" style="text-align: center;">
                             {% if user.status == 'active' %}
                                 <span class="badge badge-success">{% trans "Activo" %}</span>
                             {% elif user.status == 'rejected' %}
