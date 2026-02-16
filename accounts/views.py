@@ -441,12 +441,22 @@ def user_update_view(request, user_id):
     user_to_update.company = company
     if role:
         user_to_update.role = role
+    
+    # Manejar cambio de status
     if status:
+        old_status = user_to_update.status
         user_to_update.status = status
+        
         # Sincronizar is_active con status
         user_to_update.is_active = (status == User.STATUS_ACTIVE)
         # Sincronizar pending_approval con status
         user_to_update.pending_approval = (status == User.STATUS_PENDING)
+        
+        # Si se cambia a ACTIVE (aprobación), registrar quién aprobó
+        if status == User.STATUS_ACTIVE and old_status != User.STATUS_ACTIVE:
+            if not user_to_update.approved_by:  # Solo si no tiene aprobador previo
+                user_to_update.approved_by = request.user
+                user_to_update.approved_at = timezone.now()
     
     user_to_update.email_verified = email_verified
     
