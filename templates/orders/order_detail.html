@@ -45,8 +45,8 @@
         <h5 class="card-title" style="margin: 0;">{% trans "Información del Pedido" %}</h5>
     </div>
     <div class="card-body" style="padding: 24px;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
-            <!-- COLUMNA IZQUIERDA: Cliente y Entrega -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px;">
+            <!-- COLUMNA 1: Información del Cliente -->
             <div>
                 <h6 style="font-size: 12px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; font-weight: 600;">
                     {% trans "INFORMACIÓN DEL CLIENTE" %}
@@ -103,52 +103,9 @@
                     </div>
                     {% endif %}
                 </dl>
-                
-                <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--gray-200);">
-                    <h6 style="font-size: 12px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; font-weight: 600;">
-                        {% trans "DIRECCIÓN DE ENTREGA" %}
-                    </h6>
-                    <dl style="display: grid; gap: 12px; margin: 0;">
-                        {% if customer.ciudad %}
-                        <div>
-                            <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                                {% trans "Ciudad" %}
-                            </dt>
-                            <dd style="margin: 0;">{{ customer.ciudad }}</dd>
-                        </div>
-                        {% endif %}
-                        
-                        {% if customer.direccion_entrega %}
-                        <div>
-                            <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                                {% trans "Dirección" %}
-                            </dt>
-                            <dd style="margin: 0;">{{ customer.direccion_entrega }}</dd>
-                        </div>
-                        {% elif customer.direccion_local %}
-                        <div>
-                            <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                                {% trans "Dirección" %}
-                            </dt>
-                            <dd style="margin: 0;">{{ customer.direccion_local }}</dd>
-                        </div>
-                        {% endif %}
-                        
-                        {% if order.eta_start and order.eta_end %}
-                        <div>
-                            <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                                {% trans "Ventana de Entrega" %}
-                            </dt>
-                            <dd style="margin: 0;">
-                                {{ order.eta_start|date:"d/m/Y H:i" }} - {{ order.eta_end|date:"H:i" }}
-                            </dd>
-                        </div>
-                        {% endif %}
-                    </dl>
-                </div>
             </div>
-            
-            <!-- COLUMNA DERECHA: Datos del Pedido -->
+
+            <!-- COLUMNA 2: Datos del Pedido -->
             <div>
                 <h6 style="font-size: 12px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; font-weight: 600;">
                     {% trans "DATOS DEL PEDIDO" %}
@@ -193,6 +150,50 @@
                             </span>
                         </dd>
                     </div>
+                </dl>
+            </div>
+
+            <!-- COLUMNA 3: Dirección de Entrega -->
+            <div>
+                <h6 style="font-size: 12px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; font-weight: 600;">
+                    {% trans "DIRECCIÓN DE ENTREGA" %}
+                </h6>
+                <dl style="display: grid; gap: 12px; margin: 0;">
+                    {% if customer.ciudad %}
+                    <div>
+                        <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                            {% trans "Ciudad" %}
+                        </dt>
+                        <dd style="margin: 0;">{{ customer.ciudad }}</dd>
+                    </div>
+                    {% endif %}
+                    
+                    {% if customer.direccion_entrega %}
+                    <div>
+                        <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                            {% trans "Dirección" %}
+                        </dt>
+                        <dd style="margin: 0;">{{ customer.direccion_entrega }}</dd>
+                    </div>
+                    {% elif customer.direccion_local %}
+                    <div>
+                        <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                            {% trans "Dirección" %}
+                        </dt>
+                        <dd style="margin: 0;">{{ customer.direccion_local }}</dd>
+                    </div>
+                    {% endif %}
+                    
+                    {% if order.eta_start and order.eta_end %}
+                    <div>
+                        <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                            {% trans "Ventana de Entrega" %}
+                        </dt>
+                        <dd style="margin: 0;">
+                            {{ order.eta_start|date:"d/m/Y H:i" }} - {{ order.eta_end|date:"H:i" }}
+                        </dd>
+                    </div>
+                    {% endif %}
                 </dl>
             </div>
         </div>
@@ -303,6 +304,13 @@
     @media print {
         /* Ocultar elementos que no deben imprimirse */
         .no-print,
+        .topbar,
+        .topbar-left,
+        .topbar-right,
+        .topbar-actions,
+        .global-search-wrapper,
+        .language-selector-form,
+        .topbar-cart-btn,
         nav,
         .btn,
         button,
@@ -320,6 +328,13 @@
         
         body {
             background: white !important;
+        }
+
+        .main-content,
+        .content-wrapper {
+            padding: 0 !important;
+            margin: 0 !important;
+            max-width: 100% !important;
         }
         
         /* Asegurar que las cards no tengan sombra */

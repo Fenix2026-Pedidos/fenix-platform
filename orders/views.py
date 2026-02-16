@@ -494,7 +494,7 @@ def order_detail(request, pk):
         order = get_object_or_404(Order.objects.select_related('customer'), pk=pk, customer=request.user)
     
     # Obtener items del pedido con información del producto
-    items = order.items.select_related('product').all()
+    items = OrderItem.objects.filter(order=order).select_related('product')
     
     # Obtener documentos del pedido
     documents = order.documents.all()
