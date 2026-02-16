@@ -387,6 +387,9 @@ def user_update_view(request, user_id):
         messages.error(request, _('No tienes permiso para editar este usuario.'))
         return redirect('accounts:user_approval_dashboard')
     
+    # PROTECCIÓN CRÍTICA: Evitar que Super Admin se desactive a sí mismo
+    is_self_edit = (request.user.id == user_to_update.id)
+    
     # Obtener datos del formulario
     # Soportar tanto first_name/last_name (nuevo formulario admin) como full_name (legacy)
     first_name = request.POST.get('first_name', '').strip()
@@ -445,6 +448,17 @@ def user_update_view(request, user_id):
     # Manejar cambio de status
     if status:
         old_status = user_to_update.status
+        
+        # PROTECCIÓN CRÍTICA: Super Admin no puede desactivarse a sí mismo
+        if is_self_edit and user_to_update.is_super_admin() and status != User.STATUS_ACTIVE:
+            messages.error(
+                request, 
+                _('No puedes desactivar tu propia cuenta de Super Admin. Esto causaría pérdida de acceso a la plataforma.')
+            )
+            if is_admin_form:
+                return redirect('accounts:admin_edit_user', user_id)
+            return redirect('accounts:user_approval_dashboard')
+        
         user_to_update.status = status
         
         # Sincronizar is_active con status
