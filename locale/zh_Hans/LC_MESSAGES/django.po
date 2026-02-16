@@ -369,7 +369,7 @@ msgstr "例如：销售部"
 #: .\accounts\profile_forms.py:87 .\organizations\models.py:91
 #: .\templates\accounts\profile\profile_dashboard.html:784
 msgid "Cargo"
-msgstr ""
+msgstr "职位"
 
 #: .\accounts\profile_forms.py:88 .\organizations\models.py:92
 #, fuzzy
@@ -400,31 +400,31 @@ msgstr "平台通知"
 
 #: .\accounts\profile_forms.py:119
 msgid "Emails de Marketing"
-msgstr ""
+msgstr "营销电子邮件"
 
 #: .\accounts\profile_forms.py:121
 msgid "Nivel de Detalle IA"
-msgstr ""
+msgstr "AI详细程度"
 
 #: .\accounts\profile_forms.py:122
 msgid "Formato de Respuesta IA"
-msgstr ""
+msgstr "AI响应格式"
 
 #: .\accounts\profile_forms.py:150
 msgid "Habilitar Autenticación de Dos Factores"
-msgstr ""
+msgstr "启用双因素身份验证"
 
 #: .\accounts\profile_forms.py:151
 msgid "Método de 2FA"
-msgstr ""
+msgstr "2FA方法"
 
 #: .\accounts\profile_forms.py:152
 msgid "Máximo de Sesiones Simultáneas"
-msgstr ""
+msgstr "最大并发会话数"
 
 #: .\accounts\profile_forms.py:153
 msgid "Tiempo de Espera de Sesión (minutos)"
-msgstr ""
+msgstr "会话超时时间（分钟）"
 
 #: .\accounts\profile_forms.py:164
 #, fuzzy
@@ -446,23 +446,23 @@ msgstr "确认密码"
 
 #: .\accounts\profile_forms.py:194
 msgid "El archivo es demasiado grande. Tamaño máximo: 5MB"
-msgstr ""
+msgstr "文件太大。最大大小：5MB"
 
 #: .\accounts\profile_forms.py:199
 msgid "Tipo de archivo no permitido. Use JPG, PNG, GIF o WebP"
-msgstr ""
+msgstr "不允许的文件类型。请使用JPG、PNG、GIF或WebP"
 
 #: .\accounts\profile_views.py:110
 msgid "Datos personales actualizados correctamente"
-msgstr ""
+msgstr "个人数据已成功更新"
 
 #: .\accounts\profile_views.py:149
 msgid "Datos de empresa actualizados correctamente"
-msgstr ""
+msgstr "公司数据已成功更新"
 
 #: .\accounts\profile_views.py:187
 msgid "Preferencias actualizadas correctamente"
-msgstr ""
+msgstr "偏好设置已成功更新"
 
 #: .\accounts\profile_views.py:222
 #, fuzzy
@@ -478,31 +478,31 @@ msgstr "密码已更改"
 
 #: .\accounts\profile_views.py:282
 msgid "Autenticación de dos factores habilitada"
-msgstr ""
+msgstr "双因素身份验证已启用"
 
 #: .\accounts\profile_views.py:304
 msgid "Autenticación de dos factores deshabilitada"
-msgstr ""
+msgstr "双因素身份验证已禁用"
 
 #: .\accounts\profile_views.py:343
 msgid "Sesión revocada correctamente"
-msgstr ""
+msgstr "会话已成功撤销"
 
 #: .\accounts\profile_views.py:345
 msgid "No puedes revocar tu sesión actual"
-msgstr ""
+msgstr "你不能撤销你当前的会话"
 
 #: .\accounts\profile_views.py:361
 msgid "Todas las demás sesiones han sido revocadas"
-msgstr ""
+msgstr "所有其他会话已被撤销"
 
 #: .\accounts\profile_views.py:393
 msgid "Foto de perfil actualizada correctamente"
-msgstr ""
+msgstr "个人资料照片已成功更新"
 
 #: .\accounts\profile_views.py:418
 msgid "Foto de perfil eliminada correctamente"
-msgstr ""
+msgstr "个人资料照片已成功删除"
 
 #: .\accounts\profile_views.py:479
 msgid "Token de API generado correctamente"
@@ -708,11 +708,11 @@ msgstr "价格"
 
 #: .\catalog\models.py:29 .\templates\catalog\product_manage_detail.html:54
 msgid "Stock Disponible"
-msgstr ""
+msgstr "可用库存"
 
 #: .\catalog\models.py:30 .\templates\catalog\product_manage_detail.html:67
 msgid "Stock Mínimo"
-msgstr ""
+msgstr "最低库存"
 
 #: .\catalog\models.py:35 .\templates\catalog\product_manage_list.html:58
 #, fuzzy

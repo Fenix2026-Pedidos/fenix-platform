@@ -16,10 +16,29 @@
         </ol>
     </nav>
     
-    <button onclick="window.print()" class="btn btn-primary" style="display: flex; align-items: center; gap: 8px;">
-        <i class="bi bi-printer"></i>
-        <span>{% trans "Imprimir" %}</span>
-    </button>
+    <div style="display: flex; gap: 12px; align-items: center;">
+        {% if can_cancel_user %}
+        <button type="button" class="btn btn-danger" style="display: flex; align-items: center; gap: 8px;" onclick="openCancelModal();">
+            <i class="bi bi-x-circle"></i>
+            <span>{% trans "Cancelar Pedido" %}</span>
+        </button>
+        {% elif cancel_disabled_reason %}
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
+            <button disabled class="btn" style="display: flex; align-items: center; gap: 8px; opacity: 0.5; cursor: not-allowed;" title="{{ cancel_disabled_reason }}">
+                <i class="bi bi-x-circle"></i>
+                <span>{% trans "Cancelar Pedido" %}</span>
+            </button>
+            <span style="font-size: 12px; color: var(--gray-500); text-align: right;">
+                {{ cancel_disabled_reason }}
+            </span>
+        </div>
+        {% endif %}
+
+        <button onclick="window.print()" class="btn btn-primary" style="display: flex; align-items: center; gap: 8px;">
+            <i class="bi bi-printer"></i>
+            <span>{% trans "Imprimir" %}</span>
+        </button>
+    </div>
 </div>
 
 <!-- Header: Order Number + Status -->
@@ -323,7 +342,7 @@
         
         /* Ajustar márgenes de página */
         @page {
-            margin: 1.5cm;
+            margin: 0.8cm;
         }
         
         body {
@@ -342,11 +361,58 @@
             box-shadow: none !important;
             border: 1px solid #ddd !important;
             page-break-inside: avoid;
+            margin-bottom: 12px !important;
+        }
+
+        .card-header,
+        .card-body {
+            padding: 12px !important;
         }
         
         /* Ajustar tamaños de fuente para impresión */
         .card-header h5 {
-            font-size: 14px !important;
+            font-size: 12px !important;
+        }
+
+        h2 {
+            font-size: 20px !important;
+        }
+
+        p {
+            margin-top: 4px !important;
+        }
+
+        .status-badge {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            font-size: 12px !important;
+            padding: 4px 8px !important;
+        }
+
+        .card-body > div {
+            gap: 16px !important;
+        }
+
+        dl {
+            gap: 6px !important;
+        }
+
+        .table th,
+        .table td {
+            padding: 6px 8px !important;
+            font-size: 11px !important;
+        }
+
+        .table {
+            margin: 0 !important;
+        }
+
+        .table-wrapper {
+            padding: 0 !important;
+        }
+
+        .card > div[style*="background-color"] {
+            padding: 12px !important;
         }
         
         table {
@@ -359,10 +425,181 @@
         }
         
         /* Asegurar que los colores de los badges se vean */
-        .status-badge {
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+    }
+
+    /* Modal de cancelacion - Estilos personalizados */
+    .cancel-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 16px;
+    }
+
+    .cancel-modal-overlay.active {
+        display: flex;
+    }
+
+    .cancel-modal-content {
+        background: white;
+        border-radius: 12px;
+        padding: 32px 24px;
+        max-width: 450px;
+        width: 100%;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .cancel-modal-icon {
+        width: 60px;
+        height: 60px;
+        background: #fee2e2;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 32px;
+        color: #dc2626;
+    }
+
+    .cancel-modal-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--gray-900);
+        text-align: center;
+        margin-bottom: 12px;
+    }
+
+    .cancel-modal-text {
+        font-size: 14px;
+        color: var(--gray-600);
+        text-align: center;
+        margin-bottom: 32px;
+        line-height: 1.5;
+    }
+
+    .cancel-modal-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+    }
+
+    .cancel-modal-btn {
+        padding: 10px 24px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        flex: 1;
+        max-width: 180px;
+    }
+
+    .cancel-modal-btn-cancel {
+        background: var(--gray-200);
+        color: var(--gray-900);
+    }
+
+    .cancel-modal-btn-cancel:hover {
+        background: var(--gray-300);
+    }
+
+    .cancel-modal-btn-confirm {
+        background: #dc2626;
+        color: white;
+    }
+
+    .cancel-modal-btn-confirm:hover {
+        background: #b91c1c;
+    }
+
+    @media (max-width: 480px) {
+        .cancel-modal-content {
+            padding: 24px 16px;
+        }
+
+        .cancel-modal-title {
+            font-size: 18px;
+        }
+
+        .cancel-modal-text {
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+
+        .cancel-modal-btn {
+            max-width: none;
+            padding: 12px 16px;
+            font-size: 13px;
         }
     }
 </style>
+
+<!-- Modal de confirmacion de cancelacion -->
+<div class="cancel-modal-overlay" id="cancelModal">
+    <div class="cancel-modal-content">
+        <div class="cancel-modal-icon">
+            <i class="bi bi-exclamation-circle"></i>
+        </div>
+        <h3 class="cancel-modal-title">{% trans "¿Cancelar pedido?" %}</h3>
+        <p class="cancel-modal-text">
+            {% trans "Estás a punto de cancelar el pedido #" %}<strong>{{ order.id }}</strong>.<br>
+            {% trans "Esta acción no se puede deshacer." %}
+        </p>
+        <div class="cancel-modal-actions">
+            <button type="button" class="cancel-modal-btn cancel-modal-btn-cancel" onclick="closeCancelModal();">
+                {% trans "No, mantener" %}
+            </button>
+            <form method="post" action="{% url 'orders:order_cancel' order.id %}" style="flex: 1; max-width: 180px;">
+                {% csrf_token %}
+                <button type="submit" class="cancel-modal-btn cancel-modal-btn-confirm" style="width: 100%;">
+                    {% trans "Sí, cancelar" %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function openCancelModal() {
+    document.getElementById('cancelModal').classList.add('active');
+}
+
+function closeCancelModal() {
+    document.getElementById('cancelModal').classList.remove('active');
+}
+
+// Cerrar modal al hacer click fuera del contenido
+document.getElementById('cancelModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeCancelModal();
+    }
+});
+
+// Cerrar modal con tecla ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeCancelModal();
+    }
+});
+</script>
 {% endblock %}

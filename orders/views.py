@@ -11,7 +11,7 @@ from django.db.models.functions import TruncMonth
 from django.core.paginator import Paginator, Page
 from decimal import Decimal
 import json
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from calendar import monthrange
 
 from .models import Order, OrderItem, OrderEvent, OrderDocument
@@ -506,6 +506,20 @@ def order_detail(request, pk):
     subtotal = sum(item.line_total for item in items)
     shipping_cost = 0  # TODO: Implementar gastos de envío si es necesario
     
+    is_manager = is_manager_or_admin(request.user)
+    can_cancel_user = False
+    cancel_disabled_reason = ''
+    if not is_manager:
+        now = timezone.now()
+        if order.status in [Order.STATUS_CANCELLED, Order.STATUS_DELIVERED]:
+            can_cancel_user = False
+            cancel_disabled_reason = _('El pedido ya no se puede cancelar.')
+        elif order.eta_start and order.eta_start - now < timedelta(hours=24):
+            can_cancel_user = False
+            cancel_disabled_reason = _('No puedes cancelar con menos de 24 horas de antelación.')
+        else:
+            can_cancel_user = True
+
     context = {
         'order': order,
         'items': items,
@@ -514,9 +528,47 @@ def order_detail(request, pk):
         'shipping_cost': shipping_cost,
         'events': order.events.all(),
         'documents': documents,
-        'is_manager': is_manager_or_admin(request.user),
+        'is_manager': is_manager,
+        'can_cancel_user': can_cancel_user,
+        'cancel_disabled_reason': cancel_disabled_reason,
     }
     return render(request, 'orders/order_detail.html', context)
+
+
+@login_required
+@require_POST
+@transaction.atomic
+def order_cancel(request, pk):
+    order = get_object_or_404(Order.objects.select_related('customer'), pk=pk)
+    is_admin = is_manager_or_admin(request.user)
+
+    if not is_admin and order.customer_id != request.user.id:
+        messages.error(request, _('No tienes permiso para cancelar este pedido.'))
+        return redirect('orders:order_detail', pk=order.pk)
+
+    if order.status == Order.STATUS_CANCELLED:
+        messages.info(request, _('Este pedido ya esta cancelado.'))
+        return redirect('orders:order_detail', pk=order.pk)
+
+    if not is_admin:
+        now = timezone.now()
+        if order.status == Order.STATUS_DELIVERED:
+            messages.error(request, _('Este pedido ya fue entregado y no se puede cancelar.'))
+            return redirect('orders:order_detail', pk=order.pk)
+        if order.eta_start and order.eta_start - now < timedelta(hours=24):
+            messages.error(request, _('No puedes cancelar con menos de 24 horas de antelacion.'))
+            return redirect('orders:order_detail', pk=order.pk)
+
+    order.status = Order.STATUS_CANCELLED
+    order.save()
+    OrderEvent.objects.create(
+        order=order,
+        status=Order.STATUS_CANCELLED,
+        note=_('Pedido cancelado'),
+        created_by=request.user,
+    )
+    messages.success(request, _('Pedido cancelado correctamente.'))
+    return redirect('orders:order_detail', pk=order.pk)
 
 
 # ==================== VISTAS DE GESTIÓN (MANAGER/ADMIN) ====================
