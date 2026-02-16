@@ -687,9 +687,16 @@ def admin_view_user_profile(request, user_id):
         messages.error(request, _('No tienes permisos para ver este usuario'))
         return redirect('accounts:user_approval_dashboard')
     
-    # Obtener preferencias y seguridad
-    preferences = target_user.get_or_create_preferences()
-    security = target_user.get_or_create_security()
+    # Obtener preferencias y seguridad (sin forzar creación)
+    try:
+        preferences = target_user.preferences
+    except:
+        preferences = None
+    
+    try:
+        security = target_user.security
+    except:
+        security = None
     
     # Obtener organización
     user_company = UserCompany.objects.filter(user=target_user).first()
@@ -738,9 +745,16 @@ def admin_edit_user_profile(request, user_id):
     # Obtener tab activo
     active_tab = request.GET.get('tab', 'info-general')
     
-    # Obtener preferencias y seguridad
-    preferences = target_user.get_or_create_preferences()
-    security = target_user.get_or_create_security()
+    # Obtener preferencias (sin forzar creación)
+    try:
+        preferences = target_user.preferences
+    except:
+        preferences = None
+    
+    try:
+        security = target_user.security
+    except:
+        security = None
     
     # Obtener organización
     user_company = UserCompany.objects.filter(user=target_user).first()
