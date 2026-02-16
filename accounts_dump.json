@@ -1,149 +1,7 @@
 [
 {
-  "model": "catalog.product",
-  "pk": 1,
-  "fields": {
-    "name_es": "Jamon Cocido",
-    "name_zh_hans": "示例产品",
-    "description_es": "Descripción inicial",
-    "description_zh_hans": "",
-    "image": "products/Imagen_1.png",
-    "price": "1.50",
-    "is_active": true,
-    "stock_available": 200,
-    "stock_min_threshold": 200,
-    "stock_status": "low",
-    "created_at": "2026-01-25T08:14:48.289Z"
-  }
-},
-{
-  "model": "catalog.product",
-  "pk": 2,
-  "fields": {
-    "name_es": "Jamon Cocido mas Jugoso",
-    "name_zh_hans": "P2",
-    "description_es": "Producto 2",
-    "description_zh_hans": "",
-    "image": "products/Imagen_2.png",
-    "price": "2.00",
-    "is_active": true,
-    "stock_available": 110,
-    "stock_min_threshold": 110,
-    "stock_status": "low",
-    "created_at": "2026-01-25T14:50:44.922Z"
-  }
-},
-{
-  "model": "catalog.product",
-  "pk": 3,
-  "fields": {
-    "name_es": "Pechuga de Pavo mas jugosa",
-    "name_zh_hans": "P3",
-    "description_es": "Producto 2",
-    "description_zh_hans": "",
-    "image": "products/Imagen_3_ndGNP91.png",
-    "price": "2.00",
-    "is_active": true,
-    "stock_available": 110,
-    "stock_min_threshold": 110,
-    "stock_status": "low",
-    "created_at": "2026-01-25T14:50:46.311Z"
-  }
-},
-{
-  "model": "catalog.product",
-  "pk": 4,
-  "fields": {
-    "name_es": "Pechuga de pavo",
-    "name_zh_hans": "P4",
-    "description_es": "",
-    "description_zh_hans": "",
-    "image": "products/Imagen_4_yyW8byp.png",
-    "price": "3.00",
-    "is_active": true,
-    "stock_available": 200,
-    "stock_min_threshold": 10,
-    "stock_status": "ok",
-    "created_at": "2026-01-25T16:07:29.551Z"
-  }
-},
-{
-  "model": "catalog.product",
-  "pk": 5,
-  "fields": {
-    "name_es": "Jamon Curado",
-    "name_zh_hans": "p5",
-    "description_es": "Ibericos",
-    "description_zh_hans": "",
-    "image": "products/Imagen_9.png",
-    "price": "4.00",
-    "is_active": true,
-    "stock_available": 0,
-    "stock_min_threshold": 0,
-    "stock_status": "out",
-    "created_at": "2026-01-25T18:44:43.353Z"
-  }
-},
-{
-  "model": "catalog.product",
-  "pk": 6,
-  "fields": {
-    "name_es": "Frankfurt Pack3",
-    "name_zh_hans": "Frankfurt Pack3",
-    "description_es": "",
-    "description_zh_hans": "",
-    "image": "products/Imagen_8.png",
-    "price": "4.00",
-    "is_active": true,
-    "stock_available": 0,
-    "stock_min_threshold": 0,
-    "stock_status": "out",
-    "created_at": "2026-01-25T22:21:43.324Z"
-  }
-},
-{
-  "model": "catalog.product",
-  "pk": 7,
-  "fields": {
-    "name_es": "Chorizo Pamplona",
-    "name_zh_hans": "Chorizo Pamplona",
-    "description_es": "",
-    "description_zh_hans": "",
-    "image": "products/Imagen_5.png",
-    "price": "0.75",
-    "is_active": true,
-    "stock_available": 0,
-    "stock_min_threshold": 0,
-    "stock_status": "out",
-    "created_at": "2026-02-09T12:21:53.782Z"
-  }
-},
-{
-  "model": "organizations.company",
-  "pk": 1,
-  "fields": {
-    "uuid": "b8bd7a89-be7a-46d9-b78d-61dee66392fa",
-    "name": "Distribuciones Fenix de la Mancha SL.",
-    "slug": "distribuciones-fenix-de-la-mancha-sl",
-    "vat_number": "47524324",
-    "tax_id": "",
-    "sector": "",
-    "size": "",
-    "country": "",
-    "city": "",
-    "address": "",
-    "postal_code": "",
-    "phone": "",
-    "email": "",
-    "website": "",
-    "logo": "",
-    "is_active": true,
-    "created_at": "2026-02-16T11:44:11.088Z",
-    "updated_at": "2026-02-16T11:44:11.110Z"
-  }
-},
-{
   "model": "accounts.user",
+  "pk": 1,
   "fields": {
     "password": "pbkdf2_sha256$1200000$Du1aQjNrGGieZsvHLyjnRx$XwCGeUmM0ejfK6t97dQKefoQXsWkX60J1Wi2nlK3VDA=",
     "last_login": "2026-02-16T12:01:02.843Z",
@@ -192,6 +50,7 @@
 },
 {
   "model": "accounts.user",
+  "pk": 2,
   "fields": {
     "password": "pbkdf2_sha256$1200000$0MaASgKA1kICX2YBgpxqGV$sRpOgk0cHIm0ODmYSiTjMTxR/gws08kfhM2KinWfPZ8=",
     "last_login": "2026-02-16T09:26:39.798Z",
@@ -232,9 +91,7 @@
     "updated_at": "2026-02-16T11:07:37.406Z",
     "last_login_at": "2026-02-16T09:32:28.296Z",
     "last_login_ip": "127.0.0.1",
-    "approved_by": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "approved_by": 1,
     "approved_at": "2026-02-16T11:07:37.406Z",
     "groups": [],
     "user_permissions": []
@@ -242,6 +99,7 @@
 },
 {
   "model": "accounts.user",
+  "pk": 3,
   "fields": {
     "password": "pbkdf2_sha256$1200000$rueCPeLCGShqSxxB7XUoO6$y8SgG8dW0e2oQCGVSH8NU0avmaQHun5D9/YQFMAo5BM=",
     "last_login": null,
@@ -282,9 +140,7 @@
     "updated_at": "2026-02-16T11:06:21.843Z",
     "last_login_at": null,
     "last_login_ip": null,
-    "approved_by": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "approved_by": 1,
     "approved_at": "2026-02-14T01:05:06.637Z",
     "groups": [],
     "user_permissions": []
@@ -294,9 +150,7 @@
   "model": "accounts.emailverificationtoken",
   "pk": 1,
   "fields": {
-    "user": [
-      "vladimir.marfetan@gmail.com"
-    ],
+    "user": 3,
     "token": "3b6c76de-0b68-48e7-8d4c-dcd1a8407368",
     "created_at": "2026-02-14T00:05:16.506Z",
     "expires_at": "2026-02-15T00:05:16.506Z",
@@ -307,9 +161,7 @@
   "model": "accounts.userpreferences",
   "pk": 1,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "theme": "system",
     "language": "es",
     "timezone": "Europe/Madrid",
@@ -327,9 +179,7 @@
   "model": "accounts.userpreferences",
   "pk": 2,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "theme": "system",
     "language": "es",
     "timezone": "Europe/Madrid",
@@ -347,9 +197,7 @@
   "model": "accounts.userpreferences",
   "pk": 3,
   "fields": {
-    "user": [
-      "vladimir.marfetan@gmail.com"
-    ],
+    "user": 3,
     "theme": "system",
     "language": "es",
     "timezone": "Europe/Madrid",
@@ -367,9 +215,7 @@
   "model": "accounts.securitysettings",
   "pk": 1,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "two_factor_enabled": true,
     "two_factor_method": "totp",
     "two_factor_secret": "LHU3_0WAbKCGc2Ffptv_hSFKXRkBltoZ794pm4_T1oc",
@@ -388,9 +234,7 @@
   "model": "accounts.securitysettings",
   "pk": 2,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "two_factor_enabled": false,
     "two_factor_method": "",
     "two_factor_secret": "",
@@ -409,9 +253,7 @@
   "model": "accounts.usersession",
   "pk": 1,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "dety44lpadc6pn5i6at8mnztbe9wlt79",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -428,9 +270,7 @@
   "model": "accounts.usersession",
   "pk": 2,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "gfbks98mwd253znfuz6yjczyomm0g47v",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -447,9 +287,7 @@
   "model": "accounts.usersession",
   "pk": 3,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "session_key": "2l8lo928z4lumte5ibhdc670g3b2ju2x",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -466,9 +304,7 @@
   "model": "accounts.usersession",
   "pk": 4,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "i45s7bx7ch3pggcybucsbo02awgi3ix9",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -485,9 +321,7 @@
   "model": "accounts.usersession",
   "pk": 5,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "8kx7sb9qgzpw346t6cez5npivki9q03f",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -504,9 +338,7 @@
   "model": "accounts.usersession",
   "pk": 6,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "mmh0f4kwlnx28heta498ztb1ugn1bxai",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -523,9 +355,7 @@
   "model": "accounts.usersession",
   "pk": 7,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "goca6raj02224mt02uey0xczlthgcu4k",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -542,9 +372,7 @@
   "model": "accounts.usersession",
   "pk": 8,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "kxiuv1b8bln772u0tcytoqs2kykmqoe9",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36 Edg/144.0.0.0",
@@ -561,9 +389,7 @@
   "model": "accounts.usersession",
   "pk": 9,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "bv6e3eespk4ftejvbk399otq02tnpzha",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -580,9 +406,7 @@
   "model": "accounts.usersession",
   "pk": 10,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "oewcokosi4f0xnxfdxzmh7ykhp5dn1x2",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -599,9 +423,7 @@
   "model": "accounts.usersession",
   "pk": 11,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "y8fd4hrx4jpl4juwuy27yrnqc80lt8i7",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -618,9 +440,7 @@
   "model": "accounts.usersession",
   "pk": 12,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "vtpvvzd4bxlsy3narobu2zes0tlcctqb",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -637,9 +457,7 @@
   "model": "accounts.usersession",
   "pk": 13,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "qdmgt1vjw341v71rxtg9sh87tletqgup",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -656,9 +474,7 @@
   "model": "accounts.usersession",
   "pk": 14,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "v6rn39bvjqjbcjzzass7cluc3ratsf3d",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -675,9 +491,7 @@
   "model": "accounts.usersession",
   "pk": 15,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "mi9umkzla1s2l655lf8d0md1lnauj6ps",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -694,9 +508,7 @@
   "model": "accounts.usersession",
   "pk": 16,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "64b3mi24condcemk0bjehrfrc5ih826h",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -713,9 +525,7 @@
   "model": "accounts.usersession",
   "pk": 17,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "wd9jmdy99aud8q0njpv75eg402vt6tts",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -732,9 +542,7 @@
   "model": "accounts.usersession",
   "pk": 18,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "0tlvw8qg906aofkgki96suqugxr7z7z4",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -751,9 +559,7 @@
   "model": "accounts.usersession",
   "pk": 19,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "lc4qowmhqx03jy9cnwoovnf0ha9t5r05",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -770,9 +576,7 @@
   "model": "accounts.usersession",
   "pk": 20,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "35feqhi0e8ujfz3q4qh3wdb2kh71e0p0",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -789,9 +593,7 @@
   "model": "accounts.usersession",
   "pk": 21,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "5q00meyroe8x19jp59e4oxqtd5xmebi0",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -808,9 +610,7 @@
   "model": "accounts.usersession",
   "pk": 22,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "i8tea6av8f6p1xgxi5yeuawao6e2rp8r",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -827,9 +627,7 @@
   "model": "accounts.usersession",
   "pk": 23,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "session_key": "f3edsgd6y402kn5pc3wwn3gi62cweq68",
     "ip_address": "127.0.0.1",
     "user_agent": "",
@@ -846,9 +644,7 @@
   "model": "accounts.usersession",
   "pk": 24,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "session_key": "kn3hd8gouse4xtyy6qjhifiey7pdwx75",
     "ip_address": "127.0.0.1",
     "user_agent": "",
@@ -865,9 +661,7 @@
   "model": "accounts.usersession",
   "pk": 25,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "session_key": "01mpsrthda0561ssr4lk78mcpg9b5oa5",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -884,9 +678,7 @@
   "model": "accounts.usersession",
   "pk": 26,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "c7srmj88kx5i3jzx7wi4eets20jlecbo",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -903,9 +695,7 @@
   "model": "accounts.usersession",
   "pk": 27,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "shimbv44kd42cvocj5ukm1knqq9bodr8",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -922,9 +712,7 @@
   "model": "accounts.usersession",
   "pk": 28,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "g18vo7bellk3lyko9bdn9y1h6svqzsp7",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -941,9 +729,7 @@
   "model": "accounts.usersession",
   "pk": 29,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "so17zr0fjjjehf49lb651s7vb9n7g2md",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -960,9 +746,7 @@
   "model": "accounts.usersession",
   "pk": 30,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "lkxy23wsobkj4z2yq3phjxk34hjwepam",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -979,9 +763,7 @@
   "model": "accounts.usersession",
   "pk": 31,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "o2bavd9bgci1f2k4r65nqowx9o4b4a64",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -998,9 +780,7 @@
   "model": "accounts.usersession",
   "pk": 32,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "lvpgh52kk3exzxpd49n3q9uirhado90z",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1017,9 +797,7 @@
   "model": "accounts.usersession",
   "pk": 33,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "x6k4gj8qmbg2nqsz1hwgridivikx12zw",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1036,9 +814,7 @@
   "model": "accounts.usersession",
   "pk": 34,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "1ql0dxgpoz89fxfu4esyzqkc1meav2dv",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1055,9 +831,7 @@
   "model": "accounts.usersession",
   "pk": 35,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "663sjm1z1v0wxhwild76if4y5acffrfc",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1074,9 +848,7 @@
   "model": "accounts.usersession",
   "pk": 36,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "ysekxazuwt6lh6ytxqdlgvesh115ebg4",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1093,9 +865,7 @@
   "model": "accounts.usersession",
   "pk": 37,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "u3yxz5eqt4tsdl5fb7pjfni2lci0wfrl",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1112,9 +882,7 @@
   "model": "accounts.usersession",
   "pk": 38,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "l1lcfyauqz1h8sf3nxmck3vmmsezpuls",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1131,9 +899,7 @@
   "model": "accounts.usersession",
   "pk": 39,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "3ufedcqwefwoxixkes2945g65y968crj",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1150,9 +916,7 @@
   "model": "accounts.usersession",
   "pk": 40,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "e5vljdkw4n7wnxls3eyy95sw4sie4b2z",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1169,9 +933,7 @@
   "model": "accounts.usersession",
   "pk": 41,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "4o9wbmi50irv45vblneb0v5g92pfcqq1",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1188,9 +950,7 @@
   "model": "accounts.usersession",
   "pk": 42,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "am1jez8c7q2fhdnymu6z484a1n1r55js",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1207,9 +967,7 @@
   "model": "accounts.usersession",
   "pk": 43,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "z3s1upamuayfs44zeez67igyaj1intz5",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1226,9 +984,7 @@
   "model": "accounts.usersession",
   "pk": 44,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "session_key": "e4jnsd3ohy1kn8ncfba4v77u40y1zho8",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1245,9 +1001,7 @@
   "model": "accounts.usersession",
   "pk": 45,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "xo4fl2xtm94hwtokekhex254pwubd8mw",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1264,9 +1018,7 @@
   "model": "accounts.usersession",
   "pk": 46,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "session_key": "lc434tnnzz4ptvbu53txzcni3w47mnv7",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1283,9 +1035,7 @@
   "model": "accounts.usersession",
   "pk": 47,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "msa7e4hz6xzoi5s1ftfn8q6qjgvpz9ef",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1302,9 +1052,7 @@
   "model": "accounts.usersession",
   "pk": 48,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "session_key": "udo0zuireiqb33rjxzkz8u7l8ern2e2n",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1321,9 +1069,7 @@
   "model": "accounts.usersession",
   "pk": 49,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "zv8sg1ubs63o2lfpcevgfc0v3yb97pty",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1340,9 +1086,7 @@
   "model": "accounts.usersession",
   "pk": 50,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "hph4ewiqhdmixbs2i29h40scd8oi4n1f",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1359,9 +1103,7 @@
   "model": "accounts.usersession",
   "pk": 51,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "bl41mwd3xpyq9h7t8zlykz378ylcim3y",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1378,9 +1120,7 @@
   "model": "accounts.usersession",
   "pk": 52,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "session_key": "ftbfumw1zsi3zl68g73laewljjrxlh12",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1397,9 +1137,7 @@
   "model": "accounts.usersession",
   "pk": 53,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "ammgltbpelmqrpprs8it8enqk2ds9whz",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1416,9 +1154,7 @@
   "model": "accounts.usersession",
   "pk": 54,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "session_key": "ctuat5kbw9rq30tgmgwfcj5rjnwmguh5",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1435,9 +1171,7 @@
   "model": "accounts.usersession",
   "pk": 55,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "axd562o3k7dkirwx8aqtym1weto406ol",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1454,9 +1188,7 @@
   "model": "accounts.usersession",
   "pk": 56,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "session_key": "iirknjpk3tgt308ynd3zfwdabssov3bf",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1473,9 +1205,7 @@
   "model": "accounts.usersession",
   "pk": 57,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "tu3us63pv1vdxj0j0t20u4pm9t76mkh7",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1492,9 +1222,7 @@
   "model": "accounts.usersession",
   "pk": 58,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "session_key": "0azfcmy0owjq0w82tn2lbiye44eepj6c",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1511,9 +1239,7 @@
   "model": "accounts.usersession",
   "pk": 59,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "cyh0m6gspmohc0m5uhh8ke5nd1kdbsvh",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1530,9 +1256,7 @@
   "model": "accounts.usersession",
   "pk": 60,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "session_key": "cijrsju90dr6agl7t4a4nn1lnqzft7zt",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1549,9 +1273,7 @@
   "model": "accounts.usersession",
   "pk": 61,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "fromi9nawaui0pvh0x6ew92nr4qc2fpw",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1568,9 +1290,7 @@
   "model": "accounts.usersession",
   "pk": 62,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "08td2sbhdi7px1f79cet62ge4edz0pl0",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1587,9 +1307,7 @@
   "model": "accounts.usersession",
   "pk": 63,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "2djh91gnx776srngt7wb830ekom003px",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1606,9 +1324,7 @@
   "model": "accounts.usersession",
   "pk": 64,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "session_key": "sr5ps78xcg5hbjrip05chxh7vbep2ukr",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1625,9 +1341,7 @@
   "model": "accounts.usersession",
   "pk": 65,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "tgshvzgo41qsqm56jnarjw1ea2rewcmi",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1644,9 +1358,7 @@
   "model": "accounts.usersession",
   "pk": 66,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "vybgov5qgrh2d8bxocqukc30rkhdyyyb",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1663,9 +1375,7 @@
   "model": "accounts.usersession",
   "pk": 67,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "session_key": "2o3ocq5wihjpk4lxa2lkjhmeuselzf37",
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -1682,9 +1392,7 @@
   "model": "accounts.loginhistory",
   "pk": 1,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1697,9 +1405,7 @@
   "model": "accounts.loginhistory",
   "pk": 2,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1712,9 +1418,7 @@
   "model": "accounts.loginhistory",
   "pk": 3,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1727,9 +1431,7 @@
   "model": "accounts.loginhistory",
   "pk": 4,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1742,9 +1444,7 @@
   "model": "accounts.loginhistory",
   "pk": 5,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1757,9 +1457,7 @@
   "model": "accounts.loginhistory",
   "pk": 6,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1772,9 +1470,7 @@
   "model": "accounts.loginhistory",
   "pk": 7,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1787,9 +1483,7 @@
   "model": "accounts.loginhistory",
   "pk": 8,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1802,9 +1496,7 @@
   "model": "accounts.loginhistory",
   "pk": 9,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1817,9 +1509,7 @@
   "model": "accounts.loginhistory",
   "pk": 10,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1832,9 +1522,7 @@
   "model": "accounts.loginhistory",
   "pk": 11,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1847,9 +1535,7 @@
   "model": "accounts.loginhistory",
   "pk": 12,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1862,9 +1548,7 @@
   "model": "accounts.loginhistory",
   "pk": 13,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1877,9 +1561,7 @@
   "model": "accounts.loginhistory",
   "pk": 14,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1892,9 +1574,7 @@
   "model": "accounts.loginhistory",
   "pk": 15,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1907,9 +1587,7 @@
   "model": "accounts.loginhistory",
   "pk": 16,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1922,9 +1600,7 @@
   "model": "accounts.loginhistory",
   "pk": 17,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1937,9 +1613,7 @@
   "model": "accounts.loginhistory",
   "pk": 18,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1952,9 +1626,7 @@
   "model": "accounts.loginhistory",
   "pk": 19,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1967,9 +1639,7 @@
   "model": "accounts.loginhistory",
   "pk": 20,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1982,9 +1652,7 @@
   "model": "accounts.loginhistory",
   "pk": 21,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -1997,9 +1665,7 @@
   "model": "accounts.loginhistory",
   "pk": 22,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2012,9 +1678,7 @@
   "model": "accounts.loginhistory",
   "pk": 23,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2027,9 +1691,7 @@
   "model": "accounts.loginhistory",
   "pk": 24,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2042,9 +1704,7 @@
   "model": "accounts.loginhistory",
   "pk": 25,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2057,9 +1717,7 @@
   "model": "accounts.loginhistory",
   "pk": 26,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2072,9 +1730,7 @@
   "model": "accounts.loginhistory",
   "pk": 27,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2087,9 +1743,7 @@
   "model": "accounts.loginhistory",
   "pk": 28,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2102,9 +1756,7 @@
   "model": "accounts.loginhistory",
   "pk": 29,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2117,9 +1769,7 @@
   "model": "accounts.loginhistory",
   "pk": 30,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2132,9 +1782,7 @@
   "model": "accounts.loginhistory",
   "pk": 31,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2147,9 +1795,7 @@
   "model": "accounts.loginhistory",
   "pk": 32,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2162,9 +1808,7 @@
   "model": "accounts.loginhistory",
   "pk": 33,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2177,9 +1821,7 @@
   "model": "accounts.loginhistory",
   "pk": 34,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2192,9 +1834,7 @@
   "model": "accounts.loginhistory",
   "pk": 35,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2207,9 +1847,7 @@
   "model": "accounts.loginhistory",
   "pk": 36,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2222,9 +1860,7 @@
   "model": "accounts.loginhistory",
   "pk": 37,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2237,9 +1873,7 @@
   "model": "accounts.loginhistory",
   "pk": 38,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2252,9 +1886,7 @@
   "model": "accounts.loginhistory",
   "pk": 39,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2267,9 +1899,7 @@
   "model": "accounts.loginhistory",
   "pk": 40,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2282,9 +1912,7 @@
   "model": "accounts.loginhistory",
   "pk": 41,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2297,9 +1925,7 @@
   "model": "accounts.loginhistory",
   "pk": 42,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2312,9 +1938,7 @@
   "model": "accounts.loginhistory",
   "pk": 43,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2327,9 +1951,7 @@
   "model": "accounts.loginhistory",
   "pk": 44,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2342,9 +1964,7 @@
   "model": "accounts.loginhistory",
   "pk": 45,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2357,9 +1977,7 @@
   "model": "accounts.loginhistory",
   "pk": 46,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2372,9 +1990,7 @@
   "model": "accounts.loginhistory",
   "pk": 47,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2387,9 +2003,7 @@
   "model": "accounts.loginhistory",
   "pk": 48,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2402,9 +2016,7 @@
   "model": "accounts.loginhistory",
   "pk": 49,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2417,9 +2029,7 @@
   "model": "accounts.loginhistory",
   "pk": 50,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2432,9 +2042,7 @@
   "model": "accounts.loginhistory",
   "pk": 51,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2447,9 +2055,7 @@
   "model": "accounts.loginhistory",
   "pk": 52,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2462,9 +2068,7 @@
   "model": "accounts.loginhistory",
   "pk": 53,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2477,9 +2081,7 @@
   "model": "accounts.loginhistory",
   "pk": 54,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2492,9 +2094,7 @@
   "model": "accounts.loginhistory",
   "pk": 55,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2507,9 +2107,7 @@
   "model": "accounts.loginhistory",
   "pk": 56,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2522,9 +2120,7 @@
   "model": "accounts.loginhistory",
   "pk": 57,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2537,9 +2133,7 @@
   "model": "accounts.loginhistory",
   "pk": 58,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2552,9 +2146,7 @@
   "model": "accounts.loginhistory",
   "pk": 59,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2567,9 +2159,7 @@
   "model": "accounts.loginhistory",
   "pk": 60,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2582,9 +2172,7 @@
   "model": "accounts.loginhistory",
   "pk": 61,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2597,9 +2185,7 @@
   "model": "accounts.loginhistory",
   "pk": 62,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2612,9 +2198,7 @@
   "model": "accounts.loginhistory",
   "pk": 63,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2627,9 +2211,7 @@
   "model": "accounts.loginhistory",
   "pk": 64,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2642,9 +2224,7 @@
   "model": "accounts.loginhistory",
   "pk": 65,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2657,9 +2237,7 @@
   "model": "accounts.loginhistory",
   "pk": 66,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2672,9 +2250,7 @@
   "model": "accounts.loginhistory",
   "pk": 67,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2687,9 +2263,7 @@
   "model": "accounts.loginhistory",
   "pk": 68,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2702,9 +2276,7 @@
   "model": "accounts.loginhistory",
   "pk": 69,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2717,9 +2289,7 @@
   "model": "accounts.loginhistory",
   "pk": 70,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2732,9 +2302,7 @@
   "model": "accounts.loginhistory",
   "pk": 71,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2747,9 +2315,7 @@
   "model": "accounts.loginhistory",
   "pk": 72,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2762,9 +2328,7 @@
   "model": "accounts.loginhistory",
   "pk": 73,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2777,9 +2341,7 @@
   "model": "accounts.loginhistory",
   "pk": 74,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2792,9 +2354,7 @@
   "model": "accounts.loginhistory",
   "pk": 75,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2807,9 +2367,7 @@
   "model": "accounts.loginhistory",
   "pk": 76,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2822,9 +2380,7 @@
   "model": "accounts.loginhistory",
   "pk": 77,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2837,9 +2393,7 @@
   "model": "accounts.loginhistory",
   "pk": 78,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2852,9 +2406,7 @@
   "model": "accounts.loginhistory",
   "pk": 79,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2867,9 +2419,7 @@
   "model": "accounts.loginhistory",
   "pk": 80,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2882,9 +2432,7 @@
   "model": "accounts.loginhistory",
   "pk": 81,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2897,9 +2445,7 @@
   "model": "accounts.loginhistory",
   "pk": 82,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2912,9 +2458,7 @@
   "model": "accounts.loginhistory",
   "pk": 83,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2927,9 +2471,7 @@
   "model": "accounts.loginhistory",
   "pk": 84,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2942,9 +2484,7 @@
   "model": "accounts.loginhistory",
   "pk": 85,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2957,9 +2497,7 @@
   "model": "accounts.loginhistory",
   "pk": 86,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2972,9 +2510,7 @@
   "model": "accounts.loginhistory",
   "pk": 87,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -2987,9 +2523,7 @@
   "model": "accounts.loginhistory",
   "pk": 88,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3002,9 +2536,7 @@
   "model": "accounts.loginhistory",
   "pk": 89,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3017,9 +2549,7 @@
   "model": "accounts.loginhistory",
   "pk": 90,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3032,9 +2562,7 @@
   "model": "accounts.loginhistory",
   "pk": 91,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3047,9 +2575,7 @@
   "model": "accounts.loginhistory",
   "pk": 92,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3062,9 +2588,7 @@
   "model": "accounts.loginhistory",
   "pk": 93,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3077,9 +2601,7 @@
   "model": "accounts.loginhistory",
   "pk": 94,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3092,9 +2614,7 @@
   "model": "accounts.loginhistory",
   "pk": 95,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3107,9 +2627,7 @@
   "model": "accounts.loginhistory",
   "pk": 96,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3122,9 +2640,7 @@
   "model": "accounts.loginhistory",
   "pk": 97,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3137,9 +2653,7 @@
   "model": "accounts.loginhistory",
   "pk": 98,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3152,9 +2666,7 @@
   "model": "accounts.loginhistory",
   "pk": 99,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3167,9 +2679,7 @@
   "model": "accounts.loginhistory",
   "pk": 100,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3182,9 +2692,7 @@
   "model": "accounts.loginhistory",
   "pk": 101,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3197,9 +2705,7 @@
   "model": "accounts.loginhistory",
   "pk": 102,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3212,9 +2718,7 @@
   "model": "accounts.loginhistory",
   "pk": 103,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3227,9 +2731,7 @@
   "model": "accounts.loginhistory",
   "pk": 104,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3242,9 +2744,7 @@
   "model": "accounts.loginhistory",
   "pk": 105,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3257,9 +2757,7 @@
   "model": "accounts.loginhistory",
   "pk": 106,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3272,9 +2770,7 @@
   "model": "accounts.loginhistory",
   "pk": 107,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3287,9 +2783,7 @@
   "model": "accounts.loginhistory",
   "pk": 108,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3302,9 +2796,7 @@
   "model": "accounts.loginhistory",
   "pk": 109,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3317,9 +2809,7 @@
   "model": "accounts.loginhistory",
   "pk": 110,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3332,9 +2822,7 @@
   "model": "accounts.loginhistory",
   "pk": 111,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3347,9 +2835,7 @@
   "model": "accounts.loginhistory",
   "pk": 112,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3362,9 +2848,7 @@
   "model": "accounts.loginhistory",
   "pk": 113,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3377,9 +2861,7 @@
   "model": "accounts.loginhistory",
   "pk": 114,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3392,9 +2874,7 @@
   "model": "accounts.loginhistory",
   "pk": 115,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3407,9 +2887,7 @@
   "model": "accounts.loginhistory",
   "pk": 116,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3422,9 +2900,7 @@
   "model": "accounts.loginhistory",
   "pk": 117,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3437,9 +2913,7 @@
   "model": "accounts.loginhistory",
   "pk": 118,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3452,9 +2926,7 @@
   "model": "accounts.loginhistory",
   "pk": 119,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3467,9 +2939,7 @@
   "model": "accounts.loginhistory",
   "pk": 120,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3482,9 +2952,7 @@
   "model": "accounts.loginhistory",
   "pk": 121,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3497,9 +2965,7 @@
   "model": "accounts.loginhistory",
   "pk": 122,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3512,9 +2978,7 @@
   "model": "accounts.loginhistory",
   "pk": 123,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3527,9 +2991,7 @@
   "model": "accounts.loginhistory",
   "pk": 124,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3542,9 +3004,7 @@
   "model": "accounts.loginhistory",
   "pk": 125,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3557,9 +3017,7 @@
   "model": "accounts.loginhistory",
   "pk": 126,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3572,9 +3030,7 @@
   "model": "accounts.loginhistory",
   "pk": 127,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3587,9 +3043,7 @@
   "model": "accounts.loginhistory",
   "pk": 128,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3602,9 +3056,7 @@
   "model": "accounts.loginhistory",
   "pk": 129,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3617,9 +3069,7 @@
   "model": "accounts.loginhistory",
   "pk": 130,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3632,9 +3082,7 @@
   "model": "accounts.loginhistory",
   "pk": 131,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3647,9 +3095,7 @@
   "model": "accounts.loginhistory",
   "pk": 132,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3662,9 +3108,7 @@
   "model": "accounts.loginhistory",
   "pk": 133,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3677,9 +3121,7 @@
   "model": "accounts.loginhistory",
   "pk": 134,
   "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
+    "user": 2,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3692,9 +3134,7 @@
   "model": "accounts.loginhistory",
   "pk": 135,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3707,9 +3147,7 @@
   "model": "accounts.loginhistory",
   "pk": 136,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3722,9 +3160,7 @@
   "model": "accounts.loginhistory",
   "pk": 137,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3737,9 +3173,7 @@
   "model": "accounts.loginhistory",
   "pk": 138,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3752,9 +3186,7 @@
   "model": "accounts.loginhistory",
   "pk": 139,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3767,9 +3199,7 @@
   "model": "accounts.loginhistory",
   "pk": 140,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3782,9 +3212,7 @@
   "model": "accounts.loginhistory",
   "pk": 141,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3797,9 +3225,7 @@
   "model": "accounts.loginhistory",
   "pk": 142,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3812,9 +3238,7 @@
   "model": "accounts.loginhistory",
   "pk": 143,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3827,9 +3251,7 @@
   "model": "accounts.loginhistory",
   "pk": 144,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3842,9 +3264,7 @@
   "model": "accounts.loginhistory",
   "pk": 145,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3857,9 +3277,7 @@
   "model": "accounts.loginhistory",
   "pk": 146,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3872,9 +3290,7 @@
   "model": "accounts.loginhistory",
   "pk": 147,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3887,9 +3303,7 @@
   "model": "accounts.loginhistory",
   "pk": 148,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3902,9 +3316,7 @@
   "model": "accounts.loginhistory",
   "pk": 149,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3917,9 +3329,7 @@
   "model": "accounts.loginhistory",
   "pk": 150,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3932,9 +3342,7 @@
   "model": "accounts.loginhistory",
   "pk": 151,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3947,9 +3355,7 @@
   "model": "accounts.loginhistory",
   "pk": 152,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3962,9 +3368,7 @@
   "model": "accounts.loginhistory",
   "pk": 153,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "success": true,
     "failure_reason": "",
     "ip_address": "127.0.0.1",
@@ -3977,9 +3381,7 @@
   "model": "accounts.profileauditlog",
   "pk": 1,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "action": "update_personal",
     "field_changed": "first_name",
     "old_value": "Vladimir",
@@ -3993,9 +3395,7 @@
   "model": "accounts.profileauditlog",
   "pk": 2,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "action": "update_personal",
     "field_changed": "last_name",
     "old_value": "Marfetan",
@@ -4009,9 +3409,7 @@
   "model": "accounts.profileauditlog",
   "pk": 3,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "action": "update_personal",
     "field_changed": "phone",
     "old_value": "+34649586937",
@@ -4025,9 +3423,7 @@
   "model": "accounts.profileauditlog",
   "pk": 4,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "action": "update_personal",
     "field_changed": "last_name",
     "old_value": "Marfetan Morales",
@@ -4041,9 +3437,7 @@
   "model": "accounts.profileauditlog",
   "pk": 5,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "action": "enable_2fa",
     "field_changed": "two_factor_method",
     "old_value": "",
@@ -4057,9 +3451,7 @@
   "model": "accounts.profileauditlog",
   "pk": 6,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "action": "avatar_upload",
     "field_changed": "avatar",
     "old_value": "Vladimir 2026.jpeg",
@@ -4073,9 +3465,7 @@
   "model": "accounts.profileauditlog",
   "pk": 7,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "action": "update_complete_profile",
     "field_changed": "multiple",
     "old_value": "",
@@ -4089,9 +3479,7 @@
   "model": "accounts.profileauditlog",
   "pk": 8,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "action": "update_complete_profile",
     "field_changed": "multiple",
     "old_value": "",
@@ -4105,9 +3493,7 @@
   "model": "accounts.profileauditlog",
   "pk": 9,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "action": "update_complete_profile",
     "field_changed": "multiple",
     "old_value": "",
@@ -4121,9 +3507,7 @@
   "model": "accounts.profileauditlog",
   "pk": 10,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "action": "update_complete_profile",
     "field_changed": "multiple",
     "old_value": "",
@@ -4137,9 +3521,7 @@
   "model": "accounts.profileauditlog",
   "pk": 11,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "action": "update_complete_profile",
     "field_changed": "multiple",
     "old_value": "",
@@ -4153,9 +3535,7 @@
   "model": "accounts.profileauditlog",
   "pk": 12,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "action": "update_complete_profile",
     "field_changed": "multiple",
     "old_value": "",
@@ -4169,9 +3549,7 @@
   "model": "accounts.profileauditlog",
   "pk": 13,
   "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
+    "user": 1,
     "action": "update_complete_profile",
     "field_changed": "multiple",
     "old_value": "",
@@ -4179,354 +3557,6 @@
     "ip_address": "127.0.0.1",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
     "created_at": "2026-02-16T11:44:11.120Z"
-  }
-},
-{
-  "model": "core.platformsettings",
-  "pk": 1,
-  "fields": {
-    "default_language": "es",
-    "email_from": "plataformafenix2026@gmail.com",
-    "email_from_name": "FENIX",
-    "order_notification_email": "plataformafenix2026@gmail.com",
-    "default_delivery_window_hours": 24,
-    "created_at": "2026-01-25T08:12:38.461Z",
-    "updated_at": "2026-02-09T10:55:49.014Z"
-  }
-},
-{
-  "model": "organizations.usercompany",
-  "pk": 1,
-  "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
-    "company": 1,
-    "job_title": "Sistemas",
-    "department": "",
-    "is_company_admin": false,
-    "is_billing_contact": false,
-    "joined_at": "2026-02-16T11:44:11.100Z",
-    "left_at": null,
-    "is_active": true
-  }
-},
-{
-  "model": "organizations.historicalcompany",
-  "pk": 1,
-  "fields": {
-    "id": 1,
-    "uuid": "b8bd7a89-be7a-46d9-b78d-61dee66392fa",
-    "name": "Distribuciones Fenix de la Mancha SL.",
-    "slug": "distribuciones-fenix-de-la-mancha-sl",
-    "vat_number": "",
-    "tax_id": "",
-    "sector": "",
-    "size": "",
-    "country": "",
-    "city": "",
-    "address": "",
-    "postal_code": "",
-    "phone": "",
-    "email": "",
-    "website": "",
-    "logo": "",
-    "is_active": true,
-    "created_at": "2026-02-16T11:44:11.088Z",
-    "updated_at": "2026-02-16T11:44:11.088Z",
-    "history_date": "2026-02-16T11:44:11.092Z",
-    "history_change_reason": null,
-    "history_type": "+",
-    "history_user": [
-      "plataformafenix2026@gmail.com"
-    ]
-  }
-},
-{
-  "model": "organizations.historicalcompany",
-  "pk": 2,
-  "fields": {
-    "id": 1,
-    "uuid": "b8bd7a89-be7a-46d9-b78d-61dee66392fa",
-    "name": "Distribuciones Fenix de la Mancha SL.",
-    "slug": "distribuciones-fenix-de-la-mancha-sl",
-    "vat_number": "47524324",
-    "tax_id": "",
-    "sector": "",
-    "size": "",
-    "country": "",
-    "city": "",
-    "address": "",
-    "postal_code": "",
-    "phone": "",
-    "email": "",
-    "website": "",
-    "logo": "",
-    "is_active": true,
-    "created_at": "2026-02-16T11:44:11.088Z",
-    "updated_at": "2026-02-16T11:44:11.110Z",
-    "history_date": "2026-02-16T11:44:11.115Z",
-    "history_change_reason": null,
-    "history_type": "~",
-    "history_user": [
-      "plataformafenix2026@gmail.com"
-    ]
-  }
-},
-{
-  "model": "notifications.notification",
-  "pk": 1,
-  "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
-    "event_type": "order_created",
-    "subject_es": "Pedido #1 creado",
-    "subject_zh_hans": "订单 #1 已创建",
-    "message_es": "Su pedido #1 ha sido registrado correctamente. Recibirá actualizaciones por email.",
-    "message_zh_hans": "您的订单 #1 已成功登记。您将收到电子邮件更新。",
-    "is_read": false,
-    "created_at": "2026-01-25T08:23:20.965Z"
-  }
-},
-{
-  "model": "notifications.notification",
-  "pk": 2,
-  "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
-    "event_type": "order_created",
-    "subject_es": "Pedido #2 creado",
-    "subject_zh_hans": "订单 #2 已创建",
-    "message_es": "Su pedido #2 ha sido registrado correctamente. Recibirá actualizaciones por email.",
-    "message_zh_hans": "您的订单 #2 已成功登记。您将收到电子邮件更新。",
-    "is_read": false,
-    "created_at": "2026-01-25T13:34:35.529Z"
-  }
-},
-{
-  "model": "notifications.notification",
-  "pk": 3,
-  "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
-    "event_type": "order_created",
-    "subject_es": "Pedido #3 creado",
-    "subject_zh_hans": "订单 #3 已创建",
-    "message_es": "Su pedido #3 ha sido registrado correctamente. Recibirá actualizaciones por email.",
-    "message_zh_hans": "您的订单 #3 已成功登记。您将收到电子邮件更新。",
-    "is_read": false,
-    "created_at": "2026-01-25T18:19:57.286Z"
-  }
-},
-{
-  "model": "notifications.notification",
-  "pk": 4,
-  "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
-    "event_type": "order_created",
-    "subject_es": "Pedido #4 creado",
-    "subject_zh_hans": "订单 #4 已创建",
-    "message_es": "Su pedido #4 ha sido registrado correctamente. Recibirá actualizaciones por email.",
-    "message_zh_hans": "您的订单 #4 已成功登记。您将收到电子邮件更新。",
-    "is_read": false,
-    "created_at": "2026-01-25T18:39:57.564Z"
-  }
-},
-{
-  "model": "notifications.notification",
-  "pk": 5,
-  "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
-    "event_type": "order_created",
-    "subject_es": "Pedido #5 creado",
-    "subject_zh_hans": "订单 #5 已创建",
-    "message_es": "Su pedido #5 ha sido registrado correctamente. Recibirá actualizaciones por email.",
-    "message_zh_hans": "您的订单 #5 已成功登记。您将收到电子邮件更新。",
-    "is_read": false,
-    "created_at": "2026-01-26T20:29:03.588Z"
-  }
-},
-{
-  "model": "notifications.notification",
-  "pk": 6,
-  "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
-    "event_type": "order_created",
-    "subject_es": "Pedido #6 creado",
-    "subject_zh_hans": "订单 #6 已创建",
-    "message_es": "Su pedido #6 ha sido registrado correctamente. Recibirá actualizaciones por email.",
-    "message_zh_hans": "您的订单 #6 已成功登记。您将收到电子邮件更新。",
-    "is_read": false,
-    "created_at": "2026-02-06T10:06:29.562Z"
-  }
-},
-{
-  "model": "notifications.notification",
-  "pk": 7,
-  "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
-    "event_type": "order_created",
-    "subject_es": "Pedido #7 creado",
-    "subject_zh_hans": "订单 #7 已创建",
-    "message_es": "Su pedido #7 ha sido registrado correctamente. Recibirá actualizaciones por email.",
-    "message_zh_hans": "您的订单 #7 已成功登记。您将收到电子邮件更新。",
-    "is_read": false,
-    "created_at": "2026-02-08T21:17:11.000Z"
-  }
-},
-{
-  "model": "notifications.notification",
-  "pk": 8,
-  "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
-    "event_type": "order_created",
-    "subject_es": "Pedido #8 creado",
-    "subject_zh_hans": "订单 #8 已创建",
-    "message_es": "Su pedido #8 ha sido registrado correctamente. Recibirá actualizaciones por email.",
-    "message_zh_hans": "您的订单 #8 已成功登记。您将收到电子邮件更新。",
-    "is_read": false,
-    "created_at": "2026-02-09T10:22:05.472Z"
-  }
-},
-{
-  "model": "notifications.notification",
-  "pk": 9,
-  "fields": {
-    "user": [
-      "vmarfetanmorales@gmail.com"
-    ],
-    "event_type": "order_created",
-    "subject_es": "Pedido #9 creado",
-    "subject_zh_hans": "订单 #9 已创建",
-    "message_es": "Su pedido #9 ha sido registrado correctamente. Recibirá actualizaciones por email.",
-    "message_zh_hans": "您的订单 #9 已成功登记。您将收到电子邮件更新。",
-    "is_read": false,
-    "created_at": "2026-02-09T10:51:46.166Z"
-  }
-},
-{
-  "model": "notifications.notification",
-  "pk": 10,
-  "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
-    "event_type": "order_created",
-    "subject_es": "Pedido #10 creado",
-    "subject_zh_hans": "订单 #10 已创建",
-    "message_es": "Su pedido #10 ha sido registrado correctamente. Recibirá actualizaciones por email.",
-    "message_zh_hans": "您的订单 #10 已成功登记。您将收到电子邮件更新。",
-    "is_read": false,
-    "created_at": "2026-02-09T10:56:03.115Z"
-  }
-},
-{
-  "model": "notifications.notification",
-  "pk": 11,
-  "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
-    "event_type": "order_created",
-    "subject_es": "Pedido #11 creado",
-    "subject_zh_hans": "订单 #11 已创建",
-    "message_es": "Su pedido #11 ha sido registrado correctamente. Recibirá actualizaciones por email.",
-    "message_zh_hans": "您的订单 #11 已成功登记。您将收到电子邮件更新。",
-    "is_read": false,
-    "created_at": "2026-02-09T11:05:27.156Z"
-  }
-},
-{
-  "model": "notifications.notification",
-  "pk": 12,
-  "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
-    "event_type": "order_created",
-    "subject_es": "Pedido #12 creado",
-    "subject_zh_hans": "订单 #12 已创建",
-    "message_es": "Su pedido #12 ha sido registrado correctamente. Recibirá actualizaciones por email.",
-    "message_zh_hans": "您的订单 #12 已成功登记。您将收到电子邮件更新。",
-    "is_read": false,
-    "created_at": "2026-02-09T11:51:59.369Z"
-  }
-},
-{
-  "model": "notifications.notification",
-  "pk": 13,
-  "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
-    "event_type": "order_created",
-    "subject_es": "Pedido #13 creado",
-    "subject_zh_hans": "订单 #13 已创建",
-    "message_es": "Su pedido #13 ha sido registrado correctamente. Recibirá actualizaciones por email.",
-    "message_zh_hans": "您的订单 #13 已成功登记。您将收到电子邮件更新。",
-    "is_read": false,
-    "created_at": "2026-02-09T12:23:20.040Z"
-  }
-},
-{
-  "model": "notifications.notification",
-  "pk": 14,
-  "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
-    "event_type": "order_created",
-    "subject_es": "Pedido #14 creado",
-    "subject_zh_hans": "订单 #14 已创建",
-    "message_es": "Su pedido #14 ha sido registrado correctamente. Recibirá actualizaciones por email.",
-    "message_zh_hans": "您的订单 #14 已成功登记。您将收到电子邮件更新。",
-    "is_read": false,
-    "created_at": "2026-02-11T14:00:06.364Z"
-  }
-},
-{
-  "model": "notifications.notification",
-  "pk": 15,
-  "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
-    "event_type": "order_created",
-    "subject_es": "Pedido #15 creado",
-    "subject_zh_hans": "订单 #15 已创建",
-    "message_es": "Su pedido #15 ha sido registrado correctamente. Recibirá actualizaciones por email.",
-    "message_zh_hans": "您的订单 #15 已成功登记。您将收到电子邮件更新。",
-    "is_read": false,
-    "created_at": "2026-02-12T14:47:53.892Z"
-  }
-},
-{
-  "model": "notifications.notification",
-  "pk": 16,
-  "fields": {
-    "user": [
-      "plataformafenix2026@gmail.com"
-    ],
-    "event_type": "order_delivered",
-    "subject_es": "Pedido #15 entregado",
-    "subject_zh_hans": "订单 #15 已送达",
-    "message_es": "Su pedido #15 ha sido entregado. Gracias por su confianza.",
-    "message_zh_hans": "您的订单 #15 已送达。感谢您的信任。",
-    "is_read": false,
-    "created_at": "2026-02-13T12:39:46.667Z"
   }
 }
 ]

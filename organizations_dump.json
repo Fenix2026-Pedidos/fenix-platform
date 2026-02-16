@@ -1,0 +1,99 @@
+[
+{
+  "model": "organizations.historicalcompany",
+  "pk": 1,
+  "fields": {
+    "id": 1,
+    "uuid": "b8bd7a89-be7a-46d9-b78d-61dee66392fa",
+    "name": "Distribuciones Fenix de la Mancha SL.",
+    "slug": "distribuciones-fenix-de-la-mancha-sl",
+    "vat_number": "",
+    "tax_id": "",
+    "sector": "",
+    "size": "",
+    "country": "",
+    "city": "",
+    "address": "",
+    "postal_code": "",
+    "phone": "",
+    "email": "",
+    "website": "",
+    "logo": "",
+    "is_active": true,
+    "created_at": "2026-02-16T11:44:11.088Z",
+    "updated_at": "2026-02-16T11:44:11.088Z",
+    "history_date": "2026-02-16T11:44:11.092Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "organizations.historicalcompany",
+  "pk": 2,
+  "fields": {
+    "id": 1,
+    "uuid": "b8bd7a89-be7a-46d9-b78d-61dee66392fa",
+    "name": "Distribuciones Fenix de la Mancha SL.",
+    "slug": "distribuciones-fenix-de-la-mancha-sl",
+    "vat_number": "47524324",
+    "tax_id": "",
+    "sector": "",
+    "size": "",
+    "country": "",
+    "city": "",
+    "address": "",
+    "postal_code": "",
+    "phone": "",
+    "email": "",
+    "website": "",
+    "logo": "",
+    "is_active": true,
+    "created_at": "2026-02-16T11:44:11.088Z",
+    "updated_at": "2026-02-16T11:44:11.110Z",
+    "history_date": "2026-02-16T11:44:11.115Z",
+    "history_change_reason": null,
+    "history_type": "~",
+    "history_user": 1
+  }
+},
+{
+  "model": "organizations.company",
+  "pk": 1,
+  "fields": {
+    "uuid": "b8bd7a89-be7a-46d9-b78d-61dee66392fa",
+    "name": "Distribuciones Fenix de la Mancha SL.",
+    "slug": "distribuciones-fenix-de-la-mancha-sl",
+    "vat_number": "47524324",
+    "tax_id": "",
+    "sector": "",
+    "size": "",
+    "country": "",
+    "city": "",
+    "address": "",
+    "postal_code": "",
+    "phone": "",
+    "email": "",
+    "website": "",
+    "logo": "",
+    "is_active": true,
+    "created_at": "2026-02-16T11:44:11.088Z",
+    "updated_at": "2026-02-16T11:44:11.110Z"
+  }
+},
+{
+  "model": "organizations.usercompany",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "company": 1,
+    "job_title": "Sistemas",
+    "department": "",
+    "is_company_admin": false,
+    "is_billing_contact": false,
+    "joined_at": "2026-02-16T11:44:11.100Z",
+    "left_at": null,
+    "is_active": true
+  }
+}
+]

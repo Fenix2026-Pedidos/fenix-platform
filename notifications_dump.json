@@ -1,0 +1,226 @@
+[
+{
+  "model": "notifications.notification",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "event_type": "order_created",
+    "subject_es": "Pedido #1 creado",
+    "subject_zh_hans": "订单 #1 已创建",
+    "message_es": "Su pedido #1 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+    "message_zh_hans": "您的订单 #1 已成功登记。您将收到电子邮件更新。",
+    "is_read": false,
+    "created_at": "2026-01-25T08:23:20.965Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 2,
+  "fields": {
+    "user": 1,
+    "event_type": "order_created",
+    "subject_es": "Pedido #2 creado",
+    "subject_zh_hans": "订单 #2 已创建",
+    "message_es": "Su pedido #2 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+    "message_zh_hans": "您的订单 #2 已成功登记。您将收到电子邮件更新。",
+    "is_read": false,
+    "created_at": "2026-01-25T13:34:35.529Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 3,
+  "fields": {
+    "user": 1,
+    "event_type": "order_created",
+    "subject_es": "Pedido #3 creado",
+    "subject_zh_hans": "订单 #3 已创建",
+    "message_es": "Su pedido #3 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+    "message_zh_hans": "您的订单 #3 已成功登记。您将收到电子邮件更新。",
+    "is_read": false,
+    "created_at": "2026-01-25T18:19:57.286Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 4,
+  "fields": {
+    "user": 1,
+    "event_type": "order_created",
+    "subject_es": "Pedido #4 creado",
+    "subject_zh_hans": "订单 #4 已创建",
+    "message_es": "Su pedido #4 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+    "message_zh_hans": "您的订单 #4 已成功登记。您将收到电子邮件更新。",
+    "is_read": false,
+    "created_at": "2026-01-25T18:39:57.564Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 5,
+  "fields": {
+    "user": 1,
+    "event_type": "order_created",
+    "subject_es": "Pedido #5 creado",
+    "subject_zh_hans": "订单 #5 已创建",
+    "message_es": "Su pedido #5 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+    "message_zh_hans": "您的订单 #5 已成功登记。您将收到电子邮件更新。",
+    "is_read": false,
+    "created_at": "2026-01-26T20:29:03.588Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 6,
+  "fields": {
+    "user": 1,
+    "event_type": "order_created",
+    "subject_es": "Pedido #6 creado",
+    "subject_zh_hans": "订单 #6 已创建",
+    "message_es": "Su pedido #6 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+    "message_zh_hans": "您的订单 #6 已成功登记。您将收到电子邮件更新。",
+    "is_read": false,
+    "created_at": "2026-02-06T10:06:29.562Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 7,
+  "fields": {
+    "user": 1,
+    "event_type": "order_created",
+    "subject_es": "Pedido #7 creado",
+    "subject_zh_hans": "订单 #7 已创建",
+    "message_es": "Su pedido #7 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+    "message_zh_hans": "您的订单 #7 已成功登记。您将收到电子邮件更新。",
+    "is_read": false,
+    "created_at": "2026-02-08T21:17:11.000Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 8,
+  "fields": {
+    "user": 2,
+    "event_type": "order_created",
+    "subject_es": "Pedido #8 creado",
+    "subject_zh_hans": "订单 #8 已创建",
+    "message_es": "Su pedido #8 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+    "message_zh_hans": "您的订单 #8 已成功登记。您将收到电子邮件更新。",
+    "is_read": false,
+    "created_at": "2026-02-09T10:22:05.472Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 9,
+  "fields": {
+    "user": 2,
+    "event_type": "order_created",
+    "subject_es": "Pedido #9 creado",
+    "subject_zh_hans": "订单 #9 已创建",
+    "message_es": "Su pedido #9 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+    "message_zh_hans": "您的订单 #9 已成功登记。您将收到电子邮件更新。",
+    "is_read": false,
+    "created_at": "2026-02-09T10:51:46.166Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 10,
+  "fields": {
+    "user": 1,
+    "event_type": "order_created",
+    "subject_es": "Pedido #10 creado",
+    "subject_zh_hans": "订单 #10 已创建",
+    "message_es": "Su pedido #10 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+    "message_zh_hans": "您的订单 #10 已成功登记。您将收到电子邮件更新。",
+    "is_read": false,
+    "created_at": "2026-02-09T10:56:03.115Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 11,
+  "fields": {
+    "user": 1,
+    "event_type": "order_created",
+    "subject_es": "Pedido #11 creado",
+    "subject_zh_hans": "订单 #11 已创建",
+    "message_es": "Su pedido #11 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+    "message_zh_hans": "您的订单 #11 已成功登记。您将收到电子邮件更新。",
+    "is_read": false,
+    "created_at": "2026-02-09T11:05:27.156Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 12,
+  "fields": {
+    "user": 1,
+    "event_type": "order_created",
+    "subject_es": "Pedido #12 creado",
+    "subject_zh_hans": "订单 #12 已创建",
+    "message_es": "Su pedido #12 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+    "message_zh_hans": "您的订单 #12 已成功登记。您将收到电子邮件更新。",
+    "is_read": false,
+    "created_at": "2026-02-09T11:51:59.369Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 13,
+  "fields": {
+    "user": 1,
+    "event_type": "order_created",
+    "subject_es": "Pedido #13 creado",
+    "subject_zh_hans": "订单 #13 已创建",
+    "message_es": "Su pedido #13 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+    "message_zh_hans": "您的订单 #13 已成功登记。您将收到电子邮件更新。",
+    "is_read": false,
+    "created_at": "2026-02-09T12:23:20.040Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 14,
+  "fields": {
+    "user": 1,
+    "event_type": "order_created",
+    "subject_es": "Pedido #14 creado",
+    "subject_zh_hans": "订单 #14 已创建",
+    "message_es": "Su pedido #14 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+    "message_zh_hans": "您的订单 #14 已成功登记。您将收到电子邮件更新。",
+    "is_read": false,
+    "created_at": "2026-02-11T14:00:06.364Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 15,
+  "fields": {
+    "user": 1,
+    "event_type": "order_created",
+    "subject_es": "Pedido #15 creado",
+    "subject_zh_hans": "订单 #15 已创建",
+    "message_es": "Su pedido #15 ha sido registrado correctamente. Recibirá actualizaciones por email.",
+    "message_zh_hans": "您的订单 #15 已成功登记。您将收到电子邮件更新。",
+    "is_read": false,
+    "created_at": "2026-02-12T14:47:53.892Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 16,
+  "fields": {
+    "user": 1,
+    "event_type": "order_delivered",
+    "subject_es": "Pedido #15 entregado",
+    "subject_zh_hans": "订单 #15 已送达",
+    "message_es": "Su pedido #15 ha sido entregado. Gracias por su confianza.",
+    "message_zh_hans": "您的订单 #15 已送达。感谢您的信任。",
+    "is_read": false,
+    "created_at": "2026-02-13T12:39:46.667Z"
+  }
+}
+]
