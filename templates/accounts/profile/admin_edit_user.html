@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Editar Usuario" %} - {{ target_user.get_full_name|default:target_user.email }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+    <!-- Header -->
+    <div class="page-header" style="margin-bottom: 24px;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+                <h1 style="font-size: 28px; font-weight: 600; color: #1f2937; margin: 0 0 8px 0;">
+                    {% trans "Editar Perfil de Usuario" %}
+                </h1>
+                <p style="color: #6b7280; margin: 0;">
+                    {% trans "Edición del perfil por administrador" %}
+                </p>
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <a href="{% url 'accounts:admin_view_user' target_user.id %}" class="btn btn-secondary">
+                    <i class="bi bi-eye"></i> {% trans "Ver Perfil" %}
+                </a>
+                <a href="{% url 'accounts:user_approval_dashboard' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> {% trans "Volver" %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Alert -->
+    <div style="background: #dbeafe; border-left: 4px solid #3b82f6; padding: 16px; margin-bottom: 24px; border-radius: 4px;">
+        <p style="margin: 0; color: #1e40af; font-size: 14px;">
+            <i class="bi bi-info-circle"></i>
+            {% trans "Estás editando el perfil de:" %} <strong>{{ target_user.email }}</strong>
+        </p>
+    </div>
+
+    <!-- Formulario de Edición Rápida -->
+    <div class="card" style="background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; margin-bottom: 24px;">
+        <h3 style="font-size: 18px; font-weight: 600; color: #1f2937; margin: 0 0 16px 0; padding-bottom: 12px; border-bottom: 1px solid #e5e7eb;">
+            {% trans "Edición Rápida" %}
+        </h3>
+        
+        <form method="post" action="{% url 'accounts:user_update' target_user.id %}">
+            {% csrf_token %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                <div>
+                    <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 4px;">
+                        {% trans "Nombre" %}
+                    </label>
+                    <input type="text" name="first_name" value="{{ target_user.first_name }}" 
+                           style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 4px;">
+                        {% trans "Apellidos" %}
+                    </label>
+                    <input type="text" name="last_name" value="{{ target_user.last_name }}" 
+                           style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 4px;">
+                        {% trans "Empresa" %}
+                    </label>
+                    <input type="text" name="company" value="{{ target_user.company }}" 
+                           style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 4px;">
+                        {% trans "Rol" %}
+                    </label>
+                    <select name="role" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px;">
+                        <option value="user" {% if target_user.role == 'user' %}selected{% endif %}>{% trans "Usuario" %}</option>
+                        <option value="admin" {% if target_user.role == 'admin' %}selected{% endif %}>{% trans "Admin" %}</option>
+                        {% if request.user.is_super_admin %}
+                        <option value="super_admin" {% if target_user.role == 'super_admin' %}selected{% endif %}>{% trans "Super Admin" %}</option>
+                        {% endif %}
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 4px;">
+                        {% trans "Estado" %}
+                    </label>
+                    <select name="status" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px;">
+                        <option value="active" {% if target_user.status == 'active' %}selected{% endif %}>{% trans "Activo" %}</option>
+                        <option value="disabled" {% if target_user.status == 'disabled' %}selected{% endif %}>{% trans "Deshabilitado" %}</option>
+                        <option value="pending" {% if target_user.status == 'pending' %}selected{% endif %}>{% trans "Pendiente" %}</option>
+                        <option value="rejected" {% if target_user.status == 'rejected' %}selected{% endif %}>{% trans "Rechazado" %}</option>
+                    </select>
+                </div>
+                <div style="display: flex; align-items: end;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" name="email_verified" {% if target_user.email_verified %}checked{% endif %}
+                               style="width: 16px; height: 16px;">
+                        <span style="font-size: 14px; color: #374151;">{% trans "Email verificado" %}</span>
+                    </label>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: end;">
+                <a href="{% url 'accounts:admin_view_user' target_user.id %}" class="btn btn-secondary">
+                    {% trans "Cancelar" %}
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> {% trans "Guardar Cambios" %}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Enlace a Vista Completa -->
+    <div class="card" style="background: #f9fafb; border: 1px dashed #d1d5db; border-radius: 8px; padding: 24px; text-align: center;">
+        <p style="margin: 0 0 16px 0; color: #6b7280;">
+            {% trans "Para editar datos operativos completos (direcciones, teléfonos, etc.) usa la vista avanzada:" %}
+        </p>
+        <p style="margin: 0; color: #9ca3af; font-size: 14px;">
+            {% trans "Próximamente: Vista de edición completa" %}
+        </p>
+    </div>
+</div>
+{% endblock %}

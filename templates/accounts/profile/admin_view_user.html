@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Ver Usuario" %} - {{ target_user.get_full_name|default:target_user.email }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+    <!-- Header -->
+    <div class="page-header" style="margin-bottom: 24px;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+                <h1 style="font-size: 28px; font-weight: 600; color: #1f2937; margin: 0 0 8px 0;">
+                    {% trans "Perfil de Usuario" %}
+                </h1>
+                <p style="color: #6b7280; margin: 0;">
+                    {% trans "Vista de solo lectura del perfil del usuario" %}
+                </p>
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <a href="{% url 'accounts:admin_edit_user' target_user.id %}" class="btn btn-primary">
+                    <i class="bi bi-pencil"></i> {% trans "Editar Perfil" %}
+                </a>
+                <a href="{% url 'accounts:user_approval_dashboard' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> {% trans "Volver" %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Info Card -->
+    <div class="card" style="background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; margin-bottom: 24px;">
+        <div style="display: flex; gap: 24px; align-items: start;">
+            <!-- Avatar -->
+            <div style="flex-shrink: 0;">
+                {% if target_user.avatar %}
+                    <img src="{{ target_user.avatar.url }}" alt="{{ target_user.get_full_name }}" 
+                         style="width: 96px; height: 96px; border-radius: 50%; object-fit: cover; border: 3px solid #e5e7eb;">
+                {% else %}
+                    <div style="width: 96px; height: 96px; border-radius: 50%; background: #e5e7eb; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 600; color: #6b7280;">
+                        {{ target_user.email.0|upper }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Info -->
+            <div style="flex: 1;">
+                <h2 style="font-size: 24px; font-weight: 600; color: #1f2937; margin: 0 0 8px 0;">
+                    {{ target_user.first_name }} {{ target_user.last_name }}
+                </h2>
+                <p style="color: #6b7280; margin: 0 0 16px 0;">{{ target_user.email }}</p>
+                
+                <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                    <div>
+                        <span style="color: #6b7280; font-size: 14px;">{% trans "Rol:" %}</span>
+                        <span style="display: inline-block; padding: 4px 12px; background: #e5e7eb; border-radius: 9999px; font-size: 14px; font-weight: 500; color: #374151; margin-left: 8px;">
+                            {{ target_user.get_role_display }}
+                        </span>
+                    </div>
+                    <div>
+                        <span style="color: #6b7280; font-size: 14px;">{% trans "Estado:" %}</span>
+                        {% if target_user.status == 'active' %}
+                            <span style="display: inline-block; padding: 4px 12px; background: #d1fae5; border-radius: 9999px; font-size: 14px; font-weight: 500; color: #065f46; margin-left: 8px;">
+                                {% trans "Activo" %}
+                            </span>
+                        {% elif target_user.status == 'disabled' %}
+                            <span style="display: inline-block; padding: 4px 12px; background: #fee2e2; border-radius: 9999px; font-size: 14px; font-weight: 500; color: #991b1b; margin-left: 8px;">
+                                {% trans "Deshabilitado" %}
+                            </span>
+                        {% else %}
+                            <span style="display: inline-block; padding: 4px 12px; background: #fef3c7; border-radius: 9999px; font-size: 14px; font-weight: 500; color: #92400e; margin-left: 8px;">
+                                {{ target_user.get_status_display }}
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <span style="color: #6b7280; font-size: 14px;">{% trans "Empresa:" %}</span>
+                        <strong style="color: #1f2937; margin-left: 8px;">{{ target_user.company|default:"—" }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Datos Personales -->
+    <div class="card" style="background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; margin-bottom: 24px;">
+        <h3 style="font-size: 18px; font-weight: 600; color: #1f2937; margin: 0 0 16px 0; padding-bottom: 12px; border-bottom: 1px solid #e5e7eb;">
+            {% trans "Datos Personales" %}
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+            <div>
+                <label style="display: block; font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">
+                    {% trans "Nombre" %}
+                </label>
+                <p style="margin: 0; color: #1f2937;">{{ target_user.first_name|default:"—" }}</p>
+            </div>
+            <div>
+                <label style="display: block; font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">
+                    {% trans "Apellidos" %}
+                </label>
+                <p style="margin: 0; color: #1f2937;">{{ target_user.last_name|default:"—" }}</p>
+            </div>
+            <div>
+                <label style="display: block; font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">
+                    {% trans "Email" %}
+                </label>
+                <p style="margin: 0; color: #1f2937;">{{ target_user.email }}</p>
+            </div>
+            <div>
+                <label style="display: block; font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">
+                    {% trans "Teléfono" %}
+                </label>
+                <p style="margin: 0; color: #1f2937;">{{ target_user.phone|default:"—" }}</p>
+            </div>
+            <div>
+                <label style="display: block; font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">
+                    {% trans "Idioma" %}
+                </label>
+                <p style="margin: 0; color: #1f2937;">{{ target_user.get_language_display }}</p>
+            </div>
+            <div>
+                <label style="display: block; font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">
+                    {% trans "Fecha de registro" %}
+                </label>
+                <p style="margin: 0; color: #1f2937;">{{ target_user.date_joined|date:"d/m/Y H:i" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Datos de Empresa -->
+    <div class="card" style="background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; margin-bottom: 24px;">
+        <h3 style="font-size: 18px; font-weight: 600; color: #1f2937; margin: 0 0 16px 0; padding-bottom: 12px; border-bottom: 1px solid #e5e7eb;">
+            {% trans "Datos de Empresa" %}
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+            <div>
+                <label style="display: block; font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">
+                    {% trans "Empresa" %}
+                </label>
+                <p style="margin: 0; color: #1f2937;">{{ target_user.company|default:"—" }}</p>
+            </div>
+            <div>
+                <label style="display: block; font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">
+                    {% trans "Teléfono empresa" %}
+                </label>
+                <p style="margin: 0; color: #1f2937;">{{ target_user.telefono_empresa|default:"—" }}</p>
+            </div>
+            <div>
+                <label style="display: block; font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">
+                    {% trans "Dirección" %}
+                </label>
+                <p style="margin: 0; color: #1f2937;">{{ target_user.direccion_local|default:"—" }}</p>
+            </div>
+            <div>
+                <label style="display: block; font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">
+                    {% trans "Ciudad" %}
+                </label>
+                <p style="margin: 0; color: #1f2937;">{{ target_user.ciudad|default:"—" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sesiones Activas -->
+    <div class="card" style="background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px;">
+        <h3 style="font-size: 18px; font-weight: 600; color: #1f2937; margin: 0 0 16px 0; padding-bottom: 12px; border-bottom: 1px solid #e5e7eb;">
+            {% trans "Sesiones Activas" %}
+        </h3>
+        <p style="margin: 0; color: #1f2937;">
+            {% trans "Sesiones activas:" %} <strong>{{ active_sessions_count }}</strong>
+        </p>
+    </div>
+</div>
+{% endblock %}

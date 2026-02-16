@@ -37,6 +37,10 @@ urlpatterns = [
     path('profile/api-token/generate/', profile_views.generate_api_token, name='generate_api_token'),
     path('profile/api-token/revoke/', profile_views.revoke_api_token, name='revoke_api_token'),
     
+    # Administración de perfiles de otros usuarios (Solo ADMIN/SUPER_ADMIN)
+    path('profile/<int:user_id>/', profile_views.admin_view_user_profile, name='admin_view_user'),
+    path('profile/<int:user_id>/edit/', profile_views.admin_edit_user_profile, name='admin_edit_user'),
+    
     # Perfil operativo (requerido para crear pedidos)
     path('operative-profile/edit/', profile_views.operative_profile_edit, name='operative_profile_edit'),
     

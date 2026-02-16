@@ -153,8 +153,8 @@
                                 <button
                                     class="btn-kebab"
                                     data-menu="registered"
-                                    data-view-url="{% url 'admin:accounts_user_change' user.id %}"
-                                    data-edit-url="{% url 'accounts:user_update' user.id %}"
+                                    data-view-url="{% url 'accounts:admin_view_user' user.id %}"
+                                    data-edit-url="{% url 'accounts:admin_edit_user' user.id %}"
                                     data-delete-url="{% url 'accounts:user_delete' user.id %}"
                                     data-delete-email="{{ user.email }}"
                                     onclick="openActionMenu(event, this)"

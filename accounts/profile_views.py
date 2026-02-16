@@ -659,3 +659,100 @@ def update_complete_profile(request):
     }
     
     return render(request, 'accounts/profile/profile_dashboard_new.html', context)
+
+
+# ============================================================
+# VISTAS DE ADMINISTRACIÓN: Ver/Editar perfiles de otros usuarios
+# Solo para SUPER_ADMIN y ADMIN
+# ============================================================
+
+@login_required
+def admin_view_user_profile(request, user_id):
+    """
+    Vista para que ADMIN/SUPER_ADMIN vea el perfil de otro usuario.
+    
+    RBAC: Solo SUPER_ADMIN y ADMIN pueden acceder.
+    NUNCA usuarios normales.
+    """
+    # RBAC: Verificar permisos
+    if not request.user.can_manage_users():
+        messages.error(request, _('No tienes permisos para acceder a esta sección'))
+        return redirect('accounts:dashboard')
+    
+    # Obtener usuario objetivo
+    target_user = get_object_or_404(User, id=user_id)
+    
+    # RBAC: ADMIN no puede ver perfiles de SUPER_ADMIN
+    if target_user.is_super_admin() and not request.user.is_super_admin():
+        messages.error(request, _('No tienes permisos para ver este usuario'))
+        return redirect('accounts:user_approval_dashboard')
+    
+    # Obtener preferencias y seguridad
+    preferences = target_user.get_or_create_preferences()
+    security = target_user.get_or_create_security()
+    
+    # Obtener organización
+    user_company = UserCompany.objects.filter(user=target_user).first()
+    
+    # Sesiones activas
+    active_sessions_count = UserSession.objects.filter(
+        user=target_user,
+        is_active=True,
+        expires_at__gt=timezone.now()
+    ).count()
+    
+    context = {
+        'target_user': target_user,
+        'preferences': preferences,
+        'security': security,
+        'user_company': user_company,
+        'active_sessions_count': active_sessions_count,
+        'view_mode': True,  # Solo lectura
+        'is_admin_view': True,
+    }
+    
+    return render(request, 'accounts/profile/admin_view_user.html', context)
+
+
+@login_required
+def admin_edit_user_profile(request, user_id):
+    """
+    Vista para que ADMIN/SUPER_ADMIN edite el perfil de otro usuario.
+    
+    RBAC: Solo SUPER_ADMIN y ADMIN pueden acceder.
+    NUNCA usuarios normales.
+    """
+    # RBAC: Verificar permisos
+    if not request.user.can_manage_users():
+        messages.error(request, _('No tienes permisos para acceder a esta sección'))
+        return redirect('accounts:dashboard')
+    
+    # Obtener usuario objetivo
+    target_user = get_object_or_404(User, id=user_id)
+    
+    # RBAC: ADMIN no puede editar perfiles de SUPER_ADMIN
+    if target_user.is_super_admin() and not request.user.is_super_admin():
+        messages.error(request, _('No tienes permisos para editar este usuario'))
+        return redirect('accounts:user_approval_dashboard')
+    
+    # Obtener tab activo
+    active_tab = request.GET.get('tab', 'info-general')
+    
+    # Obtener preferencias y seguridad
+    preferences = target_user.get_or_create_preferences()
+    security = target_user.get_or_create_security()
+    
+    # Obtener organización
+    user_company = UserCompany.objects.filter(user=target_user).first()
+    
+    context = {
+        'target_user': target_user,
+        'preferences': preferences,
+        'security': security,
+        'user_company': user_company,
+        'active_tab': active_tab,
+        'edit_mode': True,
+        'is_admin_view': True,
+    }
+    
+    return render(request, 'accounts/profile/admin_edit_user.html', context)
