@@ -133,7 +133,7 @@
 }
 
 .table td {
-    padding: 10px 12px;
+    padding: 8px 12px;
     color: var(--gray-700);
 }
 
@@ -412,54 +412,53 @@
             {% endif %}
         </form>
 
-        {% if registered_users %}
+        {% if page_registered %}
         <div class="card">
             <div class="table-wrapper">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>{% trans "Usuario" %}</th>
-                            <th>{% trans "Empresa" %}</th>
-                            <th>{% trans "Rol" %}</th>
-                            <th>{% trans "Estado" %}</th>
-                            <th style="text-align: center; width: 60px;">
-                                <i class="bi bi-envelope-check" title="{% trans 'Email Verificado' %}"></i>
-                            </th>
-                            <th style="width: 100px;">{% trans "Fecha" %}</th>
+                            <th style="text-align: left;">{% trans "Usuario" %}</th>
+                            <th style="text-align: center;">{% trans "Empresa" %}</th>
+                            <th style="text-align: center;">{% trans "Correo electrónico" %}</th>
+                            <th style="text-align: center;">{% trans "Estado" %}</th>
+                            <th style="text-align: center;">{% trans "Procesado por" %}</th>
+                            <th style="text-align: center;">{% trans "Fecha de Solicitud" %}</th>
                             <th style="text-align: right; width: 100px;">{% trans "Acciones" %}</th>
                         </tr>
                     </thead>
                     <tbody>
-                    {% for user in registered_users %}
+                    {% for user in page_registered.object_list %}
                         {# RBAC: Ocultar super_admin si el usuario logado NO es super_admin #}
                         {% if user.role != 'super_admin' or user_is_super_admin %}
                         <tr id="user-row-{{ user.id }}">
-                            <td>
-                                <div class="user-cell">
-                                    <span class="user-email">{{ user.email }}</span>
-                                    <span class="user-name">{{ user.full_name }}</span>
-                                </div>
+                            <td style="text-align: left;">
+                                {% if user.first_name and user.last_name %}
+                                    <span>{{ user.first_name }} {{ user.last_name }}</span>
+                                {% elif user.full_name %}
+                                    <span>{{ user.full_name }}</span>
+                                {% else %}
+                                    <span class="text-gray-400 italic" style="color: var(--gray-400); font-style: italic;">{% trans "Usuario sin nombre" %}</span>
+                                {% endif %}
                             </td>
-                            <td>{{ user.company|default:"-" }}</td>
-                            <td>
-                                <span class="status-badge role-badge">
-                                    {{ user.get_role_display }}
-                                </span>
-                            </td>
-                            <td>
+                            <td style="text-align: center;">{{ user.company|default:"-" }}</td>
+                            <td style="text-align: center; font-size: 12px;">{{ user.email }}</td>
+                            <td style="text-align: center;">
                                 <span class="status-badge {{ user.get_status_display_class }}">
                                     {{ user.get_status_display }}
                                 </span>
                             </td>
                             <td style="text-align: center;">
-                                {% if user.email_verified %}
-                                <i class="bi bi-check-circle-fill icon-check"></i>
+                                {% if user.approved_by %}
+                                    <span class="status-badge role-badge">
+                                        {{ user.approved_by.get_role_display }}
+                                    </span>
                                 {% else %}
-                                <i class="bi bi-x-circle-fill icon-x"></i>
+                                    <span class="text-gray-400" style="color: var(--gray-400);">—</span>
                                 {% endif %}
                             </td>
-                            <td>{{ user.date_joined|date:"d/m/Y" }}</td>
-                            <td>
+                            <td style="text-align: center;">{{ user.date_joined|date:"d/m/Y" }}</td>
+                            <td style="text-align: right;">
                                 {# RBAC: ADMIN no puede editar/eliminar SUPER_ADMIN #}
                                 {% if user.role == 'super_admin' and not user_is_super_admin %}
                                     <span class="no-permission">{% trans "Sin permisos" %}</span>
@@ -484,8 +483,12 @@
                                         {% csrf_token %}
                                         <div class="edit-form-grid">
                                             <div>
-                                                <label>{% trans "Nombre completo" %}</label>
-                                                <input type="text" name="full_name" value="{{ user.full_name }}" required>
+                                                <label>{% trans "Nombre" %}</label>
+                                                <input type="text" name="first_name" value="{{ user.first_name }}" placeholder="{% trans 'Nombre' %}">
+                                            </div>
+                                            <div>
+                                                <label>{% trans "Apellidos" %}</label>
+                                                <input type="text" name="last_name" value="{{ user.last_name }}" placeholder="{% trans 'Apellidos' %}">
                                             </div>
                                             <div>
                                                 <label>{% trans "Empresa" %}</label>
@@ -515,12 +518,6 @@
                                                 <label>
                                                     <input type="checkbox" name="email_verified" {% if user.email_verified %}checked{% endif %}>
                                                     {% trans "Email verificado" %}
-                                                </label>
-                                            </div>
-                                            <div>
-                                                <label>
-                                                    <input type="checkbox" name="is_active" {% if user.is_active %}checked{% endif %}>
-                                                    {% trans "Acceso activo" %}
                                                 </label>
                                             </div>
                                         </div>
@@ -554,48 +551,53 @@
 
     <!-- TAB 2: Nuevos Usuarios (Solicitudes Pendientes) -->
     <div id="tab-new_users" class="tab-content {% if active_tab == 'new_users' %}active{% endif %}">
-        {% if pending_new_users %}
+        {% if page_pending %}
         <div class="card">
             <div class="table-wrapper">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>{% trans "Usuario" %}</th>
-                            <th>{% trans "Empresa" %}</th>
-                            <th>{% trans "Rol" %}</th>
-                            <th style="text-align: center; width: 60px;">
-                                <i class="bi bi-envelope-check" title="{% trans 'Email Verificado' %}"></i>
-                            </th>
-                            <th style="width: 150px;">{% trans "Fecha" %}</th>
+                            <th style="text-align: left;">{% trans "Usuario" %}</th>
+                            <th style="text-align: center;">{% trans "Empresa" %}</th>
+                            <th style="text-align: center;">{% trans "Correo electrónico" %}</th>
+                            <th style="text-align: center;">{% trans "Estado" %}</th>
+                            <th style="text-align: center;">{% trans "Procesado por" %}</th>
+                            <th style="text-align: center;">{% trans "Fecha de Solicitud" %}</th>
                             <th style="text-align: right; width: 100px;">{% trans "Acciones" %}</th>
                         </tr>
                     </thead>
                     <tbody>
-                    {% for user in pending_new_users %}
+                    {% for user in page_pending.object_list %}
                         {# RBAC: Solo permitir aprobar/rechazar si se tiene permiso #}
                         {% if user.role != 'super_admin' or user_is_super_admin %}
                         <tr>
-                            <td>
-                                <div class="user-cell">
-                                    <span class="user-email">{{ user.email }}</span>
-                                    <span class="user-name">{{ user.full_name }}</span>
-                                </div>
+                            <td style="text-align: left;">
+                                {% if user.first_name and user.last_name %}
+                                    <span>{{ user.first_name }} {{ user.last_name }}</span>
+                                {% elif user.full_name %}
+                                    <span>{{ user.full_name }}</span>
+                                {% else %}
+                                    <span class="text-gray-400 italic" style="color: var(--gray-400); font-style: italic;">{% trans "Usuario sin nombre" %}</span>
+                                {% endif %}
                             </td>
-                            <td>{{ user.company|default:"-" }}</td>
-                            <td>
-                                <span class="status-badge role-badge">
-                                    {{ user.get_role_display }}
+                            <td style="text-align: center;">{{ user.company|default:"-" }}</td>
+                            <td style="text-align: center; font-size: 12px;">{{ user.email }}</td>
+                            <td style="text-align: center;">
+                                <span class="status-badge {{ user.get_status_display_class }}">
+                                    {{ user.get_status_display }}
                                 </span>
                             </td>
                             <td style="text-align: center;">
-                                {% if user.email_verified %}
-                                <i class="bi bi-check-circle-fill icon-check"></i>
+                                {% if user.approved_by %}
+                                    <span class="status-badge role-badge">
+                                        {{ user.approved_by.get_role_display }}
+                                    </span>
                                 {% else %}
-                                <i class="bi bi-x-circle-fill icon-x"></i>
+                                    <span class="text-gray-400" style="color: var(--gray-400);">—</span>
                                 {% endif %}
                             </td>
-                            <td>{{ user.date_joined|date:"d/m/Y H:i" }}</td>
-                            <td>
+                            <td style="text-align: center;">{{ user.date_joined|date:"d/m/Y H:i" }}</td>
+                            <td style="text-align: right;">
                                 {% if user.email_verified %}
                                     <div class="action-buttons">
                                         <form method="post" action="{% url 'accounts:approve_user' user.id %}" style="display: inline;">
