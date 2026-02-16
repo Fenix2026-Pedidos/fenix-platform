@@ -388,43 +388,71 @@ def user_update_view(request, user_id):
         return redirect('accounts:user_approval_dashboard')
     
     # Obtener datos del formulario
+    # Soportar tanto first_name/last_name (nuevo formulario admin) como full_name (legacy)
+    first_name = request.POST.get('first_name', '').strip()
+    last_name = request.POST.get('last_name', '').strip()
     full_name = request.POST.get('full_name', '').strip()
+    
     company = request.POST.get('company', '').strip()
     role = request.POST.get('role', '')
     status = request.POST.get('status', '')
     email_verified = request.POST.get('email_verified') == 'on'
     is_active = request.POST.get('is_active') == 'on'
     
+    # Determinar si viene del nuevo formulario admin
+    is_admin_form = 'first_name' in request.POST
+    redirect_view = 'accounts:admin_edit_user' if is_admin_form else 'accounts:user_approval_dashboard'
+    
     # Validaciones
-    if not full_name:
-        messages.error(request, _('El nombre completo es obligatorio.'))
+    if not full_name and not (first_name or last_name):
+        messages.error(request, _('El nombre es obligatorio.'))
+        if is_admin_form:
+            return redirect('accounts:admin_edit_user', user_id)
         return redirect('accounts:user_approval_dashboard')
     
     if role and role not in dict(User.ROLE_CHOICES):
         messages.error(request, _('Rol inválido.'))
+        if is_admin_form:
+            return redirect('accounts:admin_edit_user', user_id)
         return redirect('accounts:user_approval_dashboard')
     
     # Validar permiso para asignar el role solicitado
     if role and role != user_to_update.role:
         if not can_assign_role(request.user, role):
             messages.error(request, _('No tienes permiso para asignar este rol.'))
+            if is_admin_form:
+                return redirect('accounts:admin_edit_user', user_id)
             return redirect('accounts:user_approval_dashboard')
     
-    if status not in dict(User.STATUS_CHOICES):
+    if status and status not in dict(User.STATUS_CHOICES):
         messages.error(request, _('Estado inválido.'))
+        if is_admin_form:
+            return redirect('accounts:admin_edit_user', user_id)
         return redirect('accounts:user_approval_dashboard')
     
     # Actualizar campos
-    user_to_update.full_name = full_name
+    # Priorizar first_name/last_name sobre full_name
+    if is_admin_form:
+        user_to_update.first_name = first_name
+        user_to_update.last_name = last_name
+    elif full_name:
+        user_to_update.full_name = full_name
+    
     user_to_update.company = company
     if role:
         user_to_update.role = role
-    user_to_update.status = status
-    user_to_update.email_verified = email_verified
-    user_to_update.is_active = is_active
+    if status:
+        user_to_update.status = status
+        # Sincronizar is_active con status
+        user_to_update.is_active = (status == User.STATUS_ACTIVE)
+        # Sincronizar pending_approval con status
+        user_to_update.pending_approval = (status == User.STATUS_PENDING)
     
-    # Sincronizar pending_approval con status
-    user_to_update.pending_approval = (status == User.STATUS_PENDING)
+    user_to_update.email_verified = email_verified
+    
+    # Si viene del formulario legacy (no admin), usar is_active directamente
+    if not is_admin_form and 'is_active' in request.POST:
+        user_to_update.is_active = is_active
     
     user_to_update.save()
     
@@ -432,7 +460,12 @@ def user_update_view(request, user_id):
         request,
         _('Usuario %(email)s actualizado correctamente.') % {'email': user_to_update.email}
     )
-    return redirect('accounts:user_approval_dashboard')
+    
+    # Si viene del formulario admin nuevo, redirigir a vista de perfil
+    if is_admin_form:
+        return redirect('accounts:admin_view_user', user_id)
+    else:
+        return redirect('accounts:user_approval_dashboard')
 
 
 @login_required
