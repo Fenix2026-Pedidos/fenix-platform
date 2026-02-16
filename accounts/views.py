@@ -386,6 +386,11 @@ def user_update_view(request, user_id):
     if not can_edit_target(request.user, user_to_update):
         messages.error(request, _('No tienes permiso para editar este usuario.'))
         return redirect('accounts:user_approval_dashboard')
+
+    # PROTECCION: Super Admin solo modificable por codigo
+    if user_to_update.is_super_admin():
+        messages.error(request, _('El perfil de Super Admin solo puede modificarse por codigo.'))
+        return redirect('accounts:admin_view_user', user_id)
     
     # PROTECCIÓN CRÍTICA: Evitar que Super Admin se desactive a sí mismo
     is_self_edit = (request.user.id == user_to_update.id)

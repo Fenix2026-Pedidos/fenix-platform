@@ -4,6 +4,7 @@ Añade información del usuario y configuración de idioma al contexto global.
 """
 from django.utils import translation
 from core.models import PlatformSettings
+from organizations.models import UserCompany
 from .utils import get_user_language, get_time_based_greeting, get_user_greeting, get_dashboard_status
 
 
@@ -57,3 +58,18 @@ def show_prices(request):
     return {
         'show_prices': request.user.is_authenticated,
     }
+
+
+def user_company_context(request):
+    """
+    Context processor que expone el cargo del usuario para el header.
+    Disponible como {{ user_company }} en templates.
+    """
+    if not request.user.is_authenticated:
+        return {'user_company': None}
+
+    user_company = UserCompany.objects.filter(
+        user=request.user
+    ).select_related('company').order_by('-is_active', '-joined_at').first()
+
+    return {'user_company': user_company}

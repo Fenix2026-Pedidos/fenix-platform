@@ -154,7 +154,8 @@
                                     class="btn-kebab"
                                     data-menu="registered"
                                     data-view-url="{% url 'accounts:admin_view_user' user.id %}"
-                                    data-edit-url="{% url 'accounts:admin_edit_user' user.id %}"
+                                    data-edit-url="{% if user.is_super_admin %}{% else %}{% url 'accounts:admin_edit_user' user.id %}{% endif %}"
+                                    data-edit-disabled="{% if user.is_super_admin %}true{% else %}false{% endif %}"
                                     data-delete-url="{% url 'accounts:user_delete' user.id %}"
                                     data-delete-email="{{ user.email }}"
                                     onclick="openActionMenu(event, this)"
@@ -1226,6 +1227,7 @@ function openActionMenu(event, button) {
 
     activeActionButton = button;
     const menuType = button.dataset.menu;
+    const editDisabled = button.dataset.editDisabled === 'true';
 
     if (menuType === 'registered') {
         actionDropdown.innerHTML = `
@@ -1233,10 +1235,11 @@ function openActionMenu(event, button) {
                 <i class="bi bi-eye"></i>
                 <span>Ver usuario</span>
             </a>
+            ${editDisabled ? '' : `
             <a class="dropdown-item" href="${button.dataset.editUrl}">
                 <i class="bi bi-pencil"></i>
                 <span>Editar</span>
-            </a>
+            </a>`}
             <button type="button" class="dropdown-item item-delete" data-action="delete" data-delete-url="${button.dataset.deleteUrl}" data-delete-email="${button.dataset.deleteEmail}">
                 <i class="bi bi-trash"></i>
                 <span>Eliminar</span>
