@@ -1,68 +1,100 @@
 {% load i18n orders_filters %}
 
 <!-- Title and Summary -->
-<div class="page-header">
-    {% if is_admin_view %}
-        <div class="mb-3">
-            <a href="{% url 'orders:order_list' %}" class="text-decoration-none text-muted">
-                <i class="bi bi-arrow-left"></i> {% trans "Volver a resumen" %}
-            </a>
-        </div>
-        <h1 class="page-title">
-            {% trans "Pedidos de" %} {{ client_name }}
-        </h1>
-    {% else %}
-        <h1 class="page-title">{% trans "Mis Pedidos" %}</h1>
-    {% endif %}
+
+<div class="page-header flex items-center justify-between mb-6">
+    <div class="flex items-center">
+        <button type="button" onclick="window.history.back()" class="flex items-center border border-gray-200 bg-white text-gray-700 rounded-lg px-5 py-2 text-base font-medium mr-4 hover:bg-gray-50 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+            {% trans "Volver" %}
+        </button>
+        {% if is_admin_view %}
+            <h1 class="page-title">{% trans "Pedidos de" %} {{ client_name }}</h1>
+        {% else %}
+            <h1 class="page-title">{% trans "Mis Pedidos" %}</h1>
+        {% endif %}
+    </div>
 </div>
 
 <!-- Modern Filter Bar (SaaS Style) -->
 <div class="filter-bar">
+
     <form method="get" action="{% url 'orders:order_list' %}" class="filter-form" id="orders-filter-form">
         <div class="filter-bar-header">
-            <div class="filter-bar-title">
-                <i class="bi bi-funnel"></i>
-                {% trans "Filtros" %}
-            </div>
-            
-            <div class="filter-controls">
-                <!-- Month Dropdown -->
-                <select name="month" id="month" class="filter-input">
+            <div class="filter-controls flex flex-row flex-nowrap items-center gap-3 overflow-x-auto px-1 min-h-[48px]">
+                <!-- Mes -->
+                <select name="month" id="month" class="filter-input h-10 min-w-[180px] max-w-[220px]" style="min-width:180px;max-width:220px;">
                     <option value="">{% trans "Todos los meses" %}</option>
                     {% for m in months_available %}
-                    <option value="{{ m.value }}" {% if selected_month == m.value %}selected{% endif %}>
-                        {{ m.label }}
-                    </option>
+                    <option value="{{ m.value }}" {% if selected_month == m.value %}selected{% endif %}>{{ m.label }}</option>
                     {% endfor %}
                 </select>
 
-                <!-- Year Dropdown -->
-                <select name="year" id="year" class="filter-input">
-                    {% for y in years_available %}
-                    <option value="{{ y }}" {% if selected_year|stringformat:"s" == y|stringformat:"s" %}selected{% endif %}>
-                        {{ y }}
-                    </option>
-                    {% endfor %}
-                </select>
-
-                <!-- Per Page Dropdown (hidden on mobile) -->
-                <select name="per_page" id="per_page" class="filter-input per-page-select">
-                    <option value="10" {% if per_page == 10 %}selected{% endif %}>10 / {% trans "página" %}</option>
-                    <option value="25" {% if per_page == 25 %}selected{% endif %}>25 / {% trans "página" %}</option>
-                    <option value="50" {% if per_page == 50 %}selected{% endif %}>50 / {% trans "página" %}</option>
-                </select>
-
-                <!-- Action Buttons -->
-                <div class="filter-actions">
-                    <button type="submit" class="btn-primary-filter">
-                        <i class="bi bi-check2"></i>
-                        <span class="btn-text">{% trans "Filtrar" %}</span>
-                    </button>
-                    <a href="{% url 'orders:order_list' %}" class="btn-ghost-filter">
-                        <i class="bi bi-x-circle"></i>
-                        <span class="btn-text">{% trans "Limpiar" %}</span>
-                    </a>
+                <!-- Cliente Searchable -->
+                <div class="flex flex-row items-center gap-2">
+                    <div class="relative flex items-center">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"><i class="bi bi-search"></i></span>
+                        <input type="text" id="client-search" name="client_search" placeholder="Seleccionar cliente..." autocomplete="off"
+                            class="filter-input pl-10 pr-2 h-10" style="width:180px;" onkeyup="filterClientOptions()">
+                    </div>
+                    <div class="flex items-center">
+                        <select name="client_id" id="client_id" class="filter-input h-10" style="width:170px;">
+                            <option value="">Todos los clientes</option>
+                            {% for c in clients %}
+                            <option value="{{ c.id }}" {% if selected_client|stringformat:'s' == c.id|stringformat:'s' %}selected{% endif %}>{{ c.full_name|default:c.email }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
+                <script>
+                function filterClientOptions() {
+                    var input = document.getElementById('client-search');
+                    var filter = input.value.toLowerCase();
+                    var select = document.getElementById('client_id');
+                    var options = select.options;
+                    for (var i = 0; i < options.length; i++) {
+                        var txt = options[i].text.toLowerCase();
+                        options[i].style.display = (filter === '' || txt.includes(filter)) ? '' : 'none';
+                    }
+                    // Si no hay coincidencias, mostrar opción especial
+                    var anyVisible = false;
+                    for (var i = 0; i < options.length; i++) {
+                        if (options[i].style.display !== 'none') anyVisible = true;
+                    }
+                    var noResult = document.getElementById('no-client-result');
+                    if (!anyVisible) {
+                        if (!noResult) {
+                            noResult = document.createElement('option');
+                            noResult.id = 'no-client-result';
+                            noResult.disabled = true;
+                            noResult.selected = true;
+                            noResult.text = 'No se encontraron clientes';
+                            select.appendChild(noResult);
+                        }
+                    } else if (noResult) {
+                        select.removeChild(noResult);
+                    }
+                }
+                </script>
+
+                <!-- Paginación -->
+                <select name="per_page" id="per_page" class="filter-input per-page-select h-10 min-w-[160px] max-w-[180px]" style="min-width:160px;max-width:180px;">
+                    <option value="10" {% if per_page == 10 %}selected{% endif %}>10 por página</option>
+                    <option value="25" {% if per_page == 25 %}selected{% endif %}>25 por página</option>
+                    <option value="50" {% if per_page == 50 %}selected{% endif %}>50 por página</option>
+                </select>
+
+                <!-- Botón Filtrar -->
+                <button type="submit" class="btn-primary-filter flex items-center ml-2">
+                    <i class="bi bi-check2"></i>
+                    <span class="btn-text">{% trans "Filtrar" %}</span>
+                </button>
+
+                <!-- Botón Limpiar -->
+                <a href="{% url 'orders:order_list' %}" class="btn-ghost-filter flex items-center ml-2">
+                    <i class="bi bi-x-circle"></i>
+                    <span class="btn-text">{% trans "Limpiar" %}</span>
+                </a>
             </div>
         </div>
 
@@ -98,20 +130,7 @@
     </form>
 </div>
 
-<!-- Summary Bar -->
-<div class="summary-bar">
-    <div class="summary-stats">
-        <span class="stat-item">
-            <i class="bi bi-calendar2-check"></i>
-            <span class="stat-label">{{ month_label|default:_("Todos") }}</span>
-        </span>
-        <span class="stat-divider">•</span>
-        <span class="stat-item">
-            <i class="bi bi-list-ul"></i>
-            <span class="stat-value">{{ total_count }} {% trans "pedido" %}{% if total_count != 1 %}s{% endif %}</span>
-        </span>
-    </div>
-</div>
+
 
 <!-- Orders Table -->
 {% if page_obj.object_list %}
