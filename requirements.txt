@@ -9,3 +9,4 @@ deep-translator>=1.11.4
 django-simple-history>=3.4.0
 user-agents>=2.2.0
 pytz>=2024.1
+gunicorn
