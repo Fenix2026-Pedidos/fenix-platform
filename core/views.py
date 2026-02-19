@@ -18,7 +18,7 @@ MAX_RESULTS = 5
 PUBLIC_CONTACT_INFO = {
     'company_name': 'Fenix Distribuciones S.L.',
     'tax_id': 'CIF pendiente',
-    'email': 'info@fenixdistribuciones.com',
+    'email': 'info@fenixdelamancha.es',
     'phone': '+34 600 159 456',
 }
 
