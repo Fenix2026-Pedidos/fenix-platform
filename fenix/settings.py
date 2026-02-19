@@ -41,7 +41,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-3v^@+j7ha%j%)+b(6ad%s@@!eh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'true').lower() in ('1', 'true', 'yes')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['fenix-platform.onrender.com']
 
 
 # Application definition
@@ -210,9 +210,13 @@ LOCALE_PATHS = [
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+# Directorio destino para collectstatic
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Media files (imágenes subidas por usuarios)
 MEDIA_URL = '/media/'
