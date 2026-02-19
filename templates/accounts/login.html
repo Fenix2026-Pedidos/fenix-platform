@@ -4,18 +4,18 @@
 {% block title %}{% trans "Iniciar Sesión" %} - Fenix{% endblock %}
 
 {% block content %}
-<div style="max-width: 440px; margin: 60px auto;">
+<div style="max-width: 440px; margin: 24px auto 0 auto;">
     <div class="card">
-        <div class="card-body" style="padding: 40px;">
-            <div style="text-align: center; margin-bottom: 32px;">
-                <div style="width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: white; font-size: 28px;">
+        <div class="card-body" style="padding: 20px 20px 16px 20px;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; color: white; font-size: 24px;">
                     <i class="bi bi-box-arrow-in-right"></i>
                 </div>
-                <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">{% trans "Iniciar Sesión" %}</h2>
-                <p class="text-muted">{% trans "Accede a tu cuenta de Fenix" %}</p>
+                <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 6px;">{% trans "Iniciar Sesión" %}</h2>
+                <p class="text-muted" style="font-size: 15px;">{% trans "Accede a tu cuenta de Fenix" %}</p>
             </div>
             
-            <form method="post">
+            <form method="post" style="margin-bottom: 0;">
                 {% csrf_token %}
                 <div class="form-group">
                     <label class="form-label">
@@ -44,7 +44,7 @@
                     {% endif %}
                 </div>
                 
-                <div style="text-align: right; margin-top: -8px; margin-bottom: 16px;">
+                <div style="text-align: right; margin-top: -4px; margin-bottom: 10px;">
                     <a href="{% url 'accounts:password_reset' %}" style="color: var(--primary-600); text-decoration: none; font-size: 14px;">
                         {% trans "¿Olvidaste tu contraseña?" %}
                     </a>
@@ -55,7 +55,7 @@
                 </button>
             </form>
             
-            <div style="text-align: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--gray-200);">
+            <div style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--gray-200);">
                 <p style="color: var(--gray-600); margin: 0;">
                     {% trans "¿No tienes cuenta?" %} 
                     <a href="{% url 'accounts:register' %}" style="color: var(--primary-600); text-decoration: none; font-weight: 500;">{% trans "Regístrate aquí" %}</a>
