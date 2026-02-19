@@ -14,43 +14,60 @@ from .utils import get_user_language, is_manager_or_admin
 class UserApprovalMiddleware:
     """
     Middleware que verifica si el usuario está aprobado.
-    Si pending_approval=True, redirige a una página de espera (excepto Super Admin/Manager).
+    BLOQUEA acceso si:
+    - email_verified != True  O
+    - status != ACTIVE
+    
+    Redirige a page de "pending approval" (excepto admins que pueden ver admin panel).
     """
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
         # El LocaleMiddleware ya maneja el idioma desde cookie/sesión
-        # Solo establecemos el idioma del usuario si no hay idioma en sesión/cookie
-        # y el usuario está autenticado con preferencia de idioma
         if request.user.is_authenticated and not request.session.get('django_language'):
             lang = get_user_language(request.user)
-            if lang and lang != 'es':  # Solo si es diferente del default
+            if lang and lang != 'es':
                 translation.activate(lang)
                 request.session['django_language'] = lang
         
-        # Rutas que no requieren aprobación
-        allowed_paths = [
+        # Rutas que SIEMPRE están permitidas (no requieren aprobación)
+        public_paths = [
             '/accounts/login/',
             '/accounts/logout/',
             '/accounts/register/',
+            '/accounts/verify-email/',
+            '/accounts/pending-approval/',
+            '/accounts/email-verification/',
             '/admin/',
         ]
         
-        # Si el usuario está autenticado y no es Super Admin/Manager
+        # Si el usuario está autenticado
         if request.user.is_authenticated:
             user = request.user
-            is_admin = is_manager_or_admin(user)
+            from accounts.models import User
             
-            # Si está pendiente de aprobación y no es admin, bloquear acceso
-            if user.pending_approval and not is_admin:
-                # Permitir acceso a logout y profile (para ver estado)
-                if request.path not in allowed_paths and not request.path.startswith('/accounts/profile'):
+            # GATE DE SEGURIDAD: Verificar que tenga email verificado Y status ACTIVE
+            needs_approval = (
+                not user.email_verified or 
+                user.status != User.STATUS_ACTIVE
+            )
+            
+            if needs_approval:
+                # Admin/Super Admin solo pueden ver admin panel, nada más
+                is_admin = user.is_staff or user.role in ('admin', 'super_admin')
+                
+                # Si es admin y está en /admin/, permitir
+                if is_admin and request.path.startswith('/admin/'):
+                    return self.get_response(request)
+                
+                # Si el path NO está en la lista de rutas públicas, bloquear
+                if not any(request.path.startswith(p) for p in public_paths):
                     messages.warning(
                         request,
                         _('Tu cuenta está pendiente de aprobación. Un administrador revisará tu solicitud.')
                     )
-                    return redirect('accounts:profile')
+                    return redirect('accounts:pending_approval')
         
         response = self.get_response(request)
         return response

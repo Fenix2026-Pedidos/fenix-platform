@@ -89,19 +89,29 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             
-            # Verificar si es admin (pueden entrar aunque tengan pending_approval)
-            is_admin = is_manager_or_admin(user)
-            
-            if not user.is_active:
-                messages.error(request, _('Tu cuenta está desactivada.'))
-            elif not user.email_verified:
-                # Redirigir a página de verificación de email
+            # GATE DE SEGURIDAD: Dos checks obligatorios
+            # 1. Email debe estar verificado
+            if not user.email_verified:
                 request.session['unverified_user_email'] = user.email
-                messages.warning(request, _('Debes verificar tu email antes de iniciar sesión.'))
+                messages.error(request, _('Debes verificar tu email antes de iniciar sesión.'))
                 return redirect('accounts:email_verification')
-            elif user.pending_approval and not is_admin:
-                messages.warning(request, _('Tu cuenta está pendiente de aprobación por un administrador.'))
+            
+            # 2. Cuenta debe estar aprobada (status = ACTIVE)
+            if user.status != User.STATUS_ACTIVE:
+                request.session['pending_user_email'] = user.email
+                
+                if user.status == User.STATUS_REJECTED:
+                    messages.error(request, _('Tu cuenta ha sido rechazada. Contacta con soporte.'))
+                elif user.status == User.STATUS_DISABLED:
+                    messages.error(request, _('Tu cuenta ha sido deshabilitada. Contacta con soporte.'))
+                else:  # STATUS_PENDING
+                    messages.warning(request, _('Tu cuenta está pendiente de aprobación por un administrador.'))
+                
                 return redirect('accounts:pending_approval')
+            
+            # Si pasa ambos checks, permitir login
+            if not user.is_active:
+                messages.error(request, _('Tu cuenta está desactivada por el sistema.'))
             else:
                 login(request, user)
                 next_url = request.GET.get('next')
@@ -166,7 +176,11 @@ def email_verification_view(request):
 
 def pending_approval_view(request):
     """Vista informativa de aprobación pendiente"""
-    return render(request, 'accounts/pending_approval.html')
+    context = {
+        'verified_user_email': request.session.get('verified_user_email', ''),
+        'pending_user_email': request.session.get('pending_user_email', ''),
+    }
+    return render(request, 'accounts/pending_approval.html', context)
 
 
 def verify_email(request):
@@ -193,8 +207,12 @@ def verify_email(request):
         token.is_used = True
         token.save()
         
-        messages.success(request, _('¡Email verificado exitosamente! Ahora puedes iniciar sesión.'))
-        return redirect('accounts:login')
+        # NO iniciar sesión - redirigir a página de "pendiente de aprobación"
+        request.session['verified_user_email'] = user.email
+        request.session['pending_user_email'] = user.email  # Backup para compatibilidad
+        request.session.save()  # Asegurar que la sesión se guarda
+        messages.success(request, _('¡Email verificado exitosamente! Tu cuenta está pendiente de aprobación por un administrador.'))
+        return redirect('accounts:pending_approval')
         
     except EmailVerificationToken.DoesNotExist:
         messages.error(request, _('Token de verificación no válido.'))
@@ -622,6 +640,22 @@ def update_pending_request(request):
         user_to_update.email_verified = email_verified
 
     user_to_update.save()
+
+    # Send appropriate email based on status change
+    if status == User.STATUS_ACTIVE:
+        try:
+            from .utils import send_user_approved_email
+            send_user_approved_email(user_to_update, request)
+        except Exception as e:
+            messages.warning(request, _('Usuario actualizado pero no se pudo enviar email: %(error)s') % {'error': str(e)})
+            return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
+    elif status == User.STATUS_REJECTED:
+        try:
+            from .utils import send_user_rejected_email
+            send_user_rejected_email(user_to_update, request)
+        except Exception as e:
+            messages.warning(request, _('Usuario rechazado pero no se pudo enviar email: %(error)s') % {'error': str(e)})
+            return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
 
     messages.success(request, _('Solicitud actualizada correctamente.'))
     return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")

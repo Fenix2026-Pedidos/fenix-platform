@@ -73,7 +73,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',  # Auditoría de cambios
-    'accounts.middleware.UserApprovalMiddleware',  # Bloquea acceso si pending_approval=True
+    'accounts.middleware.UserApprovalMiddleware',  # Dual-gate: email_verified=True AND status=ACTIVE required
     'accounts.middleware.SessionTrackingMiddleware',  # Tracking de sesiones
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',

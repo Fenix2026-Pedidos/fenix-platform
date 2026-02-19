@@ -147,6 +147,7 @@ def send_verification_email(user, verification_url):
     Usa i18n según user.language -> platform.default_language -> es
     """
     from .models import EmailVerificationToken
+    from django.core.mail import EmailMessage
     
     platform = PlatformSettings.get_settings()
     lang = user.language or platform.default_language or 'es'
@@ -173,7 +174,15 @@ def send_verification_email(user, verification_url):
         message += 'Saludos,\nEquipo FENIX'
     
     from_email = platform.email_from or settings.DEFAULT_FROM_EMAIL
-    send_mail(subject, message, from_email, [user.email], fail_silently=False)
+    
+    # Usar EmailMessage para mejor soporte UTF-8
+    email = EmailMessage(
+        subject=subject,
+        body=message,
+        from_email=from_email,
+        to=[user.email],
+    )
+    email.send(fail_silently=False)
 
 
 def send_approval_notification(user, approved=True):
@@ -181,6 +190,8 @@ def send_approval_notification(user, approved=True):
     Envía notificación al usuario cuando su cuenta es aprobada/rechazada.
     Usa i18n según user.language -> platform.default_language -> es
     """
+    from django.core.mail import EmailMessage
+    
     platform = PlatformSettings.get_settings()
     lang = user.language or platform.default_language or 'es'
     
@@ -208,7 +219,15 @@ def send_approval_notification(user, approved=True):
             message += 'Saludos,\nEquipo FENIX'
     
     from_email = platform.email_from or settings.DEFAULT_FROM_EMAIL
-    send_mail(subject, message, from_email, [user.email], fail_silently=False)
+    
+    # Usar EmailMessage para mejor soporte UTF-8
+    email = EmailMessage(
+        subject=subject,
+        body=message,
+        from_email=from_email,
+        to=[user.email],
+    )
+    email.send(fail_silently=False)
 
 
 def is_manager_or_admin(user):
@@ -226,6 +245,8 @@ def send_new_user_admin_notification(user, request=None):
     Envía notificación al administrador cuando un nuevo usuario se registra.
     """
     try:
+        from django.core.mail import EmailMessage
+        
         platform = PlatformSettings.get_settings()
         admin_email = getattr(settings, 'ADMIN_APPROVAL_EMAIL', None)
         
@@ -258,7 +279,15 @@ def send_new_user_admin_notification(user, request=None):
         message += 'Saludos,\nSistema Fenix'
         
         from_email = platform.email_from or settings.DEFAULT_FROM_EMAIL
-        send_mail(subject, message, from_email, [admin_email], fail_silently=True)
+        
+        # Usar EmailMessage para mejor soporte UTF-8
+        email = EmailMessage(
+            subject=subject,
+            body=message,
+            from_email=from_email,
+            to=[admin_email],
+        )
+        email.send(fail_silently=True)
         
     except Exception as e:
         # Log el error pero no fallar el registro
@@ -272,6 +301,8 @@ def send_user_approved_email(user, request=None):
     Envía email al usuario notificando que su cuenta ha sido aprobada.
     """
     try:
+        from django.core.mail import EmailMessage
+        
         platform = PlatformSettings.get_settings()
         lang = user.language or platform.default_language or 'es'
         
@@ -301,7 +332,15 @@ def send_user_approved_email(user, request=None):
             message += 'Saludos,\nEquipo Fenix'
         
         from_email = platform.email_from or settings.DEFAULT_FROM_EMAIL
-        send_mail(subject, message, from_email, [user.email], fail_silently=False)
+        
+        # Usar EmailMessage en lugar de send_mail para mejor soporte UTF-8
+        email = EmailMessage(
+            subject=subject,
+            body=message,
+            from_email=from_email,
+            to=[user.email],
+        )
+        email.send(fail_silently=False)
         
     except Exception as e:
         import logging
@@ -315,6 +354,8 @@ def send_user_rejected_email(user, request=None):
     Envía email al usuario notificando que su solicitud ha sido rechazada.
     """
     try:
+        from django.core.mail import EmailMessage
+        
         platform = PlatformSettings.get_settings()
         lang = user.language or platform.default_language or 'es'
         
@@ -334,7 +375,15 @@ def send_user_rejected_email(user, request=None):
             message += 'Saludos,\nEquipo Fenix'
         
         from_email = platform.email_from or settings.DEFAULT_FROM_EMAIL
-        send_mail(subject, message, from_email, [user.email], fail_silently=False)
+        
+        # Usar EmailMessage en lugar de send_mail para mejor soporte UTF-8
+        email = EmailMessage(
+            subject=subject,
+            body=message,
+            from_email=from_email,
+            to=[user.email],
+        )
+        email.send(fail_silently=False)
         
     except Exception as e:
         import logging
