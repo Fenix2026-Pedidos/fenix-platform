@@ -41,7 +41,13 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-3v^@+j7ha%j%)+b(6ad%s@@!eh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'true').lower() in ('1', 'true', 'yes')
 
-ALLOWED_HOSTS = ['fenix-platform.onrender.com']
+ALLOWED_HOSTS = [
+    'fenix-platform.onrender.com',
+    '127.0.0.1',
+    'localhost',
+    'fenixdelamancha.es',
+    'www.fenixdelamancha.es'
+]
 
 
 # Application definition
