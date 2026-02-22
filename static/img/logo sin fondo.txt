@@ -1,0 +1,1 @@
+Este archivo es un marcador para indicar que el nuevo logo debe ser copiado aquí como logo.png o logo.svg para reemplazar el logo anterior en la web.
