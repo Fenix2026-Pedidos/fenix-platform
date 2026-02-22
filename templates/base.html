@@ -35,9 +35,11 @@
                 <!-- Public navbar for non-authenticated users -->
                 <nav style="background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%); padding: 16px var(--content-padding); box-shadow: var(--shadow-md); width: 100%;">
                     <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; width: 100%;">
-                        <a href="{% url 'catalog:product_list' %}" style="color: white; text-decoration: none; font-size: 20px; font-weight: 700;">
-                            <i class="bi bi-fire"></i> Fenix
-                        </a>
+                        <div style="height: 60px; width: 180px; overflow: hidden; display: flex; align-items: center;">
+                            <a href="/" style="display: flex; align-items: center;">
+                                <img src="{% static 'img/logo sin fondo.png' %}" alt="Logo Fenix" style="height: 60px; transform: scale(2); transform-origin: left center; display: block;">
+                            </a>
+                        </div>
                         <div style="display: flex; gap: 12px; align-items: center;">
                             <!-- Selector de idioma para usuarios no autenticados -->
                             <form action="{% url 'set_language' %}" method="post" style="display: inline-block;">
