@@ -265,7 +265,7 @@ def order_create(request):
             request,
             _('Debes completar tu perfil operativo antes de crear un pedido. '
               'Campos faltantes: %(missing_fields)s') % {
-                'missing_fields': ', '.join(request.user.missing_fields)
+                'missing_fields': ', '.join([str(f) for f in request.user.missing_fields])
             }
         )
         return redirect('accounts:operative_profile_edit')
