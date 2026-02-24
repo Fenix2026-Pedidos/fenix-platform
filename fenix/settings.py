@@ -41,13 +41,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-3v^@+j7ha%j%)+b(6ad%s@@!eh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'true').lower() in ('1', 'true', 'yes')
 
-ALLOWED_HOSTS = [
-    'fenix-platform.onrender.com',
-    '127.0.0.1',
-    'localhost',
-    'fenixdelamancha.es',
-    'www.fenixdelamancha.es'
-]
+_allowed_hosts = os.getenv('ALLOWED_HOSTS', 'fenix-platform.onrender.com,127.0.0.1,localhost,fenixdelamancha.es,www.fenixdelamancha.es').split(',')
+ALLOWED_HOSTS = [h.strip() for h in _allowed_hosts if h.strip()]
 
 
 # Application definition
@@ -85,6 +80,18 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Security settings for production
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ROOT_URLCONF = 'fenix.urls'
 

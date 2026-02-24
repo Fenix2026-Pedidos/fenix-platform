@@ -1,0 +1,31 @@
+runtime: python312
+
+instance_class: F1
+
+entrypoint: gunicorn -b :$PORT fenix.wsgi
+
+env_variables:
+  DEBUG: "False"
+  # Database settings (Supabase)
+  DB_NAME: "postgres"
+  DB_USER: "postgres.pgyvgmjpkakphoojwtvb"
+  DB_PASSWORD: "rMV5Vbll6qPMxOSU"
+  DB_HOST: "aws-1-eu-west-1.pooler.supabase.com"
+  DB_PORT: "6543"
+  # Django settings
+  SECRET_KEY: "django-insecure-prod-key-change-me"
+  ALLOWED_HOSTS: "fenixdelamancha.es,www.fenixdelamancha.es,project-8ec7876a-62b7-4e0b-82d.ew.r.appspot.com"
+  # Email Settings
+  EMAIL_HOST: "smtp.gmail.com"
+  EMAIL_HOST_USER: "plataformafenix2026@gmail.com"
+  EMAIL_HOST_PASSWORD: "xesj qnre bhen wgpe"
+  EMAIL_PORT: "587"
+  EMAIL_USE_TLS: "True"
+  DEFAULT_FROM_EMAIL: "FENIX <plataformafenix2026@gmail.com>"
+  USE_SQLITE_DEV: "False"
+
+handlers:
+- url: /static
+  static_dir: staticfiles/
+- url: /.*
+  script: auto
