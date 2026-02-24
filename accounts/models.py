@@ -470,7 +470,7 @@ class SecuritySettings(models.Model):
     two_factor_secret = models.CharField(max_length=100, blank=True)
     
     # API
-    api_token = models.CharField(max_length=100, blank=True, unique=True)
+    api_token = models.CharField(max_length=100, blank=True, null=True, unique=True, default=None)
     api_token_created_at = models.DateTimeField(null=True, blank=True)
     api_token_last_used = models.DateTimeField(null=True, blank=True)
     
