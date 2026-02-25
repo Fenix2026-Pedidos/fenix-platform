@@ -128,8 +128,10 @@
             <h1>{% trans "Confirmación de Pedido" %} #{{ order.id }}</h1>
         </div>
         <div class="content">
-            <p style="margin-top: 0;">{% trans "Se ha generado un nuevo pedido en la plataforma Fenix. A continuación se
-                detallan los datos completos del pedido." %}</p>
+            <div style="margin-bottom: 20px;">
+                {% trans "Se ha generado un nuevo pedido en la plataforma Fenix. A continuación se detallan los datos
+                completos del pedido." %}
+            </div>
             <div class="order-info">
                 <table>
                     <tr>
@@ -156,8 +158,12 @@
                     {% if customer.direccion_entrega or customer.direccion_local %}
                     <tr>
                         <td class="label">{% trans "Dirección" %}</td>
-                        <td class="value">{{ customer.direccion_entrega|default:customer.direccion_local }}{% if
-                            customer.ciudad %}, {{ customer.ciudad }}{% endif %}</td>
+                        <td class="value">
+                            {{ customer.direccion_entrega|default:customer.direccion_local }}
+                            {% if customer.ciudad %}
+                            , {{ customer.ciudad }}
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endif %}
                 </table>
@@ -176,8 +182,9 @@
                     <tr>
                         <td>
                             <div style="font-weight: 500;">{{ item.product_name_es }}</div>
-                            {% if item.product.sku %}<div style="font-size: 11px; color: #64748b;">SKU: {{
-                                item.product.sku }}</div>{% endif %}
+                            {% if item.product.sku %}
+                            <div style="font-size: 11px; color: #64748b;">SKU: {{ item.product.sku }}</div>
+                            {% endif %}
                         </td>
                         <td class="text-center">{{ item.quantity }}</td>
                         <td class="text-right">{{ item.unit_price|floatformat:2 }} €</td>
@@ -198,8 +205,9 @@
                     </tr>
                 </table>
             </div>
-            <p style="margin-top: 30px; font-size: 14px; color: #64748b;">{% trans "Se adjunta el pedido en formato PDF
-                para su gestión administrativa." %}</p>
+            <p style="margin-top: 30px; font-size: 14px; color: #64748b;">
+                {% trans "Se adjunta el pedido en formato PDF para su gestión administrativa." %}
+            </p>
         </div>
         <div class="footer">
             <p>© {{ now|date:"Y" }} Fenix - {% trans "Plataforma de Gestión de Pedidos" %}</p>
