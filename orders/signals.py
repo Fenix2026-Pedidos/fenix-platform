@@ -30,11 +30,8 @@ def _cache_old_order_status(sender, instance: Order, **kwargs):
 
 def _emit_order_notifications(instance: Order, created: bool):
     if created:
-        send_order_notification(
-            user=instance.customer,
-            event_type=Notification.EVENT_ORDER_CREATED,
-            order_id=instance.pk,
-        )
+        # Nota: La notificación de 'Pedido Creado' se lanza explícitamente desde la vista 
+        # (orders/views.py) o servicio tras guardar los items, para evitar que el PDF salga vacío.
         return
 
     old = _prev_order_status.pop(instance.pk, None)

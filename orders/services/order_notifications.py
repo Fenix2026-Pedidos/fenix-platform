@@ -34,39 +34,19 @@ def _send_order_confirmation_email_safe(order_id: int) -> None:
 
 
 def _send_order_confirmation_email(order_id: int) -> None:
+    from notifications.services import send_order_notification
+    from notifications.models import Notification
+    from orders.models import Order
+
     try:
-        order = (
-            Order.objects.select_related('customer')
-            .prefetch_related('items')
-            .get(pk=order_id)
+        order = Order.objects.get(pk=order_id)
+        send_order_notification(
+            user=order.customer,
+            event_type=Notification.EVENT_ORDER_CREATED,
+            order_id=order_id
         )
     except Order.DoesNotExist:
         logger.warning('Pedido %s no encontrado; no se envía email', order_id)
-        return
-
-    platform_settings = PlatformSettings.get_settings()
-    recipient = _resolve_recipient(platform_settings)
-    if not recipient:
-        logger.warning('Email de notificación no configurado; se omite pedido %s', order_id)
-        return
-
-    from_email = _resolve_from_email(platform_settings)
-    context = _build_email_context(order)
-
-    subject = f'Nuevo pedido recibido – Pedido #{order.id}'
-    text_body = render_to_string('emails/order_created.txt', context)
-    html_body = render_to_string('emails/order_created.html', context)
-
-    message = EmailMultiAlternatives(
-        subject=subject,
-        body=text_body,
-        from_email=from_email,
-        to=[recipient],
-    )
-    # Futuras CC/BCC podrán configurarse estableciendo message.cc / message.bcc
-    message.attach_alternative(html_body, 'text/html')
-    message.send(fail_silently=False)
-    logger.info('Email de pedido %s enviado a %s', order.id, recipient)
 
 
 def _resolve_recipient(platform_settings: PlatformSettings) -> str:
