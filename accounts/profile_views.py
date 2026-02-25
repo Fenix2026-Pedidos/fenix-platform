@@ -100,7 +100,7 @@ def profile_dashboard(request):
         'missing_fields': missing_fields,
     }
     
-    return render(request, 'accounts/profile/profile_dashboard.html', context)
+    return render(request, 'accounts/profile/profile_dashboard_new.html', context)
 
 
 @login_required
