@@ -4,292 +4,165 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        /* CSS resets and base styles for xhtml2pdf */
         @page {
             size: A4;
-            margin: 1cm;
+            margin: 1.5cm 1cm;
         }
 
         body {
             font-family: Helvetica, Arial, sans-serif;
             font-size: 9pt;
             color: #1f2937;
-            /* gray-800 */
-            line-height: 1.4;
+            line-height: 1.5;
             background-color: #ffffff;
         }
 
-        /* Containers */
-        .card {
-            border: 1px solid #e5e7eb;
-            /* gray-200 */
-            border-radius: 12px;
-            margin-bottom: 24px;
-            overflow: hidden;
-            width: 100%;
-        }
-
-        .card-header {
-            background-color: #ffffff;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 12px 24px;
-        }
-
-        .card-body {
-            padding: 24px;
-        }
-
-        .card-title {
-            font-size: 10pt;
-            font-weight: bold;
-            color: #111827;
-            /* gray-900 */
-            margin: 0;
-        }
-
-        /* Typography */
-        .text-gray-400 {
-            color: #9ca3af;
-        }
-
-        .text-gray-500 {
-            color: #6b7280;
-        }
-
-        .text-primary-600 {
+        .text-blue {
             color: #0284c7;
         }
 
-        .text-uppercase {
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .text-gray {
+            color: #6b7280;
         }
 
         .font-bold {
             font-weight: bold;
         }
 
-        .font-semibold {
-            font-weight: 600;
+        .text-uppercase {
+            text-transform: uppercase;
         }
 
-        /* Grid replacement (Tables for layout) */
-        .layout-table {
+        .status-badge {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 8pt;
+            font-weight: bold;
+        }
+
+        .section-box {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .section-header {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 10px 15px;
+            font-weight: bold;
+            font-size: 10pt;
+        }
+
+        .section-body {
+            padding: 15px;
+        }
+
+        table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .layout-table.columns-3 td {
+        .info-table td {
             vertical-align: top;
-            width: 33.33%;
+            padding-bottom: 10px;
         }
 
-        /* Status Badge (Pill style) */
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 9999px;
-            font-size: 8pt;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .status-nuevo {
-            background-color: #e0f2fe;
-            color: #0369a1;
-        }
-
-        /* primary-100 / primary-700 */
-
-        /* Label and Value blocks */
-        .detail-block {
-            margin-bottom: 12px;
-        }
-
-        .detail-label {
+        .label {
             font-size: 7.5pt;
             color: #6b7280;
             text-transform: uppercase;
+            font-weight: bold;
             margin-bottom: 2px;
-            font-weight: 600;
         }
 
-        .detail-value {
-            font-size: 9.5pt;
-            color: #111827;
+        .value {
+            font-size: 9pt;
         }
 
-        /* Products Table */
-        .products-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .products-table th {
-            border-bottom: 1px solid #e5e7eb;
-            padding: 12px 8px;
-            font-size: 8pt;
-            color: #6b7280;
+        .items-table th {
             text-align: left;
-            text-transform: uppercase;
-            background-color: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 10px 5px;
+            color: #6b7280;
+            font-size: 8pt;
         }
 
-        .products-table td {
-            padding: 12px 8px;
+        .items-table td {
+            padding: 10px 5px;
             border-bottom: 1px solid #f3f4f6;
-            /* gray-100 */
-            vertical-align: top;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .text-right {
-            text-align: right;
-        }
-
-        /* Totals */
-        .totals-container {
-            padding: 24px;
-            border-top: 1px solid #e5e7eb;
-            background-color: #ffffff;
-        }
-
-        .totals-table {
-            width: 280px;
-            margin-left: auto;
-            border-collapse: collapse;
-        }
-
-        .totals-table td {
-            padding: 6px 0;
-        }
-
-        .total-row-highlight {
-            border-top: 2px solid #e5e7eb;
-            margin-top: 12px;
-        }
-
-        .total-label-big {
-            font-size: 14pt;
-            font-weight: bold;
-            color: #111827;
-        }
-
-        .total-value-big {
-            font-size: 18pt;
-            font-weight: bold;
-            color: #0284c7;
         }
     </style>
 </head>
 
 <body>
-    <!-- ORDER HEADER (Matches Image 2 top part) -->
-    <div class="card" style="border: none; margin-bottom: 12px;">
-        <div class="card-body" style="padding: 12px 0;">
-            <table width="100%" border="0">
+    <!-- Header -->
+    <table style="margin-bottom: 10px;">
+        <tr>
+            <td valign="top">
+                <div style="font-size: 20pt; font-weight: bold; color: #111827;">Pedido #{{ order.id }}</div>
+                <div style="color: #6b7280; margin-top: 5px;">Fecha de creación: {{ order.created_at|date:"d/m/Y H:i" }}
+                </div>
+            </td>
+            <td align="right" valign="top">
+                <span class="status-badge">{{ order.get_status_display }}</span>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Info Section -->
+    <div class="section-box">
+        <div class="section-header">Información del Pedido</div>
+        <div class="section-body">
+            <table class="info-table">
                 <tr>
-                    <td valign="top">
-                        <h1 style="margin: 0; font-size: 20pt; color: #111827;">Pedido #{{ order.id }}</h1>
-                        <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 9pt;">
-                            Fecha de creación: {{ order.created_at|date:"d/m/Y H:i" }}
-                        </p>
+                    <td width="36%">
+                        <div class="label" style="margin-bottom: 10px;">INFORMACIÓN DEL CLIENTE</div>
+
+                        <div class="label">CLIENTE</div>
+                        <div class="value font-bold">{{ customer.full_name|default:customer.email }}</div>
+
+                        <div style="margin-top: 8px;"></div>
+                        <div class="label">EMPRESA</div>
+                        <div class="value">{{ customer.company|default:"—" }}</div>
+
+                        <div style="margin-top: 8px;"></div>
+                        <div class="label">CORREO ELECTRÓNICO</div>
+                        <div class="value">{{ customer.email }}</div>
+
+                        <div style="margin-top: 8px;"></div>
+                        <div class="label">TELÉFONO REPARTO/INCIDENCIAS</div>
+                        <div class="value font-bold text-blue">{{ customer.telefono_reparto|default:"—" }}</div>
                     </td>
-                    <td align="right" valign="middle">
-                        <span class="status-badge status-nuevo">
-                            {{ order.get_status_display }}
-                        </span>
+                    <td width="32%">
+                        <div class="label" style="margin-bottom: 10px;">DATOS DEL PEDIDO</div>
+
+                        <div class="label">Nº PEDIDO / ID</div>
+                        <div class="value font-bold text-blue" style="font-size: 14pt;">#{{ order.id }}</div>
+
+                        <div style="margin-top: 8px;"></div>
+                        <div class="label">FECHA DE CREACIÓN</div>
+                        <div class="value">{{ order.created_at|date:"d/m/Y H:i" }}</div>
+
+                        <div style="margin-top: 8px;"></div>
+                        <div class="label">FECHA DE ENTREGA</div>
+                        <div class="value">—</div>
+
+                        <div style="margin-top: 8px;"></div>
+                        <div class="label">ESTADO</div>
+                        <div class="value"><span class="status-badge" style="padding: 2px 8px;">{{
+                                order.get_status_display }}</span></div>
                     </td>
-                </tr>
-            </table>
-        </div>
-    </div>
+                    <td width="32%">
+                        <div class="label" style="margin-bottom: 10px;">DIRECCIÓN DE ENTREGA</div>
 
-    <!-- INFORMACIÓN DEL PEDIDO CARD -->
-    <div class="card">
-        <div class="card-header">
-            <h5 class="card-title">Información del Pedido</h5>
-        </div>
-        <div class="card-body">
-            <table class="layout-table columns-3">
-                <tr>
-                    <!-- COL 1: CLIENTE -->
-                    <td style="padding-right: 20px;">
-                        <h6 style="font-size: 7.5pt; color: #6b7280; margin-bottom: 14px;"
-                            class="text-uppercase font-semibold">Información del Cliente</h6>
+                        <div class="label">CIUDAD</div>
+                        <div class="value">{{ customer.ciudad|default:"—" }}</div>
 
-                        <div class="detail-block">
-                            <div class="detail-label">Cliente</div>
-                            <div class="detail-value font-bold">{{ customer.full_name|default:customer.email }}</div>
-                        </div>
-
-                        {% if customer.company %}
-                        <div class="detail-block">
-                            <div class="detail-label">Empresa</div>
-                            <div class="detail-value">{{ customer.company }}</div>
-                        </div>
-                        {% endif %}
-
-                        <div class="detail-block">
-                            <div class="detail-label">Correo Electrónico</div>
-                            <div class="detail-value">{{ customer.email }}</div>
-                        </div>
-
-                        {% if customer.telefono_reparto %}
-                        <div class="detail-block">
-                            <div class="detail-label">Teléfono Reparto/Incidencias</div>
-                            <div class="detail-value font-semibold text-primary-600">{{ customer.telefono_reparto }}
-                            </div>
-                        </div>
-                        {% endif %}
-                    </td>
-
-                    <!-- COL 2: DATOS PEDIDO -->
-                    <td style="padding: 0 10px;">
-                        <h6 style="font-size: 7.5pt; color: #6b7280; margin-bottom: 14px;"
-                            class="text-uppercase font-semibold">Datos del Pedido</h6>
-
-                        <div class="detail-block">
-                            <div class="detail-label">Nº Pedido / ID</div>
-                            <div class="detail-value font-bold text-primary-600" style="font-size: 15pt;">#{{ order.id
-                                }}</div>
-                        </div>
-
-                        <div class="detail-block">
-                            <div class="detail-label">Fecha de Creación</div>
-                            <div class="detail-value">{{ order.created_at|date:"d/m/Y H:i" }}</div>
-                        </div>
-
-                        <div class="detail-block">
-                            <div class="detail-label">Fecha de Entrega</div>
-                            <div class="detail-value text-gray-500">—</div>
-                        </div>
-
-                        <div class="detail-block">
-                            <div class="detail-label">Estado</div>
-                            <div class="detail-value">
-                                <span class="status-badge status-nuevo">{{ order.get_status_display }}</span>
-                            </div>
-                        </div>
-                    </td>
-
-                    <!-- COL 3: ENTREGA -->
-                    <td style="padding-left: 20px;">
-                        <h6 style="font-size: 7.5pt; color: #6b7280; margin-bottom: 14px;"
-                            class="text-uppercase font-semibold">Dirección de Entrega</h6>
-
-                        <div class="detail-block">
-                            <div class="detail-label">Ciudad</div>
-                            <div class="detail-value">{{ customer.ciudad|default:"—" }}</div>
-                        </div>
-
-                        <div class="detail-block">
-                            <div class="detail-label">Dirección</div>
-                            <div class="detail-value">{{
-                                customer.direccion_entrega|default:customer.direccion_local|default:"—" }}</div>
+                        <div style="margin-top: 8px;"></div>
+                        <div class="label">DIRECCIÓN</div>
+                        <div class="value">{{ customer.direccion_entrega|default:customer.direccion_local|default:"—" }}
                         </div>
                     </td>
                 </tr>
@@ -297,64 +170,56 @@
         </div>
     </div>
 
-    <!-- DETALLES DEL PEDIDO CARD -->
-    <div class="card">
-        <div class="card-header">
-            <h5 class="card-title">Detalles del Pedido</h5>
-        </div>
-        <table class="products-table">
+    <!-- Details Section -->
+    <div class="section-box">
+        <div class="section-header">Detalles del Pedido</div>
+        <table class="items-table">
             <thead>
                 <tr>
-                    <th class="text-center" width="15%">ID PEDIDO</th>
+                    <th width="15%" style="text-align: center;">ID PEDIDO</th>
                     <th width="45%">PRODUCTO</th>
-                    <th class="text-center" width="10%">CANTIDAD</th>
-                    <th class="text-right" width="15%">PRECIO UNITARIO</th>
-                    <th class="text-right" width="15%">TOTAL LÍNEA</th>
+                    <th width="10%" style="text-align: center;">CANTIDAD</th>
+                    <th width="15%" style="text-align: right;">PRECIO UNITARIO</th>
+                    <th width="15%" style="text-align: right;">TOTAL LÍNEA</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in items %}
                 <tr>
-                    <td class="text-center text-gray-500">#{{ order.id }}</td>
-                    <td class="font-semibold">
+                    <td align="center" style="color: #6b7280;">#{{ order.id }}</td>
+                    <td class="font-bold">
                         {{ item.product_name_es }}
-                        {% if item.product.sku %}
-                        <div style="font-size: 7.5pt; color: #9ca3af; font-weight: normal; margin-top: 2px;">SKU: {{
-                            item.product.sku }}</div>
-                        {% endif %}
+                        {% if item.product.sku %}<div style="font-size: 7pt; color: #9ca3af; font-weight: normal;">SKU:
+                            {{ item.product.sku }}</div>{% endif %}
                     </td>
-                    <td class="text-center">{{ item.quantity }}</td>
-                    <td class="text-right">{{ item.unit_price|floatformat:2 }} €</td>
-                    <td class="text-right font-bold">{{ item.line_total|floatformat:2 }} €</td>
+                    <td align="center">{{ item.quantity }}</td>
+                    <td align="right">{{ item.unit_price|floatformat:2 }} €</td>
+                    <td align="right" class="font-bold">{{ item.line_total|floatformat:2 }} €</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
 
-        <!-- Totals area -->
-        <div class="totals-container">
-            <table class="totals-table">
+        <div style="padding: 15px;">
+            <table align="right" style="width: 250px;">
                 <tr>
-                    <td class="text-gray-500" style="font-size: 10pt;">Subtotal:</td>
-                    <td class="text-right font-bold" style="font-size: 10pt; color: #111827;">{{ subtotal|floatformat:2
-                        }} €</td>
+                    <td style="color: #6b7280;">Subtotal:</td>
+                    <td align="right" class="font-bold">{{ subtotal|floatformat:2 }} €</td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="padding: 0;">
-                        <div class="total-row-highlight"></div>
-                    </td>
+                    <td colspan="2" style="border-top: 1px solid #e5e7eb; padding-top: 10px; margin-top: 5px;"></td>
                 </tr>
                 <tr>
-                    <td class="total-label-big" style="padding-top: 14px;">Total:</td>
-                    <td class="text-right total-value-big" style="padding-top: 14px;">{{
+                    <td style="font-size: 12pt; font-weight: bold;">Total:</td>
+                    <td align="right" style="font-size: 16pt; font-weight: bold; color: #0284c7;">{{
                         order.total_amount|floatformat:2 }} €</td>
                 </tr>
             </table>
+            <div style="clear: both;"></div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <div style="text-align: center; font-size: 7.5pt; color: #9ca3af; margin-top: 40px;">
+    <div style="text-align: center; font-size: 7.5pt; color: #9ca3af; margin-top: 30px;">
         Este documento ha sido generado automáticamente por la plataforma Fenix el {{ now|date:"d/m/Y H:i" }}.
     </div>
 </body>
