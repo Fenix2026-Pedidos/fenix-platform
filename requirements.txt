@@ -12,3 +12,4 @@ pytz>=2024.1
 gunicorn
 whitenoise
 django-storages[google]
+xhtml2pdf==0.2.11

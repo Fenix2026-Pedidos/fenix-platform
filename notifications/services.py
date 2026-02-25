@@ -11,6 +11,10 @@ from django.conf import settings
 from accounts.models import User
 from core.models import PlatformSettings
 from notifications.models import Notification
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
+from django.utils import timezone
+from .utils import generate_order_pdf
 
 logger = logging.getLogger(__name__)
 
@@ -90,9 +94,16 @@ def send_order_notification(
     send_email: bool = True,
 ) -> Notification:
     """
-    Crea una Notification para el usuario y envía email según su idioma.
-    Si no se pasan subject/message, se usan los defaults de DEFAULT_MESSAGES.
+    Crea una Notification para el usuario y envía email profesional según su idioma.
+    Añade adjunto PDF si es un pedido nuevo.
     """
+    from orders.models import Order
+    try:
+        order = Order.objects.prefetch_related('items__product').get(pk=order_id)
+    except Order.DoesNotExist:
+        logger.error('No se pudo enviar notificación: Pedido %s no existe', order_id)
+        return None
+
     tpl = DEFAULT_MESSAGES.get(event_type)
     if tpl:
         sub_es = subject_es or tpl['subject_es'].format(id=order_id)
@@ -118,25 +129,81 @@ def send_order_notification(
         return n
 
     lang = _lang(user)
-    subject, body = _pick_by_lang(sub_es, sub_zh, msg_es, msg_zh, lang)
+    
+    # 1. Preparar Contexto Común
+    ps = PlatformSettings.get_settings()
+    items = order.items.all()
+    subtotal = sum(item.line_total for item in items)
+    
+    context = {
+        'order': order,
+        'customer': order.customer,
+        'items': items,
+        'subtotal': subtotal,
+        'shipping_cost': 0, # Se puede extender si hay gastos de envío
+        'year': timezone.now().year,
+        'now': timezone.now(),
+        'platform_name': ps.email_from_name,
+    }
 
-    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@fenix.com')
-    try:
-        ps = PlatformSettings.get_settings()
-        from_email = f'{ps.email_from_name} <{ps.email_from}>'
-    except Exception:
-        pass
+    # 2. Asunto Especial para Pedidos Nuevos
+    if event_type == Notification.EVENT_ORDER_CREATED:
+        # [FENIX - {EMPRESA}] Nuevo pedido #{NUMERO_PEDIDO} – {NOMBRE_CLIENTE}
+        company_name = ps.email_from_name or "FENIX"
+        client_name = order.customer.full_name or order.customer.email
+        subject = f"[{company_name}] Nuevo pedido #{order.id} – {client_name}"
+    else:
+        subject, _ = _pick_by_lang(sub_es, sub_zh, msg_es, msg_zh, lang)
+
+    # 3. Generar PDF si es Pedido Nuevo
+    pdf_file = None
+    pdf_name = ""
+    pdf_generation_failed = False
+    
+    if event_type == Notification.EVENT_ORDER_CREATED:
+        pdf_file = generate_order_pdf(context)
+        if not pdf_file:
+            pdf_generation_failed = True
+            logger.error("Error generando adjunto PDF para pedido %s", order.id)
+        else:
+            # Pedido_{NUMERO_PEDIDO}_{FECHA}.pdf
+            date_str = order.created_at.strftime("%Y-%m-%d")
+            pdf_name = f"Pedido_{order.id}_{date_str}.pdf"
+
+    # 4. Renderizar Cuerpo HTML o Texto
+    if event_type == Notification.EVENT_ORDER_CREATED:
+        html_message = render_to_string('notifications/order_email.html', context)
+        if pdf_generation_failed:
+            html_message += f"<p style='color: red;'><strong>Nota:</strong> Adjunto pendiente de generación automática</p>"
+        body = html_message
+        is_html = True
+    else:
+        _, body = _pick_by_lang(sub_es, sub_zh, msg_es, msg_zh, lang)
+        is_html = False
+
+    from_email = f'{ps.email_from_name} <{ps.email_from}>'
+    
+    # 5. Configurar Destinatarios
+    recipients = [user.email]
+    if ps.order_notification_email and ps.order_notification_email not in recipients:
+        recipients.append(ps.order_notification_email)
 
     try:
-        send_mail(
+        email = EmailMessage(
             subject=subject,
-            message=body,
+            body=body,
             from_email=from_email,
-            recipient_list=[user.email],
-            fail_silently=True,
+            to=recipients,
         )
-        logger.info('Email enviado a %s por evento %s (pedido %s)', user.email, event_type, order_id)
+        if is_html:
+            email.content_subtype = "html"
+            
+        if pdf_file:
+            email.attach(pdf_name, pdf_file.getvalue(), "application/pdf")
+            
+        email.send(fail_silently=False)
+        logger.info('Email de pedido %s enviado a %s', order_id, recipients)
     except Exception as e:
-        logger.warning('Error enviando email a %s: %s', user.email, e)
+        logger.warning('Error enviando email de pedido %s: %s', order_id, e)
 
     return n

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: A4;
+            margin: 1.5cm;
+        }
+
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 10pt;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .header {
+            border-bottom: 2px solid #0369a1;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .header-table {
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 24pt;
+            font-weight: bold;
+            color: #0369a1;
+        }
+
+        .order-title {
+            font-size: 18pt;
+            text-align: right;
+        }
+
+        .info-section {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            width: 48%;
+            vertical-align: top;
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            font-weight: bold;
+            font-size: 9pt;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .products-table th {
+            background-color: #f8fafc;
+            border-bottom: 1px solid #cbd5e1;
+            padding: 8px;
+            text-align: left;
+            font-size: 9pt;
+        }
+
+        .products-table td {
+            padding: 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .totals-table {
+            width: 100%;
+        }
+
+        .totals-box {
+            width: 40%;
+            margin-left: 60%;
+        }
+
+        .total-row td {
+            padding: 5px 0;
+        }
+
+        .grand-total {
+            font-weight: bold;
+            font-size: 12pt;
+            color: #0369a1;
+            border-top: 1px solid #cbd5e1;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 8pt;
+            color: #94a3b8;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 5px;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <table class="header-table">
+            <tr>
+                <td class="logo">{{ platform_name|default:"FENIX" }}</td>
+                <td class="order-title">PEDIDO #{{ order.id }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <table class="info-section">
+        <tr>
+            <td class="info-box">
+                <div class="info-title">DATOS DEL CLIENTE</div>
+                <strong>{{ customer.full_name }}</strong><br>
+                {{ customer.email }}<br>
+                {% if customer.telefono_empresa %}Tel: {{ customer.telefono_empresa }}<br>{% endif %}
+                {% if customer.company %}Empresa: {{ customer.company }}{% endif %}
+            </td>
+            <td width="4%"></td>
+            <td class="info-box">
+                <div class="info-title">DETALLES DE ENTREGA</div>
+                <strong>Fecha Pedido:</strong> {{ order.created_at|date:"d/m/Y H:i" }}<br>
+                <strong>Estado:</strong> {{ order.get_status_display }}<br>
+                {% if customer.direccion_entrega or customer.direccion_local %}
+                <strong>Dirección:</strong> {{ customer.direccion_entrega|default:customer.direccion_local }}<br>
+                {% if customer.ciudad %}{{ customer.ciudad }}{% endif %}
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+
+    <table class="products-table">
+        <thead>
+            <tr>
+                <th>PRODUCTO</th>
+                <th class="text-center" width="10%">CANT.</th>
+                <th class="text-right" width="20%">PRECIO UNIT.</th>
+                <th class="text-right" width="20%">SUBTOTAL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>
+                    {{ item.product_name_es }}<br>
+                    <span style="font-size: 8pt; color: #64748b;">SKU: {{ item.product.sku|default:"-" }}</span>
+                </td>
+                <td class="text-center">{{ item.quantity }}</td>
+                <td class="text-right">{{ item.unit_price|floatformat:2 }} {{ order.currency|default:"€" }}</td>
+                <td class="text-right">{{ item.line_total|floatformat:2 }} {{ order.currency|default:"€" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="totals-table">
+        <tr>
+            <td width="60%"></td>
+            <td>
+                <table width="100%">
+                    <tr class="total-row">
+                        <td>Subtotal:</td>
+                        <td class="text-right">{{ subtotal|floatformat:2 }} {{ order.currency|default:"€" }}</td>
+                    </tr>
+                    {% if shipping_cost %}
+                    <tr class="total-row">
+                        <td>Envío:</td>
+                        <td class="text-right">{{ shipping_cost|floatformat:2 }} {{ order.currency|default:"€" }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr class="total-row grand-total">
+                        <td>TOTAL:</td>
+                        <td class="text-right">{{ order.total_amount|floatformat:2 }} {{ order.currency|default:"€" }}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        Este documento ha sido generado automáticamente por la plataforma Fenix el {{ now|date:"d/m/Y H:i" }}.
+    </div>
+</body>
+
+</html>

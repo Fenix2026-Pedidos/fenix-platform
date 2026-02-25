@@ -1,0 +1,245 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .order-info {
+            background-color: #f8fafc;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+        }
+
+        .order-info table {
+            width: 100%;
+        }
+
+        .order-info td {
+            padding: 5px 0;
+        }
+
+        .label {
+            font-weight: 600;
+            color: #64748b;
+            width: 140px;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .value {
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .table-products {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+
+        .table-products th {
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+            padding: 12px 8px;
+            font-size: 13px;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .table-products td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .totals {
+            margin-left: auto;
+            width: 250px;
+        }
+
+        .totals table {
+            width: 100%;
+        }
+
+        .total-row td {
+            padding: 8px 0;
+        }
+
+        .grand-total {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0284c7;
+            border-top: 2px solid #e2e8f0;
+            padding-top: 10px !important;
+        }
+
+        .footer {
+            background-color: #f1f5f9;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-new {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{% trans "Confirmación de Pedido" %} #{{ order.id }}</h1>
+        </div>
+
+        <div class="content">
+            <p style="margin-top: 0;">{% trans "Se ha generado un nuevo pedido en la plataforma Fenix. A continuación se
+                detallan los datos completos del pedido." %}</p>
+
+            <div class="order-info">
+                <table>
+                    <tr>
+                        <td class="label">{% trans "Pedido #" %}</td>
+                        <td class="value">#{{ order.id }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">{% trans "Fecha" %}</td>
+                        <td class="value">{{ order.created_at|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">{% trans "Estado" %}</td>
+                        <td><span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">{% trans "Cliente" %}</td>
+                        <td class="value">{{ customer.full_name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">{% trans "Email" %}</td>
+                        <td class="value">{{ customer.email }}</td>
+                    </tr>
+                    {% if customer.direccion_entrega or customer.direccion_local %}
+                    <tr>
+                        <td class="label">{% trans "Dirección" %}</td>
+                        <td class="value">
+                            {{ customer.direccion_entrega|default:customer.direccion_local }}
+                            {% if customer.ciudad %}<br>{{ customer.ciudad }}{% endif %}
+                        </td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+
+            <table class="table-products">
+                <thead>
+                    <tr>
+                        <th>{% trans "Producto" %}</th>
+                        <th class="text-center">{% trans "Cant." %}</th>
+                        <th class="text-right">{% trans "Precio" %}</th>
+                        <th class="text-right">{% trans "Subtotal" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>
+                            <div style="font-weight: 500;">{{ item.product_name_es }}</div>
+                            {% if item.product.sku %}
+                            <div style="font-size: 11px; color: #64748b;">SKU: {{ item.product.sku }}</div>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">{{ item.quantity }}</td>
+                        <td class="text-right">{{ item.unit_price|floatformat:2 }} {{ order.currency|default:"€" }}</td>
+                        <td class="text-right" style="font-weight: 600;">{{ item.line_total|floatformat:2 }} {{
+                            order.currency|default:"€" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="totals">
+                <table>
+                    <tr class="total-row">
+                        <td style="color: #64748b;">{% trans "Subtotal" %}</td>
+                        <td class="text-right">{{ subtotal|floatformat:2 }} {{ order.currency|default:"€" }}</td>
+                    </tr>
+                    {% if shipping_cost %}
+                    <tr class="total-row">
+                        <td style="color: #64748b;">{% trans "Envío" %}</td>
+                        <td class="text-right">{{ shipping_cost|floatformat:2 }} {{ order.currency|default:"€" }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr class="total-row grand-total">
+                        <td>{% trans "TOTAL" %}</td>
+                        <td class="text-right">{{ order.total_amount|floatformat:2 }} {{ order.currency|default:"€" }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <p style="margin-top: 30px; font-size: 14px; color: #64748b;">
+                {% trans "Se adjunta el pedido en formato PDF para su gestión administrativa." %}
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>© {{ year }} Fenix - {% trans "Plataforma de Gestión de Pedidos" %}</p>
+            <p>{% trans "Este es un mensaje automático, por favor no responda a este email." %}</p>
+        </div>
+    </div>
+</body>
+
+</html>
