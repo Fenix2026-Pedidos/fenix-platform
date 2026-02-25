@@ -6,201 +6,314 @@
     <style>
         @page {
             size: A4;
-            margin: 1.5cm;
+            margin: 1cm;
         }
 
         body {
             font-family: Helvetica, Arial, sans-serif;
-            font-size: 10pt;
-            color: #333;
-            line-height: 1.4;
-        }
-
-        .header {
-            border-bottom: 2px solid #0369a1;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .header-table {
-            width: 100%;
-        }
-
-        .logo {
-            font-size: 24pt;
-            font-weight: bold;
-            color: #0369a1;
-        }
-
-        .order-title {
-            font-size: 18pt;
-            text-align: right;
-        }
-
-        .info-section {
-            width: 100%;
-            margin-bottom: 20px;
-        }
-
-        .info-box {
-            width: 48%;
-            vertical-align: top;
-            border: 1px solid #e2e8f0;
-            padding: 10px;
-            border-radius: 4px;
-        }
-
-        .info-title {
-            font-weight: bold;
             font-size: 9pt;
-            color: #64748b;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-            border-bottom: 1px solid #f1f5f9;
+            color: #111827;
+            /* gray-900 */
+            line-height: 1.5;
+            background-color: #ffffff;
         }
 
-        .products-table {
+        /* Containers */
+        .card {
+            border: 1px solid #e5e7eb;
+            /* gray-200 */
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 12px 16px;
+        }
+
+        .card-body {
+            padding: 16px;
+        }
+
+        .card-title {
+            font-size: 11pt;
+            font-weight: bold;
+            color: #111827;
+            margin: 0;
+        }
+
+        /* Typography */
+        .text-gray-500 {
+            color: #6b7280;
+        }
+
+        .text-primary-600 {
+            color: #0284c7;
+        }
+
+        .text-uppercase {
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .font-bold {
+            font-weight: bold;
+        }
+
+        .font-semibold {
+            font-weight: 600;
+        }
+
+        /* Grid replacement (Tables for layout) */
+        .layout-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
         }
 
-        .products-table th {
-            background-color: #f8fafc;
-            border-bottom: 1px solid #cbd5e1;
-            padding: 8px;
-            text-align: left;
-            font-size: 9pt;
+        .layout-table td {
+            vertical-align: top;
+            width: 33.33%;
+            padding: 0 10px;
         }
 
-        .products-table td {
-            padding: 8px;
-            border-bottom: 1px solid #f1f5f9;
+        .layout-table td:first-child {
+            padding-left: 0;
         }
 
-        .totals-table {
-            width: 100%;
+        .layout-table td:last-child {
+            padding-right: 0;
         }
 
-        .totals-box {
-            width: 40%;
-            margin-left: 60%;
-        }
-
-        .total-row td {
-            padding: 5px 0;
-        }
-
-        .grand-total {
-            font-weight: bold;
-            font-size: 12pt;
-            color: #0369a1;
-            border-top: 1px solid #cbd5e1;
-        }
-
-        .footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            text-align: center;
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 9999px;
             font-size: 8pt;
-            color: #94a3b8;
-            border-top: 1px solid #f1f5f9;
-            padding-top: 5px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status-new {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+
+        /* primary-100 / primary-700 */
+
+        /* Labels and Values */
+        .detail-label {
+            font-size: 7.5pt;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-size: 9pt;
+            margin-bottom: 10px;
+        }
+
+        /* Products Table */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background-color: #f9fafb;
+            /* gray-50 */
+            border-bottom: 1px solid #e5e7eb;
+            padding: 10px 8px;
+            font-size: 8pt;
+            color: #6b7280;
+            text-align: left;
+            text-transform: uppercase;
+        }
+
+        .table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #f3f4f6;
+            /* gray-100 */
+            vertical-align: middle;
+        }
+
+        .text-center {
+            text-align: center;
         }
 
         .text-right {
             text-align: right;
         }
 
-        .text-center {
-            text-align: center;
+        /* Totals */
+        .totals-section {
+            background-color: #f9fafb;
+            padding: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .totals-table {
+            width: 300px;
+            margin-left: auto;
+        }
+
+        .totals-table td {
+            padding: 4px 0;
+        }
+
+        .total-row {
+            border-top: 2px solid #d1d5db;
+            /* gray-300 */
+            margin-top: 8px;
+        }
+
+        .total-value {
+            font-size: 16pt;
+            font-weight: bold;
+            color: #0284c7;
+            /* primary-600 */
         }
     </style>
 </head>
 
 <body>
-    <div class="header">
-        <table class="header-table">
-            <tr>
-                <td class="logo">{{ platform_name|default:"FENIX" }}</td>
-                <td class="order-title">PEDIDO #{{ order.id }}</td>
-            </tr>
-        </table>
+    <!-- Main Header Card -->
+    <div class="card">
+        <div class="card-body" style="padding: 24px;">
+            <table width="100%">
+                <tr>
+                    <td>
+                        <h1 style="margin: 0; font-size: 22pt; color: #111827;">Pedido #{{ order.id }}</h1>
+                        <p style="margin: 5px 0 0 0; color: #6b7280;">Fecha de creación: {{ order.created_at|date:"d/m/Y
+                            H:i" }}</p>
+                    </td>
+                    <td align="right" valign="middle">
+                        <span class="status-badge status-{{ order.status }}">
+                            {{ order.get_status_display }}
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 
-    <table class="info-section">
-        <tr>
-            <td class="info-box">
-                <div class="info-title">DATOS DEL CLIENTE</div>
-                <strong>{{ customer.full_name }}</strong><br>
-                {{ customer.email }}<br>
-                {% if customer.telefono_empresa %}Tel: {{ customer.telefono_empresa }}<br>{% endif %}
-                {% if customer.company %}Empresa: {{ customer.company }}{% endif %}
-            </td>
-            <td width="4%"></td>
-            <td class="info-box">
-                <div class="info-title">DETALLES DE ENTREGA</div>
-                <strong>Fecha Pedido:</strong> {{ order.created_at|date:"d/m/Y H:i" }}<br>
-                <strong>Estado:</strong> {{ order.get_status_display }}<br>
-                {% if customer.direccion_entrega or customer.direccion_local %}
-                <strong>Dirección:</strong> {{ customer.direccion_entrega|default:customer.direccion_local }}<br>
-                {% if customer.ciudad %}{{ customer.ciudad }}{% endif %}
-                {% endif %}
-            </td>
-        </tr>
-    </table>
+    <!-- Info Card -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">Información del Pedido</h5>
+        </div>
+        <div class="card-body">
+            <table class="layout-table">
+                <tr>
+                    <td>
+                        <h6 style="font-size: 8pt; color: #6b7280; margin-bottom: 12px;" class="text-uppercase">
+                            Información del Cliente</h6>
 
-    <table class="products-table">
-        <thead>
-            <tr>
-                <th>PRODUCTO</th>
-                <th class="text-center" width="10%">CANT.</th>
-                <th class="text-right" width="20%">PRECIO UNIT.</th>
-                <th class="text-right" width="20%">SUBTOTAL</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in items %}
-            <tr>
-                <td>
-                    {{ item.product_name_es }}<br>
-                    <span style="font-size: 8pt; color: #64748b;">SKU: {{ item.product.sku|default:"-" }}</span>
-                </td>
-                <td class="text-center">{{ item.quantity }}</td>
-                <td class="text-right">{{ item.unit_price|floatformat:2 }} {{ order.currency|default:"€" }}</td>
-                <td class="text-right">{{ item.line_total|floatformat:2 }} {{ order.currency|default:"€" }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                        <div class="detail-label">Cliente</div>
+                        <div class="detail-value font-bold">{{ customer.full_name|default:customer.email }}</div>
 
-    <table class="totals-table">
-        <tr>
-            <td width="60%"></td>
-            <td>
-                <table width="100%">
-                    <tr class="total-row">
-                        <td>Subtotal:</td>
-                        <td class="text-right">{{ subtotal|floatformat:2 }} {{ order.currency|default:"€" }}</td>
+                        {% if customer.company %}
+                        <div class="detail-label">Empresa</div>
+                        <div class="detail-value">{{ customer.company }}</div>
+                        {% endif %}
+
+                        <div class="detail-label">Correo Electrónico</div>
+                        <div class="detail-value">{{ customer.email }}</div>
+
+                        {% if customer.telefono_reparto %}
+                        <div class="detail-label">Teléfono Reparto/Incidencias</div>
+                        <div class="detail-value font-semibold text-primary-600">{{ customer.telefono_reparto }}</div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <h6 style="font-size: 8pt; color: #6b7280; margin-bottom: 12px;" class="text-uppercase">Datos
+                            del Pedido</h6>
+
+                        <div class="detail-label">Nº Pedido / ID</div>
+                        <div class="detail-value font-bold text-primary-600" style="font-size: 14pt;">#{{ order.id }}
+                        </div>
+
+                        <div class="detail-label">Fecha de Creación</div>
+                        <div class="detail-value">{{ order.created_at|date:"d/m/Y H:i" }}</div>
+
+                        <div class="detail-label">Fecha de Entrega</div>
+                        <div class="detail-value text-gray-500">—</div>
+
+                        <div class="detail-label">Estado</div>
+                        <div class="detail-value">
+                            <span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <h6 style="font-size: 8pt; color: #6b7280; margin-bottom: 12px;" class="text-uppercase">
+                            Dirección de Entrega</h6>
+
+                        <div class="detail-label">Ciudad</div>
+                        <div class="detail-value">{{ customer.ciudad|default:"—" }}</div>
+
+                        <div class="detail-label">Dirección</div>
+                        <div class="detail-value">{{
+                            customer.direccion_entrega|default:customer.direccion_local|default:"—" }}</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Details Card -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">Detalles del Pedido</h5>
+        </div>
+        <div class="table-wrapper">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="text-center" width="15%">ID PEDIDO</th>
+                        <th width="45%">PRODUCTO</th>
+                        <th class="text-center" width="10%">CANTIDAD</th>
+                        <th class="text-right" width="15%">PRECIO UNITARIO</th>
+                        <th class="text-right" width="15%">TOTAL LÍNEA</th>
                     </tr>
-                    {% if shipping_cost %}
-                    <tr class="total-row">
-                        <td>Envío:</td>
-                        <td class="text-right">{{ shipping_cost|floatformat:2 }} {{ order.currency|default:"€" }}</td>
-                    </tr>
-                    {% endif %}
-                    <tr class="total-row grand-total">
-                        <td>TOTAL:</td>
-                        <td class="text-right">{{ order.total_amount|floatformat:2 }} {{ order.currency|default:"€" }}
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td class="text-center text-gray-500">#{{ order.id }}</td>
+                        <td>
+                            <div class="font-semibold">{{ item.product_name_es }}</div>
+                            {% if item.product.sku %}
+                            <div style="font-size: 7.5pt; color: #6b7280;">SKU: {{ item.product.sku }}</div>
+                            {% endif %}
                         </td>
+                        <td class="text-center">{{ item.quantity }}</td>
+                        <td class="text-right">{{ item.unit_price|floatformat:2 }} €</td>
+                        <td class="text-right font-bold">{{ item.line_total|floatformat:2 }} €</td>
                     </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="totals-section">
+            <table class="totals-table">
+                <tr>
+                    <td class="text-gray-500">Subtotal:</td>
+                    <td class="text-right font-bold" style="font-size: 11pt;">{{ subtotal|floatformat:2 }} €</td>
+                </tr>
+                <tr class="total-row">
+                    <td style="font-size: 14pt; padding-top: 12px;" class="font-bold">Total:</td>
+                    <td class="text-right total-value" style="padding-top: 12px;">{{ order.total_amount|floatformat:2 }}
+                        €</td>
+                </tr>
+            </table>
+        </div>
+    </div>
 
-    <div class="footer">
+    <div style="text-align: center; font-size: 8pt; color: #9ca3af; margin-top: 30px;">
         Este documento ha sido generado automáticamente por la plataforma Fenix el {{ now|date:"d/m/Y H:i" }}.
     </div>
 </body>
