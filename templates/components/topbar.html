@@ -1,208 +1,252 @@
 {% load i18n static %}
-<div class="topbar">
+<div class="w-full bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm h-16">
+    <div class="h-full px-4 md:px-6 flex items-center justify-between">
 
-    <div class="topbar-left">
-        <!-- Buscador Global Inteligente -->
-        <div class="global-search-wrapper">
-            <i class="bi bi-search search-icon"></i>
-            <input 
-                type="search" 
-                class="global-search-input" 
-                placeholder="{% trans '🔍 Buscar pedidos, productos o acciones…' %}" 
-                id="globalSearchInput"
-                autocomplete="off"
-            >
-            <div class="global-search-results" id="globalSearchResults" hidden></div>
+        <!-- LEFT: Logo & Search -->
+        <div class="flex items-center gap-4 lg:gap-8 overflow-hidden">
+            <!-- Logo (Hidden on Desktop if sidebar is enough, but included as per request) -->
+            <div class="flex items-center flex-shrink-0">
+                <a href="{% url 'accounts:dashboard' %}" class="flex items-center">
+                    <img src="{% static 'img/fenix-logo.svg' %}" alt="Fenix" class="h-8 md:h-9 w-auto object-contain" />
+                </a>
+            </div>
+
+            <!-- Vertical Separator -->
+            <div class="hidden md:block w-px h-6 bg-gray-200"></div>
+
+            <!-- Global Search - Professional UI -->
+            <div class="hidden sm:flex items-center relative max-w-md w-full group">
+                <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <input type="search"
+                    class="block w-full pl-10 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all"
+                    placeholder="{% trans 'Buscar pedidos, productos...' %}" id="globalSearchInput" autocomplete="off">
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <kbd
+                        class="hidden lg:inline-flex items-center px-1.5 py-0.5 border border-gray-200 rounded bg-white text-[10px] font-medium text-gray-400">
+                        <span class="mr-1">⌘</span>K
+                    </kbd>
+                </div>
+                <div class="absolute top-full left-0 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden"
+                    id="globalSearchResults" hidden></div>
+            </div>
         </div>
-    </div>
-    
-    <div class="topbar-right">
-        <div class="topbar-actions">
-            <!-- Selector de idioma -->
-            <form action="{% url 'set_language' %}" method="post" class="language-selector-form" id="language-form">
+
+        <!-- RIGHT: Actions & Profile -->
+        <div class="flex items-center gap-2 md:gap-4">
+
+            <!-- Compact Language Selector -->
+            <form action="{% url 'set_language' %}" method="post" id="auth-lang-form">
                 {% csrf_token %}
                 <input name="next" type="hidden" value="{{ request.get_full_path }}">
-                <select name="language" onchange="this.form.submit()" class="language-select">
-                    {% get_current_language as CURRENT_LANGUAGE %}
-                    {% get_available_languages as LANGUAGES_LIST %}
-                    {% for lang_code, lang_name in LANGUAGES_LIST %}
+                {% get_current_language as CURRENT_LANGUAGE %}
+                {% get_available_languages as LANGUAGES_LIST %}
+
+                <div class="relative group">
+                    <select name="language" onchange="this.form.submit()"
+                        class="appearance-none bg-gray-100/50 hover:bg-gray-100 border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-gray-700 cursor-pointer transition-all flex items-center pr-7 focus:outline-none">
+                        {% for lang_code, lang_name in LANGUAGES_LIST %}
                         {% if lang_code != 'en' %}
-                        <option value="{{ lang_code }}" {% if lang_code == CURRENT_LANGUAGE %}selected{% endif %}>
-                            {% if lang_code == 'es' %}🇪🇸 Español
-                            {% elif lang_code == 'zh-hans' %}🇨🇳 中文
-                            {% else %}{{ lang_name }}{% endif %}
+                        <option value="{{ lang_code }}" {% if lang_code==CURRENT_LANGUAGE %}selected{% endif %}>
+                            {% if lang_code == 'es' %}🇪🇸 ES
+                            {% elif lang_code == 'zh-hans' %}🇨🇳 ZH
+                            {% else %}{{ lang_code|upper }}{% endif %}
                         </option>
                         {% endif %}
-                    {% endfor %}
-                </select>
+                        {% endfor %}
+                    </select>
+                    <div
+                        class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-hover:text-gray-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                </div>
             </form>
-            
-            {% if user.is_authenticated %}
-            <!-- Carrito minimalista estilo Amazon -->
-            <a href="{% url 'orders:cart' %}" 
-               class="topbar-cart-btn fenix-cart-minimal" 
-               id="topbarCartBtn"
-               aria-label="{% if cart_count > 0 %}{% trans 'Carrito' %} ({{ cart_count }}){% else %}{% trans 'Carrito' %}{% endif %}"
-               title="{% if cart_count > 0 %}{% trans 'Carrito' %} ({{ cart_count }}){% else %}{% trans 'Carrito' %}{% endif %}">
-                <span class="topbar-cart-icon">🛒</span>
-                <span class="topbar-cart-badge" id="topbarCartBadge" data-count="{{ cart_count|default:0 }}" {% if cart_count|default:0 == 0 %}style="display: none;"{% endif %}>
-                    {% if cart_count > 0 %}{{ cart_count }}{% endif %}
+
+            <!-- Cart Activity -->
+            <a href="{% url 'orders:cart' %}"
+                class="relative p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
+                id="topbarCartBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span
+                    class="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white ring-2 ring-white"
+                    id="topbarCartBadge" {% if not cart_count %}style="display:none" {% endif %}>
+                    {{ cart_count|default:0 }}
                 </span>
             </a>
-            
-            <!-- Perfil de usuario -->
-            <div class="dropdown" id="userDropdownContainer" style="position: relative;">
-            <button class="btn btn-outline user-dropdown-btn" type="button" id="userDropdown">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; flex-shrink: 0;">
+
+            <!-- User Dropdown (Professional UI) -->
+            <div class="relative ml-2" id="userDropdownContainer">
+                <button type="button"
+                    class="flex items-center gap-2 p-1 pl-1 pr-3 rounded-full hover:bg-gray-100 border border-transparent hover:border-gray-200 transition-all focus:outline-none"
+                    id="userDropdown">
+                    <div
+                        class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold shadow-sm">
                         {{ user.full_name|first|default:user.email|first|upper }}
                     </div>
-                    <span class="d-none d-md-inline" style="white-space: nowrap; display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1;">
-                        <span style="font-weight: 600; color: var(--gray-900);">{{ user.full_name|default:user.email|truncatechars:20 }}</span>
-                        <span style="font-size: 12px; color: var(--gray-500);">
-                            {% if user_company and user_company.job_title %}
-                                {{ user_company.job_title }}
-                            {% endif %}
-                        </span>
-                    </span>
-                    <i class="bi bi-chevron-down" style="flex-shrink: 0; font-size: 12px;"></i>
+                    <div class="hidden md:flex flex-col items-start leading-none text-left">
+                        <span class="text-xs font-bold text-gray-900">{{
+                            user.full_name|default:user.email|truncatechars:18 }}</span>
+                        <span class="text-[10px] text-gray-500 mt-0.5">{{ user.get_role_display|default:user.role
+                            }}</span>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-gray-400 ml-1" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-2xl z-50 overflow-hidden transform origin-top-right transition-all scale-95 opacity-0 invisible"
+                    id="userDropdownMenu">
+                    <div class="px-4 py-3 bg-gray-50/50 border-b border-gray-100">
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">{% trans "Cuenta" %}</p>
+                        <p class="text-sm font-medium text-gray-900 truncate">{{ user.email }}</p>
+                    </div>
+                    <div class="p-1.5">
+                        <a href="{% url 'accounts:profile' %}"
+                            class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors">
+                            <i class="bi bi-person text-lg text-gray-400 group-hover:text-blue-500"></i>
+                            <span>{% trans "Mi Perfil" %}</span>
+                        </a>
+                        <div class="my-1 border-t border-gray-100"></div>
+                        <form method="post" action="{% url 'accounts:logout' %}">
+                            {% csrf_token %}
+                            <button type="submit"
+                                class="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm text-red-600 hover:bg-red-50 transition-colors">
+                                <i class="bi bi-box-arrow-right text-lg"></i>
+                                <span>{% trans "Cerrar Sesión" %}</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end" id="userDropdownMenu" style="display: none; position: absolute; top: calc(100% + 8px); right: 0; background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 8px 0; min-width: 200px; z-index: 1000; list-style: none; margin: 0;">
-                <li style="list-style: none;">
-                    <a class="dropdown-item" href="{% url 'accounts:profile' %}" style="display: block; padding: 8px 16px; color: var(--gray-700); text-decoration: none; font-size: 14px; transition: background-color var(--transition);">
-                        <i class="bi bi-person"></i> {% trans "Mi Perfil" %}
-                    </a>
-                </li>
-                <li style="list-style: none;"><hr class="dropdown-divider" style="margin: 8px 0; border-top: 1px solid var(--gray-200); border-bottom: none;"></li>
-                <li style="list-style: none;">
-                    <form method="post" action="{% url 'accounts:logout' %}" class="dropdown-item p-0 m-0" style="display: block;">
-                        {% csrf_token %}
-                        <button type="submit" class="dropdown-item w-100 text-start" style="display: block; padding: 8px 16px; color: var(--gray-700); text-decoration: none; font-size: 14px; transition: background-color var(--transition); border: none; background: none; width: 100%; text-align: left; cursor: pointer;">
-                            <i class="bi bi-box-arrow-right"></i> {% trans "Cerrar Sesión" %}
-                        </button>
-                    </form>
-                </li>
-            </ul>
             </div>
-            {% else %}
-            <a href="{% url 'accounts:login' %}" class="btn btn-outline btn-sm">
-                {% trans "Iniciar Sesión" %}
-            </a>
-            <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-sm">
-                {% trans "Registrarse" %}
-            </a>
-            {% endif %}
+
         </div>
-        
-        <script>
-        // Toggle dropdown manual
-        document.addEventListener('DOMContentLoaded', function() {
-            const dropdownBtn = document.getElementById('userDropdown');
-            const dropdownMenu = document.getElementById('userDropdownMenu');
-            const dropdownContainer = document.getElementById('userDropdownContainer');
-            
-            if (dropdownBtn && dropdownMenu && dropdownContainer) {
-                dropdownBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    const isOpen = dropdownMenu.style.display === 'block';
-                    dropdownMenu.style.display = isOpen ? 'none' : 'block';
-                    dropdownContainer.classList.toggle('show', !isOpen);
-                });
-                
-                // Cerrar al hacer clic fuera
-                document.addEventListener('click', function(e) {
-                    if (dropdownContainer && !dropdownContainer.contains(e.target)) {
-                        dropdownMenu.style.display = 'none';
-                        dropdownContainer.classList.remove('show');
-                    }
-                });
-            }
-        });
-        </script>
     </div>
 </div>
+
+<!-- Scripts unificados -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const btn = document.getElementById('userDropdown');
+        const menu = document.getElementById('userDropdownMenu');
+        const container = document.getElementById('userDropdownContainer');
+
+        if (btn && menu) {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const isOpen = !menu.classList.contains('invisible');
+                if (isOpen) {
+                    menu.classList.add('invisible', 'opacity-0', 'scale-95');
+                    menu.classList.remove('visible', 'opacity-100', 'scale-100');
+                } else {
+                    menu.classList.remove('invisible', 'opacity-0', 'scale-95');
+                    menu.classList.add('visible', 'opacity-100', 'scale-100');
+                }
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!container.contains(e.target)) {
+                    menu.classList.add('invisible', 'opacity-0', 'scale-95');
+                    menu.classList.remove('visible', 'opacity-100', 'scale-100');
+                }
+            });
+        }
+    });
+</script>
 <!-- CSRF logout fallback -->
 <script>
-(function(){
-  function getCookie(name){ const m=document.cookie.match('(^|;)\\s*'+name+'\\s*=\\s*([^;]+)'); return m ? m.pop() : ''; }
-  document.addEventListener('click', function(e){
-    const btn = e.target.closest('form[action$="/accounts/logout/"] button[type="submit"], form[action$="/accounts/logout/"] input[type="submit"]');
-    if (btn) {
-      const form = btn.form;
-      if (form && !form.querySelector('input[name="csrfmiddlewaretoken"]')) {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'csrfmiddlewaretoken';
-        input.value = getCookie('csrftoken');
-        form.appendChild(input);
-      }
-    }
-  }, true);
-})();
+    (function () {
+        function getCookie(name) { const m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)'); return m ? m.pop() : ''; }
+        document.addEventListener('click', function (e) {
+            const btn = e.target.closest('form[action$="/accounts/logout/"] button[type="submit"], form[action$="/accounts/logout/"] input[type="submit"]');
+            if (btn) {
+                const form = btn.form;
+                if (form && !form.querySelector('input[name="csrfmiddlewaretoken"]')) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'csrfmiddlewaretoken';
+                    input.value = getCookie('csrftoken');
+                    form.appendChild(input);
+                }
+            }
+        }, true);
+    })();
 </script>
 <!-- CSRF logout fallback end -->
 
 <!-- Global Search Script -->
 <script>
-(function() {
-    const searchInput = document.getElementById('globalSearchInput');
-    const resultsPanel = document.getElementById('globalSearchResults');
-    const wrapper = searchInput ? searchInput.closest('.global-search-wrapper') : null;
-    if (!searchInput || !resultsPanel || !wrapper) return;
+    (function () {
+        const searchInput = document.getElementById('globalSearchInput');
+        const resultsPanel = document.getElementById('globalSearchResults');
+        const wrapper = searchInput ? searchInput.closest('.global-search-wrapper') : null;
+        if (!searchInput || !resultsPanel || !wrapper) return;
 
-    const MIN_QUERY_LENGTH = 2;
-    const searchEndpoint = "{% url 'global_search' %}";
-    const labels = {
-        orders: "{{ _('Mis Pedidos')|escapejs }}",
-        products: "{{ _('Productos')|escapejs }}",
-        actions: "{{ _('Acciones Pendientes')|escapejs }}",
-        empty: "{{ _('No se encontraron resultados')|escapejs }}",
-        hint: "{{ _('Escribe al menos 2 caracteres para buscar')|escapejs }}",
-        error: "{{ _('Ha ocurrido un error')|escapejs }}",
-        loading: "{{ _('Cargando...')|escapejs }}",
-    };
-
-    let debounceTimer = null;
-    let activeController = null;
-    let lastResults = [];
-    let currentQuery = '';
-
-    const escapeHtml = (value = '') => value
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-
-    const hideResults = () => {
-        resultsPanel.hidden = true;
-    };
-
-    const showMessage = (message) => {
-        resultsPanel.innerHTML = `<div class="search-empty">${escapeHtml(message)}</div>`;
-        resultsPanel.hidden = false;
-    };
-
-    const renderResults = (results, query) => {
-        lastResults = [];
-        const sections = [];
-        const headingMap = {
-            orders: labels.orders,
-            products: labels.products,
-            actions: labels.actions,
+        const MIN_QUERY_LENGTH = 2;
+        const searchEndpoint = "{% url 'global_search' %}";
+        const labels = {
+            orders: "{{ _('Mis Pedidos')|escapejs }}",
+            products: "{{ _('Productos')|escapejs }}",
+            actions: "{{ _('Acciones Pendientes')|escapejs }}",
+            empty: "{{ _('No se encontraron resultados')|escapejs }}",
+            hint: "{{ _('Escribe al menos 2 caracteres para buscar')|escapejs }}",
+            error: "{{ _('Ha ocurrido un error')|escapejs }}",
+            loading: "{{ _('Cargando...')|escapejs }}",
         };
 
-        ['orders', 'products', 'actions'].forEach((type) => {
-            const items = results?.[type] || [];
-            if (!items.length) {
-                return;
-            }
+        let debounceTimer = null;
+        let activeController = null;
+        let lastResults = [];
+        let currentQuery = '';
 
-            lastResults = lastResults.concat(items);
+        const escapeHtml = (value = '') => value
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
 
-            const itemsMarkup = items.map((item) => `
+        const hideResults = () => {
+            resultsPanel.hidden = true;
+        };
+
+        const showMessage = (message) => {
+            resultsPanel.innerHTML = `<div class="search-empty">${escapeHtml(message)}</div>`;
+            resultsPanel.hidden = false;
+        };
+
+        const renderResults = (results, query) => {
+            lastResults = [];
+            const sections = [];
+            const headingMap = {
+                orders: labels.orders,
+                products: labels.products,
+                actions: labels.actions,
+            };
+
+            ['orders', 'products', 'actions'].forEach((type) => {
+                const items = results?.[type] || [];
+                if (!items.length) {
+                    return;
+                }
+
+                lastResults = lastResults.concat(items);
+
+                const itemsMarkup = items.map((item) => `
                 <li class="search-result-item">
                     <a class="search-result-link" href="${item.url}">
                         <span class="result-title">${escapeHtml(item.title)}</span>
@@ -211,119 +255,119 @@
                 </li>
             `).join('');
 
-            sections.push(`
+                sections.push(`
                 <div class="search-section">
                     <p class="search-section-title">${headingMap[type]}</p>
                     <ul class="search-results-list">${itemsMarkup}</ul>
                 </div>
             `);
+            });
+
+            if (!sections.length) {
+                showMessage(labels.empty);
+                return;
+            }
+
+            resultsPanel.innerHTML = sections.join('');
+            resultsPanel.hidden = false;
+        };
+
+        const performSearch = (query) => {
+            currentQuery = query;
+            if (activeController) {
+                activeController.abort();
+            }
+            activeController = new AbortController();
+
+            showMessage(labels.loading);
+
+            fetch(`${searchEndpoint}?q=${encodeURIComponent(query)}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                credentials: 'same-origin',
+                signal: activeController.signal,
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Response not OK');
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    if (query !== currentQuery) {
+                        return;
+                    }
+                    renderResults(data?.results, query);
+                })
+                .catch((error) => {
+                    if (error.name === 'AbortError') {
+                        return;
+                    }
+                    console.error('Global search error', error);
+                    showMessage(labels.error);
+                });
+        };
+
+        searchInput.addEventListener('input', (event) => {
+            const value = event.target.value.trim();
+            clearTimeout(debounceTimer);
+
+            if (!value) {
+                currentQuery = '';
+                lastResults = [];
+                hideResults();
+                return;
+            }
+
+            if (value.length < MIN_QUERY_LENGTH) {
+                showMessage(labels.hint);
+                return;
+            }
+
+            debounceTimer = setTimeout(() => performSearch(value), 250);
         });
 
-        if (!sections.length) {
-            showMessage(labels.empty);
-            return;
-        }
+        searchInput.addEventListener('keydown', (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+                event.preventDefault();
+                searchInput.focus();
+                return;
+            }
 
-        resultsPanel.innerHTML = sections.join('');
-        resultsPanel.hidden = false;
-    };
+            if (event.key === 'Escape') {
+                hideResults();
+                searchInput.blur();
+                return;
+            }
 
-    const performSearch = (query) => {
-        currentQuery = query;
-        if (activeController) {
-            activeController.abort();
-        }
-        activeController = new AbortController();
+            if (event.key === 'Enter' && lastResults.length) {
+                window.location.href = lastResults[0].url;
+            }
+        });
 
-        showMessage(labels.loading);
+        searchInput.addEventListener('focus', () => {
+            if (resultsPanel.innerHTML.trim()) {
+                resultsPanel.hidden = false;
+            }
+        });
 
-        fetch(`${searchEndpoint}?q=${encodeURIComponent(query)}`, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-            },
-            credentials: 'same-origin',
-            signal: activeController.signal,
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Response not OK');
-                }
-                return response.json();
-            })
-            .then((data) => {
-                if (query !== currentQuery) {
-                    return;
-                }
-                renderResults(data?.results, query);
-            })
-            .catch((error) => {
-                if (error.name === 'AbortError') {
-                    return;
-                }
-                console.error('Global search error', error);
-                showMessage(labels.error);
-            });
-    };
+        searchInput.addEventListener('blur', () => {
+            setTimeout(() => hideResults(), 120);
+        });
 
-    searchInput.addEventListener('input', (event) => {
-        const value = event.target.value.trim();
-        clearTimeout(debounceTimer);
+        document.addEventListener('keydown', (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+                event.preventDefault();
+                searchInput.focus();
+            }
+        });
 
-        if (!value) {
-            currentQuery = '';
-            lastResults = [];
-            hideResults();
-            return;
-        }
-
-        if (value.length < MIN_QUERY_LENGTH) {
-            showMessage(labels.hint);
-            return;
-        }
-
-        debounceTimer = setTimeout(() => performSearch(value), 250);
-    });
-
-    searchInput.addEventListener('keydown', (event) => {
-        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
-            event.preventDefault();
-            searchInput.focus();
-            return;
-        }
-
-        if (event.key === 'Escape') {
-            hideResults();
-            searchInput.blur();
-            return;
-        }
-
-        if (event.key === 'Enter' && lastResults.length) {
-            window.location.href = lastResults[0].url;
-        }
-    });
-
-    searchInput.addEventListener('focus', () => {
-        if (resultsPanel.innerHTML.trim()) {
-            resultsPanel.hidden = false;
-        }
-    });
-
-    searchInput.addEventListener('blur', () => {
-        setTimeout(() => hideResults(), 120);
-    });
-
-    document.addEventListener('keydown', (event) => {
-        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
-            event.preventDefault();
-            searchInput.focus();
-        }
-    });
-
-    document.addEventListener('click', (event) => {
-        if (!wrapper.contains(event.target)) {
-            hideResults();
-        }
-    });
-})();
+        document.addEventListener('click', (event) => {
+            if (!wrapper.contains(event.target)) {
+                hideResults();
+            }
+        });
+    })();
 </script>
 <!-- End Global Search Script -->
