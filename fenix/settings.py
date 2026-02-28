@@ -16,11 +16,16 @@ from pathlib import Path
 
 # Configurar codificación UTF-8 en Windows
 if sys.platform == 'win32':
-    if sys.getdefaultencoding() != 'utf-8':
-        os.environ['PYTHONIOENCODING'] = 'utf-8'
-        # Asegurar que los archivos se lean con UTF-8
-        import locale
-        locale.setlocale(locale.LC_ALL, '')
+    os.environ['PYTHONUTF8'] = '1'
+    os.environ['PYTHONIOENCODING'] = 'utf-8'
+    import locale
+    try:
+        locale.setlocale(locale.LC_ALL, 'es_ES.UTF-8')
+    except locale.Error:
+        try:
+            locale.setlocale(locale.LC_ALL, 'Spanish_Spain.1252') # Fallback
+        except locale.Error:
+            pass
 
 try:
     from dotenv import load_dotenv
@@ -84,7 +89,7 @@ MIDDLEWARE = [
 
 # Security settings for production
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
+    SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'true').lower() in ('1', 'true', 'yes')
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True

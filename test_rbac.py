@@ -43,15 +43,15 @@ def test_helpers():
     admin = User.objects.filter(role=ROLE_ADMIN).first()
     user = User.objects.filter(role=ROLE_USER).first()
     
-    print(f"\n✅ Super Admin encontrado: {super_admin.email if super_admin else 'N/A'}")
+    print(f"\n[OK] Super Admin encontrado: {super_admin.email if super_admin else 'N/A'}")
     print(f"   - is_super_admin(): {is_super_admin(super_admin) if super_admin else 'N/A'}")
     print(f"   - can_manage_users(): {can_manage_users(super_admin) if super_admin else 'N/A'}")
     
-    print(f"\n✅ Admin encontrado: {admin.email if admin else 'N/A'}")
+    print(f"\n[OK] Admin encontrado: {admin.email if admin else 'N/A'}")
     print(f"   - is_admin(): {is_admin(admin) if admin else 'N/A'}")
     print(f"   - can_manage_users(): {can_manage_users(admin) if admin else 'N/A'}")
     
-    print(f"\n✅ User encontrado: {user.email if user else 'N/A'}")
+    print(f"\n[OK] User encontrado: {user.email if user else 'N/A'}")
     print(f"   - is_user(): {is_user(user) if user else 'N/A'}")
     print(f"   - can_manage_users(): {can_manage_users(user) if user else 'N/A'}")
 
@@ -74,17 +74,17 @@ def test_visibility():
     
     if super_admin:
         visible = get_visible_users_queryset(super_admin, all_users)
-        print(f"\n✅ SUPER_ADMIN ve: {visible.count()} usuarios (todos)")
+        print(f"\n[OK] SUPER_ADMIN ve: {visible.count()} usuarios (todos)")
     
     if admin:
         visible = get_visible_users_queryset(admin, all_users)
-        print(f"✅ ADMIN ve: {visible.count()} usuarios (sin super_admin)")
+        print(f"[OK] ADMIN ve: {visible.count()} usuarios (sin super_admin)")
         super_admin_visible = visible.filter(role=ROLE_SUPER_ADMIN).exists()
-        print(f"   ⚠️  SUPER_ADMIN visible para ADMIN: {super_admin_visible} (debe ser False)")
+        print(f"[!]  SUPER_ADMIN visible para ADMIN: {super_admin_visible} (debe ser False)")
     
     if user:
         visible = get_visible_users_queryset(user, all_users)
-        print(f"✅ USER ve: {visible.count()} usuario(s) (solo sí mismo)")
+        print(f"[OK] USER ve: {visible.count()} usuario(s) (solo sí mismo)")
 
 
 def test_edit_permissions():
@@ -98,14 +98,14 @@ def test_edit_permissions():
     user = User.objects.filter(role=ROLE_USER).first()
     
     if super_admin and admin:
-        print(f"\n✅ SUPER_ADMIN puede editar ADMIN: {can_edit_target(super_admin, admin)}")
-        print(f"✅ ADMIN puede editar SUPER_ADMIN: {can_edit_target(admin, super_admin)} (debe ser False)")
+        print(f"\n[OK] SUPER_ADMIN puede editar ADMIN: {can_edit_target(super_admin, admin)}")
+        print(f"[OK] ADMIN puede editar SUPER_ADMIN: {can_edit_target(admin, super_admin)} (debe ser False)")
     
     if admin and user:
-        print(f"✅ ADMIN puede editar USER: {can_edit_target(admin, user)}")
+        print(f"[OK] ADMIN puede editar USER: {can_edit_target(admin, user)}")
     
     if user and admin:
-        print(f"✅ USER puede editar ADMIN: {can_edit_target(user, admin)} (debe ser False)")
+        print(f"[OK] USER puede editar ADMIN: {can_edit_target(user, admin)} (debe ser False)")
 
 
 def test_delete_permissions():
@@ -119,12 +119,12 @@ def test_delete_permissions():
     user = User.objects.filter(role=ROLE_USER).first()
     
     if super_admin and admin:
-        print(f"\n✅ SUPER_ADMIN puede eliminar ADMIN: {can_delete_target(super_admin, admin)}")
-        print(f"✅ SUPER_ADMIN puede eliminarse a sí mismo: {can_delete_target(super_admin, super_admin)} (debe ser False)")
-        print(f"✅ ADMIN puede eliminar SUPER_ADMIN: {can_delete_target(admin, super_admin)} (debe ser False)")
+        print(f"\n[OK] SUPER_ADMIN puede eliminar ADMIN: {can_delete_target(super_admin, admin)}")
+        print(f"[OK] SUPER_ADMIN puede eliminarse a sí mismo: {can_delete_target(super_admin, super_admin)} (debe ser False)")
+        print(f"[OK] ADMIN puede eliminar SUPER_ADMIN: {can_delete_target(admin, super_admin)} (debe ser False)")
     
     if admin and user:
-        print(f"✅ ADMIN puede eliminar USER: {can_delete_target(admin, user)}")
+        print(f"[OK] ADMIN puede eliminar USER: {can_delete_target(admin, user)}")
 
 
 def test_role_assignment():
@@ -138,17 +138,17 @@ def test_role_assignment():
     user = User.objects.filter(role=ROLE_USER).first()
     
     if super_admin:
-        print(f"\n✅ SUPER_ADMIN puede asignar 'super_admin': {can_assign_role(super_admin, ROLE_SUPER_ADMIN)}")
-        print(f"✅ SUPER_ADMIN puede asignar 'admin': {can_assign_role(super_admin, ROLE_ADMIN)}")
-        print(f"✅ SUPER_ADMIN puede asignar 'user': {can_assign_role(super_admin, ROLE_USER)}")
+        print(f"\n[OK] SUPER_ADMIN puede asignar 'super_admin': {can_assign_role(super_admin, ROLE_SUPER_ADMIN)}")
+        print(f"[OK] SUPER_ADMIN puede asignar 'admin': {can_assign_role(super_admin, ROLE_ADMIN)}")
+        print(f"[OK] SUPER_ADMIN puede asignar 'user': {can_assign_role(super_admin, ROLE_USER)}")
     
     if admin:
-        print(f"\n✅ ADMIN puede asignar 'super_admin': {can_assign_role(admin, ROLE_SUPER_ADMIN)} (debe ser False)")
-        print(f"✅ ADMIN puede asignar 'admin': {can_assign_role(admin, ROLE_ADMIN)}")
-        print(f"✅ ADMIN puede asignar 'user': {can_assign_role(admin, ROLE_USER)}")
+        print(f"\n[OK] ADMIN puede asignar 'super_admin': {can_assign_role(admin, ROLE_SUPER_ADMIN)} (debe ser False)")
+        print(f"[OK] ADMIN puede asignar 'admin': {can_assign_role(admin, ROLE_ADMIN)}")
+        print(f"[OK] ADMIN puede asignar 'user': {can_assign_role(admin, ROLE_USER)}")
     
     if user:
-        print(f"\n✅ USER puede asignar roles: {can_assign_role(user, ROLE_USER)} (debe ser False)")
+        print(f"\n[OK] USER puede asignar roles: {can_assign_role(user, ROLE_USER)} (debe ser False)")
 
 
 def test_role_choices():
@@ -163,23 +163,23 @@ def test_role_choices():
     
     if super_admin:
         choices = get_role_choices_for_user(super_admin)
-        print(f"\n✅ SUPER_ADMIN ve {len(choices)} opciones: {[c[0] for c in choices]}")
+        print(f"\n[OK] SUPER_ADMIN ve {len(choices)} opciones: {[c[0] for c in choices]}")
     
     if admin:
         choices = get_role_choices_for_user(admin)
-        print(f"✅ ADMIN ve {len(choices)} opciones: {[c[0] for c in choices]}")
+        print(f"[OK] ADMIN ve {len(choices)} opciones: {[c[0] for c in choices]}")
         has_super_admin = any(c[0] == ROLE_SUPER_ADMIN for c in choices)
-        print(f"   ⚠️  Incluye 'super_admin': {has_super_admin} (debe ser False)")
+        print(f"[!]  Incluye 'super_admin': {has_super_admin} (debe ser False)")
     
     if user:
         choices = get_role_choices_for_user(user)
-        print(f"✅ USER ve {len(choices)} opciones: {[c[0] for c in choices]} (debe ser vacío)")
+        print(f"[OK] USER ve {len(choices)} opciones: {[c[0] for c in choices]} (debe ser vacío)")
 
 
 def main():
-    print("\n" + "🔒 " + "="*66 + " 🔒")
+    print("\n" + "[SEGURIDAD] " + "="*66 + " [SEGURIDAD]")
     print("   PRUEBA DE SISTEMA RBAC - FENIX")
-    print("🔒 " + "="*66 + " 🔒")
+    print("[SEGURIDAD] " + "="*66 + " [SEGURIDAD]")
     
     try:
         test_helpers()
@@ -190,11 +190,11 @@ def main():
         test_role_choices()
         
         print("\n" + "="*70)
-        print("✅ TODAS LAS PRUEBAS COMPLETADAS")
-        print("="*70 + "\n")
+        print("[OK] TODAS LAS PRUEBAS COMPLETADAS")
+        print("[OK] Test finalizado")
         
     except Exception as e:
-        print(f"\n❌ ERROR: {e}")
+        print(f"\n[ERROR] {e}")
         import traceback
         traceback.print_exc()
 
