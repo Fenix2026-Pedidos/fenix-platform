@@ -12,14 +12,14 @@ logger = logging.getLogger(__name__)
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
-        'id', 'name_es', 'name_zh_hans', 'price', 'stock_available',
+        'id', 'name_es', 'name_zh_hans', 'price', 'unit_display', 'stock_available',
         'stock_min_threshold', 'stock_status', 'is_active', 'created_at',
     )
     list_filter = ('stock_status', 'is_active')
     search_fields = ('name_es', 'name_zh_hans')
     readonly_fields = ('stock_status', 'created_at', 'image_preview', 'translate_button')
     fieldsets = (
-        (None, {'fields': ('name_es', 'name_zh_hans', 'description_es', 'description_zh_hans', 'translate_button', 'image', 'image_preview', 'price', 'is_active')}),
+        (None, {'fields': ('name_es', 'name_zh_hans', 'description_es', 'description_zh_hans', 'translate_button', 'image', 'image_preview', 'price', 'unit_display', 'is_active')}),
         ('Stock (solo managers)', {'fields': ('stock_available', 'stock_min_threshold', 'stock_status')}),
         ('Auditoría', {'fields': ('created_at',)}),
     )

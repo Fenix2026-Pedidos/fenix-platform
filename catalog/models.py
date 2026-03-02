@@ -25,6 +25,13 @@ class Product(models.Model):
         verbose_name=_('Imagen')
     )
     price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_('Precio'))
+    unit_display = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        help_text=_('Ejemplo: "100 g", "1 Kg", "Unidad". Aparecerá junto al precio: 1,00€ / 100 g'),
+        verbose_name=_('Unidad de medida')
+    )
     is_active = models.BooleanField(default=True, verbose_name=_('Activo'))
     stock_available = models.IntegerField(default=0, verbose_name=_('Stock Disponible'))
     stock_min_threshold = models.IntegerField(default=0, verbose_name=_('Stock Mínimo'))

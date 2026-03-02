@@ -14,7 +14,7 @@
 
 <div class="catalog-page" data-authenticated="{{ request.user.is_authenticated|yesno:'true,false' }}">
     {% if not request.user.is_authenticated %}
-        {% include 'components/hero_public.html' with featured_products=products|slice:":3" %}
+    {% include 'components/hero_public.html' with featured_products=products|slice:":3" %}
     {% endif %}
 
     <section class="catalog-shell" aria-labelledby="catalogSectionTitle">
@@ -25,9 +25,9 @@
             </div>
             <p class="catalog-shell__subtitle">
                 {% if request.user.is_authenticated %}
-                    {% trans "Selecciona cantidades y añade tus básicos al carrito inteligente." %}
+                {% trans "Selecciona cantidades y añade tus básicos al carrito inteligente." %}
                 {% else %}
-                    {% trans "Explora el surtido completo y crea tu cuenta para comprar." %}
+                {% trans "Explora el surtido completo y crea tu cuenta para comprar." %}
                 {% endif %}
             </p>
         </div>
@@ -36,206 +36,227 @@
     </section>
 
     <div class="catalog-container">
-    <!-- Panel de filtros desplegable -->
-    <aside class="catalog-filters-panel" id="filtersPanel">
-        <div class="filters-header">
-            <h3>{% trans "Filtros" %}</h3>
-            <button type="button" class="btn-close-filters" id="closeFiltersPanel" aria-label="{% trans 'Cerrar filtros' %}">
-                <i class="bi bi-x-lg"></i>
-            </button>
-        </div>
-        
-        <div class="filters-content">
-            <!-- Sección 1: Tipos de producto -->
-            <div class="filters-section">
-                <h4 class="filters-section-title">{% trans "Tipos de producto" %}</h4>
-                <div class="filters-radio-list">
-                    <label class="filter-radio">
-                        <input type="radio" name="product-type" class="filter-type-radio" value="todos" data-type="todos" checked>
-                        <span class="filter-label">{% trans "Todos" %}</span>
-                    </label>
-                    <label class="filter-radio">
-                        <input type="radio" name="product-type" class="filter-type-radio" value="charcuteria" data-type="charcuteria">
-                        <span class="filter-label">{% trans "Charcutería" %}</span>
-                    </label>
-                    <label class="filter-radio">
-                        <input type="radio" name="product-type" class="filter-type-radio" value="curados" data-type="curados">
-                        <span class="filter-label">{% trans "Curados" %}</span>
-                    </label>
-                    <label class="filter-radio">
-                        <input type="radio" name="product-type" class="filter-type-radio" value="ibericos" data-type="ibericos">
-                        <span class="filter-label">{% trans "Ibéricos" %}</span>
-                    </label>
-                    <label class="filter-radio">
-                        <input type="radio" name="product-type" class="filter-type-radio" value="jamon-cocido" data-type="jamon-cocido">
-                        <span class="filter-label">{% trans "Jamón Cocido y York" %}</span>
-                    </label>
-                    <label class="filter-radio">
-                        <input type="radio" name="product-type" class="filter-type-radio" value="jamon-curado" data-type="jamon-curado">
-                        <span class="filter-label">{% trans "Jamón Curado" %}</span>
-                    </label>
-                    <label class="filter-radio">
-                        <input type="radio" name="product-type" class="filter-type-radio" value="pavo-pollo" data-type="pavo-pollo">
-                        <span class="filter-label">{% trans "Pavo y Pollo" %}</span>
-                    </label>
-                    <label class="filter-radio">
-                        <input type="radio" name="product-type" class="filter-type-radio" value="platos-preparados" data-type="platos-preparados">
-                        <span class="filter-label">{% trans "Platos preparados" %}</span>
-                    </label>
-                    <label class="filter-radio">
-                        <input type="radio" name="product-type" class="filter-type-radio" value="salchichas" data-type="salchichas">
-                        <span class="filter-label">{% trans "Salchichas" %}</span>
-                    </label>
+        <!-- Panel de filtros desplegable -->
+        <aside class="catalog-filters-panel" id="filtersPanel">
+            <div class="filters-header">
+                <h3>{% trans "Filtros" %}</h3>
+                <button type="button" class="btn-close-filters" id="closeFiltersPanel"
+                    aria-label="{% trans 'Cerrar filtros' %}">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <div class="filters-content">
+                <!-- Sección 1: Tipos de producto -->
+                <div class="filters-section">
+                    <h4 class="filters-section-title">{% trans "Tipos de producto" %}</h4>
+                    <div class="filters-radio-list">
+                        <label class="filter-radio">
+                            <input type="radio" name="product-type" class="filter-type-radio" value="todos"
+                                data-type="todos" checked>
+                            <span class="filter-label">{% trans "Todos" %}</span>
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="product-type" class="filter-type-radio" value="charcuteria"
+                                data-type="charcuteria">
+                            <span class="filter-label">{% trans "Charcutería" %}</span>
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="product-type" class="filter-type-radio" value="curados"
+                                data-type="curados">
+                            <span class="filter-label">{% trans "Curados" %}</span>
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="product-type" class="filter-type-radio" value="ibericos"
+                                data-type="ibericos">
+                            <span class="filter-label">{% trans "Ibéricos" %}</span>
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="product-type" class="filter-type-radio" value="jamon-cocido"
+                                data-type="jamon-cocido">
+                            <span class="filter-label">{% trans "Jamón Cocido y York" %}</span>
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="product-type" class="filter-type-radio" value="jamon-curado"
+                                data-type="jamon-curado">
+                            <span class="filter-label">{% trans "Jamón Curado" %}</span>
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="product-type" class="filter-type-radio" value="pavo-pollo"
+                                data-type="pavo-pollo">
+                            <span class="filter-label">{% trans "Pavo y Pollo" %}</span>
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="product-type" class="filter-type-radio" value="platos-preparados"
+                                data-type="platos-preparados">
+                            <span class="filter-label">{% trans "Platos preparados" %}</span>
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="product-type" class="filter-type-radio" value="salchichas"
+                                data-type="salchichas">
+                            <span class="filter-label">{% trans "Salchichas" %}</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Separador visual -->
+                <hr class="filters-separator">
+
+                <!-- Sección 2: Características especiales -->
+                <div class="filters-section">
+                    <h4 class="filters-section-title">{% trans "Características especiales" %}</h4>
+                    <div class="filters-list">
+                        <label class="filter-checkbox">
+                            <input type="checkbox" class="filter-input" data-filter="sin-lactosa" value="sin-lactosa">
+                            <span class="filter-label">{% trans "Sin lactosa" %}</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" class="filter-input" data-filter="sin-conservantes"
+                                value="sin-conservantes">
+                            <span class="filter-label">{% trans "Sin conservantes" %}</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" class="filter-input" data-filter="sin-colorantes"
+                                value="sin-colorantes">
+                            <span class="filter-label">{% trans "Sin colorantes" %}</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" class="filter-input" data-filter="sin-azucares" value="sin-azucares">
+                            <span class="filter-label">{% trans "Sin azúcares añadidos" %}</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" class="filter-input" data-filter="bajo-carbohidratos"
+                                value="bajo-carbohidratos">
+                            <span class="filter-label">{% trans "Bajo en carbohidratos" %}</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" class="filter-input" data-filter="apto-diabeticos"
+                                value="apto-diabeticos">
+                            <span class="filter-label">{% trans "Apto para diabéticos" %}</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" class="filter-input" data-filter="natural" value="natural">
+                            <span class="filter-label">{% trans "Natural" %}</span>
+                        </label>
+                    </div>
                 </div>
             </div>
-            
-            <!-- Separador visual -->
-            <hr class="filters-separator">
-            
-            <!-- Sección 2: Características especiales -->
-            <div class="filters-section">
-                <h4 class="filters-section-title">{% trans "Características especiales" %}</h4>
-                <div class="filters-list">
-                    <label class="filter-checkbox">
-                        <input type="checkbox" class="filter-input" data-filter="sin-lactosa" value="sin-lactosa">
-                        <span class="filter-label">{% trans "Sin lactosa" %}</span>
-                    </label>
-                    <label class="filter-checkbox">
-                        <input type="checkbox" class="filter-input" data-filter="sin-conservantes" value="sin-conservantes">
-                        <span class="filter-label">{% trans "Sin conservantes" %}</span>
-                    </label>
-                    <label class="filter-checkbox">
-                        <input type="checkbox" class="filter-input" data-filter="sin-colorantes" value="sin-colorantes">
-                        <span class="filter-label">{% trans "Sin colorantes" %}</span>
-                    </label>
-                    <label class="filter-checkbox">
-                        <input type="checkbox" class="filter-input" data-filter="sin-azucares" value="sin-azucares">
-                        <span class="filter-label">{% trans "Sin azúcares añadidos" %}</span>
-                    </label>
-                    <label class="filter-checkbox">
-                        <input type="checkbox" class="filter-input" data-filter="bajo-carbohidratos" value="bajo-carbohidratos">
-                        <span class="filter-label">{% trans "Bajo en carbohidratos" %}</span>
-                    </label>
-                    <label class="filter-checkbox">
-                        <input type="checkbox" class="filter-input" data-filter="apto-diabeticos" value="apto-diabeticos">
-                        <span class="filter-label">{% trans "Apto para diabéticos" %}</span>
-                    </label>
-                    <label class="filter-checkbox">
-                        <input type="checkbox" class="filter-input" data-filter="natural" value="natural">
-                        <span class="filter-label">{% trans "Natural" %}</span>
-                    </label>
-                </div>
+
+            <div class="filters-footer">
+                <button type="button" class="btn btn-outline btn-clear-filters" id="clearFilters">
+                    {% trans "Eliminar selección" %}
+                </button>
             </div>
-        </div>
-        
-        <div class="filters-footer">
-            <button type="button" class="btn btn-outline btn-clear-filters" id="clearFilters">
-                {% trans "Eliminar selección" %}
-            </button>
-        </div>
-    </aside>
+        </aside>
 
-    <!-- Overlay para cerrar panel en móvil -->
-    <div class="filters-overlay" id="filtersOverlay"></div>
+        <!-- Overlay para cerrar panel en móvil -->
+        <div class="filters-overlay" id="filtersOverlay"></div>
 
-    <!-- Área principal con grid -->
-    <div class="catalog-main-area">
-        <div class="products-grid" id="productsGrid">
+        <!-- Área principal con grid -->
+        <div class="catalog-main-area">
+            <div class="products-grid" id="productsGrid">
                 {% if products %}
-                    {% for product in products %}
-                    <div class="product-card" 
-                        data-product-id="{{ product.pk }}" 
-                        {% if show_prices %}data-product-price="{{ product.price|unlocalize }}"{% endif %}
-                        data-category="{{ product|product_category }}"
-                        data-product-type="{% cycle 'charcuteria' 'curados' 'ibericos' 'jamon-cocido' 'jamon-curado' 'pavo-pollo' 'platos-preparados' 'salchichas' %}"
-                        data-product-features="{% cycle 'sin-lactosa,sin-conservantes' 'natural' 'sin-colorantes' 'sin-azucares' 'bajo-carbohidratos' 'apto-diabeticos' 'natural,sin-lactosa' '' %}">
+                {% for product in products %}
+                <div class="product-card" data-product-id="{{ product.pk }}" {% if show_prices
+                    %}data-product-price="{{ product.price|unlocalize }}" {% endif %}
+                    data-category="{{ product|product_category }}"
+                    data-product-type="{% cycle 'charcuteria' 'curados' 'ibericos' 'jamon-cocido' 'jamon-curado' 'pavo-pollo' 'platos-preparados' 'salchichas' %}"
+                    data-product-features="{% cycle 'sin-lactosa,sin-conservantes' 'natural' 'sin-colorantes' 'sin-azucares' 'bajo-carbohidratos' 'apto-diabeticos' 'natural,sin-lactosa' '' %}">
 
-                        <!-- 1. Header: Título + Referencia en la misma línea -->
-                        <div class="card-header-row">
-                            <h3 class="card-product-name">
-                                {% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif %}
-                            </h3>
-                            <span class="card-ref">REF: P{{ product.pk|stringformat:"05d" }}</span>
-                        </div>
-
-                        <!-- 2. Imagen protagonista -->
-                        <div class="card-image-wrap">
-                            {% if product.image %}
-                            <img src="{{ product.image.url }}" 
-                                 alt="{% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif %}" 
-                                 class="card-product-img" loading="lazy">
-                            {% else %}
-                            <div class="card-image-empty">
-                                <i class="bi bi-image"></i>
-                            </div>
-                            {% endif %}
-                            <!-- Badge overlay "En carrito: X" -->
-                            <div class="product-cart-badge-overlay" data-product-id="{{ product.pk }}" style="display: none;">
-                                <span class="cart-badge-text">{% trans "En carrito:" %} <strong class="cart-badge-quantity">0</strong></span>
-                            </div>
-                        </div>
-
-                        <!-- 3. Precio centrado -->
-                        <div class="card-price-block">
-                            {% if show_prices %}
-                            <div class="card-price-main" data-price="{{ product.price|unlocalize }}">
-                                <span class="price-full">{{ product.price|floatformat:2 }}</span>
-                                <span class="price-currency">€</span>
-                                <span class="price-weight">/ {% cycle '150 g' '200 g' '100 g' '250 g' '300 g' '180 g' '120 g' '160 g' %}</span>
-                            </div>
-                            {% else %}
-                            <div class="card-price-main card-price-hidden">
-                                <span class="price-login-hint">{% trans "Inicia sesión para ver precios" %}</span>
-                            </div>
-                            {% endif %}
-                        </div>
-
-                        <!-- 4. Stepper de cantidad -->
-                        <div class="card-qty-row">
-                            <div class="card-qty-stepper product-quantity-selector">
-                                <button type="button" class="qty-btn qty-minus disabled" data-product-id="{{ product.pk }}" aria-label="{% trans 'Reducir cantidad' %}" disabled>
-                                    <i class="bi bi-dash"></i>
-                                </button>
-                                <input type="number" class="qty-input" data-product-id="{{ product.pk }}" value="0" min="0" readonly>
-                                <button type="button" class="qty-btn qty-plus" data-product-id="{{ product.pk }}" aria-label="{% trans 'Aumentar cantidad' %}">
-                                    <i class="bi bi-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 5. Botón Añadir al carrito -->
-                        <button type="button" class="card-add-btn btn-add-product disabled" data-product-id="{{ product.pk }}" disabled>
-                            <i class="bi bi-cart-plus"></i>
-                            <span>{% trans "Añadir al carrito" %}</span>
-                        </button>
+                    <!-- 1. Header: Título + Referencia en la misma línea -->
+                    <div class="card-header-row">
+                        <h3 class="card-product-name">
+                            {% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif
+                            %}
+                        </h3>
+                        <span class="card-ref">REF: P{{ product.pk|stringformat:"05d" }}</span>
                     </div>
-                    {% endfor %}
+
+                    <!-- 2. Imagen protagonista -->
+                    <div class="card-image-wrap">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}"
+                            alt="{% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif %}"
+                            class="card-product-img" loading="lazy">
+                        {% else %}
+                        <div class="card-image-empty">
+                            <i class="bi bi-image"></i>
+                        </div>
+                        {% endif %}
+                        <!-- Badge overlay "En carrito: X" -->
+                        <div class="product-cart-badge-overlay" data-product-id="{{ product.pk }}"
+                            style="display: none;">
+                            <span class="cart-badge-text">{% trans "En carrito:" %} <strong
+                                    class="cart-badge-quantity">0</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- 3. Precio centrado -->
+                    <div class="card-price-block">
+                        {% if show_prices %}
+                        <div class="card-price-main" data-price="{{ product.price|unlocalize }}">
+                            <span class="price-full">{{ product.price|floatformat:2 }}</span>
+                            <span class="price-currency">€</span>
+                            {% if product.unit_display %}<span class="price-weight">/ {{ product.unit_display
+                                }}</span>{% endif %}
+                        </div>
+                        {% else %}
+                        <div class="card-price-main card-price-hidden">
+                            <span class="price-login-hint">{% trans "Inicia sesión para ver precios" %}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- 4. Stepper de cantidad -->
+                    <div class="card-qty-row">
+                        <div class="card-qty-stepper product-quantity-selector">
+                            <button type="button" class="qty-btn qty-minus disabled" data-product-id="{{ product.pk }}"
+                                aria-label="{% trans 'Reducir cantidad' %}" disabled>
+                                <i class="bi bi-dash"></i>
+                            </button>
+                            <input type="number" class="qty-input" data-product-id="{{ product.pk }}" value="0" min="0"
+                                readonly>
+                            <button type="button" class="qty-btn qty-plus" data-product-id="{{ product.pk }}"
+                                aria-label="{% trans 'Aumentar cantidad' %}">
+                                <i class="bi bi-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 5. Botón Añadir al carrito -->
+                    <button type="button" class="card-add-btn btn-add-product disabled"
+                        data-product-id="{{ product.pk }}" disabled>
+                        <i class="bi bi-cart-plus"></i>
+                        <span>{% trans "Añadir al carrito" %}</span>
+                    </button>
+                </div>
+                {% endfor %}
                 {% else %}
-                    <div class="empty-state">
-                        <i class="bi bi-inbox"></i>
-                        <p class="text-muted">
-                            {% if search_query %}
-                                {% trans "No se encontraron productos que coincidan con tu búsqueda." %}
-                            {% else %}
-                                {% trans "No hay productos disponibles en este momento." %}
-                            {% endif %}
-                        </p>
-                    </div>
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p class="text-muted">
+                        {% if search_query %}
+                        {% trans "No se encontraron productos que coincidan con tu búsqueda." %}
+                        {% else %}
+                        {% trans "No hay productos disponibles en este momento." %}
+                        {% endif %}
+                    </p>
+                </div>
                 {% endif %}
             </div>
         </div>
     </div>
-    </div>
-
-    {% if not request.user.is_authenticated %}
-        {% include 'components/trust_bar.html' %}
-    {% endif %}
-
-    {% include 'components/public_footer.html' %}
 </div>
 
 {% if not request.user.is_authenticated %}
-    {% include 'components/auth_required_modal.html' %}
+{% include 'components/trust_bar.html' %}
+{% endif %}
+
+{% include 'components/public_footer.html' %}
+</div>
+
+{% if not request.user.is_authenticated %}
+{% include 'components/auth_required_modal.html' %}
 {% endif %}
 
 <!-- Datos iniciales del carrito para JavaScript -->
@@ -246,17 +267,17 @@
 {% block extra_js %}
 <script>
     window.Fenix = window.Fenix || {};
-    window.Fenix.isAuthenticated = {{ request.user.is_authenticated|yesno:'true,false' }};
+    window.Fenix.isAuthenticated = {{ request.user.is_authenticated | yesno: 'true,false' }};
 </script>
 <script src="{% static 'js/catalog.js' %}"></script>
 <script src="{% static 'js/catalog-filters.js' %}"></script>
 <script>
     // Inicializar catálogo al cargar la página
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         if (typeof CatalogCart !== 'undefined') {
             // Primero: inicializar CatalogCart (esto pone qtyLocal=0 para todas las cards)
             CatalogCart.init();
-            
+
             // Segundo: cargar carrito inicial desde el servidor (estado REAL de la cesta)
             try {
                 const initialCartDataElement = document.getElementById('initialCartData');
@@ -281,31 +302,31 @@
                 console.warn('No se pudo cargar el carrito inicial:', e);
             }
         }
-        
+
         // Inicializar filtros
         if (typeof CatalogFilters !== 'undefined') {
             CatalogFilters.init();
         }
-        
+
         // Parsear precios estilo Amazon (separar parte entera y decimales)
-        document.querySelectorAll('.card-price-main[data-price]').forEach(function(priceElement) {
+        document.querySelectorAll('.card-price-main[data-price]').forEach(function (priceElement) {
             const priceValue = parseFloat(priceElement.getAttribute('data-price'));
             if (isNaN(priceValue)) return;
-            
+
             const priceFull = priceElement.querySelector('.price-full');
             if (!priceFull) return;
-            
+
             // Formatear precio con 2 decimales
             const formatted = priceValue.toFixed(2);
             const parts = formatted.split('.');
             const intPart = parts[0];
             const decPart = parts[1] || '00';
-            
+
             // Reemplazar el contenido del precio completo con parte entera y decimales
             priceFull.outerHTML = '<span class="price-int">' + intPart + '</span><span class="price-dec">,' + decPart + '</span>';
         });
 
-        const tabsController = (function() {
+        const tabsController = (function () {
             const tabButtons = Array.from(document.querySelectorAll('[data-category-tab]'));
             const cards = Array.from(document.querySelectorAll('.product-card'));
 
@@ -338,7 +359,7 @@
             });
         })();
 
-        const authModalController = (function() {
+        const authModalController = (function () {
             const modal = document.getElementById('authRequiredModal');
             if (!modal) {
                 return;
