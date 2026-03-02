@@ -28,7 +28,7 @@
                     {% get_available_languages as LANGUAGES_LIST %}
                     {% for lang_code, lang_name in LANGUAGES_LIST %}
                     {% if lang_code != 'en' %}
-                    <option value="{{ lang_code }}" {% if lang_code == CURRENT_LANGUAGE %}selected{% endif %}>
+                    <option value="{{ lang_code }}" {% if lang_code==CURRENT_LANGUAGE %}selected{% endif %}>
                         {% if lang_code == 'es' %}🇪🇸 Español
                         {% elif lang_code == 'zh-hans' %}🇨🇳 中文
                         {% else %}{{ lang_name }}{% endif %}
@@ -44,7 +44,8 @@
                 aria-label="{% if cart_count > 0 %}{% trans 'Carrito' %} ({{ cart_count }}){% else %}{% trans 'Carrito' %}{% endif %}"
                 title="{% if cart_count > 0 %}{% trans 'Carrito' %} ({{ cart_count }}){% else %}{% trans 'Carrito' %}{% endif %}">
                 <span class="topbar-cart-icon">🛒</span>
-                <span class="topbar-cart-badge" id="topbarCartBadge" data-count="{{ cart_count|default:0 }}" {% if cart_count|default:0 == 0 %}style="display: none;" {% endif %}>
+                <span class="topbar-cart-badge" id="topbarCartBadge" data-count="{{ cart_count|default:0 }}" {% if
+                    cart_count|default:0==0 %}style="display: none;" {% endif %}>
                     {% if cart_count > 0 %}{{ cart_count }}{% endif %}
                 </span>
             </a>
