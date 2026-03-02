@@ -28,7 +28,11 @@
                     {% get_available_languages as LANGUAGES_LIST %}
                     {% for lang_code, lang_name in LANGUAGES_LIST %}
                     {% if lang_code != 'en' %}
-                    <option value="{{ lang_code }}" {% if lang_code==CURRENT_LANGUAGE %}selected{% endif %}>
+                    {% if lang_code == CURRENT_LANGUAGE %}
+                    <option value="{{ lang_code }}" selected>
+                        {% else %}
+                    <option value="{{ lang_code }}">
+                        {% endif %}
                         {% if lang_code == 'es' %}🇪🇸 Español
                         {% elif lang_code == 'zh-hans' %}🇨🇳 中文
                         {% else %}{{ lang_name }}{% endif %}
@@ -44,10 +48,15 @@
                 aria-label="{% if cart_count > 0 %}{% trans 'Carrito' %} ({{ cart_count }}){% else %}{% trans 'Carrito' %}{% endif %}"
                 title="{% if cart_count > 0 %}{% trans 'Carrito' %} ({{ cart_count }}){% else %}{% trans 'Carrito' %}{% endif %}">
                 <span class="topbar-cart-icon">🛒</span>
-                <span class="topbar-cart-badge" id="topbarCartBadge" data-count="{{ cart_count|default:0 }}" {% if
-                    cart_count|default:0==0 %}style="display: none;" {% endif %}>
-                    {% if cart_count > 0 %}{{ cart_count }}{% endif %}
-                </span>
+                {% with count=cart_count|default:0 %}
+                {% if count == 0 %}
+                <span class="topbar-cart-badge" id="topbarCartBadge" data-count="{{ count }}" style="display: none;">
+                    {% else %}
+                    <span class="topbar-cart-badge" id="topbarCartBadge" data-count="{{ count }}">
+                        {% endif %}
+                        {% if count > 0 %}{{ count }}{% endif %}
+                    </span>
+                    {% endwith %}
             </a>
 
             <!-- Perfil de usuario -->
@@ -60,8 +69,9 @@
                         </div>
                         <span class="d-none d-md-inline"
                             style="white-space: nowrap; display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1;">
-                            <span style="font-weight: 600; color: var(--gray-900);">{{
-                                user.full_name|default:user.email|truncatechars:20 }}</span>
+                            {% with dname=user.full_name|default:user.email %}
+                            <span style="font-weight: 600; color: var(--gray-900);">{{ dname|truncatechars:20 }}</span>
+                            {% endwith %}
                             <span style="font-size: 12px; color: var(--gray-500);">
                                 {% if user_company and user_company.job_title %}
                                 {{ user_company.job_title }}
