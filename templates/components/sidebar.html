@@ -1,67 +1,83 @@
 {% load i18n static %}
+
+<!-- Sidebar Drawer Backdrop -->
+<div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 180px; margin-top: 20px;">
+        <div
+            style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 180px; margin-top: 20px;">
             <a href="{% url 'accounts:dashboard' %}" class="sidebar-logo">
-                <img src="{% static 'img/logo sin fondo.png' %}" alt="Logo Fenix" class="sidebar-logo-icon" style="max-width: 260px; max-height: 160px; display: block; margin: 0 auto;">
+                <img src="{% static 'img/logo sin fondo.png' %}" alt="Logo Fenix" class="sidebar-logo-icon"
+                    style="max-width: 260px; max-height: 160px; display: block; margin: 0 auto;">
             </a>
         </div>
-        <button class="btn btn-sm btn-outline d-none d-md-block" id="sidebar-toggle" style="color: white; border-color: rgba(255,255,255,0.3);">
+        <button class="btn btn-sm btn-outline d-none d-md-block" id="sidebar-toggle"
+            style="color: white; border-color: rgba(255,255,255,0.3);">
             <i class="bi bi-chevron-left"></i>
         </button>
     </div>
-    
+
     <nav class="sidebar-menu">
         {% if user.is_authenticated %}
         <!-- NUEVO: Inicio / Dashboard -->
         <div class="sidebar-menu-item">
-            <a href="{% url 'accounts:dashboard' %}" class="sidebar-menu-link {% if request.resolver_match.url_name == 'dashboard' or request.resolver_match.url_name == 'dashboard_alt' %}active{% endif %}">
+            <a href="{% url 'accounts:dashboard' %}"
+                class="sidebar-menu-link {% if request.resolver_match.url_name == 'dashboard' or request.resolver_match.url_name == 'dashboard_alt' %}active{% endif %}">
                 <i class="bi bi-house-door sidebar-menu-icon"></i>
                 <span class="sidebar-menu-text">{% trans "Inicio" %}</span>
             </a>
         </div>
         {% endif %}
-        
+
         <!-- Link simple a Catálogo (sin accordion) -->
         <div class="sidebar-menu-item">
-            <a href="{% url 'catalog:product_list' %}" class="sidebar-menu-link {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}">
+            <a href="{% url 'catalog:product_list' %}"
+                class="sidebar-menu-link {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}">
                 <i class="bi bi-grid sidebar-menu-icon"></i>
                 <span class="sidebar-menu-text">{% trans "Catálogo" %}</span>
             </a>
         </div>
-        
+
         {% if user.is_authenticated %}
         <div class="sidebar-menu-item">
-            <a href="{% url 'orders:order_list' %}" class="sidebar-menu-link {% if 'order' in request.resolver_match.url_name %}active{% endif %}">
+            <a href="{% url 'orders:order_list' %}"
+                class="sidebar-menu-link {% if 'order' in request.resolver_match.url_name %}active{% endif %}">
                 <i class="bi bi-receipt sidebar-menu-icon"></i>
                 <span class="sidebar-menu-text">{% trans "Mis Pedidos" %}</span>
             </a>
         </div>
-        
+
         <div class="sidebar-menu-item">
-            <a href="{% url 'orders:cart' %}" class="sidebar-menu-link {% if request.resolver_match.url_name == 'cart' %}active{% endif %}">
+            <a href="{% url 'orders:cart' %}"
+                class="sidebar-menu-link {% if request.resolver_match.url_name == 'cart' %}active{% endif %}">
                 <i class="bi bi-cart3 sidebar-menu-icon"></i>
                 <span class="sidebar-menu-text">{% trans "Carrito" %}</span>
                 {% if cart_count > 0 %}
-                <span style="background-color: var(--danger); color: white; margin-left: auto; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; min-width: 20px; text-align: center;">{{ cart_count }}</span>
+                <span
+                    style="background-color: var(--danger); color: white; margin-left: auto; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; min-width: 20px; text-align: center;">{{
+                    cart_count }}</span>
                 {% endif %}
             </a>
         </div>
         {% endif %}
-        
+
         {# RBAC: Solo SUPER_ADMIN y ADMIN pueden ver Gestión de Usuarios #}
         {% if user.role == 'super_admin' or user.role == 'admin' %}
         <div class="sidebar-menu-item">
-            <a href="{% url 'accounts:user_approval_list' %}" class="sidebar-menu-link {% if 'approval' in request.resolver_match.url_name %}active{% endif %}">
+            <a href="{% url 'accounts:user_approval_list' %}"
+                class="sidebar-menu-link {% if 'approval' in request.resolver_match.url_name %}active{% endif %}">
                 <i class="bi bi-person-check sidebar-menu-icon"></i>
                 <span class="sidebar-menu-text">{% trans "Gestión de Usuarios" %}</span>
                 {% if 'approval' in request.resolver_match.url_name %}
-                <div style="width: 8px; height: 8px; background: hsl(var(--primary)); border-radius: 50%; margin-left: auto; flex-shrink: 0;"></div>
+                <div
+                    style="width: 8px; height: 8px; background: hsl(var(--primary)); border-radius: 50%; margin-left: auto; flex-shrink: 0;">
+                </div>
                 {% endif %}
             </a>
         </div>
         {% endif %}
-        
+
         {# Administración Django (solo para staff) #}
         {% if user.is_staff %}
         <div class="sidebar-menu-item">
@@ -72,7 +88,7 @@
         </div>
         {% endif %}
     </nav>
-    
+
     {% if user.is_authenticated %}
     <div class="sidebar-footer">
         <div class="sidebar-menu-item">
@@ -86,30 +102,84 @@
 </aside>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const sidebar = document.getElementById('sidebar');
-    const toggleBtn = document.getElementById('sidebar-toggle');
-    
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', function() {
-            sidebar.classList.toggle('collapsed');
-            const icon = this.querySelector('i');
-            if (sidebar.classList.contains('collapsed')) {
-                icon.classList.remove('bi-chevron-left');
-                icon.classList.add('bi-chevron-right');
+    document.addEventListener('DOMContentLoaded', function () {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('sidebar-toggle');
+        const backdrop = document.getElementById('sidebar-backdrop');
+
+        // Desktop toggle (Collapse/Expand)
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function () {
+                sidebar.classList.toggle('collapsed');
+                const icon = this.querySelector('i');
+                if (sidebar.classList.contains('collapsed')) {
+                    icon.classList.remove('bi-chevron-left');
+                    icon.classList.add('bi-chevron-right');
+                } else {
+                    icon.classList.remove('bi-chevron-right');
+                    icon.classList.add('bi-chevron-left');
+                }
+            });
+        }
+
+        // Mobile Drawer Logic
+        const mobileMenuBtn = document.getElementById('mobile-menu-toggle');
+
+        function setSidebarOpen(isOpen) {
+            if (!sidebar) return;
+            if (isOpen) {
+                sidebar.classList.add('mobile-open');
+                if (backdrop) backdrop.classList.add('show');
+                document.body.classList.add('sidebar-open');
+                if (mobileMenuBtn) {
+                    mobileMenuBtn.setAttribute('aria-expanded', 'true');
+                    mobileMenuBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+                }
             } else {
-                icon.classList.remove('bi-chevron-right');
-                icon.classList.add('bi-chevron-left');
+                sidebar.classList.remove('mobile-open');
+                if (backdrop) backdrop.classList.remove('show');
+                document.body.classList.remove('sidebar-open');
+                if (mobileMenuBtn) {
+                    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                    mobileMenuBtn.innerHTML = '<i class="bi bi-list"></i>';
+                }
+            }
+        }
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', function () {
+                const isOpen = sidebar.classList.contains('mobile-open');
+                setSidebarOpen(!isOpen);
+            });
+        }
+
+        // Close on backdrop click
+        if (backdrop) {
+            backdrop.addEventListener('click', function () {
+                setSidebarOpen(false);
+            });
+        }
+
+        // Close on ESC key
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && sidebar.classList.contains('mobile-open')) {
+                setSidebarOpen(false);
             }
         });
-    }
-    
-    // Mobile menu toggle
-    const mobileMenuBtn = document.getElementById('mobile-menu-toggle');
-    if (mobileMenuBtn) {
-        mobileMenuBtn.addEventListener('click', function() {
-            sidebar.classList.toggle('mobile-open');
+
+        // Close when navigating across options (useful if they are anchor links, although Django usually reloads the page. But good for SPA feel or anchor jumps)
+        const menuLinks = sidebar.querySelectorAll('.sidebar-menu-link');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', function () {
+                if (window.innerWidth <= 768) setSidebarOpen(false);
+            });
         });
-    }
-});
+
+        // Close if resized to desktop view
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 768 && sidebar.classList.contains('mobile-open')) {
+                setSidebarOpen(false);
+            }
+        });
+    });
 </script>
