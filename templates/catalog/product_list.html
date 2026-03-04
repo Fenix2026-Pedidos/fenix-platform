@@ -157,17 +157,21 @@
             <div class="products-grid" id="productsGrid">
                 {% if products %}
                 {% for product in products %}
-                <div class="product-card" data-product-id="{{ product.pk }}" {% if show_prices
-                    %}data-product-price="{{ product.price|unlocalize }}" {% endif %}
-                    data-category="{{ product|product_category }}"
+                {% if show_prices %}
+                <div class="product-card" data-product-id="{{ product.pk }}"
+                    data-product-price="{{ product.price|unlocalize }}" {% else %} <div class="product-card"
+                    data-product-id="{{ product.pk }}" {% endif %} data-category="{{ product|product_category }}"
                     data-product-type="{% cycle 'charcuteria' 'curados' 'ibericos' 'jamon-cocido' 'jamon-curado' 'pavo-pollo' 'platos-preparados' 'salchichas' %}"
                     data-product-features="{% cycle 'sin-lactosa,sin-conservantes' 'natural' 'sin-colorantes' 'sin-azucares' 'bajo-carbohidratos' 'apto-diabeticos' 'natural,sin-lactosa' '' %}">
 
                     <!-- 1. Header: Título + Referencia en la misma línea -->
                     <div class="card-header-row">
                         <h3 class="card-product-name">
-                            {% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif
-                            %}
+                            {% if lang == 'zh-hans' %}
+                            {{ product.name_zh_hans }}
+                            {% else %}
+                            {{ product.name_es }}
+                            {% endif %}
                         </h3>
                         <span class="card-ref">REF: P{{ product.pk|stringformat:"05d" }}</span>
                     </div>
@@ -197,8 +201,9 @@
                         <div class="card-price-main" data-price="{{ product.price|unlocalize }}">
                             <span class="price-full">{{ product.price|floatformat:2 }}</span>
                             <span class="price-currency">€</span>
-                            {% if product.unit_display %}<span class="price-weight">/ {{ product.unit_display
-                                }}</span>{% endif %}
+                            {% if product.unit_display %}
+                            <span class="price-weight">/ {{ product.unit_display }}</span>
+                            {% endif %}
                         </div>
                         {% else %}
                         <div class="card-price-main card-price-hidden">
@@ -267,7 +272,7 @@
 {% block extra_js %}
 <script>
     window.Fenix = window.Fenix || {};
-    window.Fenix.isAuthenticated = {{ request.user.is_authenticated | yesno: 'true,false' }};
+    window.Fenix.isAuthenticated = ("{{ request.user.is_authenticated|yesno:'true,false' }}" === "true");
 </script>
 <script src="{% static 'js/catalog.js' %}"></script>
 <script src="{% static 'js/catalog-filters.js' %}"></script>
