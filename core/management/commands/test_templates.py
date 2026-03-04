@@ -55,7 +55,7 @@ class Command(BaseCommand):
         if errors:
             self.stdout.write(self.style.ERROR(f"Checked {len(templates_checked)} templates. Found {len(errors)} ERROR(S):"))
             for err in errors:
-                self.stdout.write(self.style.ERROR(f" ❌ {err}"))
+                self.stdout.write(self.style.ERROR(f" [X] {err}"))
             raise CommandError("Template compilation STOPPED due to syntax errors.")
         else:
-            self.stdout.write(self.style.SUCCESS(f"✅ Successfully compiled {len(templates_checked)} templates. No syntax errors found."))
+            self.stdout.write(self.style.SUCCESS(f"[OK] Successfully compiled {len(templates_checked)} templates. No syntax errors found."))
