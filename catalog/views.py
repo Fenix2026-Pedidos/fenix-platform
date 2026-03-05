@@ -4,6 +4,7 @@ from django.utils import translation
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
+from django.core.paginator import Paginator
 from core.models import PlatformSettings
 from .models import Product
 from .forms import ProductForm, StockUpdateForm
@@ -55,6 +56,10 @@ def product_list(request):
             Q(description_zh_hans__icontains=search_query)
         )
     
+    paginator = Paginator(products, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
     lang = get_user_language(request.user)
     
     # Obtener carrito para pasar cantidades iniciales al frontend
@@ -66,7 +71,9 @@ def product_list(request):
         cart = {}
     
     context = {
-        'products': products,
+        'products': page_obj,
+        'page_obj': page_obj,
+        'paginator': paginator,
         'search_query': search_query,
         'lang': lang,
         'cart': cart,  # Pasar carrito como dict, json_script lo convertirá

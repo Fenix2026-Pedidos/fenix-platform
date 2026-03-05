@@ -154,6 +154,9 @@
 
         <!-- Área principal con grid -->
         <div class="catalog-main-area">
+
+
+
             <div class="products-grid" id="productsGrid">
                 {% if products %}
                 {% for product in products %}
@@ -247,6 +250,49 @@
                         {% endif %}
                     </p>
                 </div>
+                {% endif %}
+            </div>
+
+            {% if paginator.num_pages > 1 %}
+            <div class="pagination-container">
+                <div class="pagination">
+                    {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}"
+                        class="page-link prev">
+                        &larr; {% trans "Anterior" %}
+                    </a>
+                    {% endif %}
+
+                    <div class="page-numbers">
+                        {% for num in paginator.page_range %}
+                        {% if page_obj.number == num %}
+                        <span class="page-link current">{{ num }}</span>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <a
+                            href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}"
+                            class="page-link">{{ num }}</a>
+                            {% endif %}
+                            {% endfor %}
+                    </div>
+
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}"
+                        class="page-link next">
+                        {% trans "Siguiente" %} &rarr;
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="pagination-info" style="text-align: right; margin-top: 15px;">
+                {% if paginator.count > 0 %}
+                <p>
+                    {% trans "Mostrando" %}
+                    {{ page_obj.start_index }}–{{ page_obj.end_index }}
+                    {% trans "de" %}
+                    {{ paginator.count }}
+                    {% trans "productos" %}
+                </p>
                 {% endif %}
             </div>
         </div>

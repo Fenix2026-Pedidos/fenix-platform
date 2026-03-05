@@ -11,18 +11,13 @@
     --catalog-image-height: 250px;
     --catalog-card-padding: 12px;
     --catalog-card-padding-bottom: 2px;
-    --catalog-gap: 16px;
+    --catalog-card-padding-bottom: 2px;
+    --catalog-gap: 24px;
+    /* Updated gap */
     --filters-panel-width: 320px;
 }
 
-/* Permitir que el catálogo escape del padding del content-wrapper para usar todo el ancho */
-.catalog-page>.catalog-container {
-    margin-left: calc(-1 * var(--content-padding));
-    margin-right: calc(-1 * var(--content-padding));
-    padding-left: var(--content-padding);
-    padding-right: var(--content-padding);
-    width: calc(100% + 2 * var(--content-padding));
-}
+
 
 /* Header del catálogo mantiene padding interno */
 .catalog-container .catalog-header {
@@ -792,11 +787,93 @@
 /* Grid de productos */
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(var(--catalog-card-min-width), 1fr));
+    grid-template-columns: repeat(5, 1fr);
     gap: var(--catalog-gap);
-    padding-bottom: 60px;
+    padding-bottom: 40px;
     width: 100%;
-    align-items: start;
+    align-items: stretch;
+    /* Alto uniforme */
+}
+
+@media (max-width: 1399px) {
+    .products-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 1199px) {
+    .products-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 767px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 479px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Paginación */
+.pagination-info {
+    font-size: 14px;
+    color: var(--gray-600);
+    margin-bottom: 16px;
+}
+
+.pagination-container {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.page-numbers {
+    display: flex;
+    gap: 4px;
+}
+
+.page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    border-radius: var(--radius);
+    background: white;
+    border: 1px solid var(--gray-200);
+    color: var(--gray-700);
+    font-weight: 500;
+    text-decoration: none;
+    transition: all var(--transition);
+}
+
+.page-link:hover:not(.current) {
+    border-color: var(--primary-400);
+    color: var(--primary-600);
+    background: var(--primary-50);
+}
+
+.page-link.current {
+    background: var(--primary-600);
+    border-color: var(--primary-600);
+    color: white;
+}
+
+.page-link.prev,
+.page-link.next {
+    font-weight: 600;
 }
 
 /* Laptop 15" y pantallas grandes (≥1200px): 4 columnas */
