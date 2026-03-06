@@ -15,44 +15,30 @@
         </div>
         <div class="public-hero__visual" aria-hidden="true">
             <div class="public-hero__cards">
-                {% with featured_products=featured_products|default:products|slice:":3" %}
-                    {% if featured_products %}
-                        {% for product in featured_products %}
-                        <article class="hero-product-card">
-                            <div class="hero-product-card__image">
-                                {% if product.image %}
-                                    <img src="{{ product.image.url }}" alt="" loading="lazy">
-                                {% else %}
-                                    <div class="hero-product-card__placeholder">
-                                        <i class="bi bi-box"></i>
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="hero-product-card__info">
-                                <p class="hero-product-card__name">
-                                    {% if lang == 'zh-hans' %}
-                                        {{ product.name_zh_hans|default:product.name_es }}
-                                    {% else %}
-                                        {{ product.name_es|default:product.name_zh_hans }}
-                                    {% endif %}
-                                </p>
-                                {% if show_prices %}
-                                    <p class="hero-product-card__price">{{ product.price|floatformat:2 }} €</p>
-                                {% else %}
-                                    <p class="hero-product-card__price" style="opacity: 0.6; font-style: italic;">{% trans "Inicia sesión para ver precios" %}</p>
-                                {% endif %}
-                            </div>
-                        </article>
-                        {% endfor %}
-                    {% else %}
-                        <div class="hero-product-card hero-product-card--placeholder">
-                            <div class="hero-product-card__placeholder">
-                                <i class="bi bi-image"></i>
-                            </div>
-                            <p class="hero-product-card__name">{% trans "Catálogo listo para tu negocio" %}</p>
-                        </div>
-                    {% endif %}
-                {% endwith %}
+                <article class="hero-product-card">
+                    <div class="hero-product-card__image">
+                        <img src="{% static 'img/Salchichas.png' %}" alt="{% trans 'Frankfurt Salchichas' %}" loading="lazy">
+                    </div>
+                    <div class="hero-product-card__info">
+                        <p class="hero-product-card__name">Frankfurt Salchichas</p>
+                    </div>
+                </article>
+                <article class="hero-product-card">
+                    <div class="hero-product-card__image">
+                        <img src="{% static 'img/Jamon Curado.png' %}" alt="{% trans 'Jamón Curado' %}" loading="lazy">
+                    </div>
+                    <div class="hero-product-card__info">
+                        <p class="hero-product-card__name">{% trans "Jamón Curado" %}</p>
+                    </div>
+                </article>
+                <article class="hero-product-card">
+                    <div class="hero-product-card__image">
+                        <img src="{% static 'img/Jamon Cocido.png' %}" alt="{% trans 'Jamón Cocido' %}" loading="lazy">
+                    </div>
+                    <div class="hero-product-card__info">
+                        <p class="hero-product-card__name">{% trans "Jamón Cocido" %}</p>
+                    </div>
+                </article>
             </div>
         </div>
     </div>
