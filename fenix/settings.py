@@ -225,6 +225,15 @@ LOCALE_PATHS = [
     BASE_DIR / 'locale',
 ]
 
+# CSRF Trusted Origins for local development and production
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+    'https://fenixdelamancha.es',
+    'https://www.fenixdelamancha.es',
+    'https://project-8ec7876a-62b7-4e0b-82d.ew.r.appspot.com',
+]
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
