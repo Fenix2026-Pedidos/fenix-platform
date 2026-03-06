@@ -44,6 +44,11 @@ Cualquier feature es incorrecta si no aplica correctamente los filtros de acceso
 
 En single-tenant no existe org_id. El control se hace por roles y owner (user_id).
 
+### 📝 Formateo de Código (HTML/Django)
+❌ **PROHIBIDO:** Usar formateadores automáticos (como Prettier o el de VSCode) en archivos `.html` que contengan etiquetas de Django (`{% %}` o `{{ }}`).
+- El autoformateador rompe las etiquetas largas (ej. `blocktrans`) en múltiples líneas, provocando un `TemplateSyntaxError` (Error 500).
+- La regla es **escribir HTML de forma manual** respetando la sintaxis del lenguaje de plantillas de Django, usar variables cortas o tener apagado el `formatOnSave` en el entorno para archivos HTML (ya forzado por `.vscode/settings.json` y `.prettierignore`).
+
 ## 4. Modelo SINGLE-TENANT (sin organizaciones ni suscripción por tenant)
 - Existe una única instancia de FENIX para un único negocio.
 - Todos los usuarios ven el mismo catálogo, precios y stock global.

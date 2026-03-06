@@ -44,19 +44,51 @@ def activate_user_language(request, user):
 
 def product_list(request):
     """Lista de productos del catálogo"""
-    products = Product.objects.filter(is_active=True).order_by('-created_at')
+    products = Product.objects.filter(is_active=True)
     
     # Búsqueda
-    search_query = request.GET.get('q', '')
+    search_query = request.GET.get('q', '').strip()
     if search_query:
-        products = products.filter(
-            Q(name_es__icontains=search_query) |
-            Q(name_zh_hans__icontains=search_query) |
-            Q(description_es__icontains=search_query) |
-            Q(description_zh_hans__icontains=search_query)
-        )
+        # Lógica manual básica para buscar 'jamon' y encontrar 'Jamón' si no hay extensión d DB
+        q_obj = Q()
+        words = search_query.split()
+        for word in words:
+            word_q = Q(name_es__icontains=word) | Q(name_zh_hans__icontains=word) | \
+                     Q(description_es__icontains=word) | Q(description_zh_hans__icontains=word)
+            
+            # Reemplazos comunes de español
+            if 'a' in word: word_q |= Q(name_es__icontains=word.replace('a', 'á'))
+            if 'e' in word: word_q |= Q(name_es__icontains=word.replace('e', 'é'))
+            if 'i' in word: word_q |= Q(name_es__icontains=word.replace('i', 'í'))
+            if 'o' in word: word_q |= Q(name_es__icontains=word.replace('o', 'ó'))
+            if 'u' in word: word_q |= Q(name_es__icontains=word.replace('u', 'ú'))
+            
+            q_obj &= word_q
+            
+        products = products.filter(q_obj)
     
-    paginator = Paginator(products, 12)
+    # Ordenación
+    sort_by = request.GET.get('sort', 'relevance')
+    if sort_by == 'price_asc':
+        products = products.order_by('price')
+    elif sort_by == 'price_desc':
+        products = products.order_by('-price')
+    elif sort_by == 'name_asc':
+        products = products.order_by('name_es')
+    elif sort_by == 'name_desc':
+        products = products.order_by('-name_es')
+    else:
+        products = products.order_by('-created_at')
+        
+    # Tamaño de página
+    try:
+        page_size = int(request.GET.get('page_size', 12))
+        if page_size not in [12, 24, 48]:
+            page_size = 12
+    except ValueError:
+        page_size = 12
+    
+    paginator = Paginator(products, page_size)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
@@ -75,6 +107,8 @@ def product_list(request):
         'page_obj': page_obj,
         'paginator': paginator,
         'search_query': search_query,
+        'sort': sort_by,
+        'page_size': page_size,
         'lang': lang,
         'cart': cart,  # Pasar carrito como dict, json_script lo convertirá
     }

@@ -7,38 +7,38 @@ const CatalogFilters = {
     activeFilters: new Set(),
     activeType: 'todos',
     searchQuery: '',
-    
+
     // Keys para localStorage
     STORAGE_TYPE_KEY: 'fenix_filter_type',
     STORAGE_FEATURES_KEY: 'fenix_filter_features',
-    
+
     /**
      * Inicializa los filtros
      */
-    init: function() {
+    init: function () {
         // Cargar filtros desde localStorage
         this.loadFromStorage();
-        
+
         // Asegurar que todos los productos estén visibles inicialmente si no hay filtros
         if (this.activeType === 'todos' && this.activeFilters.size === 0) {
             this.activeFilters.clear();
             this.activeType = 'todos';
             this.searchQuery = '';
         }
-        
+
         this.bindFilterEvents();
         this.bindTypeEvents();
         this.bindSearchEvents();
         this.bindPanelToggle();
-        
+
         // Aplicar filtros iniciales
         this.applyFilters();
     },
-    
+
     /**
      * Carga filtros desde localStorage
      */
-    loadFromStorage: function() {
+    loadFromStorage: function () {
         try {
             // Cargar tipo de producto
             const savedType = localStorage.getItem(this.STORAGE_TYPE_KEY);
@@ -50,7 +50,7 @@ const CatalogFilters = {
                     radio.checked = true;
                 }
             }
-            
+
             // Cargar características especiales
             const savedFeatures = localStorage.getItem(this.STORAGE_FEATURES_KEY);
             if (savedFeatures) {
@@ -71,15 +71,15 @@ const CatalogFilters = {
             console.warn('No se pudieron cargar los filtros desde localStorage:', e);
         }
     },
-    
+
     /**
      * Guarda filtros en localStorage
      */
-    saveToStorage: function() {
+    saveToStorage: function () {
         try {
             // Guardar tipo de producto
             localStorage.setItem(this.STORAGE_TYPE_KEY, this.activeType || 'todos');
-            
+
             // Guardar características especiales
             const featuresArray = Array.from(this.activeFilters);
             localStorage.setItem(this.STORAGE_FEATURES_KEY, featuresArray.join(','));
@@ -87,16 +87,16 @@ const CatalogFilters = {
             console.warn('No se pudieron guardar los filtros en localStorage:', e);
         }
     },
-    
+
     /**
      * Vincula eventos para abrir/cerrar el panel de filtros
      */
-    bindPanelToggle: function() {
+    bindPanelToggle: function () {
         const toggleBtn = document.getElementById('filtersToggle');
         const closeBtn = document.getElementById('closeFiltersPanel');
         const panel = document.getElementById('filtersPanel');
         const overlay = document.getElementById('filtersOverlay');
-        
+
         if (toggleBtn && panel) {
             toggleBtn.addEventListener('click', () => {
                 panel.classList.add('open');
@@ -106,7 +106,7 @@ const CatalogFilters = {
                 document.body.style.overflow = 'hidden';
             });
         }
-        
+
         const closePanel = () => {
             if (panel) {
                 panel.classList.remove('open');
@@ -116,15 +116,15 @@ const CatalogFilters = {
             }
             document.body.style.overflow = '';
         };
-        
+
         if (closeBtn) {
             closeBtn.addEventListener('click', closePanel);
         }
-        
+
         if (overlay) {
             overlay.addEventListener('click', closePanel);
         }
-        
+
         // Cerrar con ESC
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && panel && panel.classList.contains('open')) {
@@ -132,11 +132,11 @@ const CatalogFilters = {
             }
         });
     },
-    
+
     /**
      * Vincula eventos a los checkboxes de características especiales
      */
-    bindFilterEvents: function() {
+    bindFilterEvents: function () {
         // Checkboxes de características especiales
         document.querySelectorAll('.filter-input').forEach(checkbox => {
             checkbox.addEventListener('change', (e) => {
@@ -150,7 +150,7 @@ const CatalogFilters = {
                 this.applyFilters();
             });
         });
-        
+
         // Botón eliminar selección
         const clearBtn = document.getElementById('clearFilters');
         if (clearBtn) {
@@ -159,62 +159,88 @@ const CatalogFilters = {
             });
         }
     },
-    
+
     /**
-     * Vincula eventos a los radio buttons de tipos de producto
+     * Vincula eventos a los radio buttons de tipos de producto (Tabs)
      */
-    bindTypeEvents: function() {
-        document.querySelectorAll('.filter-type-radio').forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                if (e.target.checked) {
-                    const type = e.target.getAttribute('data-type') || 'todos';
-                    this.setType(type);
-                }
+    bindTypeEvents: function () {
+        // En category_tabs.html los tabs son botones con data-category-tab
+        document.querySelectorAll('[data-category-tab]').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                // Actualizar UI de tabs
+                document.querySelectorAll('[data-category-tab]').forEach(t => t.classList.remove('is-active'));
+                tab.classList.add('is-active');
+
+                const type = tab.getAttribute('data-category-tab') || 'todos';
+                this.setType(type);
             });
         });
     },
-    
+
     /**
      * Vincula eventos a la búsqueda
      */
-    bindSearchEvents: function() {
+    bindSearchEvents: function () {
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('q')) {
+                this.searchQuery = urlParams.get('q').toLowerCase().trim();
+            }
+
             // Búsqueda en tiempo real (opcional, solo UI)
             searchInput.addEventListener('input', (e) => {
-                this.searchQuery = e.target.value.toLowerCase().trim();
+                const val = e.target.value;
+                this.searchQuery = val.toLowerCase().trim();
+
+                // Si borran la búsqueda manualmente y hay query en backend, recargar para limpiar
+                if (val === '' && urlParams.has('q')) {
+                    window.location.href = window.location.pathname;
+                    return;
+                }
+
                 this.applyFilters();
             });
         }
     },
-    
+
     /**
      * Establece un tipo de producto activo
      */
-    setType: function(type) {
+    setType: function (type) {
         this.activeType = type === 'todos' || type === null ? 'todos' : type;
         this.saveToStorage();
+
+        // Evitar que el catálogo se quede bloqueado por un backend search residual
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('q')) {
+            window.location.href = window.location.pathname;
+            return;
+        }
+
         this.applyFilters();
     },
-    
+
     /**
      * Limpia todos los filtros
      */
-    clearFilters: function() {
+    clearFilters: function () {
         this.activeFilters.clear();
         this.activeType = 'todos';
-        
+        this.searchQuery = '';
+
         // Desmarcar todos los checkboxes
         document.querySelectorAll('.filter-input').forEach(checkbox => {
             checkbox.checked = false;
         });
-        
+
         // Marcar "Todos" en tipos de producto
-        const todosRadio = document.querySelector('.filter-type-radio[data-type="todos"]');
-        if (todosRadio) {
-            todosRadio.checked = true;
+        document.querySelectorAll('[data-category-tab]').forEach(t => t.classList.remove('is-active'));
+        const todosTab = document.querySelector('[data-category-tab="todos"]');
+        if (todosTab) {
+            todosTab.classList.add('is-active');
         }
-        
+
         // Limpiar localStorage
         try {
             localStorage.removeItem(this.STORAGE_TYPE_KEY);
@@ -222,22 +248,28 @@ const CatalogFilters = {
         } catch (e) {
             console.warn('No se pudieron limpiar los filtros de localStorage:', e);
         }
-        
+
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('q')) {
+            window.location.href = window.location.pathname;
+            return;
+        }
+
         this.applyFilters();
     },
-    
+
     /**
      * Aplica los filtros activos al grid de productos
      */
-    applyFilters: function() {
+    applyFilters: function () {
         const productCards = document.querySelectorAll('.product-card');
         let visibleCount = 0;
-        
+
         // Verificar si hay filtros activos
         const hasActiveFilters = this.activeFilters.size > 0;
         const hasActiveType = this.activeType && this.activeType !== 'todos';
         const hasSearchQuery = this.searchQuery && this.searchQuery.trim() !== '';
-        
+
         // Si no hay filtros activos, mostrar todos
         if (!hasActiveFilters && !hasActiveType && !hasSearchQuery) {
             productCards.forEach(card => {
@@ -247,10 +279,10 @@ const CatalogFilters = {
             this.showEmptyState(false);
             return;
         }
-        
+
         productCards.forEach(card => {
             let shouldShow = true;
-            
+
             // Filtro por tipo de producto
             if (hasActiveType) {
                 const cardType = card.getAttribute('data-product-type');
@@ -258,7 +290,7 @@ const CatalogFilters = {
                     shouldShow = false;
                 }
             }
-            
+
             // Filtro por características especiales (AND: debe tener TODAS las seleccionadas)
             if (hasActiveFilters && shouldShow) {
                 const cardFeatures = card.getAttribute('data-product-features');
@@ -276,10 +308,10 @@ const CatalogFilters = {
                     shouldShow = false;
                 }
             }
-            
+
             // Filtro por búsqueda (solo UI, busca en el nombre)
             if (hasSearchQuery && shouldShow) {
-                const productName = card.querySelector('.product-name');
+                const productName = card.querySelector('.card-product-name');
                 if (productName) {
                     const nameText = productName.textContent.toLowerCase();
                     if (!nameText.includes(this.searchQuery)) {
@@ -287,7 +319,7 @@ const CatalogFilters = {
                     }
                 }
             }
-            
+
             // Mostrar/ocultar card
             if (shouldShow) {
                 card.classList.remove('hidden');
@@ -296,17 +328,17 @@ const CatalogFilters = {
                 card.classList.add('hidden');
             }
         });
-        
+
         // Mostrar mensaje si no hay resultados
         this.showEmptyState(visibleCount === 0);
     },
-    
+
     /**
      * Muestra/oculta el estado vacío
      */
-    showEmptyState: function(show) {
+    showEmptyState: function (show) {
         let emptyState = document.querySelector('.empty-state');
-        
+
         if (show && !emptyState) {
             // Crear estado vacío si no existe
             const grid = document.getElementById('productsGrid');

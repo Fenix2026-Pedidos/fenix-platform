@@ -5,7 +5,7 @@
 {% block title %}{% trans "Catálogo de Productos" %} - Fenix{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/catalog.css' %}">
+<link rel="stylesheet" href="{% static 'css/catalog.css' %}?v=2">
 {% endblock %}
 
 {% block content %}
@@ -155,7 +155,60 @@
         <!-- Área principal con grid -->
         <div class="catalog-main-area">
 
+            <!-- NUEVA BARRA SUPERIOR (TOOLBAR) -->
+            <div class="catalog-toolbar" style="justify-content: space-between;">
+                <div class="catalog-count-container">
+                    <span class="catalog-count">
+                        {% if paginator.count > 0 %}
+                        <span>{% trans "Mostrando" %}</span>
+                        <span class="fw-medium">{{ page_obj.start_index }}–{{ page_obj.end_index }}</span>
+                        <span>{% trans "de" %}</span>
+                        <span class="fw-medium">{{ paginator.count }}</span>
+                        <span>{% trans "productos" %}</span>
+                        {% else %}
+                        0 {% trans "productos" %}
+                        {% endif %}
+                    </span>
+                </div>
 
+                <form method="get" class="catalog-sort" id="sortForm">
+                    {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
+                    {% if page_size %}<input type="hidden" name="page_size" value="{{ page_size }}">{% endif %}
+                    <label class="visually-hidden" for="sortSelect">{% trans "Ordenar por" %}</label>
+                    <select id="sortSelect" name="sort" class="form-select form-select-sm"
+                        onchange="this.form.submit()">
+                        {% if sort == 'relevance' %}
+                        <option value="relevance" selected>{% trans "Relevancia" %}</option>
+                        {% else %}
+                        <option value="relevance">{% trans "Relevancia" %}</option>
+                        {% endif %}
+
+                        {% if sort == 'price_asc' %}
+                        <option value="price_asc" selected>{% trans "Precio: Menor a Mayor" %}</option>
+                        {% else %}
+                        <option value="price_asc">{% trans "Precio: Menor a Mayor" %}</option>
+                        {% endif %}
+
+                        {% if sort == 'price_desc' %}
+                        <option value="price_desc" selected>{% trans "Precio: Mayor a Menor" %}</option>
+                        {% else %}
+                        <option value="price_desc">{% trans "Precio: Mayor a Menor" %}</option>
+                        {% endif %}
+
+                        {% if sort == 'name_asc' %}
+                        <option value="name_asc" selected>{% trans "Nombre: A-Z" %}</option>
+                        {% else %}
+                        <option value="name_asc">{% trans "Nombre: A-Z" %}</option>
+                        {% endif %}
+
+                        {% if sort == 'name_desc' %}
+                        <option value="name_desc" selected>{% trans "Nombre: Z-A" %}</option>
+                        {% else %}
+                        <option value="name_desc">{% trans "Nombre: Z-A" %}</option>
+                        {% endif %}
+                    </select>
+                </form>
+            </div>
 
             <div class="products-grid" id="productsGrid">
                 {% if products %}
@@ -253,47 +306,73 @@
                 {% endif %}
             </div>
 
-            {% if paginator.num_pages > 1 %}
-            <div class="pagination-container">
-                <div class="pagination">
+            <div class="catalog-footer">
+                <div class="catalog-page-size">
+                    <form method="get" id="pageSizeForm" class="d-flex align-items-center gap-2">
+                        {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
+                        {% if sort %}<input type="hidden" name="sort" value="{{ sort }}">{% endif %}
+                        <label for="pageSizeSelect" class="text-muted small mb-0">{% trans "Mostrar:" %}</label>
+                        <select id="pageSizeSelect" name="page_size" class="form-select form-select-sm"
+                            style="width: auto;" onchange="this.form.submit()">
+                            {% if page_size == 12 %}
+                            <option value="12" selected>12</option>
+                            {% else %}
+                            <option value="12">12</option>
+                            {% endif %}
+
+                            {% if page_size == 24 %}
+                            <option value="24" selected>24</option>
+                            {% else %}
+                            <option value="24">24</option>
+                            {% endif %}
+
+                            {% if page_size == 48 %}
+                            <option value="48" selected>48</option>
+                            {% else %}
+                            <option value="48">48</option>
+                            {% endif %}
+                        </select>
+                    </form>
+                </div>
+
+                <div class="catalog-pagination">
                     {% if page_obj.has_previous %}
-                    <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}"
-                        class="page-link prev">
-                        &larr; {% trans "Anterior" %}
+                    <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}"
+                        class="btn-page prev">
+                        &larr; <span class="d-none d-sm-inline">{% blocktrans %}Anterior{% endblocktrans %}</span>
                     </a>
+                    {% else %}
+                    <button class="btn-page prev disabled" disabled aria-disabled="true">&larr; <span
+                            class="d-none d-sm-inline">{% blocktrans %}Anterior{% endblocktrans %}</span></button>
                     {% endif %}
 
                     <div class="page-numbers">
                         {% for num in paginator.page_range %}
                         {% if page_obj.number == num %}
-                        <span class="page-link current">{{ num }}</span>
+                        <span class="btn-page current" aria-current="page">{{ num }}</span>
                         {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <a
-                            href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}"
-                            class="page-link">{{ num }}</a>
+                            href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}"
+                            class="btn-page" aria-label="{% trans 'Página' %} {{ num }}">{{ num }}</a>
+                            {% elif num == 1 or num == paginator.num_pages %}
+                            <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}"
+                                class="btn-page" aria-label="{% trans 'Página' %} {{ num }}">{{ num }}</a>
+                            {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
+                            <span class="page-ellipsis">...</span>
                             {% endif %}
                             {% endfor %}
                     </div>
 
                     {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}"
-                        class="page-link next">
-                        {% trans "Siguiente" %} &rarr;
+                    <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}"
+                        class="btn-page next">
+                        <span class="d-none d-sm-inline">{% blocktrans %}Siguiente{% endblocktrans %}</span> &rarr;
                     </a>
+                    {% else %}
+                    <button class="btn-page next disabled" disabled aria-disabled="true"><span
+                            class="d-none d-sm-inline">{% blocktrans %}Siguiente{% endblocktrans %}</span>
+                        &rarr;</button>
                     {% endif %}
                 </div>
-            </div>
-            {% endif %}
-
-            <div class="pagination-info" style="text-align: right; margin-top: 15px;">
-                {% if paginator.count > 0 %}
-                <p>
-                    {% trans "Mostrando" %}
-                    {{ page_obj.start_index }}–{{ page_obj.end_index }}
-                    {% trans "de" %}
-                    {{ paginator.count }}
-                    {% trans "productos" %}
-                </p>
-                {% endif %}
             </div>
         </div>
     </div>
