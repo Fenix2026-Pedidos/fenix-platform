@@ -64,6 +64,7 @@
 
 .public-hero__copy h1 {
     font-size: clamp(32px, 4vw, 44px);
+    line-height: 1.1;
     color: var(--gray-900);
     margin-bottom: 12px;
 }
@@ -118,20 +119,25 @@
 .hero-product-card {
     background: white;
     border-radius: 20px;
-    padding: 16px;
+    padding: 12px;
     box-shadow: var(--shadow-lg);
     border: 1px solid var(--gray-100);
     width: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .hero-product-card__image {
-    border-radius: 16px;
+    border-radius: 12px;
     background: var(--gray-50);
-    height: 160px;
+    height: 140px;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    padding: 8px;
 }
 
 .hero-product-card__image img {
@@ -150,11 +156,15 @@
     font-size: 32px;
 }
 
+.hero-product-card__info {
+    text-align: center;
+}
+
 .hero-product-card__name {
     font-size: 14px;
     font-weight: 600;
     color: var(--gray-800);
-    margin: 0 0 4px 0;
+    margin: 0;
 }
 
 .hero-product-card__price {
