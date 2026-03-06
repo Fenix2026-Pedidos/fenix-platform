@@ -33,11 +33,11 @@
                 {% include 'components/topbar.html' %}
             {% else %}
                 <!-- Public navbar for non-authenticated users -->
-                <nav style="background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%); padding: 16px var(--content-padding); box-shadow: var(--shadow-md); width: 100%;">
+                <nav style="background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%); padding: 8px var(--content-padding); box-shadow: var(--shadow-md); width: 100%;">
                     <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                        <div style="height: auto; flex: 0 0 auto; display: flex; align-items: center; padding: 4px 0;">
+                        <div style="flex: 0 0 auto; display: flex; align-items: center;">
                             <a href="/" style="display: flex; align-items: center;">
-                                <img src="{% static 'img/logo sin fondo.png' %}" alt="Logo Fenix" style="height: 100px; display: block; width: auto; max-width: 280px;">
+                                <img src="{% static 'img/logo sin fondo.png' %}" alt="Logo Fenix" style="height: 80px; display: block; width: auto; max-width: 240px;">
                             </a>
                         </div>
                         <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: flex-end;">
