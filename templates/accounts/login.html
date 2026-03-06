@@ -15,16 +15,36 @@
                 <p class="text-muted" style="font-size: 15px;">{% trans "Accede a tu cuenta de Fenix" %}</p>
             </div>
             
-            <form method="post" style="margin-bottom: 0;">
+            <form method="post" style="margin-bottom: 0;" id="loginForm">
                 {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <div id="loginError" style="
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 10px;
+                    background: #fef2f2;
+                    border: 1px solid #fca5a5;
+                    border-radius: 8px;
+                    padding: 12px 14px;
+                    margin-bottom: 16px;
+                    color: #b91c1c;
+                    font-size: 14px;
+                    font-weight: 500;
+                ">
+                    <i class="bi bi-exclamation-circle-fill" style="font-size: 16px; flex-shrink: 0; margin-top: 1px;"></i>
+                    <span>{% trans "Correo electrónico o contraseña incorrectos. Inténtalo de nuevo." %}</span>
+                </div>
+                {% endif %}
+
                 <div class="form-group">
                     <label class="form-label">
                         <i class="bi bi-envelope" style="margin-right: 6px;"></i>
                         {% trans "Email" %}
                     </label>
                     {{ form.username }}
-                    {% if form.username.errors %}
-                        <div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.username.errors }}</div>
+                    {% if form.non_field_errors or form.username.errors %}
+                    <style>#id_username { border-color: #ef4444; background-color: #fef2f2; }</style>
                     {% endif %}
                 </div>
                 
@@ -39,8 +59,8 @@
                             <i class="bi bi-eye" id="eyeIcon"></i>
                         </button>
                     </div>
-                    {% if form.password.errors %}
-                        <div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.password.errors }}</div>
+                    {% if form.non_field_errors or form.password.errors %}
+                    <style>#id_password { border-color: #ef4444; background-color: #fef2f2; }</style>
                     {% endif %}
                 </div>
                 
@@ -69,7 +89,6 @@
 document.getElementById('togglePassword').addEventListener('click', function() {
     const passwordField = document.getElementById('id_password');
     const eyeIcon = document.getElementById('eyeIcon');
-    
     if (passwordField.type === 'password') {
         passwordField.type = 'text';
         eyeIcon.classList.remove('bi-eye');
@@ -80,5 +99,25 @@ document.getElementById('togglePassword').addEventListener('click', function() {
         eyeIcon.classList.add('bi-eye');
     }
 });
+
+// Clear password field and remove red borders/error on re-type
+(function() {
+    const hasError = document.getElementById('loginError');
+    const emailField = document.getElementById('id_username');
+    const passField  = document.getElementById('id_password');
+
+    if (hasError && passField) {
+        passField.value = '';
+    }
+
+    function clearError() {
+        if (hasError) hasError.style.display = 'none';
+        if (emailField) emailField.style.cssText = '';
+        if (passField)  passField.style.cssText  = '';
+    }
+
+    if (emailField) emailField.addEventListener('input', clearError);
+    if (passField)  passField.addEventListener('input',  clearError);
+})();
 </script>
 {% endblock %}
