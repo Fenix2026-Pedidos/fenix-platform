@@ -44,9 +44,12 @@
 }
 
 .public-hero {
-    background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.08), transparent 60%), #f7fbff;
-    border: 1px solid var(--gray-200);
-    border-radius: 32px;
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.72) 30%, rgba(255, 255, 255, 0.05) 100%), url('../img/Banner desktop.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none;
+    border-radius: 16px;
     padding: 48px clamp(24px, 4vw, 64px);
     box-shadow: var(--shadow-lg);
     overflow: hidden;
