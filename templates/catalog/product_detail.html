@@ -46,7 +46,8 @@
             </div>
             <div class="card-body">
                 <p style="color: var(--gray-700); line-height: 1.8;">
-                    {{ product.translated_description|default:_("Sin descripción disponible.")|linebreaks }}
+                    {% trans "Sin descripción disponible." as default_desc %}
+                    {{ product.translated_description|default:default_desc|linebreaks }}
                 </p>
             </div>
         </div>
