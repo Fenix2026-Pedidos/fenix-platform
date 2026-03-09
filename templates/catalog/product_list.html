@@ -35,8 +35,8 @@
         {% include 'components/category_tabs.html' with search_query=search_query %}
     </section>
 
-    <!-- Barra de filtros móvil (Nueva) -->
-    <div class="mobile-filter-bar">
+    <!-- Barra de filtros móvil (Nueva: oculta en escritorio) -->
+    <div class="mobile-filter-bar d-md-none">
         <button type="button" class="m-filter-btn" id="mFiltersToggle">
             <i class="bi bi-sliders"></i>
             <span>{% trans "Filtros" %}</span>
