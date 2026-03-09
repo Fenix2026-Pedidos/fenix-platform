@@ -27,15 +27,15 @@
                 <tr>
                     <td style="font-weight: 500;">
                         <div style="display: flex; align-items: center; gap: 12px;">
-                            {% if item.product.image %}
-                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name_es }}" 
+                            {% if item.product.image_url %}
+                            <img src="{{ item.product.image_url }}" alt="{{ item.product.translated_name }}" 
                                  style="width: 50px; height: 50px; object-fit: cover; border-radius: var(--radius);">
                             {% else %}
                             <div style="width: 50px; height: 50px; background: var(--gray-200); border-radius: var(--radius); display: flex; align-items: center; justify-content: center;">
                                 <i class="bi bi-image" style="color: var(--gray-400);"></i>
                             </div>
                             {% endif %}
-                            <span>{{ item.product.name_es }}</span>
+                            <span>{{ item.product.translated_name }}</span>
                         </div>
                     </td>
                     <td>{{ item.product.price|floatformat:2 }} €</td>

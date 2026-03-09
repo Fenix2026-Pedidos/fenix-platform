@@ -82,8 +82,8 @@
                             <span class="filter-label">{% trans "Jamón Curado" %}</span>
                         </label>
                         <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="pavo-pollo"
-                                data-type="pavo-pollo">
+                            <input type="radio" name="product-type" class="filter-type-radio" value="pavo"
+                                data-type="pavo">
                             <span class="filter-label">{% trans "Pavo y Pollo" %}</span>
                         </label>
                         <label class="filter-radio">
@@ -215,8 +215,8 @@
                 <div class="product-card" data-product-id="{{ product.pk }}"
                     {% if show_prices %}data-product-price="{{ product.price|unlocalize }}"{% endif %}
                     data-category="{{ product|product_category }}"
-                    data-product-type="{% cycle 'charcuteria' 'curados' 'ibericos' 'jamon-cocido' 'jamon-curado' 'pavo-pollo' 'platos-preparados' 'salchichas' %}"
-                    data-product-features="{% cycle 'sin-lactosa,sin-conservantes' 'natural' 'sin-colorantes' 'sin-azucares' 'bajo-carbohidratos' 'apto-diabeticos' 'natural,sin-lactosa' '' %}">
+                    data-product-type="{{ product|product_type }}"
+                    data-product-features="{{ product|product_features }}">
 
                     <!-- 1. Top Row: Precio/Unidad (Izq) + Badge (Der) -->
                     <div class="card-top-row">
@@ -249,15 +249,19 @@
 
                     <!-- 2. Referencia (debajo del precio) -->
                     <div class="card-ref-row">
-                        <span class="card-ref">REF: P{{ product.pk|stringformat:"05d" }}</span>
+                        <span class="card-ref">{% trans "REF" %}: P{{ product.pk|stringformat:"05d" }}</span>
                     </div>
 
                     <!-- 3. Imagen protagonista (Centrada en bloque) -->
                     <div class="card-image-wrap">
-                        {% if product.image %}
-                        <img src="{{ product.image.url }}"
-                            alt="{% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif %}"
-                            class="card-product-img" loading="lazy">
+                        {% if product.image_url %}
+                        <img src="{{ product.image_url }}"
+                            alt="{{ product.translated_name }}"
+                            class="card-product-img" loading="lazy"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="card-image-empty" style="display: none;">
+                            <i class="bi bi-image"></i>
+                        </div>
                         {% else %}
                         <div class="card-image-empty">
                             <i class="bi bi-image"></i>
@@ -272,11 +276,7 @@
 
                     <!-- Nombre del producto (Oculto visualmente pero presente para SEO/Accesibilidad) -->
                     <h3 class="visually-hidden">
-                        {% if lang == 'zh-hans' %}
-                        {{ product.name_zh_hans }}
-                        {% else %}
-                        {{ product.name_es }}
-                        {% endif %}
+                        {{ product.translated_name }}
                     </h3>
 
                     <!-- 4. Bloque inferior: Info Login + Stepper + Botón -->

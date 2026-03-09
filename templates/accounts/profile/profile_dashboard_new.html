@@ -548,7 +548,7 @@
                                     {% trans "Nombre" %}:
                                 </label>
                                 {% if edit_mode %}
-                                    <input type="text" name="first_name" class="profile-input" value="{{ user.first_name }}" placeholder="Nombre">
+                                    <input type="text" name="first_name" class="profile-input" value="{{ user.first_name }}" placeholder="{% trans 'Nombre' %}">
                                 {% else %}
                                     <div class="profile-field-value">{{ user.first_name|default:"—" }}</div>
                                 {% endif %}
@@ -561,7 +561,7 @@
                                     {% trans "Apellido" %}:
                                 </label>
                                 {% if edit_mode %}
-                                    <input type="text" name="last_name" class="profile-input" value="{{ user.last_name }}" placeholder="Apellido">
+                                    <input type="text" name="last_name" class="profile-input" value="{{ user.last_name }}" placeholder="{% trans 'Apellido' %}">
                                 {% else %}
                                     <div class="profile-field-value">{{ user.last_name|default:"—" }}</div>
                                 {% endif %}
@@ -574,7 +574,7 @@
                                     {% trans "Empresa" %}:
                                 </label>
                                 {% if edit_mode %}
-                                    <input type="text" name="company" class="profile-input" value="{{ user.company }}" placeholder="Nombre de la empresa">
+                                    <input type="text" name="company" class="profile-input" value="{{ user.company }}" placeholder="{% trans 'Nombre de la empresa' %}">
                                 {% else %}
                                     <div class="profile-field-value">{{ user.company|default:"—" }}</div>
                                 {% endif %}
@@ -618,7 +618,7 @@
                                     {% trans "Cargo" %}:
                                 </label>
                                 {% if edit_mode %}
-                                    <input type="text" name="job_title" class="profile-input" value="{% if user_company %}{{ user_company.job_title }}{% endif %}" placeholder="Cargo (opcional)">
+                                    <input type="text" name="job_title" class="profile-input" value="{% if user_company %}{{ user_company.job_title }}{% endif %}" placeholder="{% trans 'Cargo (opcional)' %}">
                                 {% else %}
                                     <div class="profile-field-value">{% if user_company %}{{ user_company.job_title|default:"—" }}{% else %}—{% endif %}</div>
                                 {% endif %}
@@ -631,7 +631,7 @@
                                     {% trans "CIF / NIF / Número de Identificación Fiscal" %}:
                                 </label>
                                 {% if edit_mode %}
-                                    <input type="text" name="tax_id" class="profile-input" value="{% if user_company and user_company.company %}{{ user_company.company.vat_number|default:user_company.company.tax_id }}{% endif %}" placeholder="CIF / NIF (opcional)">
+                                    <input type="text" name="tax_id" class="profile-input" value="{% if user_company and user_company.company %}{{ user_company.company.vat_number|default:user_company.company.tax_id }}{% endif %}\" placeholder=\"{% trans 'CIF / NIF (opcional)' %}\">
                                 {% else %}
                                     <div class="profile-field-value">{% if user_company and user_company.company %}{{ user_company.company.vat_number|default:user_company.company.tax_id|default:"—" }}{% else %}—{% endif %}</div>
                                 {% endif %}
@@ -803,7 +803,7 @@
                                     {% trans "País" %}
                                 </label>
                                 {% if edit_mode %}
-                                    <input type="text" name="pais" class="profile-input" value="{{ user.pais|default:'España' }}" placeholder="España">
+                                    <input type="text" name="pais" class="profile-input" value="{{ user.pais|default:'España' }}" placeholder="{% trans 'España' %}">
                                 {% else %}
                                     <div class="profile-field-value">{{ user.pais|default:"España" }}</div>
                                 {% endif %}
@@ -960,7 +960,7 @@
                                     {% trans "Ventana de entrega" %}
                                 </label>
                                 {% if edit_mode %}
-                                    <input type="text" name="ventana_entrega" class="profile-input" value="{{ user.ventana_entrega }}" placeholder="Ej: Lunes 9:00-13:00 (opcional)">
+                                    <input type="text" name="ventana_entrega" class="profile-input" value="{{ user.ventana_entrega }}" placeholder="{% trans 'Ej: Lunes 9:00-13:00 (opcional)' %}">
                                     <div class="profile-field-help">{% trans "Ej: Lunes a viernes 9:00-14:00" %}</div>
                                 {% else %}
                                     <div class="profile-field-value">{{ user.ventana_entrega|default:"—" }}</div>
@@ -974,7 +974,7 @@
                                     {% trans "Observaciones" %}
                                 </label>
                                 {% if edit_mode %}
-                                    <textarea name="observaciones_entrega" class="profile-input" rows="3" placeholder="Instrucciones especiales para la entrega (opcional)">{{ user.observaciones_entrega }}</textarea>
+                                    <textarea name="observaciones_entrega" class="profile-input" rows="3" placeholder="{% trans 'Instrucciones especiales para la entrega (opcional)' %}">{{ user.observaciones_entrega }}</textarea>
                                 {% else %}
                                     <div class="profile-field-value">{{ user.observaciones_entrega|default:"—" }}</div>
                                 {% endif %}

@@ -60,5 +60,13 @@ class RecurringOrderItem(models.Model):
         verbose_name = _('Línea de Pedido Recurrente')
         verbose_name_plural = _('Líneas de Pedidos Recurrentes')
 
+    @property
+    def translated_name(self):
+        from django.utils.translation import get_language
+        lang = get_language()
+        if lang == 'zh-hans':
+            return self.product_name_zh_hans or self.product_name_es
+        return self.product_name_es
+
     def __str__(self) -> str:
         return f'{self.product_name_es} x {self.quantity}'

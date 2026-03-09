@@ -59,9 +59,65 @@ class Product(models.Model):
         else:
             self.stock_status = self.STOCK_OK
 
+    @property
+    def translated_name(self):
+        from django.utils.translation import get_language
+        lang = get_language()
+        if lang == 'zh-hans':
+            return self.name_zh_hans or self.name_es
+        return self.name_es
+
+    @property
+    def translated_description(self):
+        from django.utils.translation import get_language
+        lang = get_language()
+        if lang == 'zh-hans':
+            return self.description_zh_hans or self.description_es
+        return self.description_es
+
     def save(self, *args, **kwargs):
         self.update_stock_status()
         return super().save(*args, **kwargs)
+
+    @property
+    def image_url(self) -> str:
+        """
+        Devuelve la URL de la imagen de forma robusta.
+        1. Si no hay imagen, devuelve None.
+        2. En producción (GCS), devuelve la URL de GCS.
+        3. En local:
+           - Si el archivo existe localmente, devuelve la URL local.
+           - Si NO existe localmente, intenta devolver la URL de GCS como fallback 
+             (útil para ver imágenes subidas en producción desde local).
+        """
+        if not self.image:
+            return None
+            
+        from django.conf import settings
+        import os
+        
+        try:
+            # Caso 1: Producción o GCS configurado como storage por defecto
+            if not settings.DEBUG or 'GoogleCloudStorage' in str(self.image.storage.__class__):
+                return self.image.url
+                
+            # Caso 2: Desarrollo con FileSystemStorage
+            # Verificar si el archivo existe físicamente en el disco local
+            if os.path.exists(self.image.path):
+                return self.image.url
+            
+            # Caso 3: Fallback a GCS si no existe en local pero tenemos el bucket configurado
+            bucket_name = getattr(settings, 'GS_BUCKET_NAME', None)
+            if bucket_name:
+                return f"https://storage.googleapis.com/{bucket_name}/{self.image.name}"
+                
+            return self.image.url
+        except Exception:
+            # Fallback seguro al comportamiento por defecto de Django
+            try:
+                return self.image.url
+            except:
+                return None
 
     def __str__(self) -> str:
         return f'{self.name_es} / {self.name_zh_hans}'

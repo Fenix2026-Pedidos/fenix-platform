@@ -1082,7 +1082,7 @@
 }
 
 .product-card.hidden {
-    display: none;
+    display: none !important;
 }
 
 /* 1. Top Row: Precio (izq) + Badge (der) */

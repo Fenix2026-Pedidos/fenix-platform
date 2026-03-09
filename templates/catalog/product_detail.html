@@ -2,10 +2,10 @@
 {% load i18n %}
 
 {% block page_title %}
-{% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif %}
+{{ product.translated_name }}
 {% endblock %}
 {% block title %}
-{% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif %} - Fenix
+{{ product.translated_name }} - Fenix
 {% endblock %}
 
 {% block content %}
@@ -15,18 +15,18 @@
                 trans "Catálogo" %}</a></li>
         <li><i class="bi bi-chevron-right" style="color: var(--gray-400);"></i></li>
         <li style="color: var(--gray-600);">
-            {% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif %}
+            {{ product.translated_name }}
         </li>
     </ol>
 </nav>
 
 <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
     <div>
-        {% if product.image %}
+        {% if product.image_url %}
         <div
             style="width: 100%; max-height: 500px; overflow: hidden; border-radius: var(--radius-md); margin-bottom: 24px; background: var(--gray-100); display: flex; align-items: center; justify-content: center;">
-            <img src="{{ product.image.url }}"
-                alt="{% if lang == 'zh-hans' %}{{ product.name_zh_hans }}{% else %}{{ product.name_es }}{% endif %}"
+            <img src="{{ product.image_url }}"
+                alt="{{ product.translated_name }}"
                 style="width: 100%; height: auto; object-fit: contain; max-height: 500px;">
         </div>
         {% else %}
@@ -37,11 +37,7 @@
         {% endif %}
 
         <h1 style="font-size: 32px; font-weight: 700; margin-bottom: 24px; color: var(--gray-900);">
-            {% if lang == 'zh-hans' %}
-            {{ product.name_zh_hans }}
-            {% else %}
-            {{ product.name_es }}
-            {% endif %}
+            {{ product.translated_name }}
         </h1>
 
         <div class="card">
@@ -50,11 +46,7 @@
             </div>
             <div class="card-body">
                 <p style="color: var(--gray-700); line-height: 1.8;">
-                    {% if lang == 'zh-hans' %}
-                    {{ product.description_zh_hans|default:"Sin descripción disponible."|linebreaks }}
-                    {% else %}
-                    {{ product.description_es|default:"Sin descripción disponible."|linebreaks }}
-                    {% endif %}
+                    {{ product.translated_description|default:_("Sin descripción disponible.")|linebreaks }}
                 </p>
             </div>
         </div>

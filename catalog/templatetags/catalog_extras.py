@@ -24,10 +24,10 @@ def product_category(product):
     haystack = f"{source} {description}".strip()
 
     mappings = (
-        ('packs', ('pack', 'combo', 'lote')),
-        ('jamon-curado', ('curado', 'serrano', 'bodega')),
-        ('jamon-cocido', ('cocido', 'york', 'dulce')),
-        ('pavo', ('pavo', 'turkey', 'pechuga')),
+        ('packs', ('pack', 'combo', 'lote', 'surtido', 'ahorro')),
+        ('jamon-curado', ('curado', 'serrano', 'bodega', 'reserva', 'gran reserva', 'iberico')),
+        ('jamon-cocido', ('cocido', 'york', 'dulce', 'extra')),
+        ('pavo', ('pavo', 'turkey', 'pechuga', 'pollo', 'chicken')),
     )
 
     for slug, keywords in mappings:
@@ -35,3 +35,55 @@ def product_category(product):
             return slug
 
     return 'todos'
+@register.filter
+def product_type(product):
+    """Deriva el tipo de producto para los filtros laterales."""
+    if product is None:
+        return 'todos'
+    
+    haystack = f"{getattr(product, 'name_es', '')} {getattr(product, 'description_es', '')}".lower()
+    
+    # Mapeo de tipos (coincide con los radio buttons en product_list.html)
+    types = (
+        ('charcuteria', ('charcuteria', 'embutido', 'fiambre')),
+        ('curados', ('lomo', 'chorizo', 'salchichon')),
+        ('ibericos', ('iberico', 'bellota', 'cebo')),
+        ('jamon-cocido', ('cocido', 'york', 'dulce')),
+        ('jamon-curado', ('curado', 'serrano', 'bodega')),
+        ('pavo', ('pavo', 'pollo', 'turkey', 'chicken')),
+        ('platos-preparados', ('plato', 'preparado', 'listo', 'cocinado', 'frankfurt')),
+        ('salchichas', ('salchicha', 'frankfurt', 'viena')),
+    )
+    
+    for slug, keywords in types:
+        if any(keyword in haystack for keyword in keywords):
+            return slug
+            
+    return 'otros'
+
+
+@register.filter
+def product_features(product):
+    """Deriva las características especiales del producto."""
+    if product is None:
+        return ''
+    
+    haystack = f"{getattr(product, 'name_es', '')} {getattr(product, 'description_es', '')}".lower()
+    found = []
+    
+    # Mapeo de características (coincide con checkboxes en product_list.html)
+    features = (
+        ('sin-lactosa', ('sin lactosa', 'no lactose', 'lactosa')),
+        ('sin-conservantes', ('sin conservantes', 'no preservatives')),
+        ('sin-colorantes', ('sin colorantes', 'no artificial colors')),
+        ('sin-azucares', ('sin azucares', 'sin azúcar', 'no sugar')),
+        ('bajo-carbohidratos', ('bajo en carb', 'low carb', 'keto')),
+        ('apto-diabeticos', ('diabetico', 'apto para diabeticos')),
+        ('natural', ('natural', 'artesano', 'tradicional')),
+    )
+    
+    for slug, keywords in features:
+        if any(keyword in haystack for keyword in keywords):
+            found.append(slug)
+            
+    return ','.join(found)

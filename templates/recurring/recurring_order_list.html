@@ -42,7 +42,7 @@
                         <h6>{% translate "Productos" %}:</h6>
                         <ul class="list-unstyled">
                             {% for item in recurring_order.items.all %}
-                                <li>{{ item.product_name_es }} × {{ item.quantity }}</li>
+                                <li>{{ item.translated_name }} × {{ item.quantity }}</li>
                             {% endfor %}
                         </ul>
                     </div>

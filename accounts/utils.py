@@ -57,7 +57,7 @@ def get_user_greeting(user):
     """
     greeting = get_time_based_greeting()
     name = user.first_name or user.display_name or user.email.split('@')[0]
-    return f"¡{greeting}, {name}!"
+    return gettext("¡%(greeting)s, %(name)s!") % {'greeting': greeting, 'name': name}
 
 
 def get_dashboard_status(user):

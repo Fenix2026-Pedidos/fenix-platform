@@ -19,11 +19,14 @@ const CatalogFilters = {
         // Cargar filtros desde localStorage
         this.loadFromStorage();
 
-        // Asegurar que todos los productos estén visibles inicialmente si no hay filtros
+        // Actualizar el contador de resultados (valores iniciales se determinarán en applyFilters)
+        // Esta llamada aquí es un placeholder, los valores reales se pasarán en applyFilters
+        // this.updateResultCount(visibleCount, totalCount); 
+
+        // Limpiar estados inconsistentes si el tipo es todos
         if (this.activeType === 'todos' && this.activeFilters.size === 0) {
-            this.activeFilters.clear();
-            this.activeType = 'todos';
-            this.searchQuery = '';
+            localStorage.removeItem(this.STORAGE_TYPE_KEY);
+            localStorage.removeItem(this.STORAGE_FEATURES_KEY);
         }
 
         this.bindFilterEvents();
@@ -277,16 +280,17 @@ const CatalogFilters = {
                 visibleCount++;
             });
             this.showEmptyState(false);
+            this.updateResultCount(visibleCount, productCards.length);
             return;
         }
 
         productCards.forEach(card => {
             let shouldShow = true;
 
-            // Filtro por tipo de producto
+            // Filtro por tipo de producto (Normalizar a minúsculas)
             if (hasActiveType) {
-                const cardType = card.getAttribute('data-product-type');
-                if (cardType !== this.activeType) {
+                const cardType = (card.getAttribute('data-product-type') || '').toLowerCase();
+                if (cardType !== this.activeType.toLowerCase()) {
                     shouldShow = false;
                 }
             }
@@ -331,6 +335,39 @@ const CatalogFilters = {
 
         // Mostrar mensaje si no hay resultados
         this.showEmptyState(visibleCount === 0);
+
+        // Actualizar el contador de resultados
+        this.updateResultCount(visibleCount, productCards.length);
+    },
+
+    /**
+     * Actualiza el texto del contador (ej: "Mostrando 1-4 de 8 productos")
+     */
+    updateResultCount: function (visible, total) {
+        const countBadge = document.querySelector('.catalog-count-badge');
+        if (!countBadge) return;
+
+        const numbersSpan = countBadge.querySelector('.count-numbers');
+        const totalSpan = countBadge.querySelector('.count-total');
+        const label产品 = countBadge.querySelector('.count-label:last-child'); // El que dice "productos"
+
+        if (numbersSpan) {
+            // Si solo hay 1, poner "1"
+            if (visible === 1) numbersSpan.textContent = "1";
+            else if (visible === 0) numbersSpan.textContent = "0";
+            else numbersSpan.textContent = `1–${visible}`;
+        }
+
+        if (totalSpan) {
+            totalSpan.textContent = total;
+        }
+
+        // Si no hay resultados, podemos cambiar el estilo
+        if (visible === 0) {
+            countBadge.classList.add('no-results');
+        } else {
+            countBadge.classList.remove('no-results');
+        }
     },
 
     /**

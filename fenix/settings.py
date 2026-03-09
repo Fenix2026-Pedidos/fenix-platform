@@ -256,8 +256,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.User'
 
 # Configuración de Almacenamiento (Local en dev, GCS en prod)
+GS_BUCKET_NAME = os.getenv('GS_BUCKET_NAME', 'project-8ec7876a-62b7-4e0b-82d.appspot.com')
+
 if not DEBUG:
-    GS_BUCKET_NAME = os.getenv('GS_BUCKET_NAME', 'project-8ec7876a-62b7-4e0b-82d.appspot.com')
     GS_DEFAULT_ACL = None  # Evita errores 500 si el bucket tiene 'Public Access Prevention' activo
     GS_QUERYSTRING_AUTH = False  # URLs públicas sin firma para mejor rendimiento en cache
     

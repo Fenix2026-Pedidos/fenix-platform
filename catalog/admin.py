@@ -31,8 +31,11 @@ class ProductAdmin(admin.ModelAdmin):
             return mark_safe('<span style="color: #999;">Sin imagen</span>')
         
         try:
-            # Asegurar que usamos la URL absoluta (local o GCS)
-            image_url = obj.image.url
+            # Asegurar que usamos la URL robusta (maneja local y GCS fallback)
+            image_url = obj.image_url
+            if not image_url:
+                return mark_safe('<span style="color: #999;">Sin URL válida</span>')
+                
             return format_html(
                 '<div style="background: #f8f8f8; padding: 10px; border-radius: 8px; display: inline-block; border: 1px solid #ddd;">'
                 '<img src="{}" style="max-width: 150px; max-height: 150px; display: block; margin-bottom: 5px; border-radius: 4px;" />'
