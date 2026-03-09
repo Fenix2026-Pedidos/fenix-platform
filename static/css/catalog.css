@@ -13,8 +13,8 @@
     --catalog-card-padding-bottom: 2px;
     --catalog-card-padding-bottom: 2px;
     --catalog-gap: 24px;
-    /* Updated gap */
     --filters-panel-width: 320px;
+    --mobile-filter-bar-height: 48px;
 }
 
 
@@ -502,21 +502,52 @@
 @media (max-width: 767px) {
     .public-hero {
         border-radius: 24px;
-        padding: 32px 20px;
+        padding: 24px 16px;
+    }
+
+    .catalog-shell {
+        padding: 16px;
+        border-radius: 16px;
+        gap: 12px;
     }
 
     .catalog-shell__intro {
         flex-direction: column;
         align-items: flex-start;
+        gap: 4px;
+    }
+
+    .catalog-shell__eyebrow {
+        font-size: 11px;
+    }
+
+    .catalog-shell__title {
+        font-size: 20px;
+    }
+
+    .catalog-shell__subtitle {
+        font-size: 14px;
+        line-height: 1.4;
     }
 
     .category-actions {
         flex-direction: column;
         width: 100%;
+        gap: 8px;
     }
 
     .category-search {
         width: 100%;
+    }
+
+    .catalog-search-input {
+        height: 40px;
+        font-size: 14px;
+    }
+
+    /* Hide categories chips on mobile as requested (moving to filters) */
+    .category-tabs-bar .category-tabs {
+        display: none;
     }
 
     .public-footer {
@@ -1031,8 +1062,8 @@
 /* Móvil (<576px): 1 columna */
 @media (max-width: 575px) {
     .products-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
     }
 
     .catalog-header {
@@ -1067,8 +1098,8 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     display: flex;
     flex-direction: column;
-    padding: 16px;
-    gap: 10px;
+    padding: 12px;
+    gap: 4px;
     transition: box-shadow 0.2s ease, transform 0.2s ease;
     position: relative;
     width: 100%;
@@ -1091,7 +1122,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    min-height: 32px;
+    min-height: 24px;
 }
 
 .card-price-container {
@@ -1165,8 +1196,7 @@
 
 /* 2. Referencia (debajo del precio) */
 .card-ref-row {
-    margin-top: -4px;
-    margin-bottom: 4px;
+    margin: 0;
 }
 
 .card-ref {
@@ -1190,7 +1220,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 8px 0;
+    margin: 0;
 }
 
 .card-product-img {
@@ -1256,13 +1286,13 @@
 .card-actions-block {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-top: auto;
+    gap: 6px;
+    margin-top: 4px;
 }
 
 .card-login-promo {
     text-align: center;
-    padding: 4px 0;
+    padding: 2px 0;
 }
 
 .card-qty-stepper {
@@ -1343,6 +1373,79 @@
     color: white !important;
 }
 
+/* Extreme compactness for mobile (2 columns) */
+@media (max-width: 480px) {
+    .product-card {
+        padding: 8px;
+        gap: 2px;
+        border-radius: 12px;
+    }
+
+    .card-price-main .price-int {
+        font-size: 16px;
+    }
+
+    .card-price-main .price-dec,
+    .card-price-main .price-currency {
+        font-size: 12px;
+    }
+
+    .card-price-main .price-weight {
+        font-size: 10px;
+        margin-left: 2px;
+    }
+
+    .card-ref {
+        font-size: 9px;
+    }
+
+    .card-image-wrap {
+        margin: 0;
+        border-radius: 8px;
+    }
+
+    .card-actions-block {
+        gap: 4px;
+        margin-top: 2px;
+    }
+
+    .card-qty-stepper {
+        height: 32px;
+        border-radius: 6px;
+    }
+
+    .qty-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 4px;
+    }
+
+    .qty-input {
+        font-size: 14px;
+        width: 30px;
+    }
+
+    .card-add-btn {
+        height: 34px;
+        border-radius: 6px;
+        font-size: 12px;
+        gap: 4px;
+    }
+
+    .card-add-btn i {
+        font-size: 14px;
+    }
+
+    .badge {
+        font-size: 9px;
+        padding: 2px 6px;
+    }
+
+    .price-login-hint {
+        font-size: 11px;
+    }
+}
+
 /* ============================================
    FIN - Card de producto
    ============================================ */
@@ -1382,9 +1485,101 @@
 
 .catalog-filters-panel::-webkit-scrollbar-thumb {
     background: var(--gray-400);
-    border-radius: 3px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
-.catalog-filters-panel::-webkit-scrollbar-thumb:hover {
-    background: var(--gray-500);
+@media (max-width: 767px) {
+    .mobile-filter-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .mobile-filter-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide desktop toolbar on mobile */
+    .catalog-toolbar {
+        display: none !important;
+    }
+}
+
+.m-filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #f8fafc;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-700);
+    white-space: nowrap;
+    height: 36px;
+}
+
+.m-filter-btn:active {
+    background: var(--gray-100);
+}
+
+.m-filter-btn i {
+    font-size: 14px;
+    color: var(--primary-600);
+}
+
+.m-select-compact {
+    appearance: none;
+    background-color: #f8fafc;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 0 24px 0 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-700);
+    height: 36px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+    cursor: pointer;
+}
+
+.m-direction-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    color: var(--gray-700);
+}
+
+.m-count-badge {
+    margin-left: auto;
+    background: var(--primary-50);
+    color: var(--primary-700);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* Category section in Filters Panel (always visible there now) */
+.filters-section-categories {
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .filters-section-categories {
+        display: none;
+        /* Hide in side panel if visible as chips in desktop */
+    }
 }

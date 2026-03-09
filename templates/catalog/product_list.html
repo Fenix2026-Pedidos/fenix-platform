@@ -23,7 +23,7 @@
                 <p class="catalog-shell__eyebrow">{% trans "Catálogo actualizado" %}</p>
                 <h2 id="catalogSectionTitle" class="catalog-shell__title">{% trans "Catálogo de Productos" %}</h2>
             </div>
-            <p class="catalog-shell__subtitle">
+            <p class="catalog-shell__subtitle d-none d-md-block">
                 {% if request.user.is_authenticated %}
                 {% trans "Selecciona cantidades y añade tus básicos al carrito inteligente." %}
                 {% else %}
@@ -34,6 +34,39 @@
 
         {% include 'components/category_tabs.html' with search_query=search_query %}
     </section>
+
+    <!-- Barra de filtros móvil (Nueva) -->
+    <div class="mobile-filter-bar">
+        <button type="button" class="m-filter-btn" id="mFiltersToggle">
+            <i class="bi bi-sliders"></i>
+            <span>{% trans "Filtros" %}</span>
+        </button>
+        
+        <select class="m-select-compact" name="sort" onchange="document.getElementById('sortSelect').value = this.value; document.getElementById('sortForm').submit();">
+            <option value="relevance">{% trans "Posición" %}</option>
+            <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Precio menor" %}</option>
+            <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Precio mayor" %}</option>
+            <option value="name_asc" {% if sort == 'name_asc' %}selected{% endif %}>{% trans "Nombre: A-Z" %}</option>
+        </select>
+
+        <button type="button" class="m-direction-btn" onclick="const s = document.getElementById('sortSelect'); s.value = s.value.endsWith('_asc') ? s.value.replace('_asc', '_desc') : (s.value.endsWith('_desc') ? s.value.replace('_desc', '_asc') : s.value); s.form.submit();">
+            <i class="bi bi-arrow-down-up"></i>
+        </button>
+
+        <select class="m-select-compact" name="page_size" onchange="document.getElementById('pageSizeSelect').value = this.value; document.getElementById('pageSizeForm').submit();">
+            <option value="12" {% if page_size == 12 %}selected{% endif %}>12</option>
+            <option value="24" {% if page_size == 24 %}selected{% endif %}>24</option>
+            <option value="48" {% if page_size == 48 %}selected{% endif %}>48</option>
+        </select>
+
+        <div class="m-count-badge">
+            {% if paginator.count > 0 %}
+            {{ page_obj.start_index }}–{{ page_obj.end_index }} / {{ paginator.count }}
+            {% else %}
+            0
+            {% endif %}
+        </div>
+    </div>
 
     <div class="catalog-container">
         <!-- Panel de filtros desplegable -->
@@ -47,8 +80,62 @@
             </div>
 
             <div class="filters-content">
+                <!-- Sección 0: Categorías (Móvil) -->
+                <div class="filters-section filters-section-categories">
+                    <h4 class="filters-section-title">{% trans "Categorías" %}</h4>
+                    <div class="filters-radio-list">
+                        <label class="filter-radio">
+                            <input type="radio" name="mobile-category" class="filter-type-radio" value="todos" data-type="todos" {% if active_type == 'todos' or not active_type %}checked{% endif %}>
+                            <span class="filter-label">{% trans "Todas" %}</span>
+                        </label>
+                        <button type="button" class="visually-hidden" data-category-tab="todos"></button>
+                        
+                        <label class="filter-radio">
+                            <input type="radio" name="mobile-category" class="filter-type-radio" value="charcuteria" data-type="charcuteria">
+                            <span class="filter-label">{% trans "Charcutería" %}</span>
+                        </label>
+                        <button type="button" class="visually-hidden" data-category-tab="charcuteria"></button>
+
+                        <label class="filter-radio">
+                            <input type="radio" name="mobile-category" class="filter-type-radio" value="curados" data-type="curados">
+                            <span class="filter-label">{% trans "Curados" %}</span>
+                        </label>
+                        <button type="button" class="visually-hidden" data-category-tab="curados"></button>
+
+                        <label class="filter-radio">
+                            <input type="radio" name="mobile-category" class="filter-type-radio" value="ibericos" data-type="ibericos">
+                            <span class="filter-label">{% trans "Ibéricos" %}</span>
+                        </label>
+                        <button type="button" class="visually-hidden" data-category-tab="ibericos"></button>
+
+                        <label class="filter-radio">
+                            <input type="radio" name="mobile-category" class="filter-type-radio" value="jamon-cocido" data-type="jamon-cocido">
+                            <span class="filter-label">{% trans "Jamón Cocido" %}</span>
+                        </label>
+                        <button type="button" class="visually-hidden" data-category-tab="jamon-cocido"></button>
+
+                        <label class="filter-radio">
+                            <input type="radio" name="mobile-category" class="filter-type-radio" value="jamon-curado" data-type="jamon-curado">
+                            <span class="filter-label">{% trans "Jamón Curado" %}</span>
+                        </label>
+                        <button type="button" class="visually-hidden" data-category-tab="jamon-curado"></button>
+
+                        <label class="filter-radio">
+                            <input type="radio" name="mobile-category" class="filter-type-radio" value="pavo" data-type="pavo">
+                            <span class="filter-label">{% trans "Pavo" %}</span>
+                        </label>
+                        <button type="button" class="visually-hidden" data-category-tab="pavo"></button>
+
+                        <label class="filter-radio">
+                            <input type="radio" name="mobile-category" class="filter-type-radio" value="packs" data-type="packs">
+                            <span class="filter-label">{% trans "Packs" %}</span>
+                        </label>
+                        <button type="button" class="visually-hidden" data-category-tab="packs"></button>
+                    </div>
+                </div>
+
                 <!-- Sección 1: Tipos de producto -->
-                <div class="filters-section">
+                <div class="filters-section d-none d-md-block">
                     <h4 class="filters-section-title">{% trans "Tipos de producto" %}</h4>
                     <div class="filters-radio-list">
                         <label class="filter-radio">

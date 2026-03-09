@@ -110,6 +110,18 @@ const CatalogFilters = {
             });
         }
 
+        // Nuevo botón para móvil
+        const mToggleBtn = document.getElementById('mFiltersToggle');
+        if (mToggleBtn && panel) {
+            mToggleBtn.addEventListener('click', () => {
+                panel.classList.add('open');
+                if (overlay) {
+                    overlay.classList.add('active');
+                }
+                document.body.style.overflow = 'hidden';
+            });
+        }
+
         const closePanel = () => {
             if (panel) {
                 panel.classList.remove('open');
@@ -176,6 +188,25 @@ const CatalogFilters = {
 
                 const type = tab.getAttribute('data-category-tab') || 'todos';
                 this.setType(type);
+
+                // Sincronizar radio buttons de móvil si existen
+                const radio = document.querySelector(`.filter-type-radio[value="${type}"]`);
+                if (radio) radio.checked = true;
+            });
+        });
+
+        // Soporte para radio buttons de categorías en el drawer de filtros (móvil)
+        document.querySelectorAll('.filters-section-categories .filter-type-radio').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const type = e.target.value;
+                this.setType(type);
+
+                // Sincronizar chips de escritorio si existen
+                const tab = document.querySelector(`[data-category-tab="${type}"]`);
+                if (tab) {
+                    document.querySelectorAll('[data-category-tab]').forEach(t => t.classList.remove('is-active'));
+                    tab.classList.add('is-active');
+                }
             });
         });
     },
