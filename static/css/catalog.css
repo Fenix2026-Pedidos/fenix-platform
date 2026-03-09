@@ -17,7 +17,17 @@
     --mobile-filter-bar-height: 48px;
 }
 
-
+/* 
+   REGLAS CRÍTICAS DE VISIBILIDAD 
+   Para evitar mezclar UI de móvil en escritorio
+*/
+.mobile-filter-bar,
+.m-filter-btn,
+.m-select-compact,
+.m-direction-btn,
+.m-count-badge {
+    display: none !important;
+}
 
 /* Header del catálogo mantiene padding interno */
 .catalog-container .catalog-header {
@@ -1488,21 +1498,17 @@
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
-.mobile-filter-bar {
-    display: none !important;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: white;
-    border-bottom: 1px solid var(--gray-200);
-    padding: 8px 16px;
-    margin-bottom: 16px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-}
-
 @media (max-width: 767px) {
     .mobile-filter-bar {
         display: flex !important;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: white;
+        border-bottom: 1px solid var(--gray-200);
+        padding: 8px 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         align-items: center;
         gap: 8px;
         overflow-x: auto;
