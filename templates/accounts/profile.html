@@ -414,13 +414,18 @@
             <!-- Personal Information Grid -->
             <div class="profile-grid">
                 <!-- Identidad -->
-                {% include 'components/profile_field.html' with icon='user' label=_("Nombre") value=user.first_name %}
-                {% include 'components/profile_field.html' with icon='user' label=_("Apellido") value=user.last_name %}
-                {% include 'components/profile_field.html' with icon='mail' label=_("Email") value=user.email %}
-                {% include 'components/profile_field.html' with icon='briefcase' label=_("Empresa") value=user.company %}
+                {% trans "Nombre" as t_nombre %}
+                {% include 'components/profile_field.html' with icon='user' label=t_nombre value=user.first_name %}
+                {% trans "Apellido" as t_apellido %}
+                {% include 'components/profile_field.html' with icon='user' label=t_apellido value=user.last_name %}
+                {% trans "Email" as t_email %}
+                {% include 'components/profile_field.html' with icon='mail' label=t_email value=user.email %}
+                {% trans "Empresa" as t_empresa %}
+                {% include 'components/profile_field.html' with icon='briefcase' label=t_empresa value=user.company %}
                 
                 <!-- Cuenta -->
-                {% include 'components/profile_field.html' with icon='shield' label=_("Rol") value=user.get_role_display badge="info" %}
+                {% trans "Rol" as t_rol %}
+                {% include 'components/profile_field.html' with icon='shield' label=t_rol value=user.get_role_display badge="info" %}
                 <div class="profile-field">
                     <div class="profile-field-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
@@ -436,20 +441,26 @@
                         {% endif %}
                     </div>
                 </div>
-                {% include 'components/profile_field.html' with icon='calendar' label=_("Fecha de Registro") value=user.date_joined|date:"d/m/Y H:i" %}
+                {% trans "Fecha de Registro" as t_reg %}
+                {% include 'components/profile_field.html' with icon='calendar' label=t_reg value=user.date_joined|date:"d/m/Y H:i" %}
                 
                 <!-- Preferencias -->
-                {% include 'components/profile_field.html' with icon='phone' label=_("Teléfono") value=user.phone %}
-                {% include 'components/profile_field.html' with icon='globe' label=_("Idioma") value=user.get_language_display %}
-                {% include 'components/profile_field.html' with icon='clock' label=_("Zona Horaria") value=user.timezone %}
+                {% trans "Teléfono" as t_tel %}
+                {% include 'components/profile_field.html' with icon='phone' label=t_tel value=user.phone %}
+                {% trans "Idioma" as t_lang %}
+                {% include 'components/profile_field.html' with icon='globe' label=t_lang value=user.get_language_display %}
+                {% trans "Zona Horaria" as t_tz %}
+                {% include 'components/profile_field.html' with icon='clock' label=t_tz value=user.timezone %}
             </div>
 
             <!-- Technical Details Section -->
             <div class="profile-technical">
                 <div class="profile-technical-title">{% trans "Detalles Técnicos" %}</div>
                 <div class="profile-grid">
-                    {% include 'components/profile_field.html' with icon='hash' label=_("ID Interno") value=user.id code=True %}
-                    {% include 'components/profile_field.html' with icon='key' label=_("UUID Público") value=user.uuid code=True copyable=True %}
+                    {% trans "ID Interno" as t_id %}
+                    {% include 'components/profile_field.html' with icon='hash' label=t_id value=user.id code=True %}
+                    {% trans "UUID Público" as t_uuid %}
+                    {% include 'components/profile_field.html' with icon='key' label=t_uuid value=user.uuid code=True copyable=True %}
                     <div class="profile-field">
                         <div class="profile-field-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>

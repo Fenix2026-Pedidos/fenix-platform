@@ -175,13 +175,13 @@
         const MIN_QUERY_LENGTH = 2;
         const searchEndpoint = "{% url 'global_search' %}";
         const labels = {
-            orders: "{{ _('Mis Pedidos')|escapejs }}",
-            products: "{{ _('Productos')|escapejs }}",
-            actions: "{{ _('Acciones Pendientes')|escapejs }}",
-            empty: "{{ _('No se encontraron resultados')|escapejs }}",
-            hint: "{{ _('Escribe al menos 2 caracteres para buscar')|escapejs }}",
-            error: "{{ _('Ha ocurrido un error')|escapejs }}",
-            loading: "{{ _('Cargando...')|escapejs }}",
+            orders: "{% trans 'Mis Pedidos' as t_orders %}{{ t_orders|escapejs }}",
+            products: "{% trans 'Productos' as t_products %}{{ t_products|escapejs }}",
+            actions: "{% trans 'Acciones Pendientes' as t_actions %}{{ t_actions|escapejs }}",
+            empty: "{% trans 'No se encontraron resultados' as t_empty %}{{ t_empty|escapejs }}",
+            hint: "{% trans 'Escribe al menos 2 caracteres para buscar' as t_hint %}{{ t_hint|escapejs }}",
+            error: "{% trans 'Ha ocurrido un error' as t_error %}{{ t_error|escapejs }}",
+            loading: "{% trans 'Cargando...' as t_loading %}{{ t_loading|escapejs }}",
         };
 
         let debounceTimer = null;
