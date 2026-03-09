@@ -13,99 +13,81 @@ logger = logging.getLogger(__name__)
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
         'id', 'name_es', 'name_zh_hans', 'price', 'unit_display', 'stock_available',
-        'stock_min_threshold', 'stock_status', 'is_active', 'created_at',
+        'is_new', 'is_best_seller', 'is_offer', 'is_active',
     )
-    list_filter = ('stock_status', 'is_active')
+    list_filter = ('is_new', 'is_best_seller', 'is_offer', 'stock_status', 'is_active')
     search_fields = ('name_es', 'name_zh_hans')
     readonly_fields = ('stock_status', 'created_at', 'image_preview', 'translate_button')
     fieldsets = (
         (None, {'fields': ('name_es', 'name_zh_hans', 'description_es', 'description_zh_hans', 'translate_button', 'image', 'image_preview', 'price', 'unit_display', 'is_active')}),
+        ('Etiquetas Especiales', {'fields': ('is_new', 'is_best_seller', 'is_offer')}),
         ('Stock (solo managers)', {'fields': ('stock_available', 'stock_min_threshold', 'stock_status')}),
         ('Auditoría', {'fields': ('created_at',)}),
     )
     
     def image_preview(self, obj):
         """Muestra una vista previa de la imagen en el admin"""
-        if obj is None:
-            return mark_safe('<span style="color: var(--gray-500);">Sin imagen</span>')
-        
-        if not hasattr(obj, 'pk') or not obj.pk:
-            return mark_safe('<span style="color: var(--gray-500);">Sin imagen</span>')
-        
-        if not hasattr(obj, 'image') or not obj.image:
-            return mark_safe('<span style="color: var(--gray-500);">Sin imagen</span>')
+        if not obj or not obj.image:
+            return mark_safe('<span style="color: #999;">Sin imagen</span>')
         
         try:
+            # Asegurar que usamos la URL absoluta (local o GCS)
             image_url = obj.image.url
             return format_html(
-                '<img src="{}" style="max-width: 200px; max-height: 200px; border-radius: 8px;" />',
-                image_url
+                '<div style="background: #f8f8f8; padding: 10px; border-radius: 8px; display: inline-block; border: 1px solid #ddd;">'
+                '<img src="{}" style="max-width: 150px; max-height: 150px; display: block; margin-bottom: 5px; border-radius: 4px;" />'
+                '<a href="{}" target="_blank" style="font-size: 11px; color: #264b5d;">👁️ Ver tamaño completo</a>'
+                '</div>',
+                image_url, image_url
             )
-        except (AttributeError, ValueError, Exception):
-            return mark_safe('<span style="color: var(--gray-500);">Sin imagen</span>')
-    image_preview.short_description = 'Vista previa'
+        except Exception:
+            return mark_safe('<span style="color: #ba2121;">Error al cargar vista previa</span>')
+    image_preview.short_description = 'Vista previa actual'
     
     def translate_button(self, obj):
         """Botón para traducir automáticamente de español a chino"""
-        if obj is None:
-            return mark_safe(
-                '<p style="color: var(--gray-500); font-size: 12px;">'
-                'Guarda el producto primero para habilitar la traducción automática.'
-                '</p>'
-            )
+        if not obj or not obj.pk:
+            return mark_safe('<span style="color: #666; font-size: 12px;">Guarda el producto primero para habilitar la traducción.</span>')
         
-        if not hasattr(obj, 'pk') or not obj.pk:
-            return mark_safe(
-                '<p style="color: var(--gray-500); font-size: 12px;">'
-                'Guarda el producto primero para habilitar la traducción automática.'
-                '</p>'
-            )
-        
-        # Solo mostrar si el objeto ya existe
         return mark_safe(
+            '<div style="background: #f0f7f9; border: 1px solid #c9e2eb; padding: 12px; border-radius: 6px; max-width: 600px;">'
             '<button type="button" onclick="translateProduct()" class="button" style="'
-            'background: var(--primary-600); color: white; border: none; padding: 8px 16px; '
-            'border-radius: 4px; cursor: pointer; font-size: 13px;'
+            'background: #007bff; color: white; border: none; padding: 8px 16px; '
+            'border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; margin-bottom: 8px;'
             '">'
-            '🌐 Traducir automáticamente (ES → 中文)'
+            '🌐 Traducir automáticamente (Español → Chino)'
             '</button>'
+            '<p style="margin: 0; font-size: 12px; color: #555;">'
+            '<strong>¿Cómo funciona?</strong> Esta utilidad usa IA para traducir el <em>Nombre</em> y la <em>Descripción</em> '
+            'del español al chino simplificado. Los campos se rellenarán automáticamente y podrás revisarlos antes de guardar.'
+            '</p>'
+            '</div>'
             '<script>'
             'function translateProduct() {'
-            '  if (confirm("¿Traducir automáticamente el nombre y descripción de español a chino simplificado?")) {'
-            '    var nameEs = document.getElementById("id_name_es").value;'
-            '    var descEs = document.getElementById("id_description_es").value;'
-            '    if (!nameEs && !descEs) {'
-            '      alert("Por favor, completa primero los campos en español.");'
-            '      return;'
-            '    }'
-            '    var currentPath = window.location.pathname;'
-            '    var translateUrl = currentPath.endsWith("/") ? currentPath + "translate/" : currentPath + "/translate/";'
-            '    fetch(translateUrl, {'
-            '      method: "POST",'
-            '      headers: {'
-            '        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,'
-            '        "Content-Type": "application/x-www-form-urlencoded",'
-            '      },'
-            '      body: "name_es=" + encodeURIComponent(nameEs) + "&description_es=" + encodeURIComponent(descEs)'
-            '    })'
-            '    .then(response => response.json())'
-            '    .then(data => {'
-            '      if (data.success) {'
-            '        if (data.name_zh_hans) document.getElementById("id_name_zh_hans").value = data.name_zh_hans;'
-            '        if (data.description_zh_hans) document.getElementById("id_description_zh_hans").value = data.description_zh_hans;'
-            '        alert("Traducción completada. Revisa los campos y guarda el producto.");'
-            '      } else {'
-            '        alert("Error: " + (data.error || "No se pudo traducir"));'
-            '      }'
-            '    })'
-            '    .catch(error => {'
-            '      alert("Error al traducir: " + error);'
-            '    });'
-            '  }'
+            '  var nameEs = document.getElementById("id_name_es").value;'
+            '  var descEs = document.getElementById("id_description_es").value;'
+            '  if (!nameEs && !descEs) { alert("Completa los campos en español primero."); return; }'
+            '  if (!confirm("¿Traducir nombre y descripción al chino?")) return;'
+            '  var btn = event.target; btn.textContent = "⌛ Traduciendo..."; btn.disabled = true;'
+            '  var currentPath = window.location.pathname;'
+            '  var translateUrl = currentPath.endsWith("/") ? currentPath + "translate/" : currentPath + "/translate/";'
+            '  fetch(translateUrl, {'
+            '    method: "POST",'
+            '    headers: { "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value, "Content-Type": "application/x-www-form-urlencoded" },'
+            '    body: "name_es=" + encodeURIComponent(nameEs) + "&description_es=" + encodeURIComponent(descEs)'
+            '  })'
+            '  .then(r => r.json())'
+            '  .then(data => {'
+            '    btn.textContent = "🌐 Traducir automáticamente (Español → Chino)"; btn.disabled = false;'
+            '    if (data.success) {'
+            '      if (data.name_zh_hans) document.getElementById("id_name_zh_hans").value = data.name_zh_hans;'
+            '      if (data.description_zh_hans) document.getElementById("id_description_zh_hans").value = data.description_zh_hans;'
+            '    } else { alert("Error: " + (data.error || "No se pudo traducir")); }'
+            '  });'
             '}'
             '</script>'
         )
-    translate_button.short_description = 'Traducción Automática'
+    translate_button.short_description = 'Asistente de Traducción'
     translate_button.allow_tags = True
     
     def get_urls(self):
@@ -164,6 +146,13 @@ class ProductAdmin(admin.ModelAdmin):
                 'success': False,
                 'error': str(e)
             })
+    
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        """Personalizar etiquetas de campos de archivo para mayor claridad"""
+        field = super().formfield_for_dbfield(db_field, **kwargs)
+        if db_field.name == 'image':
+            field.widget.clear_checkbox_label = "Eliminar imagen actual"
+        return field
     
     def save_model(self, request, obj, form, change):
         """Al guardar, si solo hay campos en español, traducir automáticamente"""
