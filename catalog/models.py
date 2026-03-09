@@ -41,6 +41,9 @@ class Product(models.Model):
         default=STOCK_OK,
         verbose_name=_('Estado Stock')
     )
+    is_new = models.BooleanField(default=False, verbose_name=_('Es Nuevo'))
+    is_best_seller = models.BooleanField(default=False, verbose_name=_('Más Vendido'))
+    is_offer = models.BooleanField(default=False, verbose_name=_('En Oferta'))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Fecha Creación'))
 
     class Meta:

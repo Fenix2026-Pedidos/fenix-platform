@@ -15,6 +15,11 @@
     <!-- Custom Theme CSS -->
     <link rel="stylesheet" href="{% static 'css/theme.css' %}">
     
+    <!-- Navbar Public CSS -->
+    {% if not user.is_authenticated %}
+    <link rel="stylesheet" href="{% static 'css/navbar_public.css' %}">
+    {% endif %}
+    
     <!-- WhatsApp FAB CSS - Solo en zona pública -->
     {% if not user.is_authenticated %}
     <link rel="stylesheet" href="{% static 'css/whatsapp.css' %}">
@@ -32,50 +37,7 @@
             {% if user.is_authenticated %}
                 {% include 'components/topbar.html' %}
             {% else %}
-                <!-- Public navbar for non-authenticated users -->
-                <nav style="background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%); height: 80px; padding: 0 var(--content-padding); box-shadow: var(--shadow-md); width: 100%; position: relative; z-index: 1001; display: flex; align-items: center;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                        <div style="flex: 0 0 auto; position: relative; height: 0; display: flex; align-items: center; z-index: 1002;">
-                            <a href="/" style="display: flex; align-items: center; position: absolute; left: 0; top: 50%; transform: translateY(-50%);">
-                                <img src="{% static 'img/logo sin fondo.png' %}" alt="Logo Fenix" style="height: 130px; display: block; width: auto; max-width: 300px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">
-                            </a>
-                        </div>
-                        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: flex-end; margin-left: auto;">
-                            <!-- Selector de idioma para usuarios no autenticados -->
-                            <form action="{% url 'set_language' %}" method="post" style="display: inline-block;">
-                                {% csrf_token %}
-                                <input name="next" type="hidden" value="{{ request.get_full_path }}">
-                                {% get_current_language as CURRENT_LANGUAGE %}
-                                {% get_available_languages as LANGUAGES_LIST %}
-                                <select name="language" onchange="this.form.submit()" style="
-                                    padding: 6px 12px;
-                                    border: 1px solid rgba(255,255,255,0.3);
-                                    border-radius: var(--radius);
-                                    background: rgba(255,255,255,0.1);
-                                    font-size: 14px;
-                                    cursor: pointer;
-                                    color: white;
-                                ">
-                                    {% for lang_code, lang_name in LANGUAGES_LIST %}
-                                        {% if lang_code != 'en' %}
-                                        <option value="{{ lang_code }}" {% if lang_code == CURRENT_LANGUAGE %}selected{% endif %} style="color: var(--gray-900);">
-                                            {% if lang_code == 'es' %}🇪🇸 Español
-                                            {% elif lang_code == 'zh-hans' %}🇨🇳 中文
-                                            {% else %}{{ lang_name }}{% endif %}
-                                        </option>
-                                        {% endif %}
-                                    {% endfor %}
-                                </select>
-                            </form>
-                            <a href="{% url 'accounts:login' %}" class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.3);">
-                                {% trans "Iniciar Sesión" %}
-                            </a>
-                            <a href="{% url 'accounts:register' %}" class="btn btn-primary">
-                                {% trans "Registrarse" %}
-                            </a>
-                        </div>
-                    </div>
-                </nav>
+                {% include 'components/navbar_public.html' %}
             {% endif %}
             
             <div class="content-wrapper">

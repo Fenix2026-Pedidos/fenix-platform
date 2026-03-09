@@ -33,9 +33,9 @@
                         {% else %}
                     <option value="{{ lang_code }}">
                         {% endif %}
-                        {% if lang_code == 'es' %}🇪🇸 Español
-                        {% elif lang_code == 'zh-hans' %}🇨🇳 中文
-                        {% else %}{{ lang_name }}{% endif %}
+                        {% if lang_code == 'es' %}ES
+                        {% elif lang_code == 'zh-hans' %}ZH
+                        {% else %}{{ lang_code|upper }}{% endif %}
                     </option>
                     {% endif %}
                     {% endfor %}

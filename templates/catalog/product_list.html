@@ -212,26 +212,47 @@
             <div class="products-grid" id="productsGrid">
                 {% if products %}
                 {% for product in products %}
-                {% if show_prices %}
                 <div class="product-card" data-product-id="{{ product.pk }}"
-                    data-product-price="{{ product.price|unlocalize }}" {% else %} <div class="product-card"
-                    data-product-id="{{ product.pk }}" {% endif %} data-category="{{ product|product_category }}"
+                    {% if show_prices %}data-product-price="{{ product.price|unlocalize }}"{% endif %}
+                    data-category="{{ product|product_category }}"
                     data-product-type="{% cycle 'charcuteria' 'curados' 'ibericos' 'jamon-cocido' 'jamon-curado' 'pavo-pollo' 'platos-preparados' 'salchichas' %}"
                     data-product-features="{% cycle 'sin-lactosa,sin-conservantes' 'natural' 'sin-colorantes' 'sin-azucares' 'bajo-carbohidratos' 'apto-diabeticos' 'natural,sin-lactosa' '' %}">
 
-                    <!-- 1. Header: Título + Referencia en la misma línea -->
-                    <div class="card-header-row">
-                        <h3 class="card-product-name">
-                            {% if lang == 'zh-hans' %}
-                            {{ product.name_zh_hans }}
+                    <!-- 1. Top Row: Precio/Unidad (Izq) + Badge (Der) -->
+                    <div class="card-top-row">
+                        <div class="card-price-container">
+                            {% if show_prices %}
+                            <div class="card-price-main" data-price="{{ product.price|unlocalize }}">
+                                <span class="price-full">{{ product.price|floatformat:2 }}</span>
+                                <span class="price-currency">€</span>
+                                {% if product.unit_display %}
+                                <span class="price-weight">/ {{ product.unit_display }}</span>
+                                {% endif %}
+                            </div>
                             {% else %}
-                            {{ product.name_es }}
+                            <div class="card-price-main card-price-hidden">
+                                <span class="price-login-hint">{% trans "Consultar" %}</span>
+                            </div>
                             {% endif %}
-                        </h3>
+                        </div>
+
+                        <div class="card-badges-container">
+                            {% if product.is_new %}
+                            <span class="badge badge--new">{% trans "Nuevo" %}</span>
+                            {% elif product.is_best_seller %}
+                            <span class="badge badge--best-seller">{% trans "Más vendido" %}</span>
+                            {% elif product.is_offer %}
+                            <span class="badge badge--offer">{% trans "Oferta" %}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- 2. Referencia (debajo del precio) -->
+                    <div class="card-ref-row">
                         <span class="card-ref">REF: P{{ product.pk|stringformat:"05d" }}</span>
                     </div>
 
-                    <!-- 2. Imagen protagonista -->
+                    <!-- 3. Imagen protagonista (Centrada en bloque) -->
                     <div class="card-image-wrap">
                         {% if product.image %}
                         <img src="{{ product.image.url }}"
@@ -242,53 +263,50 @@
                             <i class="bi bi-image"></i>
                         </div>
                         {% endif %}
+                        
                         <!-- Badge overlay "En carrito: X" -->
-                        <div class="product-cart-badge-overlay" data-product-id="{{ product.pk }}"
-                            style="display: none;">
-                            <span class="cart-badge-text">{% trans "En carrito:" %} <strong
-                                    class="cart-badge-quantity">0</strong></span>
+                        <div class="product-cart-badge-overlay" data-product-id="{{ product.pk }}" style="display: none;">
+                            <span class="cart-badge-text">{% trans "En carrito:" %} <strong class="cart-badge-quantity">0</strong></span>
                         </div>
                     </div>
 
-                    <!-- 3. Precio centrado -->
-                    <div class="card-price-block">
-                        {% if show_prices %}
-                        <div class="card-price-main" data-price="{{ product.price|unlocalize }}">
-                            <span class="price-full">{{ product.price|floatformat:2 }}</span>
-                            <span class="price-currency">€</span>
-                            {% if product.unit_display %}
-                            <span class="price-weight">/ {{ product.unit_display }}</span>
-                            {% endif %}
-                        </div>
+                    <!-- Nombre del producto (Oculto visualmente pero presente para SEO/Accesibilidad) -->
+                    <h3 class="visually-hidden">
+                        {% if lang == 'zh-hans' %}
+                        {{ product.name_zh_hans }}
                         {% else %}
-                        <div class="card-price-main card-price-hidden">
+                        {{ product.name_es }}
+                        {% endif %}
+                    </h3>
+
+                    <!-- 4. Bloque inferior: Info Login + Stepper + Botón -->
+                    <div class="card-actions-block">
+                        {% if not show_prices %}
+                        <div class="card-login-promo">
                             <span class="price-login-hint">{% trans "Inicia sesión para ver precios" %}</span>
                         </div>
                         {% endif %}
-                    </div>
 
-                    <!-- 4. Stepper de cantidad -->
-                    <div class="card-qty-row">
-                        <div class="card-qty-stepper product-quantity-selector">
-                            <button type="button" class="qty-btn qty-minus disabled" data-product-id="{{ product.pk }}"
-                                aria-label="{% trans 'Reducir cantidad' %}" disabled>
-                                <i class="bi bi-dash"></i>
-                            </button>
-                            <input type="number" class="qty-input" data-product-id="{{ product.pk }}" value="0" min="0"
-                                readonly>
-                            <button type="button" class="qty-btn qty-plus" data-product-id="{{ product.pk }}"
-                                aria-label="{% trans 'Aumentar cantidad' %}">
-                                <i class="bi bi-plus"></i>
-                            </button>
+                        <div class="card-qty-row">
+                            <div class="card-qty-stepper product-quantity-selector">
+                                <button type="button" class="qty-btn qty-minus disabled" data-product-id="{{ product.pk }}"
+                                    aria-label="{% trans 'Reducir cantidad' %}" disabled>
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <input type="number" class="qty-input" data-product-id="{{ product.pk }}" value="0" min="0" readonly>
+                                <button type="button" class="qty-btn qty-plus" data-product-id="{{ product.pk }}"
+                                    aria-label="{% trans 'Aumentar cantidad' %}">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- 5. Botón Añadir al carrito -->
-                    <button type="button" class="card-add-btn btn-add-product disabled"
-                        data-product-id="{{ product.pk }}" disabled>
-                        <i class="bi bi-cart-plus"></i>
-                        <span>{% trans "Añadir al carrito" %}</span>
-                    </button>
+                        <button type="button" class="card-add-btn btn-add-product disabled"
+                            data-product-id="{{ product.pk }}" disabled>
+                            <i class="bi bi-cart-plus"></i>
+                            <span>{% trans "Añadir al carrito" %}</span>
+                        </button>
+                    </div>
                 </div>
                 {% endfor %}
                 {% else %}

@@ -14,7 +14,7 @@
     --primary-700: #0369a1;
     --primary-800: #075985;
     --primary-900: #0c4a6e;
-    
+
     /* Neutral Colors */
     --gray-50: #f9fafb;
     --gray-100: #f3f4f6;
@@ -26,7 +26,7 @@
     --gray-700: #374151;
     --gray-800: #1f2937;
     --gray-900: #111827;
-    
+
     /* Semantic Colors */
     --success: #10b981;
     --success-light: #d1fae5;
@@ -36,38 +36,39 @@
     --danger-light: #fee2e2;
     --info: #3b82f6;
     --info-light: #dbeafe;
-    
+
     /* Layout */
     --sidebar-width: 260px;
     --sidebar-collapsed-width: 80px;
     --topbar-height: 70px;
     --content-padding: 24px;
-    
+
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    
+
     /* Border Radius */
     --radius-sm: 4px;
     --radius: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
     --radius-full: 9999px;
-    
+
     /* Transitions */
     --transition-fast: 150ms ease-in-out;
     --transition: 200ms ease-in-out;
     --transition-slow: 300ms ease-in-out;
-    
+
     /* Typography */
     --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
-    
+
     /* Product Grid */
-    --product-card-height: 450px; /* Altura fija de cada tarjeta de producto */
+    --product-card-height: 450px;
+    /* Altura fija de cada tarjeta de producto */
 }
 
 /* ============================================
@@ -349,7 +350,7 @@ body {
     width: 100%;
 }
 
-.sidebar.collapsed ~ .main-content {
+.sidebar.collapsed~.main-content {
     margin-left: var(--sidebar-collapsed-width);
 }
 
@@ -430,12 +431,12 @@ body {
     .global-search-wrapper {
         max-width: 100%;
     }
-    
+
     .global-search-input {
         font-size: 14px;
         height: 44px;
     }
-    
+
     .global-search-input::placeholder {
         font-size: 14px;
     }
@@ -446,12 +447,12 @@ body {
         font-size: 16px;
         left: 14px;
     }
-    
+
     .global-search-input {
         padding-left: 42px;
         font-size: 14px;
     }
-    
+
     .global-search-input::placeholder {
         font-size: 14px;
     }
@@ -480,7 +481,7 @@ body {
     padding: 0.25rem 0 0.5rem 0;
 }
 
-.search-section + .search-section {
+.search-section+.search-section {
     border-top: 1px solid var(--gray-100);
     margin-top: 0.5rem;
     padding-top: 0.75rem;
@@ -501,7 +502,7 @@ body {
     padding: 0;
 }
 
-.search-result-item + .search-result-item {
+.search-result-item+.search-result-item {
     border-top: 1px solid var(--gray-100);
 }
 
@@ -535,6 +536,7 @@ body {
     color: var(--gray-500);
     padding: 0.75rem 1rem;
 }
+
 /* Fin Buscador Global */
 
 .topbar-title {
@@ -606,11 +608,11 @@ body {
 }
 
 /* Asegurar que los elementos del topbar no se desborden */
-.topbar-right > * {
+.topbar-right>* {
     flex-shrink: 0;
 }
 
-.topbar-actions > * {
+.topbar-actions>* {
     flex-shrink: 0;
 }
 
@@ -619,21 +621,22 @@ body {
     .topbar-right {
         gap: 8px;
     }
-    
+
     .topbar-actions {
         gap: 10px;
     }
-    
+
     .language-select {
-        min-width: 80px;
-        padding: 4px 8px;
+        min-width: 64px;
+        padding: 4px 24px 4px 8px;
         font-size: 12px;
+        background-position: right 6px center;
     }
-    
+
     .user-dropdown-btn span {
         display: none !important;
     }
-    
+
     .topbar-cart-btn,
     .fenix-cart-minimal {
         width: 36px;
@@ -641,7 +644,7 @@ body {
         min-width: 36px;
         min-height: 36px;
     }
-    
+
     .topbar-cart-icon {
         font-size: 18px;
     }
@@ -734,22 +737,23 @@ body {
 }
 
 .language-select {
-    padding: 6px 12px;
+    padding: 6px 28px 6px 10px;
     border: 1px solid var(--gray-300);
     border-radius: var(--radius);
     background: white;
     font-size: 14px;
     cursor: pointer;
     color: var(--gray-700);
-    min-width: 100px;
+    min-width: 68px;
     height: 36px;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 8px center;
-    padding-right: 32px;
+    background-position: right 10px center;
+    background-size: 10px;
+    transition: all var(--transition);
 }
 
 .language-select:focus {
@@ -1124,15 +1128,37 @@ body {
     color: var(--primary-600);
 }
 
-.mt-1 { margin-top: 8px; }
-.mt-2 { margin-top: 16px; }
-.mt-3 { margin-top: 24px; }
-.mt-4 { margin-top: 32px; }
+.mt-1 {
+    margin-top: 8px;
+}
 
-.mb-1 { margin-bottom: 8px; }
-.mb-2 { margin-bottom: 16px; }
-.mb-3 { margin-bottom: 24px; }
-.mb-4 { margin-bottom: 32px; }
+.mt-2 {
+    margin-top: 16px;
+}
+
+.mt-3 {
+    margin-top: 24px;
+}
+
+.mt-4 {
+    margin-top: 32px;
+}
+
+.mb-1 {
+    margin-bottom: 8px;
+}
+
+.mb-2 {
+    margin-bottom: 16px;
+}
+
+.mb-3 {
+    margin-bottom: 24px;
+}
+
+.mb-4 {
+    margin-bottom: 32px;
+}
 
 /* Sidebar Backdrop */
 .sidebar-backdrop {
@@ -1159,7 +1185,8 @@ body {
     font-size: 24px;
     cursor: pointer;
     padding: 8px;
-    margin-right: 8px; /* Separar del buscador */
+    margin-right: 8px;
+    /* Separar del buscador */
     border-radius: var(--radius);
     transition: all var(--transition);
     align-items: center;
@@ -1183,23 +1210,25 @@ body.sidebar-open {
 /* Responsive */
 @media (max-width: 768px) {
     .mobile-menu-btn {
-        display: flex; /* solo visible en móvil */
+        display: flex;
+        /* solo visible en móvil */
     }
 
     .sidebar {
         transform: translateX(-100%);
-        z-index: 999; /* Por encima del backdrop */
+        z-index: 999;
+        /* Por encima del backdrop */
     }
-    
+
     .sidebar.mobile-open {
         transform: translateX(0);
         box-shadow: var(--shadow-xl);
     }
-    
+
     .main-content {
         margin-left: 0;
     }
-    
+
     .content-wrapper {
         padding: 16px;
     }

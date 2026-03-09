@@ -1,0 +1,156 @@
+/* ============================================
+   FENIX - Public Navbar (Mobile-First Responsive)
+   ============================================ */
+
+.navbar-public {
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+    min-height: 80px;
+    padding: 12px var(--content-padding);
+    box-shadow: var(--shadow-md);
+    width: 100%;
+    position: relative;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-public__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+    /* Permite 2 filas en mobile */
+    gap: 12px;
+}
+
+.navbar-public__logo-section {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-public__logo-link {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-public__logo-img {
+    height: 80px;
+    /* Tamaño reducido en mobile */
+    width: auto;
+    max-width: 180px;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+    transition: height 0.3s ease;
+}
+
+.navbar-public__actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+}
+
+.navbar-public__language {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-public__lang-select {
+    padding: 6px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 13px;
+    cursor: pointer;
+    color: white;
+    outline: none;
+}
+
+.navbar-public__lang-select option {
+    color: var(--gray-900);
+}
+
+.navbar-public__auth {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Auth buttons adjustment */
+.navbar-public__auth .btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.navbar-public__auth .btn-outline {
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* RESPONSIVE BREAKPOINTS */
+
+/* Mobile específico (< 576px) */
+@media (max-width: 575px) {
+    .navbar-public {
+        padding: 10px 16px;
+    }
+
+    .navbar-public__container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .navbar-public__logo-section {
+        justify-content: center;
+    }
+
+    .navbar-public__logo-img {
+        height: 60px;
+    }
+
+    .navbar-public__actions {
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+        gap: 8px;
+    }
+
+    .navbar-public__auth {
+        flex: 1;
+        justify-content: flex-end;
+        gap: 6px;
+    }
+
+    .navbar-public__auth .btn {
+        flex: 1;
+        text-align: center;
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+}
+
+/* Tablet y Small Desktop (>= 576px and < 992px) */
+@media (min-width: 576px) and (max-width: 991px) {
+    .navbar-public__logo-img {
+        height: 100px;
+    }
+}
+
+/* Desktop (>= 992px) */
+@media (min-width: 992px) {
+    .navbar-public {
+        height: 80px;
+    }
+
+    .navbar-public__logo-img {
+        height: 120px;
+    }
+
+    .navbar-public__container {
+        flex-wrap: nowrap;
+    }
+}

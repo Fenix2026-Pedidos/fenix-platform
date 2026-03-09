@@ -1,0 +1,46 @@
+{% load i18n static %}
+<!-- Public navbar for non-authenticated users -->
+<nav class="navbar-public">
+    <div class="navbar-public__container">
+        <!-- Logo Section -->
+        <div class="navbar-public__logo-section">
+            <a href="/" class="navbar-public__logo-link">
+                <img src="{% static 'img/logo sin fondo.png' %}" alt="Logo Fenix" class="navbar-public__logo-img">
+            </a>
+        </div>
+
+        <!-- Actions Section -->
+        <div class="navbar-public__actions">
+            <!-- Language Selector -->
+            <div class="navbar-public__language">
+                <form action="{% url 'set_language' %}" method="post" class="navbar-public__lang-form">
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                    {% get_current_language as CURRENT_LANGUAGE %}
+                    {% get_available_languages as LANGUAGES_LIST %}
+                    <select name="language" onchange="this.form.submit()" class="navbar-public__lang-select">
+                        {% for lang_code, lang_name in LANGUAGES_LIST %}
+                            {% if lang_code != 'en' %}
+                            <option value="{{ lang_code }}" {% if lang_code == CURRENT_LANGUAGE %}selected{% endif %}>
+                                {% if lang_code == 'es' %}ES
+                                {% elif lang_code == 'zh-hans' %}ZH
+                                {% else %}{{ lang_code|upper }}{% endif %}
+                            </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+
+            <!-- Auth Buttons -->
+            <div class="navbar-public__auth">
+                <a href="{% url 'accounts:login' %}" class="btn btn-outline btn-login">
+                    {% trans "Iniciar Sesión" %}
+                </a>
+                <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-register">
+                    {% trans "Registrarse" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
