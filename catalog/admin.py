@@ -3,7 +3,31 @@ from django.utils.html import format_html, mark_safe
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 import logging
-from .models import Product
+from .models import Product, PromotionalProduct
+
+@admin.register(PromotionalProduct)
+class PromotionalProductAdmin(admin.ModelAdmin):
+    list_display = ('promo_title', 'product', 'promo_label', 'display_order', 'is_active', 'start_date', 'end_date')
+    list_filter = ('is_active', 'promo_label', 'start_date', 'end_date')
+    search_fields = ('promo_title', 'product__name_es')
+    autocomplete_fields = ['product']  # Hace que el desplegable sea un buscador
+    ordering = ('display_order', '-created_at')
+    readonly_fields = ('image_preview',)
+    
+    fieldsets = (
+        (None, {
+            'fields': ('product', 'promo_title', 'promo_image', 'image_preview', 'promo_label', 'promo_type')
+        }),
+        (_('Configuración de visualización'), {
+            'fields': ('display_order', 'is_active', 'start_date', 'end_date')
+        }),
+    )
+
+    def image_preview(self, obj):
+        if obj.promo_image:
+            return mark_safe(f'<img src="{obj.promo_image.url}" style="max-height: 200px; border-radius: 8px;" />')
+        return _("No hay imagen")
+    image_preview.short_description = _("Vista previa de la imagen")
 from .utils import translate_product_fields
 
 logger = logging.getLogger(__name__)

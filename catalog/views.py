@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator
 from core.models import PlatformSettings
-from .models import Product
+from .models import Product, PromotionalProduct
 from .forms import ProductForm, StockUpdateForm
 from accounts.utils import is_manager_or_admin
 
@@ -46,6 +46,9 @@ def product_list(request):
     """Lista de productos del catálogo"""
     products = Product.objects.filter(is_active=True)
     
+    # Obtener productos promocionales activos (máximo 8)
+    featured_products = PromotionalProduct.objects.filter(is_active=True).order_by('display_order', '-created_at')[:8]
+    
     # Búsqueda
     search_query = request.GET.get('q', '').strip()
     if search_query:
@@ -84,7 +87,7 @@ def product_list(request):
     # Tamaño de página
     try:
         page_size = int(request.GET.get('page_size', 12))
-        if page_size not in [12, 24, 48]:
+        if page_size not in [12, 24, 48, 999]:
             page_size = 12
     except ValueError:
         page_size = 12
@@ -112,6 +115,7 @@ def product_list(request):
         'page_size': page_size,
         'lang': lang,
         'cart': cart,  # Pasar carrito como dict, json_script lo convertirá
+        'featured_products': featured_products,
     }
     return render(request, 'catalog/product_list.html', context)
 

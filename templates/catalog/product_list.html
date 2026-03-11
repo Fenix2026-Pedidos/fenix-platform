@@ -46,6 +46,32 @@
         box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
         transform: scale(1.02);
     }
+    /* Estilos para el botón de mover al principio en modo ordenación */
+    .btn-move-top {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 100;
+        background: white;
+        border: none;
+        color: #007bff;
+        font-size: 24px;
+        padding: 0;
+        line-height: 1;
+        cursor: pointer;
+        transition: transform 0.2s, color 0.2s;
+        border-radius: 50%;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .btn-move-top:hover {
+        color: #0056b3;
+        transform: scale(1.1);
+    }
+    .moving-to-top {
+        transition: all 0.3s ease;
+        opacity: 0.5;
+        transform: scale(0.8);
+    }
 </style>
 {% endblock %}
 
@@ -55,7 +81,7 @@
 
 <div class="catalog-page" data-authenticated="{{ request.user.is_authenticated|yesno:'true,false' }}">
     {% if not request.user.is_authenticated %}
-    {% include 'components/hero_public.html' with featured_products=products|slice:":3" %}
+    {% include 'components/hero_public.html' with featured_products=featured_products|slice:":4" %}
     {% endif %}
 
     <section class="catalog-shell" aria-labelledby="catalogSectionTitle">
@@ -98,6 +124,7 @@
             <option value="12" {% if page_size == 12 %}selected{% endif %}>12</option>
             <option value="24" {% if page_size == 24 %}selected{% endif %}>24</option>
             <option value="48" {% if page_size == 48 %}selected{% endif %}>48</option>
+            <option value="999" {% if page_size == 999 %}selected{% endif %}>{% trans "Todos" %}</option>
         </select>
 
         <div class="m-count-badge">
@@ -363,6 +390,10 @@
                         <i class="bi bi-list"></i>
                     </div>
 
+                    <button type="button" class="btn-move-top d-none" data-product-id="{{ product.pk }}" title="{% trans 'Mover al principio' %}">
+                        <i class="bi bi-arrow-up-circle-fill"></i>
+                    </button>
+
                     <!-- 1. Top Row: Precio/Unidad (Izq) + Badge (Der) -->
                     <div class="card-top-row">
                         <div class="card-price-container">
@@ -478,6 +509,7 @@
                             <option value="12" {% if page_size == 12 %}selected{% endif %}>12</option>
                             <option value="24" {% if page_size == 24 %}selected{% endif %}>24</option>
                             <option value="48" {% if page_size == 48 %}selected{% endif %}>48</option>
+                            <option value="999" {% if page_size == 999 %}selected{% endif %}>{% trans "Todos" %}</option>
                         </select>
                     </form>
                 </div>
@@ -702,6 +734,9 @@
                     toggleBtn.classList.replace('btn-outline-primary', 'btn-danger');
                     saveBtn.classList.remove('d-none');
                     
+                    // Mostrar botones de "Mover al principio"
+                    grid.querySelectorAll('.btn-move-top').forEach(btn => btn.classList.remove('d-none'));
+
                     sortableInstance = new Sortable(grid, {
                         animation: 150,
                         handle: '.drag-handle',
@@ -711,6 +746,23 @@
                             console.log('Nuevo orden establecido visualmente');
                         }
                     });
+
+                    // Lógica para el botón "Mover al principio"
+                    grid.addEventListener('click', function(e) {
+                        const moveBtn = e.target.closest('.btn-move-top');
+                        if (moveBtn) {
+                            const card = moveBtn.closest('.product-card');
+                            if (card && grid.firstChild !== card) {
+                                card.classList.add('moving-to-top');
+                                setTimeout(() => {
+                                    grid.prepend(card);
+                                    card.classList.remove('moving-to-top');
+                                    // Hacer scroll al principio suavemente
+                                    window.scrollTo({ top: grid.offsetTop - 100, behavior: 'smooth' });
+                                }, 300);
+                            }
+                        }
+                    });
                 } catch (e) {
                     console.error('Error al cargar SortableJS:', e);
                 }
@@ -718,6 +770,7 @@
                 // Desactivar modo ordenación
                 isOrdering = false;
                 catalogPage.classList.remove('ordering-mode');
+                grid.querySelectorAll('.btn-move-top').forEach(btn => btn.classList.add('d-none'));
                 toggleBtn.querySelector('.btn-text').textContent = "{% trans 'Ordenar catálogo' %}";
                 toggleBtn.classList.replace('btn-danger', 'btn-outline-primary');
                 saveBtn.classList.add('d-none');

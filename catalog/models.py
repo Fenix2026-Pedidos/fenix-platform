@@ -122,3 +122,75 @@ class Product(models.Model):
 
     def __str__(self) -> str:
         return f'{self.name_es} / {self.name_zh_hans}'
+
+class PromotionalProduct(models.Model):
+    PROMO_LABELS = [
+        ('oferta_semana', _('Oferta de la semana')),
+        ('pack', _('Pack')),
+        ('mas_vendido', _('Más vendido')),
+        ('estrella', _('Producto estrella')),
+        ('novedad', _('Novedad')),
+        ('oferta_flash', _('Oferta flash')),
+        ('super_oferta', _('Super oferta')),
+        ('limitada', _('Edición limitada')),
+        ('navidad', _('Especial Navidad')),
+        ('verano', _('Especial verano')),
+        ('barbacoa', _('Ideal para barbacoas')),
+        ('recomendado', _('Producto recomendado')),
+        ('mejor_precio', _('Mejor precio')),
+    ]
+
+    product = models.ForeignKey(
+        Product, 
+        on_delete=models.CASCADE, 
+        related_name='promotions',
+        verbose_name=_('Producto')
+    )
+    promo_title = models.CharField(max_length=200, verbose_name=_('Título promocional'))
+    promo_image = models.ImageField(
+        upload_to='promotions/', 
+        verbose_name=_('Imagen promocional'),
+        help_text=_('Imagen que aparecerá en el hero de la Home')
+    )
+    promo_label = models.CharField(
+        max_length=50, 
+        choices=PROMO_LABELS, 
+        blank=True, 
+        null=True,
+        verbose_name=_('Etiqueta promocional')
+    )
+    promo_type = models.CharField(
+        max_length=50, 
+        blank=True, 
+        null=True, 
+        verbose_name=_('Tipo de promoción')
+    )
+    display_order = models.IntegerField(default=0, verbose_name=_('Orden de visualización'))
+    start_date = models.DateField(blank=True, null=True, verbose_name=_('Fecha inicio'))
+    end_date = models.DateField(blank=True, null=True, verbose_name=_('Fecha fin'))
+    is_active = models.BooleanField(default=True, verbose_name=_('Activo'))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Fecha creación'))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Fecha actualización'))
+
+    class Meta:
+        verbose_name = _('Producto Promocional')
+        verbose_name_plural = _('Productos Promocionales')
+        ordering = ['display_order', '-created_at']
+
+    def __str__(self):
+        return f"{self.promo_title} ({self.product.name_es})"
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        # Validar límite de 8 productos activos
+        if self.is_active:
+            active_count = PromotionalProduct.objects.filter(is_active=True)
+            if self.pk:
+                active_count = active_count.exclude(pk=self.pk)
+            
+            if active_count.count() >= 8:
+                raise ValidationError(_('No puedes tener más de 8 productos promocionales activos simultáneamente.'))
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
