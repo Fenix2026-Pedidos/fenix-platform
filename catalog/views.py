@@ -78,7 +78,8 @@ def product_list(request):
     elif sort_by == 'name_desc':
         products = products.order_by('-name_es')
     else:
-        products = products.order_by('-created_at')
+        # Default sorting: manual order first, then newest
+        products = products.order_by('catalog_order', '-created_at')
         
     # Tamaño de página
     try:
@@ -282,3 +283,28 @@ def product_stock_update(request, pk):
     }
     return render(request, 'catalog/product_stock_update.html', context)
 
+
+@login_required
+def update_catalog_order(request):
+    """Actualiza el orden de los productos en el catálogo (AJAX)"""
+    if not is_manager_or_admin(request.user):
+        from django.http import JsonResponse
+        return JsonResponse({'status': 'error', 'message': _('Permiso denegado')}, status=403)
+    
+    if request.method == 'POST':
+        import json
+        from django.http import JsonResponse
+        try:
+            data = json.loads(request.body)
+            ordered_ids = data.get('ordered_ids', [])
+            
+            # Actualización masiva eficiente
+            for index, product_id in enumerate(ordered_ids):
+                Product.objects.filter(id=product_id).update(catalog_order=index + 1)
+            
+            return JsonResponse({'status': 'success'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    
+    from django.http import JsonResponse
+    return JsonResponse({'status': 'error', 'message': _('Método no permitido')}, status=405)

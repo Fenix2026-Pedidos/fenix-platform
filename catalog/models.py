@@ -44,12 +44,13 @@ class Product(models.Model):
     is_new = models.BooleanField(default=False, verbose_name=_('Es Nuevo'))
     is_best_seller = models.BooleanField(default=False, verbose_name=_('Más Vendido'))
     is_offer = models.BooleanField(default=False, verbose_name=_('En Oferta'))
+    catalog_order = models.PositiveIntegerField(default=0, verbose_name=_('Orden en catálogo'))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Fecha Creación'))
 
     class Meta:
         verbose_name = _('Producto')
         verbose_name_plural = _('Productos')
-        ordering = ['name_es']
+        ordering = ['catalog_order', 'name_es']
 
     def update_stock_status(self) -> None:
         if self.stock_available <= 0:

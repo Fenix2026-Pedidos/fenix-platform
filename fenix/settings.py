@@ -46,7 +46,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-3v^@+j7ha%j%)+b(6ad%s@@!eh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'true').lower() in ('1', 'true', 'yes')
 
-_allowed_hosts = os.getenv('ALLOWED_HOSTS', 'fenix-platform.onrender.com,127.0.0.1,localhost,fenixdelamancha.es,www.fenixdelamancha.es').split(',')
+_allowed_hosts = os.getenv('ALLOWED_HOSTS', 'fenix-platform.onrender.com,127.0.0.1,localhost,fenixdelamancha.es,www.fenixdelamancha.es,project-8ec7876a-62b7-4e0b-82d.appspot.com,project-8ec7876a-62b7-4e0b-82d.ew.r.appspot.com').split(',')
 ALLOWED_HOSTS = [h.strip() for h in _allowed_hosts if h.strip()]
 
 
@@ -270,6 +270,8 @@ if not DEBUG:
             "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
         },
     }
+    # Whitenoise: No fallar si falta algo en el manifiesto (evita errores 500 críticos por iconos/favicons)
+    WHITENOISE_MANIFEST_STRICT = False
 else:
     STORAGES = {
         "default": {
@@ -280,4 +282,17 @@ else:
         },
     }
 
-# Mantén la configuración anterior como referencia en .env para evitar sobreescrituras involuntarias
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+}
+

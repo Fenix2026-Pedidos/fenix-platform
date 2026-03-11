@@ -5,7 +5,48 @@
 {% block title %}{% trans "Catálogo de Productos" %} - Fenix{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/catalog.css' %}?v=3">
+<link rel="stylesheet" href="{% static 'css/catalog_v3.css' %}">
+<style>
+    /* Estilos para el modo de ordenación */
+    .catalog-page.ordering-mode .product-card {
+        cursor: move;
+        border: 2px dashed var(--primary-300);
+        position: relative;
+    }
+    .catalog-page.ordering-mode .product-card:hover {
+        border-color: var(--primary-600);
+        background: var(--primary-50);
+    }
+    .catalog-page.ordering-mode .card-actions-block {
+        pointer-events: none;
+        opacity: 0.5;
+    }
+    .drag-handle {
+        display: none;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: var(--primary-600);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        cursor: grab;
+        z-index: 10;
+        font-size: 18px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .catalog-page.ordering-mode .drag-handle {
+        display: block;
+    }
+    .sortable-ghost {
+        opacity: 0.4;
+        background: var(--primary-100) !important;
+    }
+    .sortable-chosen {
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        transform: scale(1.02);
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -257,6 +298,19 @@
                     </div>
                 </div>
 
+                {% if user.is_staff or user.is_superuser %}
+                <div class="catalog-toolbar__center d-none d-md-block">
+                    <button type="button" id="toggleSortMode" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-arrow-down-up"></i>
+                        <span class="btn-text">{% trans "Ordenar catálogo" %}</span>
+                    </button>
+                    <button type="button" id="saveSortOrder" class="btn btn-success btn-sm d-none">
+                        <i class="bi bi-check-lg"></i>
+                        {% trans "Guardar orden" %}
+                    </button>
+                </div>
+                {% endif %}
+
                 <form method="get" class="catalog-sort" id="sortForm">
                     {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
                     {% if page_size %}<input type="hidden" name="page_size" value="{{ page_size }}">{% endif %}
@@ -304,6 +358,10 @@
                     data-category="{{ product|product_category }}"
                     data-product-type="{{ product|product_type }}"
                     data-product-features="{{ product|product_features }}">
+
+                    <div class="drag-handle">
+                        <i class="bi bi-list"></i>
+                    </div>
 
                     <!-- 1. Top Row: Precio/Unidad (Izq) + Badge (Der) -->
                     <div class="card-top-row">
@@ -608,5 +666,102 @@
             };
         })();
     });
+
+    // Lógica de Ordenación Manual (Drag & Drop)
+    {% if user.is_staff or user.is_superuser %}
+    (function() {
+        let sortableInstance = null;
+        const toggleBtn = document.getElementById('toggleSortMode');
+        const saveBtn = document.getElementById('saveSortOrder');
+        const grid = document.getElementById('productsGrid');
+        const catalogPage = document.querySelector('.catalog-page');
+        let isOrdering = false;
+
+        if (!toggleBtn || !grid) return;
+
+        // Cargar SortableJS dinámicamente si no existe
+        function loadSortable() {
+            return new Promise((resolve, reject) => {
+                if (window.Sortable) return resolve();
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js';
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        toggleBtn.addEventListener('click', async function() {
+            if (!isOrdering) {
+                // Activar modo ordenación
+                try {
+                    await loadSortable();
+                    isOrdering = true;
+                    catalogPage.classList.add('ordering-mode');
+                    toggleBtn.querySelector('.btn-text').textContent = "{% trans 'Cancelar ordenación' %}";
+                    toggleBtn.classList.replace('btn-outline-primary', 'btn-danger');
+                    saveBtn.classList.remove('d-none');
+                    
+                    sortableInstance = new Sortable(grid, {
+                        animation: 150,
+                        handle: '.drag-handle',
+                        ghostClass: 'sortable-ghost',
+                        chosenClass: 'sortable-chosen',
+                        onEnd: function() {
+                            console.log('Nuevo orden establecido visualmente');
+                        }
+                    });
+                } catch (e) {
+                    console.error('Error al cargar SortableJS:', e);
+                }
+            } else {
+                // Desactivar modo ordenación
+                isOrdering = false;
+                catalogPage.classList.remove('ordering-mode');
+                toggleBtn.querySelector('.btn-text').textContent = "{% trans 'Ordenar catálogo' %}";
+                toggleBtn.classList.replace('btn-danger', 'btn-outline-primary');
+                saveBtn.classList.add('d-none');
+                if (sortableInstance) {
+                    sortableInstance.destroy();
+                    sortableInstance = null;
+                }
+                // Si cancela, recargamos para evitar confusiones si movió algo sin guardar
+                window.location.reload();
+            }
+        });
+
+        saveBtn.addEventListener('click', function() {
+            const productIds = Array.from(grid.querySelectorAll('.product-card')).map(card => card.dataset.productId);
+            
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> {% trans "Guardando..." %}';
+
+            fetch("{% url 'catalog:update_catalog_order' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({ ordered_ids: productIds })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = '<i class="bi bi-check-lg"></i> {% trans "Guardar orden" %}';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('{% trans "Error al guardar el orden. Inténtalo de nuevo." %}');
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="bi bi-check-lg"></i> {% trans "Guardar orden" %}';
+            });
+        });
+    })();
+    {% endif %}
 </script>
 {% endblock %}
