@@ -24,10 +24,11 @@ def product_category(product):
     haystack = f"{source} {description}".strip()
 
     mappings = (
-        ('packs', ('pack', 'combo', 'lote', 'surtido', 'ahorro', 'sandwich')),
-        ('jamon-curado', ('curado', 'serrano', 'bodega', 'reserva', 'gran reserva', 'iberico', 'chorizo', 'salchichon', 'lomo')),
-        ('jamon-cocido', ('cocido', 'york', 'dulce', 'extra')),
-        ('pavo', ('pavo', 'turkey', 'pechuga', 'pollo', 'chicken')),
+        ('sandwich', ('sandwich', 'sandwitch', 'emparedado', 'maxi')),
+        ('salchichas', ('salchicha', 'frankfurt', 'viena', 'hot dog', 'fuet')),
+        ('pizzas', ('pizza', 'masa')),
+        ('jamon', ('jamon', 'jamón', 'serrano', 'cocido', 'york', 'bodega', 'iberico', 'chorizo', 'salchichon', 'lomo')),
+        ('pavo', ('pavo', 'pechuga', 'pollo', 'turkey', 'chicken')),
     )
 
     for slug, keywords in mappings:
@@ -35,6 +36,35 @@ def product_category(product):
             return slug
 
     return 'todos'
+
+
+@register.filter
+def product_category_slugs(product):
+    """Devuelve todos los slugs de categorías aplicables como string separado por comas."""
+    if product is None:
+        return 'todos'
+
+    source = (getattr(product, 'name_es', '') or getattr(product, 'name_zh_hans', '')).lower()
+    description = (getattr(product, 'description_es', '') or getattr(product, 'description_zh_hans', '')).lower()
+    haystack = f"{source} {description}".strip()
+
+    mappings = (
+        ('sandwich', ('sandwich', 'sandwitch', 'emparedado', 'maxi')),
+        ('salchichas', ('salchicha', 'frankfurt', 'viena', 'hot dog', 'fuet')),
+        ('pizzas', ('pizza', 'masa')),
+        ('jamon', ('jamon', 'jamón', 'serrano', 'cocido', 'york', 'bodega', 'iberico', 'chorizo', 'salchichon', 'lomo')),
+        ('pavo', ('pavo', 'pechuga', 'pollo', 'turkey', 'chicken')),
+    )
+
+    found = []
+    for slug, keywords in mappings:
+        if any(keyword in haystack for keyword in keywords):
+            found.append(slug)
+
+    if not found:
+        return 'todos'
+
+    return ','.join(found)
 @register.filter
 def product_type(product):
     """Deriva el tipo de producto para los filtros laterales."""

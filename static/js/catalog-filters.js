@@ -75,13 +75,23 @@ const CatalogFilters = {
                 savedType = typeFromUrl || localStorage.getItem(this.STORAGE_TYPE_KEY) || 'todos';
             }
             
+            // Validar si el tipo es una categoría o tipo conocido. 
+            // Si es un término de búsqueda (ej: de un Hero link mal configurado), lo ignoramos como tipo.
+            const knownTypes = [
+                'todos', 'sandwich', 'salchichas', 'pizzas', 'jamon', 'pavo'
+            ];
+            
+            if (savedType && !knownTypes.includes(savedType)) {
+                console.warn('[CatalogFilters] Tipo no reconocido:', savedType);
+                savedType = 'todos';
+            }
+            
             if (savedType) {
                 this.activeType = savedType;
                 // Marcar radio button correspondiente
                 const radio = document.querySelector(`.filter-type-radio[data-type="${savedType}"]`);
-                if (radio) {
-                    radio.checked = true;
-                }
+                if (radio) radio.checked = true;
+                
                 // Marcar tab correspondiente
                 const tab = document.querySelector(`[data-category-tab="${savedType}"]`);
                 if (tab) {
@@ -93,7 +103,7 @@ const CatalogFilters = {
             // Cargar término de búsqueda desde URL
             if (queryFromUrl) {
                 this.searchQuery = this.normalizeText(queryFromUrl);
-                const searchInput = document.getElementById(this.SEARCH_INPUT_ID);
+                const searchInput = document.getElementById('searchInput'); // ID corregido
                 if (searchInput) {
                     searchInput.value = queryFromUrl;
                 }
@@ -267,7 +277,7 @@ const CatalogFilters = {
             // Búsqueda en tiempo real (solo UI)
             searchInput.addEventListener('input', (e) => {
                 const val = e.target.value;
-                this.searchQuery = val.toLowerCase().trim();
+                this.searchQuery = this.normalizeText(val);
 
                 // Actualizar la URL sin recargar la página para mantener sincronización
                 const url = new URL(window.location);
@@ -364,6 +374,13 @@ const CatalogFilters = {
     },
 
     /**
+     * Normaliza un texto para búsqueda (minúsculas, sin acentos)
+     */
+    normalizeText: function (text) {
+        return text ? text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : "";
+    },
+
+    /**
      * Aplica los filtros activos al grid de productos
      */
     applyFilters: function () {
@@ -426,8 +443,12 @@ const CatalogFilters = {
                 const productName = card.querySelector('.card-product-name');
                 if (productName) {
                     const nameText = this.normalizeText(productName.textContent);
-                    const searchWords = this.normalizeText(this.searchQuery).split(' ').filter(w => w.length > 0);
+                    const searchWords = this.searchQuery.split(' ').filter(w => w.length > 0);
+                    
+                    // Lógica de coincidencia: El nombre debe contener AL MENOS UNA de las palabras buscadas (OR)
+                    // Esto permite "búsqueda por género" (ej: "Chorizo selecto" encuentra cualquier "Chorizo")
                     const matchesAny = searchWords.some(word => nameText.includes(word));
+                    
                     if (!matchesAny) {
                         shouldShow = false;
                     }

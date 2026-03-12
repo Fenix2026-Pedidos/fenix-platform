@@ -15,6 +15,14 @@ class Product(models.Model):
 
     name_es = models.CharField(max_length=200, verbose_name=_('Nombre (ES)'))
     name_zh_hans = models.CharField(max_length=200, verbose_name=_('Nombre (中文)'))
+    reference = models.CharField(
+        max_length=50, 
+        blank=True, 
+        null=True, 
+        unique=True, 
+        verbose_name=_('Referencia'),
+        help_text=_('Código único del producto (SKU)')
+    )
     description_es = models.TextField(blank=True, verbose_name=_('Descripción (ES)'))
     description_zh_hans = models.TextField(blank=True, verbose_name=_('Descripción (中文)'))
     image = models.ImageField(

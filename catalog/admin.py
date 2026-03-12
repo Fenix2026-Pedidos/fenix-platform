@@ -36,14 +36,14 @@ logger = logging.getLogger(__name__)
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
-        'id', 'name_es', 'name_zh_hans', 'price', 'unit_display', 'stock_available',
+        'id', 'reference', 'name_es', 'name_zh_hans', 'price', 'unit_display', 'stock_available',
         'is_new', 'is_best_seller', 'is_offer', 'is_active',
     )
     list_filter = ('is_new', 'is_best_seller', 'is_offer', 'stock_status', 'is_active')
-    search_fields = ('name_es', 'name_zh_hans')
+    search_fields = ('name_es', 'name_zh_hans', 'reference')
     readonly_fields = ('stock_status', 'created_at', 'image_preview', 'translate_button')
     fieldsets = (
-        (None, {'fields': ('name_es', 'name_zh_hans', 'description_es', 'description_zh_hans', 'translate_button', 'image', 'image_preview', 'price', 'unit_display', 'is_active')}),
+        (None, {'fields': ('reference', 'name_es', 'name_zh_hans', 'description_es', 'description_zh_hans', 'translate_button', 'image', 'image_preview', 'price', 'unit_display', 'is_active')}),
         ('Etiquetas Especiales', {'fields': ('is_new', 'is_best_seller', 'is_offer')}),
         ('Stock (solo managers)', {'fields': ('stock_available', 'stock_min_threshold', 'stock_status')}),
         ('Auditoría', {'fields': ('created_at',)}),

@@ -81,11 +81,11 @@
 }
 
 .public-hero__eyebrow {
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 18px; /* Aumentado de 14px */
+    font-weight: 700; /* Aumentado de 600 */
     color: var(--primary-600);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em; /* Ajustado de 0.08em para legibilidad */
     margin-bottom: 8px;
 }
 

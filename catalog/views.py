@@ -57,7 +57,8 @@ def product_list(request):
         words = search_query.split()
         for word in words:
             word_q = Q(name_es__icontains=word) | Q(name_zh_hans__icontains=word) | \
-                     Q(description_es__icontains=word) | Q(description_zh_hans__icontains=word)
+                     Q(description_es__icontains=word) | Q(description_zh_hans__icontains=word) | \
+                     Q(reference__icontains=word)
             
             # Reemplazos comunes de español
             if 'a' in word: word_q |= Q(name_es__icontains=word.replace('a', 'á'))
@@ -84,13 +85,13 @@ def product_list(request):
         # Default sorting: manual order first, then newest
         products = products.order_by('catalog_order', '-created_at')
         
-    # Tamaño de página
+    # Tamaño de página (Default 100 para permitir filtrado inteligente en el cliente sobre todo el catálogo)
     try:
-        page_size = int(request.GET.get('page_size', 12))
-        if page_size not in [12, 24, 48, 999]:
-            page_size = 12
+        page_size = int(request.GET.get('page_size', 100))
+        if page_size not in [12, 24, 48, 100, 999]:
+            page_size = 100
     except ValueError:
-        page_size = 12
+        page_size = 100
     
     paginator = Paginator(products, page_size)
     page_number = request.GET.get('page')
@@ -158,7 +159,8 @@ def product_manage_list(request):
     if search:
         products = products.filter(
             Q(name_es__icontains=search) |
-            Q(name_zh_hans__icontains=search)
+            Q(name_zh_hans__icontains=search) |
+            Q(reference__icontains=search)
         )
     
     context = {

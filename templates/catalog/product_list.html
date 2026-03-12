@@ -382,7 +382,7 @@
                 {% for product in products %}
                 <div class="product-card" data-product-id="{{ product.pk }}"
                     {% if show_prices %}data-product-price="{{ product.price|unlocalize }}"{% endif %}
-                    data-category="{{ product|product_category }}"
+                    data-category="{{ product|product_category_slugs }}"
                     data-product-type="{{ product|product_type }}"
                     data-product-features="{{ product|product_features }}">
 
@@ -429,7 +429,13 @@
 
                     <!-- 2. Referencia (debajo del precio) -->
                     <div class="card-ref-row">
-                        <span class="card-ref">{% trans "REF" %}: P{{ product.pk|stringformat:"05d" }}</span>
+                        <span class="card-ref">{% trans "REF" %}: 
+                            {% if product.reference %}
+                                {{ product.reference }}
+                            {% else %}
+                                P{{ product.pk|stringformat:"05d" }}
+                            {% endif %}
+                        </span>
                     </div>
 
                     <!-- 3. Imagen protagonista (Centrada en bloque) -->
@@ -455,7 +461,7 @@
                     </div>
 
                     <!-- Nombre del producto (Oculto visualmente pero presente para SEO/Accesibilidad) -->
-                    <h3 class="visually-hidden">
+                    <h3 class="visually-hidden card-product-name">
                         {{ product.translated_name }}
                     </h3>
 
