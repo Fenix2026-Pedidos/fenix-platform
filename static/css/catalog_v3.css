@@ -143,6 +143,13 @@
     transform: translateY(-5px);
 }
 
+/* En mobile solo mostramos 2 tarjetas promocionales */
+@media (max-width: 768px) {
+    .public-hero__cards .hero-product-card:nth-child(n+3) {
+        display: none !important;
+    }
+}
+
 .hero-product-card__badge {
     background-color: #FEF3C7;
     color: #92400E;
