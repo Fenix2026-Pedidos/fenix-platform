@@ -60,7 +60,7 @@
     background-repeat: no-repeat;
     border: none;
     border-radius: 16px;
-    padding: 48px clamp(24px, 4vw, 64px);
+    padding: 24px clamp(24px, 4vw, 64px) 72px clamp(24px, 4vw, 64px);
     box-shadow: var(--shadow-lg);
     overflow: hidden;
     position: relative;
