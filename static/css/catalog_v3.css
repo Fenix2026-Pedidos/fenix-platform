@@ -582,7 +582,7 @@
 @media (max-width: 767px) {
     .public-hero {
         border-radius: 24px;
-        padding: 24px 16px;
+        padding: 24px 16px 110px 16px; /* Padding inferior aumentado para evitar solapamiento con la barra verde */
     }
 
     .catalog-shell {
