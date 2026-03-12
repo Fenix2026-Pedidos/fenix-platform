@@ -24,8 +24,8 @@ def product_category(product):
     haystack = f"{source} {description}".strip()
 
     mappings = (
-        ('packs', ('pack', 'combo', 'lote', 'surtido', 'ahorro')),
-        ('jamon-curado', ('curado', 'serrano', 'bodega', 'reserva', 'gran reserva', 'iberico')),
+        ('packs', ('pack', 'combo', 'lote', 'surtido', 'ahorro', 'sandwich')),
+        ('jamon-curado', ('curado', 'serrano', 'bodega', 'reserva', 'gran reserva', 'iberico', 'chorizo', 'salchichon', 'lomo')),
         ('jamon-cocido', ('cocido', 'york', 'dulce', 'extra')),
         ('pavo', ('pavo', 'turkey', 'pechuga', 'pollo', 'chicken')),
     )

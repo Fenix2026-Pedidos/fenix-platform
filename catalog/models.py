@@ -165,6 +165,20 @@ class PromotionalProduct(models.Model):
         null=True, 
         verbose_name=_('Tipo de promoción')
     )
+    target_category = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name=_('Categoría de destino'),
+        help_text=_('Slug de la categoría en el catálogo (ej: jamon-curado, packs).')
+    )
+    target_query = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        verbose_name=_('Búsqueda específica'),
+        help_text=_('Término de búsqueda para filtrar el catálogo (ej: Chorizo, Pack 10 sandwiches).')
+    )
     display_order = models.IntegerField(default=0, verbose_name=_('Orden de visualización'))
     start_date = models.DateField(blank=True, null=True, verbose_name=_('Fecha inicio'))
     end_date = models.DateField(blank=True, null=True, verbose_name=_('Fecha fin'))

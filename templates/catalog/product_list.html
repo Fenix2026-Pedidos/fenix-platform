@@ -386,13 +386,17 @@
                     data-product-type="{{ product|product_type }}"
                     data-product-features="{{ product|product_features }}">
 
+                    {% if user.is_staff or user.is_superuser %}
                     <div class="drag-handle">
                         <i class="bi bi-list"></i>
                     </div>
+                    {% endif %}
 
+                    {% if user.is_staff or user.is_superuser %}
                     <button type="button" class="btn-move-top d-none" data-product-id="{{ product.pk }}" title="{% trans 'Mover al principio' %}">
                         <i class="bi bi-arrow-up-circle-fill"></i>
                     </button>
+                    {% endif %}
 
                     <!-- 1. Top Row: Precio/Unidad (Izq) + Badge (Der) -->
                     <div class="card-top-row">
@@ -643,38 +647,6 @@
             priceFull.outerHTML = '<span class="price-int">' + intPart + '</span><span class="price-dec">,' + decPart + '</span>';
         });
 
-        const tabsController = (function () {
-            const tabButtons = Array.from(document.querySelectorAll('[data-category-tab]'));
-            const cards = Array.from(document.querySelectorAll('.product-card'));
-
-            if (!tabButtons.length || !cards.length) {
-                return;
-            }
-
-            const setActiveTab = (slug) => {
-                tabButtons.forEach(btn => {
-                    const isActive = btn.getAttribute('data-category-tab') === slug;
-                    btn.classList.toggle('is-active', isActive);
-                    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
-                });
-            };
-
-            const filterCards = (slug) => {
-                cards.forEach(card => {
-                    const categories = (card.getAttribute('data-category') || 'todos').split(',');
-                    const matches = slug === 'todos' || categories.includes(slug);
-                    card.style.display = matches ? '' : 'none';
-                });
-            };
-
-            tabButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const slug = btn.getAttribute('data-category-tab');
-                    setActiveTab(slug);
-                    filterCards(slug);
-                });
-            });
-        })();
 
         const authModalController = (function () {
             const modal = document.getElementById('authRequiredModal');

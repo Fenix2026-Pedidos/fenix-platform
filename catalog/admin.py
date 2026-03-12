@@ -16,7 +16,7 @@ class PromotionalProductAdmin(admin.ModelAdmin):
     
     fieldsets = (
         (None, {
-            'fields': ('product', 'promo_title', 'promo_image', 'image_preview', 'promo_label', 'promo_type')
+            'fields': ('product', 'promo_title', 'promo_image', 'image_preview', 'promo_label', 'promo_type', 'target_category', 'target_query')
         }),
         (_('Configuración de visualización'), {
             'fields': ('display_order', 'is_active', 'start_date', 'end_date')

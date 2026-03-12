@@ -36,6 +36,26 @@ const CatalogFilters = {
 
         // Aplicar filtros iniciales
         this.applyFilters();
+
+        // Si venimos de un enlace del Hero (?q= o ?type=...), hacer scroll hasta el catálogo
+        const urlSearch = new URLSearchParams(window.location.search);
+        const hasUrlFilter = urlSearch.has('type') || urlSearch.has('q');
+        if (hasUrlFilter) {
+            const catalogShell = document.querySelector('.catalog-shell');
+            if (catalogShell) {
+                // Un pequeño delay extra para dar tiempo a que los productos se filtren/rendericen
+                setTimeout(() => {
+                    const headerOffset = 100; // Offset para que la cabecera no tape el catálogo
+                    const elementPosition = catalogShell.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }, 300);
+            }
+        }
     },
 
     /**
@@ -43,14 +63,39 @@ const CatalogFilters = {
      */
     loadFromStorage: function () {
         try {
-            // Cargar tipo de producto
-            const savedType = localStorage.getItem(this.STORAGE_TYPE_KEY);
+            const urlParams = new URLSearchParams(window.location.search);
+            const typeFromUrl = urlParams.get('type');
+            const queryFromUrl = urlParams.get('q');
+            
+            // Si hay un query en la URL pero no un tipo, forzamos 'todos' para que sea búsqueda global
+            let savedType;
+            if (queryFromUrl && !typeFromUrl) {
+                savedType = 'todos';
+            } else {
+                savedType = typeFromUrl || localStorage.getItem(this.STORAGE_TYPE_KEY) || 'todos';
+            }
+            
             if (savedType) {
                 this.activeType = savedType;
                 // Marcar radio button correspondiente
                 const radio = document.querySelector(`.filter-type-radio[data-type="${savedType}"]`);
                 if (radio) {
                     radio.checked = true;
+                }
+                // Marcar tab correspondiente
+                const tab = document.querySelector(`[data-category-tab="${savedType}"]`);
+                if (tab) {
+                    document.querySelectorAll('[data-category-tab]').forEach(t => t.classList.remove('is-active'));
+                    tab.classList.add('is-active');
+                }
+            }
+
+            // Cargar término de búsqueda desde URL
+            if (queryFromUrl) {
+                this.searchQuery = this.normalizeText(queryFromUrl);
+                const searchInput = document.getElementById(this.SEARCH_INPUT_ID);
+                if (searchInput) {
+                    searchInput.value = queryFromUrl;
                 }
             }
 
@@ -71,7 +116,7 @@ const CatalogFilters = {
                 });
             }
         } catch (e) {
-            console.warn('No se pudieron cargar los filtros desde localStorage:', e);
+            console.warn('Error al cargar filtros desde URL/Storage:', e);
         }
     },
 
@@ -216,24 +261,35 @@ const CatalogFilters = {
      */
     bindSearchEvents: function () {
         const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('q')) {
-                this.searchQuery = urlParams.get('q').toLowerCase().trim();
-            }
+        const searchForm = document.getElementById('searchForm');
 
-            // Búsqueda en tiempo real (opcional, solo UI)
+        if (searchInput) {
+            // Búsqueda en tiempo real (solo UI)
             searchInput.addEventListener('input', (e) => {
                 const val = e.target.value;
                 this.searchQuery = val.toLowerCase().trim();
 
-                // Si borran la búsqueda manualmente y hay query en backend, recargar para limpiar
-                if (val === '' && urlParams.has('q')) {
-                    window.location.href = window.location.pathname;
-                    return;
+                // Actualizar la URL sin recargar la página para mantener sincronización
+                const url = new URL(window.location);
+                if (this.searchQuery) {
+                    url.searchParams.set('q', val);
+                } else {
+                    url.searchParams.delete('q');
                 }
+                window.history.replaceState({}, '', url);
 
                 this.applyFilters();
+            });
+        }
+
+        if (searchForm) {
+            searchForm.addEventListener('submit', (e) => {
+                // Prevenir recarga de página si estamos en el catálogo
+                // Esto evita el salto al Hero/Top
+                if (window.location.pathname.includes('/catalog/')) {
+                    e.preventDefault();
+                    this.applyFilters();
+                }
             });
         }
     },
@@ -245,11 +301,15 @@ const CatalogFilters = {
         this.activeType = type === 'todos' || type === null ? 'todos' : type;
         this.saveToStorage();
 
-        // Evitar que el catálogo se quede bloqueado por un backend search residual
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('q')) {
-            window.location.href = window.location.pathname;
-            return;
+        // Limpiar parámetro 'q' de la URL si existe al cambiar de categoría
+        const url = new URL(window.location);
+        if (url.searchParams.has('q')) {
+            url.searchParams.delete('q');
+            window.history.replaceState({}, '', url);
+            // También limpiar el input visualmente
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) searchInput.value = '';
+            this.searchQuery = '';
         }
 
         this.applyFilters();
@@ -283,10 +343,21 @@ const CatalogFilters = {
             console.warn('No se pudieron limpiar los filtros de localStorage:', e);
         }
 
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('q')) {
-            window.location.href = window.location.pathname;
-            return;
+        this.activeType = 'todos';
+
+        // Limpiar URL sin recargar
+        const url = new URL(window.location);
+        if (url.searchParams.has('q') || url.searchParams.has('type')) {
+            url.searchParams.delete('q');
+            url.searchParams.delete('type');
+            window.history.replaceState({}, '', url);
+        }
+
+        // Limpiar input de búsqueda
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.value = '';
+            this.searchQuery = '';
         }
 
         this.applyFilters();
@@ -321,7 +392,11 @@ const CatalogFilters = {
             // Filtro por tipo de producto (Normalizar a minúsculas)
             if (hasActiveType) {
                 const cardType = (card.getAttribute('data-product-type') || '').toLowerCase();
-                if (cardType !== this.activeType.toLowerCase()) {
+                const cardCategory = (card.getAttribute('data-category') || 'todos').toLowerCase();
+                const target = this.activeType.toLowerCase();
+                
+                // Comprobar si coincide con el tipo O con la categoría (para soportar tabs del Hero)
+                if (cardType !== target && !cardCategory.split(',').includes(target)) {
                     shouldShow = false;
                 }
             }
@@ -344,12 +419,16 @@ const CatalogFilters = {
                 }
             }
 
-            // Filtro por búsqueda (solo UI, busca en el nombre)
+            // Filtro por búsqueda (solo UI)
+            // Usamos 'some' (al menos una palabra coincide) para permitir búsquedas por "género" 
+            // desde el Hero (ej: "Chorizo selecto" encontrará cualquier "Chorizo")
             if (hasSearchQuery && shouldShow) {
                 const productName = card.querySelector('.card-product-name');
                 if (productName) {
-                    const nameText = productName.textContent.toLowerCase();
-                    if (!nameText.includes(this.searchQuery)) {
+                    const nameText = this.normalizeText(productName.textContent);
+                    const searchWords = this.normalizeText(this.searchQuery).split(' ').filter(w => w.length > 0);
+                    const matchesAny = searchWords.some(word => nameText.includes(word));
+                    if (!matchesAny) {
                         shouldShow = false;
                     }
                 }

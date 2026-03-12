@@ -1,4 +1,4 @@
-{% load i18n static %}
+{% load i18n static catalog_extras %}
 <section class="public-hero" aria-labelledby="publicHeroTitle">
     <div class="public-hero__inner">
         <div class="public-hero__copy" style="display: flex; flex-direction: column; align-items: center;">
@@ -14,48 +14,56 @@
             <div class="public-hero__cards">
                 {% if featured_products %}
                     {% for promo in featured_products %}
-                    <article class="hero-product-card">
-                        {% if promo.promo_label %}
-                        <div class="hero-product-card__badge">{{ promo.get_promo_label_display }}</div>
-                        {% endif %}
-                        <div class="hero-product-card__image">
-                            {% if promo.promo_image %}
-                            <img src="{{ promo.promo_image.url }}" alt="{{ promo.promo_title }}" loading="lazy">
-                            {% else %}
-                            <img src="{% static 'img/placeholder.png' %}" alt="{{ promo.promo_title }}" loading="lazy">
+                    <a href="{% url 'catalog:product_list' %}?q={{ promo.target_query|default:promo.promo_title }}&type={{ promo.target_category|default:'todos' }}" class="hero-product-link">
+                        <article class="hero-product-card">
+                            {% if promo.promo_label %}
+                            <div class="hero-product-card__badge">{{ promo.get_promo_label_display }}</div>
                             {% endif %}
-                        </div>
-                        <div class="hero-product-card__info">
-                            <p class="hero-product-card__name">{{ promo.promo_title }}</p>
-                        </div>
-                    </article>
+                            <div class="hero-product-card__image">
+                                {% if promo.promo_image %}
+                                <img src="{{ promo.promo_image.url }}" alt="{{ promo.promo_title }}" loading="lazy">
+                                {% else %}
+                                <img src="{% static 'img/placeholder.png' %}" alt="{{ promo.promo_title }}" loading="lazy">
+                                {% endif %}
+                            </div>
+                            <div class="hero-product-card__info">
+                                <p class="hero-product-card__name">{{ promo.promo_title }}</p>
+                            </div>
+                        </article>
+                    </a>
                     {% endfor %}
                 {% else %}
                     <!-- Fallback: productos estáticos si no hay promociones configuradas -->
-                    <article class="hero-product-card">
-                        <div class="hero-product-card__image">
-                            <img src="{% static 'img/Salchichas.png' %}" alt="{% trans 'Frankfurt Salchichas' %}" loading="lazy">
-                        </div>
-                        <div class="hero-product-card__info">
-                            <p class="hero-product-card__name">{% trans "Frankfurt Salchichas" %}</p>
-                        </div>
-                    </article>
-                    <article class="hero-product-card">
-                        <div class="hero-product-card__image">
-                            <img src="{% static 'img/Jamon Curado.png' %}" alt="{% trans 'Jamón Curado' %}" loading="lazy">
-                        </div>
-                        <div class="hero-product-card__info">
-                            <p class="hero-product-card__name">{% trans "Jamón Curado" %}</p>
-                        </div>
-                    </article>
-                    <article class="hero-product-card">
-                        <div class="hero-product-card__image">
-                            <img src="{% static 'img/Jamon Cocido.png' %}" alt="{% trans 'Jamón Cocido' %}" loading="lazy">
-                        </div>
-                        <div class="hero-product-card__info">
-                            <p class="hero-product-card__name">{% trans "Jamón Cocido" %}</p>
-                        </div>
-                    </article>
+                    <a href="{% url 'catalog:product_list' %}?type=salchichas" class="hero-product-link">
+                        <article class="hero-product-card">
+                            <div class="hero-product-card__image">
+                                <img src="{% static 'img/Salchichas.png' %}" alt="{% trans 'Frankfurt Salchichas' %}" loading="lazy">
+                            </div>
+                            <div class="hero-product-card__info">
+                                <p class="hero-product-card__name">{% trans "Frankfurt Salchichas" %}</p>
+                            </div>
+                        </article>
+                    </a>
+                    <a href="{% url 'catalog:product_list' %}?type=jamon-curado" class="hero-product-link">
+                        <article class="hero-product-card">
+                            <div class="hero-product-card__image">
+                                <img src="{% static 'img/Jamon Curado.png' %}" alt="{% trans 'Jamón Curado' %}" loading="lazy">
+                            </div>
+                            <div class="hero-product-card__info">
+                                <p class="hero-product-card__name">{% trans "Jamón Curado" %}</p>
+                            </div>
+                        </article>
+                    </a>
+                    <a href="{% url 'catalog:product_list' %}?type=jamon-cocido" class="hero-product-link">
+                        <article class="hero-product-card">
+                            <div class="hero-product-card__image">
+                                <img src="{% static 'img/Jamon Cocido.png' %}" alt="{% trans 'Jamón Cocido' %}" loading="lazy">
+                            </div>
+                            <div class="hero-product-card__info">
+                                <p class="hero-product-card__name">{% trans "Jamón Cocido" %}</p>
+                            </div>
+                        </article>
+                    </a>
                 {% endif %}
             </div>
         </div>
