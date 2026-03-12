@@ -1,10 +1,13 @@
 {% load i18n static %}
 <section class="public-hero" aria-labelledby="publicHeroTitle">
     <div class="public-hero__inner">
-        <div class="public-hero__copy">
-            <p class="public-hero__eyebrow">{% trans "Distribuciones Fenix de la Mancha" %}</p>
-            <div class="public-hero__image-wrapper" style="margin-top: 10px; margin-left: -50px;">
-                <img src="{% static 'img/hero 2.png' %}" alt="Promoción Fenix" style="max-height: 320px; width: auto; max-width: 100%; border-radius: 12px; object-fit: contain; object-position: left center;">
+        <div class="public-hero__copy" style="display: flex; flex-direction: column; align-items: center;">
+            <p class="public-hero__eyebrow" style="width: 100%; text-align: left;">{% trans "Distribuciones Fenix de la Mancha" %}</p>
+            <div class="public-hero__image-wrapper" style="margin-top: 10px; display: flex; justify-content: center;">
+                <img src="{% static 'img/hero 2.png' %}" alt="Promoción Fenix" style="max-height: 330px; width: auto; max-width: 100%; border-radius: 12px; object-fit: contain;">
+            </div>
+            <div class="hero-delivery-badge">
+                <img src="{% static 'img/delivery-truck-24h.png' %}" alt="Reparto 24h" loading="lazy">
             </div>
         </div>
         <div class="public-hero__visual" aria-hidden="true">
