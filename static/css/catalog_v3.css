@@ -63,6 +63,7 @@
     padding: 48px clamp(24px, 4vw, 64px);
     box-shadow: var(--shadow-lg);
     overflow: hidden;
+    position: relative;
 }
 
 .public-hero__inner {
@@ -118,6 +119,49 @@
 .btn-cta:hover {
     filter: brightness(1.05);
     color: white;
+}
+
+/* Hero Info Bar (Overlay) */
+.hero-info-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #2F6443;
+    color: #ffffff;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    z-index: 10;
+}
+
+.hero-info-bar__icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.hero-info-bar p {
+    margin: 0;
+    font-size: 16px;
+    text-align: center;
+    font-weight: 400;
+}
+
+.hero-info-bar p strong {
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .hero-info-bar {
+        padding: 12px 16px;
+    }
+    .hero-info-bar p {
+        font-size: 14px;
+        text-align: left;
+    }
 }
 
 .public-hero__cards {
