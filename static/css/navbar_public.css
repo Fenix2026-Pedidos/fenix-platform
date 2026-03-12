@@ -52,7 +52,9 @@
     height: 60px; /* Tamaño controlado para no romper el header */
     width: auto;
     object-fit: contain;
-    transition: height 0.3s ease;
+    transition: transform 0.3s ease;
+    transform: scale(1.5); /* Hace el logo sustancialmente más grande visualmente (50% más) */
+    transform-origin: left center; /* Asegura que crezca desde la izquierda y no se salga */
 }
 
 /* Derecha: Acciones */
@@ -127,6 +129,8 @@
         height: 50px; /* Ajuste para mobile */
         width: auto;
         object-fit: contain;
+        transform: scale(1.6); /* Crece aún más en proporción en móvil (60% más) */
+        transform-origin: left center;
     }
 
     /* Mostrar selector de idioma en mobile como solicita la Imagen 1 */
@@ -151,5 +155,6 @@
 
     .navbar-public__logo-img {
         height: 45px;
+        transform: scale(1.7);
     }
 }
