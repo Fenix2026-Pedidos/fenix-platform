@@ -1,17 +1,17 @@
 /* ============================================
-   FENIX - Public Navbar (Mobile-First Responsive)
+   FENIX - Public Navbar (Premium Redesign)
    ============================================ */
 
 .navbar-public {
-    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
-    min-height: 80px;
-    padding: 12px var(--content-padding);
-    box-shadow: var(--shadow-md);
+    background: #ffffff;
+    padding: 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     width: 100%;
-    position: relative;
+    position: sticky;
+    top: 0;
     z-index: 1001;
     display: flex;
-    align-items: center;
+    flex-direction: column;
 }
 
 .navbar-public__container {
@@ -19,138 +19,137 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    flex-wrap: wrap;
-    /* Permite 2 filas en mobile */
-    gap: 12px;
+    height: 70px; /* Reducido de 80px */
+    padding: 0 var(--content-padding);
+    gap: 15px;
 }
 
-.navbar-public__logo-section {
-    flex: 0 0 auto;
+/* Lado izquierdo: Botón menú */
+.navbar-public__menu-section {
     display: flex;
     align-items: center;
 }
 
-.navbar-public__logo-link {
+.menu-toggle-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: var(--gray-800);
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+}
+
+/* Centro-Izquierda: Logo */
+.navbar-public__logo-section {
+    flex: 1;
     display: flex;
     align-items: center;
 }
 
 .navbar-public__logo-img {
-    height: 80px;
-    /* Tamaño reducido en mobile */
+    height: 60px; /* Tamaño controlado para no romper el header */
     width: auto;
-    max-width: 180px;
-    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+    object-fit: contain;
     transition: height 0.3s ease;
 }
 
+/* Derecha: Acciones */
 .navbar-public__actions {
     display: flex;
-    gap: 12px;
-    align-items: center;
-    justify-content: flex-end;
-    flex: 1;
-}
-
-.navbar-public__language {
-    display: flex;
+    gap: 15px;
     align-items: center;
 }
 
-.navbar-public__lang-select {
-    padding: 6px 8px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: var(--radius);
-    background: rgba(255, 255, 255, 0.1);
-    font-size: 13px;
+.action-icon-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--gray-800);
     cursor: pointer;
-    color: white;
-    outline: none;
-}
-
-.navbar-public__lang-select option {
-    color: var(--gray-900);
-}
-
-.navbar-public__auth {
+    position: relative;
+    text-decoration: none;
     display: flex;
-    gap: 8px;
     align-items: center;
+    justify-content: center;
+    padding: 5px;
+    transition: color 0.2s;
 }
 
-/* Auth buttons adjustment */
-.navbar-public__auth .btn {
-    padding: 8px 16px;
-    font-size: 13px;
-    white-space: nowrap;
+.action-icon-btn:hover {
+    color: var(--primary-600);
 }
 
-.navbar-public__auth .btn-outline {
+/* Carrito con badge */
+.cart-btn-public {
+    position: relative;
+}
+
+.cart-badge-public {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background: #ff4d4f;
     color: white;
-    border-color: rgba(255, 255, 255, 0.3);
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
 }
 
-/* RESPONSIVE BREAKPOINTS */
+/* RESPONSIVE */
 
-/* Mobile específico (< 576px) */
-@media (max-width: 575px) {
-    .navbar-public {
-        padding: 10px 16px;
-    }
-
+@media (max-width: 768px) {
     .navbar-public__container {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
+        height: 100px; /* Reducido de 120px */
+        padding: 0 15px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 10px;
     }
 
     .navbar-public__logo-section {
-        justify-content: center;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        padding-left: 5px;
     }
 
     .navbar-public__logo-img {
-        height: 60px;
+        height: 50px; /* Ajuste para mobile */
+        width: auto;
+        object-fit: contain;
+    }
+
+    /* Mostrar selector de idioma en mobile como solicita la Imagen 1 */
+    .navbar-public__language {
+        display: block;
     }
 
     .navbar-public__actions {
-        flex-direction: row;
-        justify-content: space-between;
-        width: 100%;
-        gap: 8px;
+        gap: 8px; /* Espaciado más compacto entre iconos */
     }
 
-    .navbar-public__auth {
-        flex: 1;
-        justify-content: flex-end;
-        gap: 6px;
-    }
-
-    .navbar-public__auth .btn {
-        flex: 1;
-        text-align: center;
-        padding: 6px 10px;
-        font-size: 12px;
+    .action-icon-btn {
+        font-size: 22px;
+        padding: 4px;
     }
 }
 
-/* Tablet y Small Desktop (>= 576px and < 992px) */
-@media (min-width: 576px) and (max-width: 991px) {
-    .navbar-public__logo-img {
-        height: 100px;
-    }
-}
-
-/* Desktop (>= 992px) */
-@media (min-width: 992px) {
-    .navbar-public {
-        height: 80px;
-    }
-
-    .navbar-public__logo-img {
-        height: 120px;
-    }
-
+@media (max-width: 480px) {
     .navbar-public__container {
-        flex-wrap: nowrap;
+        height: 85px;
+    }
+
+    .navbar-public__logo-img {
+        height: 45px;
     }
 }

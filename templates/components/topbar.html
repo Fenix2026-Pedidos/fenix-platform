@@ -19,28 +19,67 @@
 
     <div class="topbar-right">
         <div class="topbar-actions">
-            <!-- Selector de idioma -->
-            <form action="{% url 'set_language' %}" method="post" class="language-selector-form" id="language-form">
-                {% csrf_token %}
-                <input name="next" type="hidden" value="{{ request.get_full_path }}">
-                <select name="language" onchange="this.form.submit()" class="language-select">
+            <!-- Language Selector (Compact & Premium) -->
+            <div class="dropdown me-3" id="topbarLangContainer" style="position: relative;">
+                <button class="lang-selector-btn no-caret" type="button" id="topbarLangBtn" title="{% trans 'Cambiar idioma' %}">
+                    <i class="bi bi-globe"></i>
                     {% get_current_language as CURRENT_LANGUAGE %}
-                    {% get_available_languages as LANGUAGES_LIST %}
-                    {% for lang_code, lang_name in LANGUAGES_LIST %}
-                    {% if lang_code != 'en' %}
-                    {% if lang_code == CURRENT_LANGUAGE %}
-                    <option value="{{ lang_code }}" selected>
-                        {% else %}
-                    <option value="{{ lang_code }}">
-                        {% endif %}
-                        {% if lang_code == 'es' %}ES
-                        {% elif lang_code == 'zh-hans' %}ZH
-                        {% else %}{{ lang_code|upper }}{% endif %}
-                    </option>
+                    {% if CURRENT_LANGUAGE == 'es' %}
+                        <img src="https://flagcdn.com/w20/es.png" width="18" alt="ES" class="lang-flag-mini">
+                        <span class="lang-code-compact">Español</span>
+                    {% elif CURRENT_LANGUAGE == 'zh-hans' %}
+                        <img src="https://flagcdn.com/w20/cn.png" width="18" alt="ZH" class="lang-flag-mini">
+                        <span class="lang-code-compact">中文 (简体)</span>
+                    {% else %}
+                        <span class="lang-code-compact text-uppercase">{{ CURRENT_LANGUAGE }}</span>
                     {% endif %}
-                    {% endfor %}
-                </select>
-            </form>
+                </button>
+                <ul class="lang-dropdown-menu" id="topbarLangMenu" style="display: none; position: absolute; right: 0; top: 100%; z-index: 1050;">
+                    <li>
+                        <form action="{% url 'set_language' %}" method="post">
+                            {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                            <input name="language" type="hidden" value="es">
+                            <button type="submit" class="lang-dropdown-item {% if CURRENT_LANGUAGE == 'es' %}active{% endif %}">
+                                <img src="https://flagcdn.com/w20/es.png" width="20" alt="ES"> Español
+                            </button>
+                        </form>
+                    </li>
+                    <li>
+                        <form action="{% url 'set_language' %}" method="post">
+                            {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                            <input name="language" type="hidden" value="zh-hans">
+                            <button type="submit" class="lang-dropdown-item {% if CURRENT_LANGUAGE == 'zh-hans' %}active{% endif %}">
+                                <img src="https://flagcdn.com/w20/cn.png" width="20" alt="ZH"> 中文 (简体)
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+            
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const topbarLangBtn = document.getElementById('topbarLangBtn');
+                    const topbarLangMenu = document.getElementById('topbarLangMenu');
+                    const topbarLangContainer = document.getElementById('topbarLangContainer');
+
+                    if (topbarLangBtn && topbarLangMenu && topbarLangContainer) {
+                        topbarLangBtn.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            const isOpen = topbarLangMenu.style.display === 'block';
+                            topbarLangMenu.style.display = isOpen ? 'none' : 'block';
+                        });
+
+                        document.addEventListener('click', function (e) {
+                            if (!topbarLangContainer.contains(e.target)) {
+                                topbarLangMenu.style.display = 'none';
+                            }
+                        });
+                    }
+                });
+            </script>
 
             {% if user.is_authenticated %}
             <!-- Carrito minimalista estilo Amazon -->

@@ -40,7 +40,7 @@
     /* Layout */
     --sidebar-width: 260px;
     --sidebar-collapsed-width: 80px;
-    --topbar-height: 70px;
+    --topbar-height: 60px;
     --content-padding: 24px;
 
     /* Shadows */
@@ -354,6 +354,113 @@ body {
     margin-left: var(--sidebar-collapsed-width);
 }
 
+/* ============================================
+   Language Selector (Global)
+   ============================================ */
+.lang-selector-btn {
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 4px 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    cursor: pointer;
+    font-family: inherit;
+    height: 36px;
+    border-radius: var(--radius);
+    transition: background 0.2s;
+}
+
+.lang-selector-btn:hover {
+    background-color: var(--gray-50) !important;
+}
+
+.lang-selector-btn i {
+    font-size: 1.1rem;
+    color: var(--gray-600);
+}
+
+.lang-flag-mini {
+    border-radius: 2px;
+    box-shadow: 0 0 2px rgba(0,0,0,0.1);
+}
+
+.lang-code-compact {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray-700);
+}
+
+/* En mobile ocultamos el texto para que sea ultra compacto */
+@media (max-width: 768px) {
+    .lang-code-compact {
+        display: none !important;
+    }
+    
+    .lang-selector-btn {
+        padding: 4px !important;
+        gap: 6px !important; /* Fixed icon overlapping */
+    }
+}
+
+/* Dropdown Menu Styling */
+.lang-dropdown-menu {
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-lg);
+    border-radius: 12px;
+    padding: 6px 0;
+    margin-top: 8px;
+    min-width: 150px;
+    list-style: none;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.lang-dropdown-menu li {
+    list-style: none !important;
+    list-style-type: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.lang-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-700);
+    border: none !important;
+    background: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    width: 100%;
+    text-align: left;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.lang-dropdown-item:hover {
+    background-color: var(--gray-50);
+    color: var(--primary-700);
+}
+
+.lang-dropdown-item.active {
+    background-color: var(--primary-50);
+    color: var(--primary-800);
+}
+
+.lang-dropdown-item img {
+    border-radius: 2px;
+}
+
+.no-caret::after {
+    display: none !important;
+}
+
 /* Topbar */
 .topbar {
     height: var(--topbar-height);
@@ -378,6 +485,7 @@ body {
     gap: 16px;
     flex: 1;
     min-width: 0;
+    transition: all var(--transition);
 }
 
 /* Buscador Global Inteligente */
@@ -430,6 +538,26 @@ body {
 @media (max-width: 768px) {
     .global-search-wrapper {
         max-width: 100%;
+        transition: all var(--transition-slow);
+        flex: 1;
+    }
+
+    .topbar-left {
+        gap: 8px;
+    }
+
+    /* Expandir buscador al enfocar en mobile */
+    .global-search-wrapper:focus-within {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        z-index: 1000;
+        max-width: none;
+    }
+
+    .global-search-wrapper:focus-within ~ .topbar-right {
+        opacity: 0;
+        pointer-events: none;
     }
 
     .global-search-input {

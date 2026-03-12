@@ -2,45 +2,83 @@
 <!-- Public navbar for non-authenticated users -->
 <nav class="navbar-public">
     <div class="navbar-public__container">
-        <!-- Logo Section -->
+
+        <!-- Center-Left: Logo -->
         <div class="navbar-public__logo-section">
             <a href="/" class="navbar-public__logo-link">
-                <img src="{% static 'img/logo sin fondo.png' %}" alt="Logo Fenix" class="navbar-public__logo-img">
+                <!-- Single Unified Logo -->
+                <img src="{% static 'img/logo.jpeg' %}" alt="Logo Fenix" class="navbar-public__logo-img">
             </a>
         </div>
 
-        <!-- Actions Section -->
+        <!-- Right: Actions -->
         <div class="navbar-public__actions">
-            <!-- Language Selector -->
-            <div class="navbar-public__language">
-                <form action="{% url 'set_language' %}" method="post" class="navbar-public__lang-form">
-                    {% csrf_token %}
-                    <input name="next" type="hidden" value="{{ request.get_full_path }}">
+            <!-- Language Selector (Compact & Premium) -->
+            <div class="navbar-public__language" id="publicLangContainer" style="position: relative;">
+                <button class="lang-selector-btn no-caret" type="button" id="publicLangBtn" title="{% trans 'Cambiar idioma' %}">
+                    <i class="bi bi-globe"></i>
                     {% get_current_language as CURRENT_LANGUAGE %}
-                    {% get_available_languages as LANGUAGES_LIST %}
-                    <select name="language" onchange="this.form.submit()" class="navbar-public__lang-select">
-                        {% for lang_code, lang_name in LANGUAGES_LIST %}
-                            {% if lang_code != 'en' %}
-                            <option value="{{ lang_code }}" {% if lang_code == CURRENT_LANGUAGE %}selected{% endif %}>
-                                {% if lang_code == 'es' %}ES
-                                {% elif lang_code == 'zh-hans' %}ZH
-                                {% else %}{{ lang_code|upper }}{% endif %}
-                            </option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                </form>
+                    {% if CURRENT_LANGUAGE == 'es' %}
+                        <img src="https://flagcdn.com/w20/es.png" width="18" alt="ES" class="lang-flag-mini">
+                        <span class="lang-code-compact">Español</span>
+                    {% elif CURRENT_LANGUAGE == 'zh-hans' %}
+                        <img src="https://flagcdn.com/w20/cn.png" width="18" alt="ZH" class="lang-flag-mini">
+                        <span class="lang-code-compact">中文 (简体)</span>
+                    {% else %}
+                        <span class="lang-code-compact text-uppercase">{{ CURRENT_LANGUAGE }}</span>
+                    {% endif %}
+                </button>
+                <ul class="lang-dropdown-menu" id="publicLangMenu" style="display: none; position: absolute; right: 0; top: 100%; z-index: 1050;">
+                    <li>
+                        <form action="{% url 'set_language' %}" method="post">
+                            {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                            <input name="language" type="hidden" value="es">
+                            <button type="submit" class="lang-dropdown-item {% if CURRENT_LANGUAGE == 'es' %}active{% endif %}">
+                                <img src="https://flagcdn.com/w20/es.png" width="20" alt="ES"> Español
+                            </button>
+                        </form>
+                    </li>
+                    <li>
+                        <form action="{% url 'set_language' %}" method="post">
+                            {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                            <input name="language" type="hidden" value="zh-hans">
+                            <button type="submit" class="lang-dropdown-item {% if CURRENT_LANGUAGE == 'zh-hans' %}active{% endif %}">
+                                <img src="https://flagcdn.com/w20/cn.png" width="20" alt="ZH"> 中文 (简体)
+                            </button>
+                        </form>
+                    </li>
+                </ul>
             </div>
 
-            <!-- Auth Buttons -->
-            <div class="navbar-public__auth">
-                <a href="{% url 'accounts:login' %}" class="btn btn-outline btn-login">
-                    {% trans "Iniciar Sesión" %}
-                </a>
-                <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-register">
-                    {% trans "Registrarse" %}
-                </a>
-            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const btn = document.getElementById('publicLangBtn');
+                    const menu = document.getElementById('publicLangMenu');
+                    const container = document.getElementById('publicLangContainer');
+
+                    if (btn && menu && container) {
+                        btn.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            const isOpen = menu.style.display === 'block';
+                            menu.style.display = isOpen ? 'none' : 'block';
+                        });
+
+                        document.addEventListener('click', function (e) {
+                            if (!container.contains(e.target)) {
+                                menu.style.display = 'none';
+                            }
+                        });
+                    }
+                });
+            </script>
+
+            <!-- Login/User Icon -->
+            <a href="{% url 'accounts:login' %}" class="action-icon-btn" title="{% trans 'Iniciar Sesión' %}">
+                <i class="bi bi-person"></i>
+            </a>
         </div>
     </div>
 </nav>
