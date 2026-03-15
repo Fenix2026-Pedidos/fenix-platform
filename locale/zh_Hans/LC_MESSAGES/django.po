@@ -3050,7 +3050,7 @@ msgid "Beneficios del servicio"
 msgstr "服务优势"
 
 msgid "Buscar por nombre, email o empresa..."
-msgstr "按姓名、电子邮件或公司搜索..."
+msgstr "按姓名、电子邮件 o 公司搜索..."
 
 msgid "Buscar productos"
 msgstr "搜索产品"
@@ -3154,7 +3154,7 @@ msgid "Disponibles en todo momento"
 msgstr "随时可用"
 
 msgid "Distribuciones Fenix de la Mancha"
-msgstr "Fenix de la Mancha 分销"
+msgstr "Distribuciones Fenix de la Mancha"
 
 msgid "Edición Rápida"
 msgstr "快速编辑"
