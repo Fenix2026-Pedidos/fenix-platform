@@ -85,10 +85,10 @@
     {% endif %}
 
     <section class="catalog-shell" aria-labelledby="catalogSectionTitle">
-        <div class="catalog-shell__intro">
-            <div>
-                <p class="catalog-shell__eyebrow">{% trans "Catálogo actualizado" %}</p>
+        <div class="catalog-shell__header">
+            <div class="catalog-shell__title-group">
                 <h2 id="catalogSectionTitle" class="catalog-shell__title">{% trans "Catálogo de Productos" %}</h2>
+                <p class="catalog-shell__eyebrow">{% trans "CATÁLOGO ACTUALIZADO" %}</p>
             </div>
             <p class="catalog-shell__subtitle d-none d-md-block">
                 {% if request.user.is_authenticated %}
@@ -99,7 +99,9 @@
             </p>
         </div>
 
-        {% include 'components/category_tabs.html' with search_query=search_query %}
+        <div class="catalog-controls-bar">
+            {% include 'components/category_tabs.html' with search_query=search_query count=paginator.count page_start=page_obj.start_index page_end=page_obj.end_index %}
+        </div>
     </section>
 
     <!-- Barra de filtros móvil (Nueva: oculta en escritorio) -->
@@ -301,71 +303,39 @@
         <!-- Área principal con grid -->
         <div class="catalog-main-area">
 
-            <div class="catalog-toolbar">
+            <!-- Toolbar superior (ahora solo para acciones especiales y ordenación) -->
+            <div class="catalog-toolbar d-none d-md-flex">
                 <div class="catalog-toolbar__left">
-                    <div class="catalog-count-badge">
-                        {% if paginator.count > 0 %}
-                        <span class="count-label">{% trans "Mostrando" %}</span>
-                        <span class="count-numbers">{{ page_obj.start_index }}–{{ page_obj.end_index }}</span>
-                        <span class="count-label">{% trans "de" %}</span>
-                        <span class="count-total">{{ paginator.count }}</span>
-                        <span class="count-label">{% trans "productos" %}</span>
-                        {% else %}
-                        <span class="count-total">0</span> <span class="count-label">{% trans "productos" %}</span>
-                        {% endif %}
+                    {% if user.is_staff or user.is_superuser %}
+                    <div class="catalog-admin-actions">
+                        <button type="button" id="toggleSortMode" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-arrow-down-up"></i>
+                            <span class="btn-text">{% trans "Ordenar catálogo" %}</span>
+                        </button>
+                        <button type="button" id="saveSortOrder" class="btn btn-success btn-sm d-none">
+                            <i class="bi bi-check-lg"></i>
+                            {% trans "Guardar orden" %}
+                        </button>
                     </div>
+                    {% endif %}
                 </div>
 
-                {% if user.is_staff or user.is_superuser %}
-                <div class="catalog-toolbar__center d-none d-md-block">
-                    <button type="button" id="toggleSortMode" class="btn btn-outline-primary btn-sm">
-                        <i class="bi bi-arrow-down-up"></i>
-                        <span class="btn-text">{% trans "Ordenar catálogo" %}</span>
-                    </button>
-                    <button type="button" id="saveSortOrder" class="btn btn-success btn-sm d-none">
-                        <i class="bi bi-check-lg"></i>
-                        {% trans "Guardar orden" %}
-                    </button>
+                <div class="catalog-toolbar__right">
+                    <form method="get" class="catalog-sort" id="sortForm">
+                        <div class="sort-group">
+                            <label for="sortSelect">{% trans "Ordenar por" %}:</label>
+                            {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
+                            {% if page_size %}<input type="hidden" name="page_size" value="{{ page_size }}">{% endif %}
+                            <select id="sortSelect" name="sort" class="form-select form-select-sm" onchange="this.form.submit()">
+                                <option value="relevance" {% if sort == 'relevance' %}selected{% endif %}>{% trans "Relevancia" %}</option>
+                                <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Precio: Menor a Mayor" %}</option>
+                                <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Precio: Mayor a Menor" %}</option>
+                                <option value="name_asc" {% if sort == 'name_asc' %}selected{% endif %}>{% trans "Nombre: A-Z" %}</option>
+                                <option value="name_desc" {% if sort == 'name_desc' %}selected{% endif %}>{% trans "Nombre: Z-A" %}</option>
+                            </select>
+                        </div>
+                    </form>
                 </div>
-                {% endif %}
-
-                <form method="get" class="catalog-sort" id="sortForm">
-                    {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
-                    {% if page_size %}<input type="hidden" name="page_size" value="{{ page_size }}">{% endif %}
-                    <label class="visually-hidden" for="sortSelect">{% trans "Ordenar por" %}</label>
-                    <select id="sortSelect" name="sort" class="form-select form-select-sm"
-                        onchange="this.form.submit()">
-                        {% if sort == 'relevance' %}
-                        <option value="relevance" selected>{% trans "Relevancia" %}</option>
-                        {% else %}
-                        <option value="relevance">{% trans "Relevancia" %}</option>
-                        {% endif %}
-
-                        {% if sort == 'price_asc' %}
-                        <option value="price_asc" selected>{% trans "Precio: Menor a Mayor" %}</option>
-                        {% else %}
-                        <option value="price_asc">{% trans "Precio: Menor a Mayor" %}</option>
-                        {% endif %}
-
-                        {% if sort == 'price_desc' %}
-                        <option value="price_desc" selected>{% trans "Precio: Mayor a Menor" %}</option>
-                        {% else %}
-                        <option value="price_desc">{% trans "Precio: Mayor a Menor" %}</option>
-                        {% endif %}
-
-                        {% if sort == 'name_asc' %}
-                        <option value="name_asc" selected>{% trans "Nombre: A-Z" %}</option>
-                        {% else %}
-                        <option value="name_asc">{% trans "Nombre: A-Z" %}</option>
-                        {% endif %}
-
-                        {% if sort == 'name_desc' %}
-                        <option value="name_desc" selected>{% trans "Nombre: Z-A" %}</option>
-                        {% else %}
-                        <option value="name_desc">{% trans "Nombre: Z-A" %}</option>
-                        {% endif %}
-                    </select>
-                </form>
             </div>
 
             <div class="products-grid" id="productsGrid">
@@ -389,8 +359,44 @@
                     </button>
                     {% endif %}
 
-                    <!-- 1. Top Row: Precio/Unidad (Izq) + Badge (Der) -->
-                    <div class="card-top-row">
+                    <!-- 1. Nombre del producto protagoniza la card -->
+                    <div class="card-title-group">
+                        <h3 class="card-product-name">{{ product.translated_name }}</h3>
+                        <div class="card-ref-row">
+                            <span class="card-ref">{% trans "REF" %}: 
+                                {% if product.reference %}
+                                    {{ product.reference }}
+                                {% else %}
+                                    P{{ product.pk|stringformat:"05d" }}
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 2. Imagen protagonista (Centrada en bloque) -->
+                    <div class="card-image-wrap">
+                        {% if product.image_url %}
+                        <img src="{{ product.image_url }}"
+                            alt="{{ product.translated_name }}"
+                            class="card-product-img" loading="lazy"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="card-image-empty" style="display: none;">
+                            <i class="bi bi-image"></i>
+                        </div>
+                        {% else %}
+                        <div class="card-image-empty">
+                            <i class="bi bi-image"></i>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Badge overlay "En carrito: X" -->
+                        <div class="product-cart-badge-overlay" data-product-id="{{ product.pk }}" style="display: none;">
+                            <span class="cart-badge-text">{% trans "En carrito:" %} <strong class="cart-badge-quantity">0</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- 3. Fila de Precio + Badges (Secundaria) -->
+                    <div class="card-meta-row">
                         <div class="card-price-container">
                             {% if show_prices %}
                             <div class="card-price-main" data-price="{{ product.price|unlocalize }}">
@@ -417,44 +423,6 @@
                             {% endif %}
                         </div>
                     </div>
-
-                    <!-- 2. Referencia (debajo del precio) -->
-                    <div class="card-ref-row">
-                        <span class="card-ref">{% trans "REF" %}: 
-                            {% if product.reference %}
-                                {{ product.reference }}
-                            {% else %}
-                                P{{ product.pk|stringformat:"05d" }}
-                            {% endif %}
-                        </span>
-                    </div>
-
-                    <!-- 3. Imagen protagonista (Centrada en bloque) -->
-                    <div class="card-image-wrap">
-                        {% if product.image_url %}
-                        <img src="{{ product.image_url }}"
-                            alt="{{ product.translated_name }}"
-                            class="card-product-img" loading="lazy"
-                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="card-image-empty" style="display: none;">
-                            <i class="bi bi-image"></i>
-                        </div>
-                        {% else %}
-                        <div class="card-image-empty">
-                            <i class="bi bi-image"></i>
-                        </div>
-                        {% endif %}
-                        
-                        <!-- Badge overlay "En carrito: X" -->
-                        <div class="product-cart-badge-overlay" data-product-id="{{ product.pk }}" style="display: none;">
-                            <span class="cart-badge-text">{% trans "En carrito:" %} <strong class="cart-badge-quantity">0</strong></span>
-                        </div>
-                    </div>
-
-                    <!-- Nombre del producto (Oculto visualmente pero presente para SEO/Accesibilidad) -->
-                    <h3 class="visually-hidden card-product-name">
-                        {{ product.translated_name }}
-                    </h3>
 
                     <!-- 4. Bloque inferior: Info Login + Stepper + Botón -->
                     <div class="card-actions-block">

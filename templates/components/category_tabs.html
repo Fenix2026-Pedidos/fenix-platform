@@ -1,37 +1,54 @@
 {% load i18n %}
-<section class="category-tabs-bar px-0" aria-label="{% trans 'Navegación de categorías' %}">
-    <div class="category-tabs d-none d-md-flex" role="tablist">
-        <button class="category-tab is-active" type="button" role="tab" aria-selected="true" data-category-tab="todos">
-            {% trans "Todos" %}
-        </button>
-        <button class="category-tab" type="button" role="tab" aria-selected="false" data-category-tab="sandwich">
-            {% trans "Sándwich" %}
-        </button>
-        <button class="category-tab" type="button" role="tab" aria-selected="false" data-category-tab="salchichas">
-            {% trans "Salchichas" %}
-        </button>
-        <button class="category-tab" type="button" role="tab" aria-selected="false" data-category-tab="pizzas">
-            {% trans "Pizzas" %}
-        </button>
-        <button class="category-tab" type="button" role="tab" aria-selected="false" data-category-tab="jamon">
-            {% trans "Jamón" %}
-        </button>
-        <button class="category-tab" type="button" role="tab" aria-selected="false" data-category-tab="pavo">
-            {% trans "Pavo" %}
-        </button>
+<div class="catalog-controls-inner">
+    <div class="catalog-controls__left d-none d-md-flex">
+        <div class="catalog-results-count">
+            {% if count > 0 %}
+            <span class="count-label">{% trans "Mostrando" %}</span>
+            <span class="count-numbers">{{ page_start }}–{{ page_end }}</span>
+            <span class="count-label">{% trans "de" %}</span>
+            <span class="count-total">{{ count }}</span>
+            {% else %}
+            <span class="count-total">0</span> <span class="count-label">{% trans "productos" %}</span>
+            {% endif %}
+        </div>
     </div>
-    <div class="category-actions">
-        <form method="get" class="category-search flex-grow-1" id="searchForm">
-            <label for="searchInput" class="visually-hidden">{% trans "Buscar productos" %}</label>
-            <input type="text" name="q" value="{{ search_query }}" class="form-control catalog-search-input py-1 px-3" 
-                   placeholder="{% trans 'Buscar productos...' %}" id="searchInput">
-            <button type="submit" class="btn btn-primary px-3 py-1">
-                <i class="bi bi-search"></i>
+
+    <div class="catalog-controls__center">
+        <div class="category-tabs d-none d-md-flex" role="tablist">
+            <button class="category-tab is-active" type="button" role="tab" aria-selected="true" data-category-tab="todos">
+                {% trans "Todos" %}
             </button>
+            <button class="category-tab" type="button" role="tab" aria-selected="false" data-category-tab="sandwich">
+                {% trans "Sándwich" %}
+            </button>
+            <button class="category-tab" type="button" role="tab" aria-selected="false" data-category-tab="salchichas">
+                {% trans "Salchichas" %}
+            </button>
+            <button class="category-tab" type="button" role="tab" aria-selected="false" data-category-tab="pizzas">
+                {% trans "Pizzas" %}
+            </button>
+            <button class="category-tab" type="button" role="tab" aria-selected="false" data-category-tab="jamon">
+                {% trans "Jamón" %}
+            </button>
+            <button class="category-tab" type="button" role="tab" aria-selected="false" data-category-tab="pavo">
+                {% trans "Pavo" %}
+            </button>
+        </div>
+    </div>
+
+    <div class="catalog-controls__right">
+        <form method="get" class="category-search" id="searchForm">
+            <div class="search-input-group">
+                <input type="text" name="q" value="{{ search_query }}" class="form-control catalog-search-input" 
+                       placeholder="{% trans 'Buscar productos...' %}" id="searchInput">
+                <button type="submit" class="btn-search-icon">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
         </form>
         <button type="button" class="btn btn-outline btn-filters-toggle" id="filtersToggle">
             <i class="bi bi-sliders"></i>
-            <span class="d-none d-md-inline">{% trans "Filtros" %}</span>
+            <span class="btn-text">{% trans "Filtros" %}</span>
         </button>
     </div>
-</section>
+</div>
