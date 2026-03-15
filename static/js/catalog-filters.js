@@ -191,6 +191,12 @@ const CatalogFilters = {
             closeBtn.addEventListener('click', closePanel);
         }
 
+        // Aplicar filtros en móvil (simplemente cerrar el panel ya que los filtros son reactivos)
+        const applyBtn = document.getElementById('applyMobileFilters');
+        if (applyBtn) {
+            applyBtn.addEventListener('click', closePanel);
+        }
+
         if (overlay) {
             overlay.addEventListener('click', closePanel);
         }

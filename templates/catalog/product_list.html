@@ -143,6 +143,7 @@
                 <h3>{% trans "Filtros" %}</h3>
                 <button type="button" class="btn-close-filters" id="closeFiltersPanel"
                     aria-label="{% trans 'Cerrar filtros' %}">
+                    <span class="btn-close-text">{% trans "Cerrar" %}</span>
                     <i class="bi bi-x-lg"></i>
                 </button>
             </div>
@@ -159,46 +160,34 @@
                         <button type="button" class="visually-hidden" data-category-tab="todos"></button>
                         
                         <label class="filter-radio">
-                            <input type="radio" name="mobile-category" class="filter-type-radio" value="charcuteria" data-type="charcuteria">
-                            <span class="filter-label">{% trans "Charcutería" %}</span>
+                            <input type="radio" name="mobile-category" class="filter-type-radio" value="sandwich" data-type="sandwich">
+                            <span class="filter-label">{% trans "Sándwich" %}</span>
                         </label>
-                        <button type="button" class="visually-hidden" data-category-tab="charcuteria"></button>
+                        <button type="button" class="visually-hidden" data-category-tab="sandwich"></button>
 
                         <label class="filter-radio">
-                            <input type="radio" name="mobile-category" class="filter-type-radio" value="curados" data-type="curados">
-                            <span class="filter-label">{% trans "Curados" %}</span>
+                            <input type="radio" name="mobile-category" class="filter-type-radio" value="salchichas" data-type="salchichas">
+                            <span class="filter-label">{% trans "Salchichas" %}</span>
                         </label>
-                        <button type="button" class="visually-hidden" data-category-tab="curados"></button>
+                        <button type="button" class="visually-hidden" data-category-tab="salchichas"></button>
 
                         <label class="filter-radio">
-                            <input type="radio" name="mobile-category" class="filter-type-radio" value="ibericos" data-type="ibericos">
-                            <span class="filter-label">{% trans "Ibéricos" %}</span>
+                            <input type="radio" name="mobile-category" class="filter-type-radio" value="pizzas" data-type="pizzas">
+                            <span class="filter-label">{% trans "Pizzas" %}</span>
                         </label>
-                        <button type="button" class="visually-hidden" data-category-tab="ibericos"></button>
+                        <button type="button" class="visually-hidden" data-category-tab="pizzas"></button>
 
                         <label class="filter-radio">
-                            <input type="radio" name="mobile-category" class="filter-type-radio" value="jamon-cocido" data-type="jamon-cocido">
-                            <span class="filter-label">{% trans "Jamón Cocido" %}</span>
+                            <input type="radio" name="mobile-category" class="filter-type-radio" value="jamon" data-type="jamon">
+                            <span class="filter-label">{% trans "Jamón" %}</span>
                         </label>
-                        <button type="button" class="visually-hidden" data-category-tab="jamon-cocido"></button>
-
-                        <label class="filter-radio">
-                            <input type="radio" name="mobile-category" class="filter-type-radio" value="jamon-curado" data-type="jamon-curado">
-                            <span class="filter-label">{% trans "Jamón Curado" %}</span>
-                        </label>
-                        <button type="button" class="visually-hidden" data-category-tab="jamon-curado"></button>
+                        <button type="button" class="visually-hidden" data-category-tab="jamon"></button>
 
                         <label class="filter-radio">
                             <input type="radio" name="mobile-category" class="filter-type-radio" value="pavo" data-type="pavo">
                             <span class="filter-label">{% trans "Pavo" %}</span>
                         </label>
                         <button type="button" class="visually-hidden" data-category-tab="pavo"></button>
-
-                        <label class="filter-radio">
-                            <input type="radio" name="mobile-category" class="filter-type-radio" value="packs" data-type="packs">
-                            <span class="filter-label">{% trans "Packs" %}</span>
-                        </label>
-                        <button type="button" class="visually-hidden" data-category-tab="packs"></button>
                     </div>
                 </div>
 
@@ -296,9 +285,11 @@
                     </div>
                 </div>
             </div>
-
             <div class="filters-footer">
-                <button type="button" class="btn btn-outline btn-clear-filters" id="clearFilters">
+                <button type="button" class="btn btn-primary btn-apply-mobile" id="applyMobileFilters">
+                    {% trans "Ver resultados" %}
+                </button>
+                <button type="button" class="btn btn-link btn-clear-filters" id="clearFilters">
                     {% trans "Eliminar selección" %}
                 </button>
             </div>
