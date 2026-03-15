@@ -3716,6 +3716,49 @@ msgstr "火腿"
 msgid "Ver resultados"
 msgstr "查看结果"
 
+msgid ""
+"<strong>Servicio garantizado:</strong> entregamos de forma inmediata en toda"
+" la provincia de <strong>Ciudad Real y Toledo</strong>"
+msgstr ""
+"<strong>服务保证：</strong> 我们在 <strong>雷阿尔城 (Ciudad Real) 和 托莱多 "
+"(Toledo)</strong> 全省范围内提供即时送货服务"
+
+msgid "Oferta de la semana"
+msgstr "每周优惠"
+
+msgid "Pack"
+msgstr "组合装"
+
+msgid "Producto estrella"
+msgstr "明星产品"
+
+msgid "Novedad"
+msgstr "新品"
+
+msgid "Oferta flash"
+msgstr "闪购优惠"
+
+msgid "Super oferta"
+msgstr "超级优惠"
+
+msgid "Edición limitada"
+msgstr "限量版"
+
+msgid "Especial Navidad"
+msgstr "圣诞特辑"
+
+msgid "Especial verano"
+msgstr "夏季特辑"
+
+msgid "Ideal para barbacoas"
+msgstr "烧烤理想之选"
+
+msgid "Producto recomendado"
+msgstr "推荐产品"
+
+msgid "Mejor precio"
+msgstr "最佳价格"
+
 #~ msgid "Manager"
 #~ msgstr "管理员"
 

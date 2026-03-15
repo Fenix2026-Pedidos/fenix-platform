@@ -20,6 +20,7 @@ def apply_comprehensive_translations():
         "Añadir al carrito": "加入购物车",
         "Año": "年",
         "Beneficios del servicio": "服务优势",
+        "Distribuciones Fenix de la Mancha": "Distribuciones Fenix de la Mancha",
         "Buscar por nombre, email o empresa...": "按姓名、电子邮件或公司搜索...",
         "Buscar productos": "搜索产品",
         "CIF / NIF / Número de Identificación Fiscal": "税号 (CIF / NIF)",
@@ -227,6 +228,7 @@ def apply_comprehensive_translations():
         "Jamón": "火腿",
         "Cerrar": "关闭",
         "Ver resultados": "查看结果",
+        "<strong>Servicio garantizado:</strong> entregamos de forma inmediata en toda la provincia de <strong>Ciudad Real y Toledo</strong>": "<strong>服务保证：</strong> 我们在 <strong>雷阿尔城 (Ciudad Real) 和 托莱多 (Toledo)</strong> 全省范围内提供即时送货服务",
         # Custom wrapped strings
         "REF": "编号",
         "DISTRIBUCIONES FENIX DE LA MANCHA SL.": "DISTRIBUCIONES FENIX DE LA MANCHA SL.",
@@ -301,6 +303,19 @@ def apply_comprehensive_translations():
         "Aquí tienes un resumen del estado actual de tu cuenta en Fénix": "这里是您在 Fénix 账户当前状态的摘要",
         "Tienes %(counter)s acción pendiente": "您有 %(counter)s 项待处理操作",
         "Tienes %(counter)s acciones pendientes": "您有 %(counter)s 项待处理操作",
+        # Promotional Labels from models.py
+        "Oferta de la semana": "每周优惠",
+        "Pack": "组合装",
+        "Producto estrella": "明星产品",
+        "Novedad": "新品",
+        "Oferta flash": "闪购优惠",
+        "Super oferta": "超级优惠",
+        "Edición limitada": "限量版",
+        "Especial Navidad": "圣诞特辑",
+        "Especial verano": "夏季特辑",
+        "Ideal para barbacoas": "烧烤理想之选",
+        "Producto recomendado": "推荐产品",
+        "Mejor precio": "最佳价格",
     }
 
     count_applied = 0
