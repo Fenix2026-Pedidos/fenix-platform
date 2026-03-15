@@ -3704,6 +3704,18 @@ msgstr "%(greeting)s, %(name)s!"
 msgid "Tienes %(counter)s acciones pendientes"
 msgstr "您有 %(counter)s 项待处理操作"
 
+msgid "Sándwich"
+msgstr "三明治"
+
+msgid "Pizzas"
+msgstr "比萨"
+
+msgid "Jamón"
+msgstr "火腿"
+
+msgid "Ver resultados"
+msgstr "查看结果"
+
 #~ msgid "Manager"
 #~ msgstr "管理员"
 

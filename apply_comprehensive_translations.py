@@ -222,6 +222,11 @@ def apply_comprehensive_translations():
         "¿Por qué solicitamos estos datos?": "我们为什么要索取这些数据？",
         "Última página": "最后一页",
         "✓ Tu perfil está completo": "✓ 您的个人资料已完善",
+        "Sándwich": "三明治",
+        "Pizzas": "比萨",
+        "Jamón": "火腿",
+        "Cerrar": "关闭",
+        "Ver resultados": "查看结果",
         # Custom wrapped strings
         "REF": "编号",
         "DISTRIBUCIONES FENIX DE LA MANCHA SL.": "DISTRIBUCIONES FENIX DE LA MANCHA SL.",
