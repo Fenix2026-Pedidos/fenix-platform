@@ -70,6 +70,48 @@ def product_list(request):
             q_obj &= word_q
             
         products = products.filter(q_obj)
+
+    # Filtrado por Categoría (type)
+    active_type = request.GET.get('type', 'todos')
+    if active_type != 'todos':
+        category_mappings = {
+            'sandwich': ['sandwich', 'sandwitch', 'emparedado', 'maxi'],
+            'salchichas': ['salchicha', 'frankfurt', 'viena', 'hot dog', 'fuet'],
+            'pizzas': ['pizza', 'masa'],
+            'jamon': ['jamon', 'jamón', 'serrano', 'cocido', 'york', 'bodega', 'iberico', 'chorizo', 'salchichon', 'lomo'],
+            'pavo': ['pavo', 'pechuga', 'pollo', 'turkey', 'chicken'],
+        }
+        
+        if active_type in category_mappings:
+            keywords = category_mappings[active_type]
+            category_q = Q()
+            for kw in keywords:
+                category_q |= Q(name_es__icontains=kw) | Q(description_es__icontains=kw) | \
+                           Q(name_zh_hans__icontains=kw) | Q(description_zh_hans__icontains=kw)
+            products = products.filter(category_q)
+
+    # Filtrado por Características especiales (features)
+    # Soporta múltiples características separadas por comas (ej: ?features=sin-lactosa,natural)
+    active_features = request.GET.get('features', '')
+    if active_features:
+        feature_list = [f.strip() for f in active_features.split(',') if f.strip()]
+        feature_mappings = {
+            'sin-lactosa': ['sin lactosa', 'no lactose', 'lactosa'],
+            'sin-conservantes': ['sin conservantes', 'no preservatives'],
+            'sin-colorantes': ['sin colorantes', 'no artificial colors'],
+            'sin-azucares': ['sin azucares', 'sin azúcar', 'no sugar'],
+            'bajo-carbohidratos': ['bajo en carb', 'low carb', 'keto'],
+            'apto-diabeticos': ['diabetico', 'apto para diabeticos'],
+            'natural': ['natural', 'artesano', 'tradicional'],
+        }
+        
+        for feat in feature_list:
+            if feat in feature_mappings:
+                keywords = feature_mappings[feat]
+                feat_q = Q()
+                for kw in keywords:
+                    feat_q |= Q(name_es__icontains=kw) | Q(description_es__icontains=kw)
+                products = products.filter(feat_q)
     
     # Ordenación
     sort_by = request.GET.get('sort', 'relevance')
@@ -85,13 +127,13 @@ def product_list(request):
         # Default sorting: manual order first, then newest
         products = products.order_by('catalog_order', '-created_at')
         
-    # Tamaño de página (Default 100 para permitir filtrado inteligente en el cliente sobre todo el catálogo)
+    # Tamaño de página (Default 20)
     try:
-        page_size = int(request.GET.get('page_size', 100))
-        if page_size not in [12, 24, 48, 100, 999]:
-            page_size = 100
+        page_size = int(request.GET.get('page_size', 20))
+        if page_size not in [12, 20, 24, 48, 100, 999]:
+            page_size = 20
     except ValueError:
-        page_size = 100
+        page_size = 20
     
     paginator = Paginator(products, page_size)
     page_number = request.GET.get('page')
@@ -114,6 +156,8 @@ def product_list(request):
         'search_query': search_query,
         'sort': sort_by,
         'page_size': page_size,
+        'active_type': active_type,
+        'active_features': feature_list if active_features else [],
         'lang': lang,
         'cart': cart,  # Pasar carrito como dict, json_script lo convertirá
         'featured_products': featured_products,

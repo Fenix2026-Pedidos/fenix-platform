@@ -356,8 +356,8 @@
 }
 
 .card-title-group {
-    margin-bottom: 8px; /* Reducido */
-    height: 40px; /* Altura fija para 2 líneas */
+    margin-bottom: 4px;
+    height: 56px; /* Space for 2 lines of title + 1 line of REF + clean margins */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -368,24 +368,27 @@
     font-weight: 700;
     color: var(--gray-900);
     margin: 0;
-    line-height: 1.35;
+    line-height: 1.3;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 2.6em; /* Ensure 2 lines are reserved */
 }
 
 .card-ref-row {
-    font-size: 11px; /* Más discreto */
-    color: var(--gray-400);
-    font-weight: 600;
+    font-size: 11px;
+    color: var(--gray-500);
+    font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.02em;
-    height: 16px; /* Altura fija */
+    letter-spacing: 0.03em;
+    height: 16px;
     display: flex;
     align-items: center;
-    margin-bottom: 12px;
+    margin-top: 1px;
+    margin-bottom: 0;
 }
 
 .card-image-wrap {
@@ -1412,9 +1415,9 @@
 .pagination-row {
     display: flex;
     align-items: center;
-    gap: 8px;
-    flex-wrap: nowrap;
-    /* Evita que los botones salten de línea */
+    gap: 12px;
+    flex-wrap: wrap; /* Corrección crítica: permitir salto de línea para evitar solapamiento */
+    justify-content: center;
 }
 
 .page-numbers {
@@ -1427,9 +1430,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 38px;
-    height: 38px;
-    padding: 0 14px;
+    min-width: 40px; /* Aumentado ligeramente para mejor touch target */
+    height: 40px;
+    padding: 0 12px;
     background: white;
     border: 1px solid var(--gray-200);
     border-radius: 10px;
@@ -1440,7 +1443,7 @@
     transition: all 0.2s ease;
     cursor: pointer;
     white-space: nowrap;
-    gap: 8px;
+    gap: 6px;
 }
 
 .page-link i {
@@ -1483,12 +1486,22 @@
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding: 16px;
+        padding: 24px 16px;
+        gap: 20px;
+    }
+
+    .catalog-footer__left {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
     }
 
     .pagination-row {
         width: 100%;
         justify-content: center;
+        gap: 10px;
     }
 
     .page-link span {
@@ -1668,18 +1681,6 @@
     border: 1px solid #fde047;
 }
 
-/* 2. Referencia (debajo del precio) */
-.card-ref-row {
-    margin: 0;
-}
-
-.card-ref {
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--gray-400);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
 
 /* 3. Imagen protagonista */
 .card-image-wrap {

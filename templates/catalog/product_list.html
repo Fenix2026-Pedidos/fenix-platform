@@ -100,43 +100,9 @@
         </div>
 
         <div class="catalog-controls-bar">
-            {% include 'components/category_tabs.html' with search_query=search_query count=paginator.count page_start=page_obj.start_index page_end=page_obj.end_index %}
+            {% include 'components/category_tabs.html' with search_query=search_query count=paginator.count page_start=page_obj.start_index page_end=page_obj.end_index sort=sort page_size=page_size active_type=active_type %}
         </div>
     </section>
-
-    <!-- Barra de filtros móvil (Nueva: oculta en escritorio) -->
-    <div class="mobile-filter-bar d-md-none">
-        <button type="button" class="m-filter-btn" id="mFiltersToggle">
-            <i class="bi bi-sliders"></i>
-            <span>{% trans "Filtros" %}</span>
-        </button>
-        
-        <select class="m-select-compact" name="sort" onchange="document.getElementById('sortSelect').value = this.value; document.getElementById('sortForm').submit();">
-            <option value="relevance">{% trans "Posición" %}</option>
-            <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Precio menor" %}</option>
-            <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Precio mayor" %}</option>
-            <option value="name_asc" {% if sort == 'name_asc' %}selected{% endif %}>{% trans "Nombre: A-Z" %}</option>
-        </select>
-
-        <button type="button" class="m-direction-btn" onclick="const s = document.getElementById('sortSelect'); s.value = s.value.endsWith('_asc') ? s.value.replace('_asc', '_desc') : (s.value.endsWith('_desc') ? s.value.replace('_desc', '_asc') : s.value); s.form.submit();">
-            <i class="bi bi-arrow-down-up"></i>
-        </button>
-
-        <select class="m-select-compact" name="page_size" onchange="document.getElementById('pageSizeSelect').value = this.value; document.getElementById('pageSizeForm').submit();">
-            <option value="12" {% if page_size == 12 %}selected{% endif %}>12</option>
-            <option value="24" {% if page_size == 24 %}selected{% endif %}>24</option>
-            <option value="48" {% if page_size == 48 %}selected{% endif %}>48</option>
-            <option value="999" {% if page_size == 999 %}selected{% endif %}>{% trans "Todos" %}</option>
-        </select>
-
-        <div class="m-count-badge">
-            {% if paginator.count > 0 %}
-            {{ page_obj.start_index }}–{{ page_obj.end_index }} / {{ paginator.count }}
-            {% else %}
-            0
-            {% endif %}
-        </div>
-    </div>
 
     <div class="catalog-container">
         <!-- Panel de filtros desplegable -->
@@ -303,45 +269,11 @@
         <!-- Área principal con grid -->
         <div class="catalog-main-area">
 
-            <!-- Toolbar superior (ahora solo para acciones especiales y ordenación) -->
-            <div class="catalog-toolbar d-none d-md-flex">
-                <div class="catalog-toolbar__left">
-                    {% if user.is_staff or user.is_superuser %}
-                    <div class="catalog-admin-actions">
-                        <button type="button" id="toggleSortMode" class="btn btn-outline-primary btn-sm">
-                            <i class="bi bi-arrow-down-up"></i>
-                            <span class="btn-text">{% trans "Ordenar catálogo" %}</span>
-                        </button>
-                        <button type="button" id="saveSortOrder" class="btn btn-success btn-sm d-none">
-                            <i class="bi bi-check-lg"></i>
-                            {% trans "Guardar orden" %}
-                        </button>
-                    </div>
-                    {% endif %}
-                </div>
-
-                <div class="catalog-toolbar__right">
-                    <form method="get" class="catalog-sort" id="sortForm">
-                        <div class="sort-group">
-                            <label for="sortSelect">{% trans "Ordenar por" %}:</label>
-                            {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
-                            {% if page_size %}<input type="hidden" name="page_size" value="{{ page_size }}">{% endif %}
-                            <select id="sortSelect" name="sort" class="form-select form-select-sm" onchange="this.form.submit()">
-                                <option value="relevance" {% if sort == 'relevance' %}selected{% endif %}>{% trans "Relevancia" %}</option>
-                                <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Precio: Menor a Mayor" %}</option>
-                                <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Precio: Mayor a Menor" %}</option>
-                                <option value="name_asc" {% if sort == 'name_asc' %}selected{% endif %}>{% trans "Nombre: A-Z" %}</option>
-                                <option value="name_desc" {% if sort == 'name_desc' %}selected{% endif %}>{% trans "Nombre: Z-A" %}</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
             <div class="products-grid" id="productsGrid">
                 {% if products %}
                 {% for product in products %}
                 <div class="product-card" data-product-id="{{ product.pk }}"
+                    data-product-url="{% url 'catalog:product_detail' product.pk %}"
                     {% if show_prices %}data-product-price="{{ product.price|unlocalize }}"{% endif %}
                     data-category="{{ product|product_category_slugs }}"
                     data-product-type="{{ product|product_type }}"
@@ -469,19 +401,28 @@
             </div>
 
             <div class="catalog-footer">
-                <div class="catalog-footer__left">
-                    <form method="get" id="pageSizeForm" class="page-size-form">
-                        {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
-                        {% if sort %}<input type="hidden" name="sort" value="{{ sort }}">{% endif %}
-                        <label for="pageSizeSelect">{% trans "Mostrar:" %}</label>
-                        <select id="pageSizeSelect" name="page_size" class="form-select form-select-sm" onchange="this.form.submit()">
-                            <option value="12" {% if page_size == 12 %}selected{% endif %}>12</option>
-                            <option value="24" {% if page_size == 24 %}selected{% endif %}>24</option>
-                            <option value="48" {% if page_size == 48 %}selected{% endif %}>48</option>
-                            <option value="999" {% if page_size == 999 %}selected{% endif %}>{% trans "Todos" %}</option>
-                        </select>
-                    </form>
+            <div class="catalog-footer__left">
+                <div class="catalog-results-count d-lg-none mb-3">
+                    {% if paginator.count > 0 %}
+                    {% blocktrans with start=page_obj.start_index end=page_obj.end_index total=paginator.count %}
+                    Mostrando <span class="count-numbers">{{ start }}–{{ end }}</span> de <span class="count-numbers">{{ total }}</span> productos
+                    {% endblocktrans %}
+                    {% endif %}
                 </div>
+                <form method="get" id="pageSizeForm" class="page-size-form">
+                    {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
+                    {% if sort %}<input type="hidden" name="sort" value="{{ sort }}">{% endif %}
+                    {% if active_type %}<input type="hidden" name="type" value="{{ active_type }}">{% endif %}
+                    <label for="pageSizeSelect">{% trans "Mostrar:" %}</label>
+                    <select id="pageSizeSelect" name="page_size" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="12" {% if page_size == 12 %}selected{% endif %}>12</option>
+                        <option value="20" {% if page_size == 20 %}selected{% endif %}>20</option>
+                        <option value="24" {% if page_size == 24 %}selected{% endif %}>24</option>
+                        <option value="48" {% if page_size == 48 %}selected{% endif %}>48</option>
+                        <option value="999" {% if page_size == 999 %}selected{% endif %}>{% trans "Todos" %}</option>
+                    </select>
+                </form>
+            </div>
 
                 <nav class="catalog-pagination" aria-label="{% trans 'Paginación del catálogo' %}">
                     <div class="pagination-row">
@@ -503,10 +444,10 @@
                                 {% if page_obj.number == num %}
                                 <span class="page-link current" aria-current="page">{{ num }}</span>
                                 {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}"
+                                <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}{% if active_type %}&type={{ active_type }}{% endif %}"
                                     class="page-link">{{ num }}</a>
                                 {% elif num == 1 or num == paginator.num_pages %}
-                                <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}"
+                                <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}{% if active_type %}&type={{ active_type }}{% endif %}"
                                     class="page-link">{{ num }}</a>
                                 {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
                                 <span class="page-ellipsis">...</span>
@@ -597,20 +538,31 @@
         // Parsear precios estilo Amazon (separar parte entera y decimales)
         document.querySelectorAll('.card-price-main[data-price]').forEach(function (priceElement) {
             const priceValue = parseFloat(priceElement.getAttribute('data-price'));
-            if (isNaN(priceValue)) return;
-
-            const priceFull = priceElement.querySelector('.price-full');
-            if (!priceFull) return;
-
-            // Formatear precio con 2 decimales
-            const formatted = priceValue.toFixed(2);
-            const parts = formatted.split('.');
-            const intPart = parts[0];
-            const decPart = parts[1] || '00';
-
-            // Reemplazar el contenido del precio completo con parte entera y decimales
-            priceFull.outerHTML = '<span class="price-int">' + intPart + '</span><span class="price-dec">,' + decPart + '</span>';
+            if (!isNaN(priceValue)) {
+                const parts = priceValue.toFixed(2).split('.');
+                const intPart = parts[0];
+                const decPart = parts[1] || '00';
+                
+                // Reconstruct with int/dec spans
+                priceElement.innerHTML = `<span class="price-int">${intPart}</span><span class="price-dec">,${decPart}</span><span class="price-currency">€</span>`;
+            }
         });
+
+        // Click en toda la tarjeta (Navegación al detalle)
+        const productsGrid = document.getElementById('productsGrid');
+        if (productsGrid) {
+            productsGrid.addEventListener('click', function(e) {
+                // Si el clic es en un elemento interactivo, no hacemos nada
+                if (e.target.closest('button, input, .quantity-stepper, .btn-primary, .btn-move-top, .drag-handle')) {
+                    return;
+                }
+                
+                const card = e.target.closest('.product-card');
+                if (card && card.dataset.productUrl) {
+                    window.location.href = card.dataset.productUrl;
+                }
+            });
+        }
 
 
         const authModalController = (function () {

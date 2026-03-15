@@ -78,7 +78,8 @@ const CatalogFilters = {
             // Validar si el tipo es una categoría o tipo conocido. 
             // Si es un término de búsqueda (ej: de un Hero link mal configurado), lo ignoramos como tipo.
             const knownTypes = [
-                'todos', 'sandwich', 'salchichas', 'pizzas', 'jamon', 'pavo'
+                'todos', 'sandwich', 'salchichas', 'pizzas', 'jamon', 'pavo',
+                'charcuteria', 'curados', 'ibericos', 'jamon-cocido', 'jamon-curado', 'platos-preparados'
             ];
             
             if (savedType && !knownTypes.includes(savedType)) {
@@ -383,7 +384,12 @@ const CatalogFilters = {
      * Normaliza un texto para búsqueda (minúsculas, sin acentos)
      */
     normalizeText: function (text) {
-        return text ? text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : "";
+        if (!text) return "";
+        return text.toString()
+            .toLowerCase()
+            .trim()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
     },
 
     /**

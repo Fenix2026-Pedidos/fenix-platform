@@ -1,38 +1,46 @@
 {% load i18n %}
 <div class="catalog-controls-inner">
-    <div class="catalog-controls__left d-none d-md-flex">
-        <div class="catalog-results-count">
-            {% if count > 0 %}
-            <span class="count-label">{% trans "Mostrando" %}</span>
-            <span class="count-numbers">{{ page_start }}–{{ page_end }}</span>
-            <span class="count-label">{% trans "de" %}</span>
-            <span class="count-total">{{ count }}</span>
-            {% else %}
-            <span class="count-total">0</span> <span class="count-label">{% trans "productos" %}</span>
-            {% endif %}
+    <div class="catalog-controls__left">
+        {% if user.is_staff or user.is_superuser %}
+        <div class="catalog-admin-actions">
+            <button type="button" id="toggleSortMode" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-arrow-down-up"></i>
+                <span class="btn-text">{% trans "Ordenar" %}</span>
+            </button>
+            <button type="button" id="saveSortOrder" class="btn btn-success btn-sm d-none">
+                <i class="bi bi-check-lg"></i>
+                {% trans "Guardar" %}
+            </button>
         </div>
+        {% endif %}
     </div>
 
     <div class="catalog-controls__center">
         <div class="category-tabs d-none d-md-flex" role="tablist">
-            <button class="category-tab is-active" type="button" role="tab" aria-selected="true" data-category-tab="todos">
+            <a href="?type=todos{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
+               class="category-tab {% if active_type == 'todos' or not active_type %}is-active{% endif %}" role="tab" {% if active_type == 'todos' %}aria-selected="true"{% endif %}>
                 {% trans "Todos" %}
-            </button>
-            <button class="category-tab" type="button" role="tab" aria-selected="false" data-category-tab="sandwich">
+            </a>
+            <a href="?type=sandwich{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
+               class="category-tab {% if active_type == 'sandwich' %}is-active{% endif %}" role="tab" {% if active_type == 'sandwich' %}aria-selected="true"{% endif %}>
                 {% trans "Sándwich" %}
-            </button>
-            <button class="category-tab" type="button" role="tab" aria-selected="false" data-category-tab="salchichas">
+            </a>
+            <a href="?type=salchichas{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
+               class="category-tab {% if active_type == 'salchichas' %}is-active{% endif %}" role="tab" {% if active_type == 'salchichas' %}aria-selected="true"{% endif %}>
                 {% trans "Salchichas" %}
-            </button>
-            <button class="category-tab" type="button" role="tab" aria-selected="false" data-category-tab="pizzas">
+            </a>
+            <a href="?type=pizzas{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
+               class="category-tab {% if active_type == 'pizzas' %}is-active{% endif %}" role="tab" {% if active_type == 'pizzas' %}aria-selected="true"{% endif %}>
                 {% trans "Pizzas" %}
-            </button>
-            <button class="category-tab" type="button" role="tab" aria-selected="false" data-category-tab="jamon">
+            </a>
+            <a href="?type=jamon{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
+               class="category-tab {% if active_type == 'jamon' %}is-active{% endif %}" role="tab" {% if active_type == 'jamon' %}aria-selected="true"{% endif %}>
                 {% trans "Jamón" %}
-            </button>
-            <button class="category-tab" type="button" role="tab" aria-selected="false" data-category-tab="pavo">
+            </a>
+            <a href="?type=pavo{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
+               class="category-tab {% if active_type == 'pavo' %}is-active{% endif %}" role="tab" {% if active_type == 'pavo' %}aria-selected="true"{% endif %}>
                 {% trans "Pavo" %}
-            </button>
+            </a>
         </div>
     </div>
 
@@ -40,15 +48,39 @@
         <form method="get" class="category-search" id="searchForm">
             <div class="search-input-group">
                 <input type="text" name="q" value="{{ search_query }}" class="form-control catalog-search-input" 
-                       placeholder="{% trans 'Buscar productos...' %}" id="searchInput">
+                       placeholder="{% trans '¿Qué producto buscas?' %}" id="searchInput">
                 <button type="submit" class="btn-search-icon">
                     <i class="bi bi-search"></i>
                 </button>
             </div>
+            {% if sort %}<input type="hidden" name="sort" value="{{ sort }}">{% endif %}
+            {% if page_size %}<input type="hidden" name="page_size" value="{{ page_size }}">{% endif %}
         </form>
-        <button type="button" class="btn btn-outline btn-filters-toggle" id="filtersToggle">
-            <i class="bi bi-sliders"></i>
-            <span class="btn-text">{% trans "Filtros" %}</span>
-        </button>
+
+        <div class="catalog-actions-group">
+            <button type="button" class="btn btn-outline btn-filters-toggle" id="filtersToggle">
+                <i class="bi bi-sliders"></i>
+                <span class="btn-text">{% trans "Filtros" %}</span>
+            </button>
+
+            <form method="get" class="catalog-sort d-lg-block" id="sortForm">
+                {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
+                {% if page_size %}<input type="hidden" name="page_size" value="{{ page_size }}">{% endif %}
+                <select id="sortSelect" name="sort" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="relevance" {% if sort == 'relevance' %}selected{% endif %}>{% trans "Relevancia" %}</option>
+                    <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Precio: - a +" %}</option>
+                    <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Precio: + a -" %}</option>
+                    <option value="name_asc" {% if sort == 'name_asc' %}selected{% endif %}>{% trans "Nombre: A-Z" %}</option>
+                </select>
+            </form>
+        </div>
+
+        <div class="catalog-results-count d-none d-lg-flex ms-3">
+            {% if count > 0 %}
+            {% blocktrans with start=page_start end=page_end total=count %}
+            Mostrando <span class="count-numbers">{{ start }}–{{ end }}</span> de <span class="count-numbers">{{ total }}</span> productos
+            {% endblocktrans %}
+            {% endif %}
+        </div>
     </div>
 </div>
