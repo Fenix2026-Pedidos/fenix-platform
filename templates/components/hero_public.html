@@ -1,16 +1,28 @@
 {% load i18n static catalog_extras %}
 <section class="public-hero" aria-labelledby="publicHeroTitle">
-    <div class="public-hero__inner">
-        <div class="public-hero__copy" style="display: flex; flex-direction: column; align-items: center;">
-            <p class="public-hero__eyebrow" style="width: 100%; text-align: left;">Distribuciones Fenix de la Mancha</p>
-            <div class="public-hero__image-wrapper" style="margin-top: 10px; display: flex; justify-content: center;">
-                <img src="{% static 'img/hero 2.png' %}" alt="Promoción Fenix" style="max-height: 330px; width: auto; max-width: 100%; border-radius: 12px; object-fit: contain;">
-            </div>
-            <div class="hero-delivery-badge">
-                <img src="{% static 'img/delivery-truck-24h.png' %}" alt="Reparto 24h" loading="lazy">
-            </div>
+    <!-- 1. Marca (Top Centered) -->
+    <div class="hero-brand-block">
+        <div class="hero-brand-top">{% trans "DISTRIBUCIONES" %}</div>
+        <div class="hero-brand-main-row">
+            <span class="hero-brand-adorn hero-brand-adorn-left"></span>
+            <h1 class="hero-brand-title-wrap">
+                <span class="brand-name-fenix">{% trans "FÉNIX" %}</span>
+                <span class="brand-name-de-la">{% trans "DE LA" %}</span>
+                <span class="brand-name-mancha">{% trans "MANCHA" %}</span>
+            </h1>
+            <span class="hero-brand-adorn hero-brand-adorn-right"></span>
         </div>
-        <div class="public-hero__visual" aria-hidden="true">
+        <p class="hero-brand-subtitle">
+            {% blocktrans %}Distribuidor profesional de alimentación y charcutería en <strong>Ciudad Real y Toledo</strong>{% endblocktrans %}
+        </p>
+    </div>
+
+    <!-- 2. Contenido (Horse Left, Cards Right) -->
+    <div class="public-hero__grid">
+        <div class="public-hero__left">
+            <img src="{% static 'img/hero 2.png' %}" alt="Promoción Fenix" class="hero-main-visual">
+        </div>
+        <div class="public-hero__right">
             <div class="public-hero__cards">
                 {% if featured_products %}
                     {% for promo in featured_products %}
@@ -33,7 +45,6 @@
                     </a>
                     {% endfor %}
                 {% else %}
-                    <!-- Fallback: productos estáticos si no hay promociones configuradas -->
                     <a href="{% url 'catalog:product_list' %}?type=salchichas" class="hero-product-link">
                         <article class="hero-product-card">
                             <div class="hero-product-card__image">
@@ -69,11 +80,18 @@
         </div>
     </div>
 
-    <!-- Barra de información superpuesta -->
+    <!-- 3. Barra de Servicio (Footer) -->
     <div class="hero-info-bar">
-        <span class="hero-info-bar__icon">✔</span>
-        <p>
-            {% blocktrans %}<strong>Servicio garantizado:</strong> entregamos de forma inmediata en toda la provincia de <strong>Ciudad Real y Toledo</strong>{% endblocktrans %}
-        </p>
+        <div class="hero-info-bar__combined">
+            <div class="hero-info-bar__truck">
+                <img src="{% static 'img/delivery-truck-24h.png' %}" alt="24h" class="truck-mini-icon">
+            </div>
+            <div class="hero-info-bar__text">
+                <span class="hero-info-bar__check">✔</span>
+                <p>
+                    {% blocktrans %}<strong>Servicio garantizado:</strong> entregamos de forma inmediata en toda la provincia de <strong>Ciudad Real y Toledo</strong>{% endblocktrans %}
+                </p>
+            </div>
+        </div>
     </div>
 </section>
