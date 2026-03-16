@@ -67,8 +67,9 @@
                     {% if page_size %}<input type="hidden" name="page_size" value="{{ page_size }}">{% endif %}
                     {% if active_type %}<input type="hidden" name="type" value="{{ active_type }}">{% endif %}
                     <div class="custom-sort-wrapper">
-                        <select id="sortSelect" name="sort" class="form-select custom-sort-select" onchange="this.form.submit()">
-                            <option value="relevance" {% if sort == 'relevance' %}selected{% endif %}>{% trans "Ordenar por: Relevancia" %}</option>
+                        <select id="sortSelect" name="sort" class="form-select custom-sort-select" onchange="this.form.submit()"
+                                aria-label="{% trans 'Ordenar productos' %}">
+                            <option value="relevance" {% if sort == 'relevance' %}selected{% endif %}>{% trans "Ordenar" %}</option>
                             <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Precio: Bajo a Alto" %}</option>
                             <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Precio: Alto a Bajo" %}</option>
                             <option value="name_asc" {% if sort == 'name_asc' %}selected{% endif %}>{% trans "Nombre: A-Z" %}</option>
@@ -77,6 +78,7 @@
                     </div>
                 </form>
             </div>
+
         </div>
     </div>
 

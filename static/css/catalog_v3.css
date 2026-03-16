@@ -1189,9 +1189,15 @@
         max-width: 100%;
     }
 
+    /* Controles del catálogo en mobile: 2 filas */
     .catalog-controls-inner {
         flex-direction: column;
-        gap: 16px;
+        gap: 10px;
+    }
+
+    /* Fila de categorías: oculta en mobile */
+    .catalog-controls__categories {
+        display: none;
     }
 
     .catalog-controls__center {
@@ -1199,7 +1205,7 @@
     }
 
     .category-tabs {
-        display: none !important; /* Mantenemos oculto en móvil como se solicitó */
+        display: none !important;
     }
 
     .catalog-controls__right {
@@ -1208,15 +1214,45 @@
         gap: 12px;
     }
 
-    .category-search {
+    /* Fila acción principal: buscador ocupa 100% ancho */
+    .catalog-controls__actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        width: 100%;
+    }
+
+    /* Fila 1: Buscador al 100% */
+    .catalog-controls__actions .category-search {
         width: 100%;
         min-width: unset;
     }
 
-    .btn-filters-toggle {
+    /* Fila 2: Filtros y Ordenar lado a lado */
+    .catalog-actions-group {
+        display: flex;
+        gap: 8px;
         width: 100%;
-        justify-content: center;
     }
+
+    .btn-filters-toggle {
+        flex: 1;
+        justify-content: center;
+        width: auto !important;
+    }
+
+    .catalog-sort {
+        flex: 1;
+    }
+
+    .custom-sort-wrapper,
+    .custom-sort-select {
+        width: 100%;
+    }
+
+    /* Etiqueta corta del selector de orden en mobile */
+    .sort-label-full  { display: none; }
+    .sort-label-short { display: inline; }
 
     .public-footer__content {
         flex-direction: column;
