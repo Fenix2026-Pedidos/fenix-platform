@@ -1,0 +1,230 @@
+/* ==========================================================================
+   Product Detail Styles
+   ========================================================================== */
+
+.product-detail-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+/* --- Breadcrumb --- */
+.breadcrumb-nav {
+    margin-bottom: 20px;
+}
+
+.breadcrumb-list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    gap: 8px;
+    align-items: center;
+    font-size: 14px;
+}
+
+.breadcrumb-item a {
+    color: var(--primary-600);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--primary-700);
+    text-decoration: underline;
+}
+
+.breadcrumb-separator {
+    color: var(--gray-400);
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-current {
+    color: var(--gray-600);
+    font-weight: 500;
+}
+
+/* --- Layout Grid --- */
+.product-main-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 32px;
+    margin-bottom: 32px;
+    align-items: start;
+}
+
+/* --- Image Section --- */
+.product-image-wrapper {
+    width: 100%;
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    min-height: 300px;
+    max-height: 450px;
+    border: 1px solid var(--gray-100);
+}
+
+.product-image-wrapper img {
+    max-width: 100%;
+    max-height: 400px;
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.product-image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--gray-400);
+}
+
+.product-image-placeholder i {
+    font-size: 64px;
+}
+
+/* --- Sidebar Section (Price/CTA) --- */
+.product-sidebar-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-sm);
+    padding: 24px;
+    position: sticky;
+    top: 100px;
+}
+
+.price-display-box {
+    text-align: center;
+    margin-bottom: 24px;
+    padding: 20px;
+    background: linear-gradient(135deg, var(--primary-50) 0%, var(--primary-100) 100%);
+    border-radius: var(--radius-md);
+}
+
+.price-label {
+    font-size: 12px;
+    color: var(--gray-600);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.price-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--primary-600);
+}
+
+.price-unit {
+    font-size: 16px;
+    color: var(--gray-500);
+    font-weight: 400;
+}
+
+.price-login-prompt {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-600);
+    font-style: italic;
+    line-height: 1.4;
+}
+
+/* --- Content Section (Details) --- */
+.product-info-section {
+    max-width: 100%;
+}
+
+.product-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--gray-900);
+    line-height: 1.2;
+}
+
+.product-description-card {
+    background: transparent;
+    border: none;
+    margin-top: 24px;
+}
+
+.description-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--gray-800);
+    border-bottom: 2px solid var(--primary-100);
+    display: inline-block;
+    padding-bottom: 4px;
+}
+
+.description-content {
+    color: var(--gray-700);
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+.description-empty {
+    color: var(--gray-500);
+    font-style: italic;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 992px) {
+    .product-main-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .product-sidebar-card {
+        position: static;
+        order: 3;
+    }
+
+    .product-image-wrapper {
+        order: 1;
+        max-height: 350px;
+    }
+
+    .product-info-section {
+        order: 2;
+    }
+
+    .product-title {
+        font-size: 24px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .product-image-wrapper {
+        min-height: 250px;
+        padding: 10px;
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto 20px auto;
+    }
+
+    .product-image-wrapper img {
+        max-height: 300px;
+        width: 100%;
+    }
+
+    .price-value {
+        font-size: 28px;
+    }
+
+    .price-login-prompt {
+        font-size: 16px;
+    }
+    
+    .product-sidebar-card {
+        padding: 16px;
+    }
+}
