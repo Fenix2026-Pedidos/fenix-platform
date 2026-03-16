@@ -220,8 +220,9 @@ const CatalogFilters = {
         
         url.searchParams.set('page', '1');
 
-        // Navegar
-        window.location.href = url.toString();
+        // Navegar — el hash #productsGrid provoca que el navegador posicione
+        // la vista en el grid de resultados, no en el top de la home.
+        window.location.href = url.toString() + '#productsGrid';
     },
 
     /**
@@ -240,3 +241,23 @@ const CatalogFilters = {
 };
 
 window.CatalogFilters = CatalogFilters;
+
+// ─── Scroll suave al grid tras recarga por filtros ─────────────────────────
+// Cuando la URL tiene #productsGrid, el navegador hace un salto brusco al
+// ancla. Sustituimos ese salto por un scroll suave con pequeño offset para
+// dejar el encabezado visible.
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.location.hash === '#productsGrid') {
+        const grid = document.getElementById('productsGrid');
+        if (grid) {
+            // Primero vamos al top sin animación para que el scroll siguiente
+            // parta desde cero y no desde donde el navegador saltó.
+            window.scrollTo(0, 0);
+            requestAnimationFrame(function () {
+                const OFFSET = 80; // px de cabecera fija
+                const top = grid.getBoundingClientRect().top + window.pageYOffset - OFFSET;
+                window.scrollTo({ top: top, behavior: 'smooth' });
+            });
+        }
+    }
+});
