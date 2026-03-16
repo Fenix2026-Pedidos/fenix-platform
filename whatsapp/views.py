@@ -9,6 +9,7 @@ from django.views.decorators.http import require_http_methods
 from django.utils.decorators import method_decorator
 from django.views import View
 from .services import send_whatsapp_message
+from .models import WhatsAppLead
 
 logger = logging.getLogger(__name__)
 
@@ -55,20 +56,29 @@ class SendWhatsAppMessageView(View):
                     'error': 'El mensaje es requerido'
                 }, status=400)
             
-            # Construir mensaje final para WhatsApp
-            whatsapp_text = f"""Nuevo contacto Fenix:
-
-Nombre: {name}
-Página: {page_url if page_url else 'No especificada'}
-
-Mensaje:
-{message}"""
+            # 1. Crear el registro del Lead (vía persistencia)
+            lead = WhatsAppLead.objects.create(
+                name=name,
+                message=message,
+                page_url=page_url
+            )
             
-            # Enviar mensaje a través del servicio
+            # 2. Construir mensaje final para WhatsApp
+            whatsapp_text = f"Nuevo contacto Fenix:\n\nNombre: {name}\nPágina: {page_url if page_url else 'No especificada'}\n\nMensaje:\n{message}"
+            
+            # 3. Enviar mensaje a través del servicio
             result = send_whatsapp_message(whatsapp_text)
             
+            # 4. Actualizar el Lead con la respuesta
+            lead.sent_successfully = result['success']
+            lead.api_response = result.get('whatsapp_response')
+            if not result['success']:
+                # Guardar el error en api_response para debugging si falla
+                lead.api_response = {'error': result.get('error'), 'details': result.get('details')}
+            lead.save()
+            
             if result['success']:
-                logger.info(f"Mensaje WhatsApp enviado desde: {name} ({page_url})")
+                logger.info(f"Mensaje WhatsApp enviado y guardado (Lead ID: {lead.id})")
                 return JsonResponse({
                     'success': True,
                     'message': 'Mensaje enviado correctamente'
