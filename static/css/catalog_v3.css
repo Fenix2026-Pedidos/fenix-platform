@@ -248,6 +248,17 @@
     }
 }
 
+/* Tablet (iPad, iPad Air, iPad Pro): mostrar solo 2 tarjetas */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .hero-product-link:nth-child(n+3) {
+        display: none !important;
+    }
+    .hero-product-card {
+        width: 190px;
+    }
+}
+
+
 .hero-product-card__badge {
     background-color: #FEF3C7;
     color: #92400E;
