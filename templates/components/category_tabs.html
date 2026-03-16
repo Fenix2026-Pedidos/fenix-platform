@@ -1,86 +1,109 @@
 {% load i18n %}
 <div class="catalog-controls-inner">
-    <div class="catalog-controls__left">
+    <!-- Fila 1: Filtros de Categoría y Acciones -->
+    <div class="catalog-controls-row catalog-controls-row--main">
+        <div class="catalog-controls__categories">
+            <div class="category-tabs d-none d-md-flex" role="tablist">
+                <a href="?type=todos{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
+                   class="category-chip {% if active_type == 'todos' or not active_type %}is-active{% endif %}" role="tab" {% if active_type == 'todos' %}aria-selected="true"{% endif %}>
+                    {% trans "Todos" %}
+                </a>
+                <a href="?type=sandwich{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
+                   class="category-chip {% if active_type == 'sandwich' %}is-active{% endif %}" role="tab" {% if active_type == 'sandwich' %}aria-selected="true"{% endif %}>
+                    {% trans "Sándwich" %}
+                </a>
+                <a href="?type=salchichas{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
+                   class="category-chip {% if active_type == 'salchichas' %}is-active{% endif %}" role="tab" {% if active_type == 'salchichas' %}aria-selected="true"{% endif %}>
+                    {% trans "Salchichas" %}
+                </a>
+                <a href="?type=jamon-cocido{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
+                   class="category-chip {% if active_type == 'jamon-cocido' %}is-active{% endif %}" role="tab" {% if active_type == 'jamon-cocido' %}aria-selected="true"{% endif %}>
+                    {% trans "Jamón Cocido" %}
+                </a>
+                <a href="?type=jamon-curado{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
+                   class="category-chip {% if active_type == 'jamon-curado' %}is-active{% endif %}" role="tab" {% if active_type == 'jamon-curado' %}aria-selected="true"{% endif %}>
+                    {% trans "Jamón Curado" %}
+                </a>
+                <a href="?type=pavo{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
+                   class="category-chip {% if active_type == 'pavo' %}is-active{% endif %}" role="tab" {% if active_type == 'pavo' %}aria-selected="true"{% endif %}>
+                    {% trans "Pavo" %}
+                </a>
+                <a href="?type=pollo{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
+                   class="category-chip {% if active_type == 'pollo' %}is-active{% endif %}" role="tab" {% if active_type == 'pollo' %}aria-selected="true"{% endif %}>
+                    {% trans "Pollo" %}
+                </a>
+                <a href="?type=ibericos{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
+                   class="category-chip {% if active_type == 'ibericos' %}is-active{% endif %}" role="tab" {% if active_type == 'ibericos' %}aria-selected="true"{% endif %}>
+                    {% trans "Ibéricos" %}
+                </a>
+            </div>
+        </div>
+
+        <div class="catalog-controls__actions">
+            <!-- Buscador (Acción Principal) -->
+            <form method="get" class="category-search" id="searchForm">
+                <div class="search-input-group">
+                    <input type="text" name="q" value="{{ search_query }}" class="form-control catalog-search-input" 
+                           placeholder="{% trans '¿Qué producto buscas?' %}" id="searchInput">
+                    <button type="submit" class="btn-search-icon">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+                {% if sort %}<input type="hidden" name="sort" value="{{ sort }}">{% endif %}
+                {% if page_size %}<input type="hidden" name="page_size" value="{{ page_size }}">{% endif %}
+                {% if active_type %}<input type="hidden" name="type" value="{{ active_type }}">{% endif %}
+            </form>
+
+            <div class="catalog-actions-group">
+                <!-- Botón Filtros -->
+                <button type="button" class="btn btn-outline btn-filters-toggle" id="filtersToggle">
+                    <i class="bi bi-sliders"></i>
+                    <span class="btn-text">{% trans "Filtros" %}</span>
+                </button>
+
+                <!-- Selector Ordenar (Personalizado en CSS) -->
+                <form method="get" class="catalog-sort" id="sortForm">
+                    {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
+                    {% if page_size %}<input type="hidden" name="page_size" value="{{ page_size }}">{% endif %}
+                    {% if active_type %}<input type="hidden" name="type" value="{{ active_type }}">{% endif %}
+                    <div class="custom-sort-wrapper">
+                        <select id="sortSelect" name="sort" class="form-select custom-sort-select" onchange="this.form.submit()">
+                            <option value="relevance" {% if sort == 'relevance' %}selected{% endif %}>{% trans "Ordenar por: Relevancia" %}</option>
+                            <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Precio: Bajo a Alto" %}</option>
+                            <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Precio: Alto a Bajo" %}</option>
+                            <option value="name_asc" {% if sort == 'name_asc' %}selected{% endif %}>{% trans "Nombre: A-Z" %}</option>
+                        </select>
+                        <i class="bi bi-chevron-down sort-icon"></i>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fila 2: Contador de Resultados (Alineación izquierda para mejor jerarquía) -->
+    <div class="catalog-controls-row catalog-controls-row--secondary">
+        <div class="catalog-results-count-wrapper">
+            {% if count > 0 %}
+            <div class="catalog-results-count-new">
+                {% blocktrans with start=page_start end=page_end total=count %}
+                Mostrando <span class="count-highlight">{{ start }}–{{ end }}</span> de <span class="count-highlight">{{ total }}</span> productos
+                {% endblocktrans %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Admin actions moved to a discrete area if needed, or kept grouped -->
         {% if user.is_staff or user.is_superuser %}
         <div class="catalog-admin-actions">
-            <button type="button" id="toggleSortMode" class="btn btn-outline-primary btn-sm">
+            <button type="button" id="toggleSortMode" class="btn btn-outline-primary btn-xs">
                 <i class="bi bi-arrow-down-up"></i>
-                <span class="btn-text">{% trans "Ordenar" %}</span>
+                {% trans "Ordenar Catálogo" %}
             </button>
-            <button type="button" id="saveSortOrder" class="btn btn-success btn-sm d-none">
+            <button type="button" id="saveSortOrder" class="btn btn-success btn-xs d-none">
                 <i class="bi bi-check-lg"></i>
                 {% trans "Guardar" %}
             </button>
         </div>
         {% endif %}
-    </div>
-
-    <div class="catalog-controls__center">
-        <div class="category-tabs d-none d-md-flex" role="tablist">
-            <a href="?type=todos{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
-               class="category-tab {% if active_type == 'todos' or not active_type %}is-active{% endif %}" role="tab" {% if active_type == 'todos' %}aria-selected="true"{% endif %}>
-                {% trans "Todos" %}
-            </a>
-            <a href="?type=sandwich{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
-               class="category-tab {% if active_type == 'sandwich' %}is-active{% endif %}" role="tab" {% if active_type == 'sandwich' %}aria-selected="true"{% endif %}>
-                {% trans "Sándwich" %}
-            </a>
-            <a href="?type=salchichas{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
-               class="category-tab {% if active_type == 'salchichas' %}is-active{% endif %}" role="tab" {% if active_type == 'salchichas' %}aria-selected="true"{% endif %}>
-                {% trans "Salchichas" %}
-            </a>
-            <a href="?type=pizzas{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
-               class="category-tab {% if active_type == 'pizzas' %}is-active{% endif %}" role="tab" {% if active_type == 'pizzas' %}aria-selected="true"{% endif %}>
-                {% trans "Pizzas" %}
-            </a>
-            <a href="?type=jamon{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
-               class="category-tab {% if active_type == 'jamon' %}is-active{% endif %}" role="tab" {% if active_type == 'jamon' %}aria-selected="true"{% endif %}>
-                {% trans "Jamón" %}
-            </a>
-            <a href="?type=pavo{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
-               class="category-tab {% if active_type == 'pavo' %}is-active{% endif %}" role="tab" {% if active_type == 'pavo' %}aria-selected="true"{% endif %}>
-                {% trans "Pavo" %}
-            </a>
-        </div>
-    </div>
-
-    <div class="catalog-controls__right">
-        <form method="get" class="category-search" id="searchForm">
-            <div class="search-input-group">
-                <input type="text" name="q" value="{{ search_query }}" class="form-control catalog-search-input" 
-                       placeholder="{% trans '¿Qué producto buscas?' %}" id="searchInput">
-                <button type="submit" class="btn-search-icon">
-                    <i class="bi bi-search"></i>
-                </button>
-            </div>
-            {% if sort %}<input type="hidden" name="sort" value="{{ sort }}">{% endif %}
-            {% if page_size %}<input type="hidden" name="page_size" value="{{ page_size }}">{% endif %}
-        </form>
-
-        <div class="catalog-actions-group">
-            <button type="button" class="btn btn-outline btn-filters-toggle" id="filtersToggle">
-                <i class="bi bi-sliders"></i>
-                <span class="btn-text">{% trans "Filtros" %}</span>
-            </button>
-
-            <form method="get" class="catalog-sort d-lg-block" id="sortForm">
-                {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
-                {% if page_size %}<input type="hidden" name="page_size" value="{{ page_size }}">{% endif %}
-                <select id="sortSelect" name="sort" class="form-select form-select-sm" onchange="this.form.submit()">
-                    <option value="relevance" {% if sort == 'relevance' %}selected{% endif %}>{% trans "Relevancia" %}</option>
-                    <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Precio: - a +" %}</option>
-                    <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Precio: + a -" %}</option>
-                    <option value="name_asc" {% if sort == 'name_asc' %}selected{% endif %}>{% trans "Nombre: A-Z" %}</option>
-                </select>
-            </form>
-        </div>
-
-        <div class="catalog-results-count d-none d-lg-flex ms-3">
-            {% if count > 0 %}
-            {% blocktrans with start=page_start end=page_end total=count %}
-            Mostrando <span class="count-numbers">{{ start }}–{{ end }}</span> de <span class="count-numbers">{{ total }}</span> productos
-            {% endblocktrans %}
-            {% endif %}
-        </div>
     </div>
 </div>

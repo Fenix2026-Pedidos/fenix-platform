@@ -118,95 +118,69 @@
 
             <div class="filters-content">
                 <!-- Sección 0: Categorías (Móvil) -->
-                <div class="filters-section filters-section-categories">
-                    <h4 class="filters-section-title">{% trans "Categorías" %}</h4>
-                    <div class="filters-radio-list">
-                        <label class="filter-radio">
-                            <input type="radio" name="mobile-category" class="filter-type-radio" value="todos" data-type="todos" {% if active_type == 'todos' or not active_type %}checked{% endif %}>
-                            <span class="filter-label">{% trans "Todas" %}</span>
-                        </label>
-                        <button type="button" class="visually-hidden" data-category-tab="todos"></button>
-                        
-                        <label class="filter-radio">
-                            <input type="radio" name="mobile-category" class="filter-type-radio" value="sandwich" data-type="sandwich">
-                            <span class="filter-label">{% trans "Sándwich" %}</span>
-                        </label>
-                        <button type="button" class="visually-hidden" data-category-tab="sandwich"></button>
 
-                        <label class="filter-radio">
-                            <input type="radio" name="mobile-category" class="filter-type-radio" value="salchichas" data-type="salchichas">
-                            <span class="filter-label">{% trans "Salchichas" %}</span>
-                        </label>
-                        <button type="button" class="visually-hidden" data-category-tab="salchichas"></button>
-
-                        <label class="filter-radio">
-                            <input type="radio" name="mobile-category" class="filter-type-radio" value="pizzas" data-type="pizzas">
-                            <span class="filter-label">{% trans "Pizzas" %}</span>
-                        </label>
-                        <button type="button" class="visually-hidden" data-category-tab="pizzas"></button>
-
-                        <label class="filter-radio">
-                            <input type="radio" name="mobile-category" class="filter-type-radio" value="jamon" data-type="jamon">
-                            <span class="filter-label">{% trans "Jamón" %}</span>
-                        </label>
-                        <button type="button" class="visually-hidden" data-category-tab="jamon"></button>
-
-                        <label class="filter-radio">
-                            <input type="radio" name="mobile-category" class="filter-type-radio" value="pavo" data-type="pavo">
-                            <span class="filter-label">{% trans "Pavo" %}</span>
-                        </label>
-                        <button type="button" class="visually-hidden" data-category-tab="pavo"></button>
-                    </div>
-                </div>
-
-                <!-- Sección 1: Tipos de producto -->
-                <div class="filters-section d-none d-md-block">
-                    <h4 class="filters-section-title">{% trans "Tipos de producto" %}</h4>
+                <div class="filters-section">
+                    <h4 class="filters-section-title">{% trans "TIPOS DE PRODUCTO" %}</h4>
                     <div class="filters-radio-list">
                         <label class="filter-radio">
                             <input type="radio" name="product-type" class="filter-type-radio" value="todos"
-                                data-type="todos" checked>
+                                data-type="todos" {% if active_type == 'todos' or not active_type %}checked{% endif %}>
                             <span class="filter-label">{% trans "Todos" %}</span>
                         </label>
                         <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="charcuteria"
-                                data-type="charcuteria">
-                            <span class="filter-label">{% trans "Charcutería" %}</span>
+                            <input type="radio" name="product-type" class="filter-type-radio" value="sandwich"
+                                data-type="sandwich" {% if active_type == 'sandwich' %}checked{% endif %}>
+                            <span class="filter-label">{% trans "Sándwich" %}</span>
                         </label>
                         <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="curados"
-                                data-type="curados">
-                            <span class="filter-label">{% trans "Curados" %}</span>
+                            <input type="radio" name="product-type" class="filter-type-radio" value="salchichas"
+                                data-type="salchichas" {% if active_type == 'salchichas' %}checked{% endif %}>
+                            <span class="filter-label">{% trans "Salchichas" %}</span>
                         </label>
                         <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="ibericos"
-                                data-type="ibericos">
-                            <span class="filter-label">{% trans "Ibéricos" %}</span>
+                            <input type="radio" name="product-type" class="filter-type-radio" value="pizzas"
+                                data-type="pizzas" {% if active_type == 'pizzas' %}checked{% endif %}>
+                            <span class="filter-label">{% trans "Pizzas" %}</span>
                         </label>
                         <label class="filter-radio">
                             <input type="radio" name="product-type" class="filter-type-radio" value="jamon-cocido"
-                                data-type="jamon-cocido">
+                                data-type="jamon-cocido" {% if active_type == 'jamon-cocido' %}checked{% endif %}>
                             <span class="filter-label">{% trans "Jamón Cocido y York" %}</span>
                         </label>
                         <label class="filter-radio">
                             <input type="radio" name="product-type" class="filter-type-radio" value="jamon-curado"
-                                data-type="jamon-curado">
+                                data-type="jamon-curado" {% if active_type == 'jamon-curado' %}checked{% endif %}>
                             <span class="filter-label">{% trans "Jamón Curado" %}</span>
                         </label>
                         <label class="filter-radio">
                             <input type="radio" name="product-type" class="filter-type-radio" value="pavo"
-                                data-type="pavo">
-                            <span class="filter-label">{% trans "Pavo y Pollo" %}</span>
+                                data-type="pavo" {% if active_type == 'pavo' %}checked{% endif %}>
+                            <span class="filter-label">{% trans "Pavo" %}</span>
                         </label>
                         <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="platos-preparados"
-                                data-type="platos-preparados">
-                            <span class="filter-label">{% trans "Platos preparados" %}</span>
+                            <input type="radio" name="product-type" class="filter-type-radio" value="charcuteria"
+                                data-type="charcuteria" {% if active_type == 'charcuteria' %}checked{% endif %}>
+                            <span class="filter-label">{% trans "Charcutería" %}</span>
                         </label>
                         <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="salchichas"
-                                data-type="salchichas">
-                            <span class="filter-label">{% trans "Salchichas" %}</span>
+                            <input type="radio" name="product-type" class="filter-type-radio" value="curados"
+                                data-type="curados" {% if active_type == 'curados' %}checked{% endif %}>
+                            <span class="filter-label">{% trans "Curados" %}</span>
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="product-type" class="filter-type-radio" value="ibericos"
+                                data-type="ibericos" {% if active_type == 'ibericos' %}checked{% endif %}>
+                            <span class="filter-label">{% trans "Ibéricos" %}</span>
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="product-type" class="filter-type-radio" value="pollo"
+                                data-type="pollo" {% if active_type == 'pollo' %}checked{% endif %}>
+                            <span class="filter-label">{% trans "Pollo" %}</span>
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="product-type" class="filter-type-radio" value="fuet"
+                                data-type="fuet" {% if active_type == 'fuet' %}checked{% endif %}>
+                            <span class="filter-label">{% trans "Fuet" %}</span>
                         </label>
                     </div>
                 </div>
@@ -214,41 +188,26 @@
                 <!-- Separador visual -->
                 <hr class="filters-separator">
 
-                <!-- Sección 2: Características especiales -->
                 <div class="filters-section">
                     <h4 class="filters-section-title">{% trans "Características especiales" %}</h4>
                     <div class="filters-list">
                         <label class="filter-checkbox">
-                            <input type="checkbox" class="filter-input" data-filter="sin-lactosa" value="sin-lactosa">
+                            <input type="checkbox" class="filter-input" data-filter="sin-lactosa" value="sin-lactosa" {% if 'sin-lactosa' in active_features %}checked{% endif %}>
                             <span class="filter-label">{% trans "Sin lactosa" %}</span>
                         </label>
                         <label class="filter-checkbox">
                             <input type="checkbox" class="filter-input" data-filter="sin-conservantes"
-                                value="sin-conservantes">
+                                value="sin-conservantes" {% if 'sin-conservantes' in active_features %}checked{% endif %}>
                             <span class="filter-label">{% trans "Sin conservantes" %}</span>
                         </label>
                         <label class="filter-checkbox">
                             <input type="checkbox" class="filter-input" data-filter="sin-colorantes"
-                                value="sin-colorantes">
+                                value="sin-colorantes" {% if 'sin-colorantes' in active_features %}checked{% endif %}>
                             <span class="filter-label">{% trans "Sin colorantes" %}</span>
                         </label>
                         <label class="filter-checkbox">
-                            <input type="checkbox" class="filter-input" data-filter="sin-azucares" value="sin-azucares">
+                            <input type="checkbox" class="filter-input" data-filter="sin-azucares" value="sin-azucares" {% if 'sin-azucares' in active_features %}checked{% endif %}>
                             <span class="filter-label">{% trans "Sin azúcares añadidos" %}</span>
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="checkbox" class="filter-input" data-filter="bajo-carbohidratos"
-                                value="bajo-carbohidratos">
-                            <span class="filter-label">{% trans "Bajo en carbohidratos" %}</span>
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="checkbox" class="filter-input" data-filter="apto-diabeticos"
-                                value="apto-diabeticos">
-                            <span class="filter-label">{% trans "Apto para diabéticos" %}</span>
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="checkbox" class="filter-input" data-filter="natural" value="natural">
-                            <span class="filter-label">{% trans "Natural" %}</span>
                         </label>
                     </div>
                 </div>
@@ -400,70 +359,71 @@
                 {% endif %}
             </div>
 
-            <div class="catalog-footer">
-            <div class="catalog-footer__left">
-                <div class="catalog-results-count d-lg-none mb-3">
-                    {% if paginator.count > 0 %}
-                    {% blocktrans with start=page_obj.start_index end=page_obj.end_index total=paginator.count %}
-                    Mostrando <span class="count-numbers">{{ start }}–{{ end }}</span> de <span class="count-numbers">{{ total }}</span> productos
-                    {% endblocktrans %}
-                    {% endif %}
+            <!-- Bloque de Paginación Definitivo -->
+            <div class="catalog-pagination-wrapper">
+                <!-- Bloque informativo superior -->
+                <div class="pagination-info-block">
+                    <div class="catalog-results-count">
+                        {% if paginator.count > 0 %}
+                        {% blocktrans with start=page_obj.start_index end=page_obj.end_index total=paginator.count %}
+                        Mostrando <span class="count-numbers">{{ start }}–{{ end }}</span> de <span class="count-numbers">{{ total }}</span> productos
+                        {% endblocktrans %}
+                        {% endif %}
+                    </div>
+                    <form method="get" id="pageSizeForm" class="page-size-form">
+                        {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
+                        {% if sort %}<input type="hidden" name="sort" value="{{ sort }}">{% endif %}
+                        {% if active_type %}<input type="hidden" name="type" value="{{ active_type }}">{% endif %}
+                        <label for="pageSizeSelect">{% trans "Mostrar:" %}</label>
+                        <select id="pageSizeSelect" name="page_size" class="form-select-sm pagination-select" onchange="this.form.submit()">
+                            <option value="20" {% if page_size == 20 %}selected{% endif %}>20</option>
+                            <option value="40" {% if page_size == 40 %}selected{% endif %}>40</option>
+                            <option value="60" {% if page_size == 60 %}selected{% endif %}>60</option>
+                        </select>
+                    </form>
                 </div>
-                <form method="get" id="pageSizeForm" class="page-size-form">
-                    {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
-                    {% if sort %}<input type="hidden" name="sort" value="{{ sort }}">{% endif %}
-                    {% if active_type %}<input type="hidden" name="type" value="{{ active_type }}">{% endif %}
-                    <label for="pageSizeSelect">{% trans "Mostrar:" %}</label>
-                    <select id="pageSizeSelect" name="page_size" class="form-select form-select-sm" onchange="this.form.submit()">
-                        <option value="12" {% if page_size == 12 %}selected{% endif %}>12</option>
-                        <option value="20" {% if page_size == 20 %}selected{% endif %}>20</option>
-                        <option value="24" {% if page_size == 24 %}selected{% endif %}>24</option>
-                        <option value="48" {% if page_size == 48 %}selected{% endif %}>48</option>
-                        <option value="999" {% if page_size == 999 %}selected{% endif %}>{% trans "Todos" %}</option>
-                    </select>
-                </form>
-            </div>
 
-                <nav class="catalog-pagination" aria-label="{% trans 'Paginación del catálogo' %}">
-                    <div class="pagination-row">
+                <!-- Bloque de navegación centrado e independiente -->
+                <nav class="pagination-nav-block" aria-label="{% trans 'Paginación del catálogo' %}">
+                    <div class="pagination-container">
                         {% if page_obj.has_previous %}
                         <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}"
-                            class="page-link prev">
+                            class="pagination-btn prev">
                             <i class="bi bi-chevron-left"></i>
-                            <span class="d-none d-sm-inline">{% trans "Anterior" %}</span>
+                            <span class="btn-text">{% trans "Anterior" %}</span>
                         </a>
                         {% else %}
-                        <button class="page-link prev disabled" disabled aria-disabled="true">
+                        <button class="pagination-btn prev disabled" disabled aria-disabled="true">
                             <i class="bi bi-chevron-left"></i>
-                            <span class="d-none d-sm-inline">{% trans "Anterior" %}</span>
+                            <span class="btn-text">{% trans "Anterior" %}</span>
                         </button>
                         {% endif %}
 
-                        <div class="page-numbers">
+                        <div class="pagination-pages">
                             {% for num in paginator.page_range %}
                                 {% if page_obj.number == num %}
-                                <span class="page-link current" aria-current="page">{{ num }}</span>
+                                <span class="pagination-item current" aria-current="page">{{ num }}</span>
                                 {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
                                 <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}{% if active_type %}&type={{ active_type }}{% endif %}"
-                                    class="page-link">{{ num }}</a>
+                                    class="pagination-item">{{ num }}</a>
                                 {% elif num == 1 or num == paginator.num_pages %}
                                 <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}{% if active_type %}&type={{ active_type }}{% endif %}"
-                                    class="page-link">{{ num }}</a>
+                                    class="pagination-item">{{ num }}</a>
                                 {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
-                                <span class="page-ellipsis">...</span>
+                                <span class="pagination-ellipsis">...</span>
                                 {% endif %}
                             {% endfor %}
                         </div>
 
                         {% if page_obj.has_next %}
                         <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}"
-                            class="page-link next">
-                            <span class="d-none d-sm-inline">{% trans "Siguiente" %}</span>
+                            class="pagination-btn next">
+                            <span class="btn-text">{% trans "Siguiente" %}</span>
                             <i class="bi bi-chevron-right"></i>
                         </a>
                         {% else %}
-                        <button class="page-link next disabled" disabled aria-disabled="true">
-                            <span class="d-none d-sm-inline">{% trans "Siguiente" %}</span>
+                        <button class="pagination-btn next disabled" disabled aria-disabled="true">
+                            <span class="btn-text">{% trans "Siguiente" %}</span>
                             <i class="bi bi-chevron-right"></i>
                         </button>
                         {% endif %}

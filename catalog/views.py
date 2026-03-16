@@ -49,37 +49,53 @@ def product_list(request):
     # Obtener productos promocionales activos (máximo 8)
     featured_products = PromotionalProduct.objects.filter(is_active=True).order_by('display_order', '-created_at')[:8]
     
-    # Búsqueda
+    # Búsqueda Inteligente (Smart Search)
     search_query = request.GET.get('q', '').strip()
     if search_query:
-        # Lógica manual básica para buscar 'jamon' y encontrar 'Jamón' si no hay extensión d DB
+        # Función auxiliar para normalizar texto (quitar acentos manualmente para Q objects)
+        def get_accent_variants(word):
+            variants = [word]
+            replacements = {
+                'a': 'á', 'e': 'é', 'i' : 'í', 'o': 'ó', 'u': 'ú',
+                'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u'
+            }
+            # Generar variante básica reemplazando cada vocal por su versión acentuada/desacentuada
+            for char, repl in replacements.items():
+                if char in word:
+                    variants.append(word.replace(char, repl))
+            return list(set(variants))
+
+        # Dividir por palabras para búsqueda por tokens
+        tokens = search_query.split()
         q_obj = Q()
-        words = search_query.split()
-        for word in words:
-            word_q = Q(name_es__icontains=word) | Q(name_zh_hans__icontains=word) | \
-                     Q(description_es__icontains=word) | Q(description_zh_hans__icontains=word) | \
-                     Q(reference__icontains=word)
+        
+        for token in tokens:
+            token_q = Q()
+            variants = get_accent_variants(token.lower())
             
-            # Reemplazos comunes de español
-            if 'a' in word: word_q |= Q(name_es__icontains=word.replace('a', 'á'))
-            if 'e' in word: word_q |= Q(name_es__icontains=word.replace('e', 'é'))
-            if 'i' in word: word_q |= Q(name_es__icontains=word.replace('i', 'í'))
-            if 'o' in word: word_q |= Q(name_es__icontains=word.replace('o', 'ó'))
-            if 'u' in word: word_q |= Q(name_es__icontains=word.replace('u', 'ú'))
+            for var in variants:
+                token_q |= Q(name_es__icontains=var) | \
+                          Q(reference__icontains=var) | \
+                          Q(description_es__icontains=var)
             
-            q_obj &= word_q
-            
-        products = products.filter(q_obj)
+            # El producto debe contener TODOS los tokens (AND logic entre tokens)
+            products = products.filter(token_q)
 
     # Filtrado por Categoría (type)
     active_type = request.GET.get('type', 'todos')
     if active_type != 'todos':
         category_mappings = {
             'sandwich': ['sandwich', 'sandwitch', 'emparedado', 'maxi'],
-            'salchichas': ['salchicha', 'frankfurt', 'viena', 'hot dog', 'fuet'],
+            'salchichas': ['salchicha', 'frankfurt', 'viena', 'hot dog'],
             'pizzas': ['pizza', 'masa'],
-            'jamon': ['jamon', 'jamón', 'serrano', 'cocido', 'york', 'bodega', 'iberico', 'chorizo', 'salchichon', 'lomo'],
-            'pavo': ['pavo', 'pechuga', 'pollo', 'turkey', 'chicken'],
+            'jamon-cocido': ['jamón cocido', 'york', 'cocido'],
+            'jamon-curado': ['jamón curado', 'serrano', 'bodega'],
+            'pavo': ['pavo', 'pechuga', 'turkey'],
+            'pollo': ['pollo', 'chicken'],
+            'charcuteria': ['charcuteria', 'embutido', 'chorizo', 'salchichon', 'lomo'],
+            'curados': ['curado'],
+            'ibericos': ['iberico', 'ibérico'],
+            'fuet': ['fuet'],
         }
         
         if active_type in category_mappings:
@@ -92,6 +108,7 @@ def product_list(request):
 
     # Filtrado por Características especiales (features)
     # Soporta múltiples características separadas por comas (ej: ?features=sin-lactosa,natural)
+    # Lógica AND: El producto debe cumplir TODAS las características seleccionadas.
     active_features = request.GET.get('features', '')
     if active_features:
         feature_list = [f.strip() for f in active_features.split(',') if f.strip()]
@@ -110,7 +127,8 @@ def product_list(request):
                 keywords = feature_mappings[feat]
                 feat_q = Q()
                 for kw in keywords:
-                    feat_q |= Q(name_es__icontains=kw) | Q(description_es__icontains=kw)
+                    feat_q |= Q(name_es__icontains=kw) | Q(description_es__icontains=kw) | \
+                              Q(description_zh_hans__icontains=kw)
                 products = products.filter(feat_q)
     
     # Ordenación
@@ -130,7 +148,7 @@ def product_list(request):
     # Tamaño de página (Default 20)
     try:
         page_size = int(request.GET.get('page_size', 20))
-        if page_size not in [12, 20, 24, 48, 100, 999]:
+        if page_size not in [20, 40, 60]:
             page_size = 20
     except ValueError:
         page_size = 20
