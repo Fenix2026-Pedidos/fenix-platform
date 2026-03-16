@@ -4,36 +4,44 @@
     <div class="catalog-controls-row catalog-controls-row--main">
         <div class="catalog-controls__categories">
             <div class="category-tabs d-none d-md-flex" role="tablist">
-                <a href="?type=todos{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
-                   class="category-chip {% if active_type == 'todos' or not active_type %}is-active{% endif %}" role="tab" {% if active_type == 'todos' %}aria-selected="true"{% endif %}>
+                <a href="?type=todos{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}#productsGrid" 
+                   class="category-chip {% if active_type == 'todos' or not active_type %}is-active{% endif %}" 
+                   role="tab" data-category-tab="todos" {% if active_type == 'todos' %}aria-selected="true"{% endif %}>
                     {% trans "Todos" %}
                 </a>
-                <a href="?type=sandwich{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
-                   class="category-chip {% if active_type == 'sandwich' %}is-active{% endif %}" role="tab" {% if active_type == 'sandwich' %}aria-selected="true"{% endif %}>
+                <a href="?type=sandwich{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}#productsGrid" 
+                   class="category-chip {% if active_type == 'sandwich' %}is-active{% endif %}" 
+                   role="tab" data-category-tab="sandwich" {% if active_type == 'sandwich' %}aria-selected="true"{% endif %}>
                     {% trans "Sándwich" %}
                 </a>
-                <a href="?type=salchichas{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
-                   class="category-chip {% if active_type == 'salchichas' %}is-active{% endif %}" role="tab" {% if active_type == 'salchichas' %}aria-selected="true"{% endif %}>
+                <a href="?type=salchichas{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}#productsGrid" 
+                   class="category-chip {% if active_type == 'salchichas' %}is-active{% endif %}" 
+                   role="tab" data-category-tab="salchichas" {% if active_type == 'salchichas' %}aria-selected="true"{% endif %}>
                     {% trans "Salchichas" %}
                 </a>
-                <a href="?type=jamon-cocido{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
-                   class="category-chip {% if active_type == 'jamon-cocido' %}is-active{% endif %}" role="tab" {% if active_type == 'jamon-cocido' %}aria-selected="true"{% endif %}>
+                <a href="?type=jamon-cocido{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}#productsGrid" 
+                   class="category-chip {% if active_type == 'jamon-cocido' %}is-active{% endif %}" 
+                   role="tab" data-category-tab="jamon-cocido" {% if active_type == 'jamon-cocido' %}aria-selected="true"{% endif %}>
                     {% trans "Jamón Cocido" %}
                 </a>
-                <a href="?type=jamon-curado{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
-                   class="category-chip {% if active_type == 'jamon-curado' %}is-active{% endif %}" role="tab" {% if active_type == 'jamon-curado' %}aria-selected="true"{% endif %}>
+                <a href="?type=jamon-curado{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}#productsGrid" 
+                   class="category-chip {% if active_type == 'jamon-curado' %}is-active{% endif %}" 
+                   role="tab" data-category-tab="jamon-curado" {% if active_type == 'jamon-curado' %}aria-selected="true"{% endif %}>
                     {% trans "Jamón Curado" %}
                 </a>
-                <a href="?type=pavo{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
-                   class="category-chip {% if active_type == 'pavo' %}is-active{% endif %}" role="tab" {% if active_type == 'pavo' %}aria-selected="true"{% endif %}>
+                <a href="?type=pavo{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}#productsGrid" 
+                   class="category-chip {% if active_type == 'pavo' %}is-active{% endif %}" 
+                   role="tab" data-category-tab="pavo" {% if active_type == 'pavo' %}aria-selected="true"{% endif %}>
                     {% trans "Pavo" %}
                 </a>
-                <a href="?type=pollo{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
-                   class="category-chip {% if active_type == 'pollo' %}is-active{% endif %}" role="tab" {% if active_type == 'pollo' %}aria-selected="true"{% endif %}>
+                <a href="?type=pollo{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}#productsGrid" 
+                   class="category-chip {% if active_type == 'pollo' %}is-active{% endif %}" 
+                   role="tab" data-category-tab="pollo" {% if active_type == 'pollo' %}aria-selected="true"{% endif %}>
                     {% trans "Pollo" %}
                 </a>
-                <a href="?type=ibericos{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}" 
-                   class="category-chip {% if active_type == 'ibericos' %}is-active{% endif %}" role="tab" {% if active_type == 'ibericos' %}aria-selected="true"{% endif %}>
+                <a href="?type=ibericos{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}#productsGrid" 
+                   class="category-chip {% if active_type == 'ibericos' %}is-active{% endif %}" 
+                   role="tab" data-category-tab="ibericos" {% if active_type == 'ibericos' %}aria-selected="true"{% endif %}>
                     {% trans "Ibéricos" %}
                 </a>
             </div>

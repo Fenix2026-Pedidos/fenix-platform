@@ -154,7 +154,8 @@ const CatalogFilters = {
     bindTypeEvents: function () {
         // Tabs de escritorio (estos suelen ser directos)
         document.querySelectorAll('[data-category-tab]').forEach(tab => {
-            tab.addEventListener('click', () => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
                 const type = tab.getAttribute('data-category-tab') || 'todos';
                 // En escritorio los tabs aplican directamente (comportamiento esperado)
                 this.temporalFilters.type = type;

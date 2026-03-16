@@ -103,45 +103,45 @@ def product_list(request):
             'salchichas': [
                 'salchicha', 'frankfurt', 'salchichón', 'salchichon',
                 'big classic', 'big pavo', 'big pollo', 'big queso',
+                'viena', 'bratwurst', 'hot dog',
             ],
             'pizzas': [
-                'pizza',
+                'pizza', 'pizzas',
             ],
             'jamon-cocido': [
                 'jamón cocido', 'jamon cocido',
-                'york',
-                'cocido',
+                'york', 'cocido', 'fiambre',
             ],
             'jamon-curado': [
                 'jamón curado', 'jamon curado',
                 'jamón serrano', 'jamon serrano',
-                'curado 1954',
+                'curado 1954', 'bodega', 'reserva', 'gran reserva',
             ],
             'pavo': [
-                'pavo',
+                'pavo', 'pechuga pavo', 'fiambre pavo',
             ],
             'pollo': [
-                'pollo',
+                'pollo', 'pechuga pollo', 'fiambre pollo',
             ],
             'charcuteria': [
                 'mortadela', 'chopped', 'choppep',
-                'chorizo', 'salami',
-                'bacon', 'lacón', 'lacon',
+                'chorizo', 'salami', 'cervelat', 'cabeza jabalí',
+                'bacon', 'lacón', 'lacon', 'panceta',
                 'taquito', 'tiras', 'sarta', 'embutido',
                 'charcutería', 'charcuteria',
             ],
             'curados': [
                 'caña de lomo', 'caña lomo', 'caña',
                 'salchichón', 'salchichon',
-                'semicurado',
-                'fuet', 'fuetería', 'fueteria',
+                'semicurado', 'fuet', 'fuetería', 'fueteria',
+                'chorizo curado', 'sarta',
             ],
             'ibericos': [
                 'ibérico', 'iberico',
-                'bellota', 'pata negra',
+                'bellota', 'pata negra', 'cebo',
             ],
             'fuet': [
-                'fuet', 'fuetería', 'fueteria',
+                'fuet', 'fuetería', 'fueteria', 'espetec',
             ],
         }
 
