@@ -30,6 +30,8 @@ const CatalogFilters = {
         
         // Sincronizar UI con el estado aplicado inicial
         this.syncUI(this.appliedFilters);
+        this.bindPromoEvents();
+        this.checkInitialHash();
     },
 
     /**
@@ -172,6 +174,43 @@ const CatalogFilters = {
     },
 
     /**
+     * Eventos de Tarjetas Promo (Hero)
+     */
+    bindPromoEvents: function () {
+        console.log('Fenix UX: Binding Promo Events (Delegation)');
+        document.addEventListener('click', (e) => {
+            const card = e.target.closest('.js-promo-card');
+            if (!card) return;
+
+            // Solo interceptamos si NO es un clic con tecla especial
+            if (e.ctrlKey || e.metaKey || e.shiftKey) return;
+            
+            e.preventDefault();
+            console.log('Fenix UX: Promo Card Intercepted');
+            
+            const category = card.getAttribute('data-promo-type') || 'todos';
+            const query = card.getAttribute('data-promo-q') || '';
+            const name = card.getAttribute('data-promo-name') || '';
+
+            this.handlePromoClick(category, query, name);
+        });
+    },
+
+    /**
+     * Maneja el clic en una promo: filtra y scrollea
+     */
+    handlePromoClick: function (category, query, name) {
+        console.log('Fenix UX: Promo Clicked', { category, query, name });
+        
+        this.temporalFilters.type = category;
+        this.temporalFilters.q = query;
+        this.temporalFilters.features = []; // Reset features on promo click for clarity
+
+        // Actualizar URL y AJAX
+        this.applyFilters(true, name); // true = AJAX mode
+    },
+
+    /**
      * Eventos de Búsqueda
      */
     bindSearchEvents: function () {
@@ -194,9 +233,9 @@ const CatalogFilters = {
     },
 
     /**
-     * APLICA LOS FILTROS REALMENTE (Recarga la página)
+     * APLICA LOS FILTROS REALMENTE
      */
-    applyFilters: function () {
+    applyFilters: function (isAjax = false, promoName = null) {
         const url = new URL(window.location.origin + window.location.pathname);
         
         // 1. Tipo
@@ -221,9 +260,102 @@ const CatalogFilters = {
         
         url.searchParams.set('page', '1');
 
-        // Navegar — el hash #productsGrid provoca que el navegador posicione
-        // la vista en el grid de resultados, no en el top de la home.
-        window.location.href = url.toString() + '#productsGrid';
+        if (isAjax) {
+            this.updateCatalogAJAX(url.toString(), promoName);
+        } else {
+            // Navegar — el hash provoque que el navegador posicione
+            window.location.href = url.toString() + '#catalogo-productos';
+        }
+    },
+
+    /**
+     * Actualiza el catálogo vía AJAX
+     */
+    updateCatalogAJAX: function (url, promoName) {
+        const gridContainer = document.querySelector('.catalog-container');
+        const countBar = document.querySelector('.catalog-controls-bar');
+        
+        if (!gridContainer) {
+            window.location.href = url; // Fallback
+            return;
+        }
+
+        // Mostrar estado de carga
+        gridContainer.style.opacity = '0.5';
+
+        fetch(url)
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // 1. Reemplazar contenedores clave
+                const newGrid = doc.querySelector('.catalog-container');
+                const newCountBar = doc.querySelector('.catalog-controls-bar');
+                
+                if (newGrid) gridContainer.innerHTML = newGrid.innerHTML;
+                if (newCountBar) countBar.innerHTML = newCountBar.innerHTML;
+
+                // 2. Sincronizar UI interna (filtros, tabs)
+                this.appliedFilters = JSON.parse(JSON.stringify(this.temporalFilters));
+                this.syncUI(this.appliedFilters);
+
+                // 3. Mostrar badge de filtro activo
+                const badge = document.getElementById('activeFilterBadge');
+                const badgeText = document.getElementById('activeFilterText');
+                if (badge && badgeText && promoName) {
+                    badgeText.textContent = promoName;
+                    badge.style.display = 'inline-block';
+                } else if (badge) {
+                    badge.style.display = 'none';
+                }
+
+                // 4. Actualizar Historial
+                history.pushState(this.appliedFilters, '', url);
+
+                // 5. Scroll suave
+                this.scrollToCatalog();
+                
+                gridContainer.style.opacity = '1';
+                
+                // Re-inicializar componentes del catálogo (imágenes, Amazon prices, etc.)
+                this.reinitCatalogUI();
+            })
+            .catch(err => {
+                console.error('Fenix UX: Fetch error', err);
+                window.location.href = url;
+            });
+    },
+
+    /**
+     * Reinicializa UI tras carga AJAX
+     */
+    reinitCatalogUI: function() {
+        // Amazon style prices
+        document.querySelectorAll('.card-price-main[data-price]').forEach(function (priceElement) {
+            const priceValue = parseFloat(priceElement.getAttribute('data-price'));
+            if (!isNaN(priceValue)) {
+                const parts = priceValue.toFixed(2).split('.');
+                const intPart = parts[0];
+                const decPart = parts[1] || '00';
+                priceElement.innerHTML = `<span class="price-int">${intPart}</span><span class="price-dec">,${decPart}</span><span class="price-currency">€</span>`;
+            }
+        });
+    },
+
+    scrollToCatalog: function () {
+        const target = document.getElementById('catalogo-productos');
+        if (target) {
+            const OFFSET = 100;
+            const top = target.getBoundingClientRect().top + window.pageYOffset - OFFSET;
+            window.scrollTo({ top: top, behavior: 'smooth' });
+        }
+    },
+
+    checkInitialHash: function () {
+        if (window.location.hash === '#catalogo-productos' || window.location.hash === '#productsGrid') {
+            setTimeout(() => this.scrollToCatalog(), 100);
+        }
     },
 
     /**
@@ -244,18 +376,13 @@ const CatalogFilters = {
 window.CatalogFilters = CatalogFilters;
 
 // ─── Scroll suave al grid tras recarga por filtros ─────────────────────────
-// Cuando la URL tiene #productsGrid, el navegador hace un salto brusco al
-// ancla. Sustituimos ese salto por un scroll suave con pequeño offset para
-// dejar el encabezado visible.
 document.addEventListener('DOMContentLoaded', function () {
-    if (window.location.hash === '#productsGrid') {
-        const grid = document.getElementById('productsGrid');
+    if (window.location.hash === '#catalogo-productos' || window.location.hash === '#productsGrid') {
+        const grid = document.getElementById('catalogo-productos') || document.getElementById('productsGrid');
         if (grid) {
-            // Primero vamos al top sin animación para que el scroll siguiente
-            // parta desde cero y no desde donde el navegador saltó.
             window.scrollTo(0, 0);
             requestAnimationFrame(function () {
-                const OFFSET = 80; // px de cabecera fija
+                const OFFSET = 100;
                 const top = grid.getBoundingClientRect().top + window.pageYOffset - OFFSET;
                 window.scrollTo({ top: top, behavior: 'smooth' });
             });

@@ -74,6 +74,23 @@
         opacity: 0.5;
         transform: scale(0.8);
     }
+    /* Estilos para el aviso de filtro activo */
+    .active-filter-badge {
+        margin-top: 10px;
+        animation: fadeIn 0.3s ease;
+    }
+    .active-filter-badge .badge {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 </style>
 {% endblock %}
 
@@ -86,11 +103,17 @@
     {% include 'components/hero_public.html' with featured_products=featured_products|slice:":4" %}
     {% endif %}
 
-    <section class="catalog-shell" aria-labelledby="catalogSectionTitle">
+    <section class="catalog-shell" id="catalogo-productos" aria-labelledby="catalogSectionTitle">
         <div class="catalog-shell__header">
             <div class="catalog-shell__title-group">
                 <h2 id="catalogSectionTitle" class="catalog-shell__title">{% trans "Catálogo de Productos" %}</h2>
                 <p class="catalog-shell__eyebrow">{% trans "CATÁLOGO ACTUALIZADO" %}</p>
+                <div id="activeFilterBadge" class="active-filter-badge" style="display: none;">
+                    <span class="badge bg-primary">
+                        {% trans "Resultados para:" %} <strong id="activeFilterText"></strong>
+                        <button type="button" class="btn-close btn-close-white ms-2" style="font-size: 0.6rem;" onclick="CatalogFilters.clearFilters()"></button>
+                    </span>
+                </div>
             </div>
             <p class="catalog-shell__subtitle d-none d-md-block">
                 {% if request.user.is_authenticated %}
@@ -459,7 +482,7 @@
     window.Fenix.isAuthenticated = ("{{ request.user.is_authenticated|yesno:'true,false' }}" === "true");
 </script>
 <script src="{% static 'js/catalog.js' %}"></script>
-<script src="{% static 'js/catalog-filters.js' %}"></script>
+<script src="{% static 'js/catalog-filters.js' %}?v={% now 'U' %}"></script>
 <script>
     // Inicializar catálogo al cargar la página
     document.addEventListener('DOMContentLoaded', function () {

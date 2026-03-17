@@ -26,7 +26,11 @@
             <div class="public-hero__cards">
                 {% if featured_products %}
                     {% for promo in featured_products %}
-                    <a href="{% url 'catalog:product_list' %}?q={{ promo.target_query|default:promo.promo_title }}&type={{ promo.target_category|default:'todos' }}" class="hero-product-link">
+                    <a href="{% url 'catalog:product_list' %}?q={{ promo.target_query|default:promo.promo_title }}&type={{ promo.target_category|default:'todos' }}" 
+                       class="hero-product-link js-promo-card" 
+                       data-promo-q="{{ promo.target_query|default:promo.promo_title }}" 
+                       data-promo-type="{{ promo.target_category|default:'todos' }}"
+                       data-promo-name="{{ promo.promo_title }}">
                         <article class="hero-product-card">
                             {% if promo.promo_label %}
                             <div class="hero-product-card__badge">{{ promo.get_promo_label_display }}</div>
@@ -45,7 +49,7 @@
                     </a>
                     {% endfor %}
                 {% else %}
-                    <a href="{% url 'catalog:product_list' %}?type=salchichas" class="hero-product-link">
+                    <a href="{% url 'catalog:product_list' %}?type=salchichas" class="hero-product-link js-promo-card" data-promo-type="salchichas" data-promo-name="{% trans 'Frankfurt Salchichas' %}">
                         <article class="hero-product-card">
                             <div class="hero-product-card__image">
                                 <img src="{% static 'img/Salchichas.png' %}" alt="{% trans 'Frankfurt Salchichas' %}" loading="lazy">
@@ -55,7 +59,7 @@
                             </div>
                         </article>
                     </a>
-                    <a href="{% url 'catalog:product_list' %}?type=jamon-curado" class="hero-product-link">
+                    <a href="{% url 'catalog:product_list' %}?type=jamon-curado" class="hero-product-link js-promo-card" data-promo-type="jamon-curado" data-promo-name="{% trans 'Jamón Curado' %}">
                         <article class="hero-product-card">
                             <div class="hero-product-card__image">
                                 <img src="{% static 'img/Jamon Curado.png' %}" alt="{% trans 'Jamón Curado' %}" loading="lazy">
@@ -65,7 +69,7 @@
                             </div>
                         </article>
                     </a>
-                    <a href="{% url 'catalog:product_list' %}?type=jamon-cocido" class="hero-product-link">
+                    <a href="{% url 'catalog:product_list' %}?type=jamon-cocido" class="hero-product-link js-promo-card" data-promo-type="jamon-cocido" data-promo-name="{% trans 'Jamón Cocido' %}">
                         <article class="hero-product-card">
                             <div class="hero-product-card__image">
                                 <img src="{% static 'img/Jamon Cocido.png' %}" alt="{% trans 'Jamón Cocido' %}" loading="lazy">
