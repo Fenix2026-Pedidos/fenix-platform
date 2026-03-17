@@ -12,6 +12,8 @@
         cursor: move;
         border: 2px dashed var(--primary-300);
         position: relative;
+        transition: none !important; /* Evita conflictos con SortableJS */
+        transform: none !important;
     }
     .catalog-page.ordering-mode .product-card:hover {
         border-color: var(--primary-600);
@@ -31,9 +33,9 @@
         padding: 4px 8px;
         border-radius: 4px;
         cursor: grab;
-        z-index: 10;
+        z-index: 100;
         font-size: 18px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
     .catalog-page.ordering-mode .drag-handle {
         display: block;
@@ -512,6 +514,17 @@
         const productsGrid = document.getElementById('productsGrid');
         if (productsGrid) {
             productsGrid.addEventListener('click', function(e) {
+                // Bloquear navegación si estamos en modo ordenación
+                const catalogPage = document.querySelector('.catalog-page');
+                if (catalogPage && catalogPage.classList.contains('ordering-mode')) {
+                    // Si permitimos el clic en el botón de "mover arriba", pero no la navegación
+                    if (!e.target.closest('.btn-move-top, .drag-handle')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    return;
+                }
+
                 // Si el clic es en un elemento interactivo, no hacemos nada
                 if (e.target.closest('button, input, .quantity-stepper, .btn-primary, .btn-move-top, .drag-handle')) {
                     return;
@@ -573,15 +586,22 @@
         }
 
         toggleBtn.addEventListener('click', async function() {
+            console.log('Fenix Reorder: Click en Ordenar Catálogo');
             if (!isOrdering) {
                 // Activar modo ordenación
                 try {
+                    console.log('Fenix Reorder: Iniciando activación (isOrderingCatalog = true)');
                     await loadSortable();
                     isOrdering = true;
                     catalogPage.classList.add('ordering-mode');
-                    toggleBtn.querySelector('.btn-text').textContent = "{% trans 'Cancelar ordenación' %}";
-                    toggleBtn.classList.replace('btn-outline-primary', 'btn-danger');
+                    
+                    const btnText = toggleBtn.querySelector('.btn-text');
+                    if (btnText) btnText.textContent = "{% trans 'Cancelar ordenación' %}";
+                    
+                    toggleBtn.classList.replace('btn-outline-primary', 'btn-primary');
                     saveBtn.classList.remove('d-none');
+                    
+                    console.log('Fenix Reorder: UI activada con SortableJS');
                     
                     // Mostrar botones de "Mover al principio"
                     grid.querySelectorAll('.btn-move-top').forEach(btn => btn.classList.remove('d-none'));
@@ -591,37 +611,52 @@
                         handle: '.drag-handle',
                         ghostClass: 'sortable-ghost',
                         chosenClass: 'sortable-chosen',
+                        forceFallback: true,
+                        fallbackOnBody: true,
+                        swapThreshold: 0.65,
+                        onStart: function() {
+                            console.log('Fenix Reorder: Drag Started');
+                            document.body.classList.add('is-dragging');
+                        },
                         onEnd: function() {
-                            console.log('Nuevo orden establecido visualmente');
+                            console.log('Fenix Reorder: Drag Ended');
+                            document.body.classList.remove('is-dragging');
                         }
                     });
 
-                    // Lógica para el botón "Mover al principio"
-                    grid.addEventListener('click', function(e) {
-                        const moveBtn = e.target.closest('.btn-move-top');
-                        if (moveBtn) {
-                            const card = moveBtn.closest('.product-card');
-                            if (card && grid.firstChild !== card) {
-                                card.classList.add('moving-to-top');
-                                setTimeout(() => {
-                                    grid.prepend(card);
-                                    card.classList.remove('moving-to-top');
-                                    // Hacer scroll al principio suavemente
-                                    window.scrollTo({ top: grid.offsetTop - 100, behavior: 'smooth' });
-                                }, 300);
+                    // Lógica para el botón "Mover al principio" (solo una vez)
+                    if (!grid.dataset.moveHandlerBound) {
+                        grid.addEventListener('click', function(e) {
+                            const moveBtn = e.target.closest('.btn-move-top');
+                            if (moveBtn) {
+                                const card = moveBtn.closest('.product-card');
+                                if (card && grid.firstChild !== card) {
+                                    card.classList.add('moving-to-top');
+                                    setTimeout(() => {
+                                        grid.prepend(card);
+                                        card.classList.remove('moving-to-top');
+                                        // Hacer scroll al principio suavemente
+                                        window.scrollTo({ top: grid.offsetTop - 100, behavior: 'smooth' });
+                                    }, 300);
+                                }
                             }
-                        }
-                    });
+                        });
+                        grid.dataset.moveHandlerBound = "true";
+                    }
                 } catch (e) {
-                    console.error('Error al cargar SortableJS:', e);
+                    console.error('Fenix Reorder: Error al cargar/activar SortableJS:', e);
                 }
             } else {
                 // Desactivar modo ordenación
+                console.log('Fenix Reorder: Cancelando ordenación (isOrderingCatalog = false)');
                 isOrdering = false;
                 catalogPage.classList.remove('ordering-mode');
                 grid.querySelectorAll('.btn-move-top').forEach(btn => btn.classList.add('d-none'));
-                toggleBtn.querySelector('.btn-text').textContent = "{% trans 'Ordenar catálogo' %}";
-                toggleBtn.classList.replace('btn-danger', 'btn-outline-primary');
+                
+                const btnText = toggleBtn.querySelector('.btn-text');
+                if (btnText) btnText.textContent = "{% trans 'Ordenar catálogo' %}";
+                
+                toggleBtn.classList.replace('btn-primary', 'btn-outline-primary');
                 saveBtn.classList.add('d-none');
                 if (sortableInstance) {
                     sortableInstance.destroy();
@@ -633,6 +668,7 @@
         });
 
         saveBtn.addEventListener('click', function() {
+            console.log('Fenix Reorder: Iniciando guardado de orden');
             const productIds = Array.from(grid.querySelectorAll('.product-card')).map(card => card.dataset.productId);
             
             saveBtn.disabled = true;
@@ -649,15 +685,17 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
+                    console.log('Fenix Reorder: Orden guardado correctamente');
                     window.location.reload();
                 } else {
+                    console.error('Fenix Reorder: Error devuelto por el servidor:', data.message);
                     alert('Error: ' + data.message);
                     saveBtn.disabled = false;
                     saveBtn.innerHTML = '<i class="bi bi-check-lg"></i> {% trans "Guardar orden" %}';
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Fenix Reorder: Fallo en la petición fetch:', error);
                 alert('{% trans "Error al guardar el orden. Inténtalo de nuevo." %}');
                 saveBtn.disabled = false;
                 saveBtn.innerHTML = '<i class="bi bi-check-lg"></i> {% trans "Guardar orden" %}';
