@@ -29,6 +29,22 @@ class Product(models.Model):
         ('mejor_precio', _('Mejor precio')),
     ]
 
+    PROMO_LABEL_DISPLAY_MAP = {
+        'oferta_semana': '🔥 Oferta semanal',
+        'pack': '📦 Pack oferta',
+        'mas_vendido': '⭐ Más vendido',
+        'estrella': '🌟 Prod. estrella',
+        'novedad': '🆕 Novedad',
+        'oferta_flash': '⚡ Oferta flash',
+        'super_oferta': '💥 Superoferta',
+        'limitada': '⏳ Edic. limitada',
+        'navidad': '🎄 Navidad',
+        'verano': '☀️ Verano',
+        'barbacoa': '🍖 Para BBQ',
+        'recomendado': '👍 Recomendado',
+        'mejor_precio': '💰 Mejor precio',
+    }
+
     name_es = models.CharField(max_length=200, verbose_name=_('Nombre (ES)'))
     name_zh_hans = models.CharField(max_length=200, verbose_name=_('Nombre (中文)'))
     reference = models.CharField(
@@ -100,10 +116,11 @@ class Product(models.Model):
 
     @property
     def promo_label_display(self):
-        """Devuelve el texto legible de la etiqueta promocional."""
+        """Devuelve el texto legible de la etiqueta promocional con emoji."""
         label_key = self.promo_label_class
         if label_key:
-            return dict(self.PROMO_LABELS).get(label_key, "")
+            # Intentar obtener del mapa con emojis, fallback al nombre original en PROMO_LABELS
+            return self.PROMO_LABEL_DISPLAY_MAP.get(label_key, dict(self.PROMO_LABELS).get(label_key, ""))
         return ""
 
     def update_stock_status(self) -> None:
@@ -231,6 +248,13 @@ class PromotionalProduct(models.Model):
 
     def __str__(self):
         return f"{self.promo_title} ({self.product.name_es})"
+
+    @property
+    def promo_label_display(self):
+        """Devuelve el texto legible con emoji de la etiqueta de esta promoción."""
+        if self.promo_label:
+            return Product.PROMO_LABEL_DISPLAY_MAP.get(self.promo_label, self.get_promo_label_display())
+        return ""
 
     def clean(self):
         from django.core.exceptions import ValidationError
