@@ -32,11 +32,13 @@
                        data-promo-type="{{ promo.target_category|default:'todos' }}"
                        data-promo-name="{{ promo.promo_title }}">
                         <article class="hero-product-card">
-                            {% if promo.promo_label %}
-                            <div class="hero-product-card__badge badge--{{ promo.promo_label }}">
-                                {{ promo.get_promo_label_display }}
+                            <div class="hero-product-card__badge-wrapper">
+                                {% if promo.promo_label %}
+                                <div class="hero-product-card__badge badge--{{ promo.promo_label }}">
+                                    {{ promo.get_promo_label_display }}
+                                </div>
+                                {% endif %}
                             </div>
-                            {% endif %}
                             <div class="hero-product-card__image">
                                 {% if promo.promo_image %}
                                 <img src="{{ promo.promo_image.url }}" alt="{{ promo.promo_title }}" loading="lazy">
