@@ -108,12 +108,6 @@
             <div class="catalog-shell__title-group">
                 <h2 id="catalogSectionTitle" class="catalog-shell__title">{% trans "Catálogo de Productos" %}</h2>
                 <p class="catalog-shell__eyebrow">{% trans "CATÁLOGO ACTUALIZADO" %}</p>
-                <div id="activeFilterBadge" class="active-filter-badge" style="display: none;">
-                    <span class="badge bg-primary">
-                        {% trans "Resultados para:" %} <strong id="activeFilterText"></strong>
-                        <button type="button" class="btn-close btn-close-white ms-2" style="font-size: 0.6rem;" onclick="CatalogFilters.clearFilters()"></button>
-                    </span>
-                </div>
             </div>
             <p class="catalog-shell__subtitle d-none d-md-block">
                 {% if request.user.is_authenticated %}
@@ -482,7 +476,6 @@
     window.Fenix.isAuthenticated = ("{{ request.user.is_authenticated|yesno:'true,false' }}" === "true");
 </script>
 <script src="{% static 'js/catalog.js' %}"></script>
-<script src="{% static 'js/catalog-filters.js' %}?v={% now 'U' %}"></script>
 <script>
     // Inicializar catálogo al cargar la página
     document.addEventListener('DOMContentLoaded', function () {
