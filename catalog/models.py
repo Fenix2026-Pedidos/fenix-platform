@@ -13,6 +13,22 @@ class Product(models.Model):
         (STOCK_OUT, 'Sin stock'),
     ]
 
+    PROMO_LABELS = [
+        ('oferta_semana', _('Oferta de la semana')),
+        ('pack', _('Pack')),
+        ('mas_vendido', _('Más vendido')),
+        ('estrella', _('Producto estrella')),
+        ('novedad', _('Novedad')),
+        ('oferta_flash', _('Oferta flash')),
+        ('super_oferta', _('Super oferta')),
+        ('limitada', _('Edición limitada')),
+        ('navidad', _('Especial Navidad')),
+        ('verano', _('Especial verano')),
+        ('barbacoa', _('Ideal para barbacoas')),
+        ('recomendado', _('Producto recomendado')),
+        ('mejor_precio', _('Mejor precio')),
+    ]
+
     name_es = models.CharField(max_length=200, verbose_name=_('Nombre (ES)'))
     name_zh_hans = models.CharField(max_length=200, verbose_name=_('Nombre (中文)'))
     reference = models.CharField(
@@ -49,9 +65,16 @@ class Product(models.Model):
         default=STOCK_OK,
         verbose_name=_('Estado Stock')
     )
-    is_new = models.BooleanField(default=False, verbose_name=_('Es Nuevo'))
-    is_best_seller = models.BooleanField(default=False, verbose_name=_('Más Vendido'))
-    is_offer = models.BooleanField(default=False, verbose_name=_('En Oferta'))
+    is_new = models.BooleanField(default=False, verbose_name=_('Es Nuevo (Legacy)'))
+    is_best_seller = models.BooleanField(default=False, verbose_name=_('Más Vendido (Legacy)'))
+    is_offer = models.BooleanField(default=False, verbose_name=_('En Oferta (Legacy)'))
+    promo_label = models.CharField(
+        max_length=50, 
+        choices=PROMO_LABELS, 
+        blank=True, 
+        null=True,
+        verbose_name=_('Etiqueta promocional')
+    )
     catalog_order = models.PositiveIntegerField(default=0, verbose_name=_('Orden en catálogo'))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Fecha Creación'))
 
@@ -59,6 +82,29 @@ class Product(models.Model):
         verbose_name = _('Producto')
         verbose_name_plural = _('Productos')
         ordering = ['catalog_order', 'name_es']
+
+    @property
+    def active_promotion(self):
+        """Devuelve la primera promoción activa para este producto."""
+        return self.promotions.filter(is_active=True).first()
+
+    @property
+    def promo_label_class(self):
+        """Devuelve el slug de la etiqueta para la clase CSS."""
+        if self.promo_label:
+            return self.promo_label
+        promo = self.active_promotion
+        if promo and promo.promo_label:
+            return promo.promo_label
+        return ""
+
+    @property
+    def promo_label_display(self):
+        """Devuelve el texto legible de la etiqueta promocional."""
+        label_key = self.promo_label_class
+        if label_key:
+            return dict(self.PROMO_LABELS).get(label_key, "")
+        return ""
 
     def update_stock_status(self) -> None:
         if self.stock_available <= 0:
@@ -132,22 +178,6 @@ class Product(models.Model):
         return f'{self.name_es} / {self.name_zh_hans}'
 
 class PromotionalProduct(models.Model):
-    PROMO_LABELS = [
-        ('oferta_semana', _('Oferta de la semana')),
-        ('pack', _('Pack')),
-        ('mas_vendido', _('Más vendido')),
-        ('estrella', _('Producto estrella')),
-        ('novedad', _('Novedad')),
-        ('oferta_flash', _('Oferta flash')),
-        ('super_oferta', _('Super oferta')),
-        ('limitada', _('Edición limitada')),
-        ('navidad', _('Especial Navidad')),
-        ('verano', _('Especial verano')),
-        ('barbacoa', _('Ideal para barbacoas')),
-        ('recomendado', _('Producto recomendado')),
-        ('mejor_precio', _('Mejor precio')),
-    ]
-
     product = models.ForeignKey(
         Product, 
         on_delete=models.CASCADE, 
@@ -162,7 +192,7 @@ class PromotionalProduct(models.Model):
     )
     promo_label = models.CharField(
         max_length=50, 
-        choices=PROMO_LABELS, 
+        choices=Product.PROMO_LABELS, 
         blank=True, 
         null=True,
         verbose_name=_('Etiqueta promocional')

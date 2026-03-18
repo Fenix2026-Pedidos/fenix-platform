@@ -324,13 +324,13 @@
                         </div>
 
                         <div class="card-badges-container">
-                            {% if product.is_new %}
-                            <span class="badge badge--new">{% trans "Nuevo" %}</span>
-                            {% elif product.is_best_seller %}
-                            <span class="badge badge--best-seller">{% trans "Más vendido" %}</span>
-                            {% elif product.is_offer %}
-                            <span class="badge badge--offer">{% trans "Oferta" %}</span>
-                            {% endif %}
+                            {% with label_class=product.promo_label_class %}
+                                {% if label_class %}
+                                    <span class="badge badge--{{ label_class }}">
+                                        {{ product.promo_label_display }}
+                                    </span>
+                                {% endif %}
+                            {% endwith %}
                         </div>
                     </div>
 

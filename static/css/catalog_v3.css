@@ -280,8 +280,6 @@
 
 
 .hero-product-card__badge {
-    background-color: #FEF3C7;
-    color: #92400E;
     padding: 4px 12px;
     border-radius: 8px;
     font-size: 11px;
@@ -290,7 +288,7 @@
     margin-bottom: 10px;
     display: inline-block;
     letter-spacing: 0.05em;
-    border: 1px solid #FDE68A;
+    /* Removed fixed colors to allow .badge--XXX overrides */
 }
 
 .hero-product-card__image {
@@ -337,6 +335,38 @@
     color: var(--gray-500);
     margin: 0;
 }
+
+/* Base Badge Style */
+.badge {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: inline-block;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+}
+
+/* Promotion Color variants */
+.badge--oferta_semana { background: #10b981; color: white; } /* Verde */
+.badge--pack          { background: #a855f7; color: white; } /* Morado */
+.badge--mas_vendido   { background: #eab308; color: black; } /* Amarillo/Dorado */
+.badge--estrella      { background: #f97316; color: white; } /* Naranja */
+.badge--novedad       { background: #3b82f6; color: white; } /* Azul */
+.badge--oferta_flash  { background: #ef4444; color: white; } /* Rojo */
+.badge--super_oferta  { background: #16a34a; color: white; } /* Verde intenso */
+.badge--limitada      { background: #111827; color: white; } /* Negro/Gris */
+.badge--navidad       { background: #991b1b; color: white; } /* Rojo oscuro */
+.badge--verano        { background: #06b6d4; color: white; } /* Turquesa */
+.badge--barbacoa      { background: #b45309; color: white; } /* Marrón/Anaranjado */
+.badge--recomendado   { background: #0284c7; color: white; } /* Azul medio */
+.badge--mejor_precio  { background: #84cc16; color: black; } /* Lima */
+
+/* Legacy Support (Mapped to new colors for consistency) */
+.badge--new           { background: #3b82f6; color: white; }
+.badge--best-seller   { background: #eab308; color: black; }
+.badge--offer         { background: #10b981; color: white; }
 /* Grid de productos responsivo (5 | 3 | 2) */
 .products-grid {
     display: grid;

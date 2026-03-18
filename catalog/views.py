@@ -69,7 +69,7 @@ def kw_variants(keyword):
 
 def product_list(request):
     """Lista de productos del catálogo"""
-    products = Product.objects.filter(is_active=True)
+    products = Product.objects.filter(is_active=True).prefetch_related('promotions')
     
     # Obtener productos promocionales activos (máximo 8)
     featured_products = PromotionalProduct.objects.filter(is_active=True).order_by('display_order', '-created_at')[:8]

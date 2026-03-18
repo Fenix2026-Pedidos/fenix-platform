@@ -33,7 +33,9 @@
                        data-promo-name="{{ promo.promo_title }}">
                         <article class="hero-product-card">
                             {% if promo.promo_label %}
-                            <div class="hero-product-card__badge">{{ promo.get_promo_label_display }}</div>
+                            <div class="hero-product-card__badge badge--{{ promo.promo_label }}">
+                                {{ promo.get_promo_label_display }}
+                            </div>
                             {% endif %}
                             <div class="hero-product-card__image">
                                 {% if promo.promo_image %}
