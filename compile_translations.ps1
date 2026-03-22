@@ -1,8 +1,13 @@
 # Script PowerShell para compilar traducciones
-$env:PATH = $env:PATH + ";C:\Program Files\gettext-iconv\bin"
+$localGettextBin = "C:\Users\vladi\AppData\Local\Programs\gettext-iconv\bin"
+$env:PATH = $env:PATH + ";C:\Program Files\gettext-iconv\bin;$localGettextBin"
 
 # Verificar que msgfmt está disponible
 $msgfmtPath = "C:\Program Files\gettext-iconv\bin\msgfmt.exe"
+if (-not (Test-Path $msgfmtPath)) {
+    $msgfmtPath = Join-Path $localGettextBin "msgfmt.exe"
+}
+
 if (Test-Path $msgfmtPath) {
     Write-Host "gettext encontrado en: $msgfmtPath" -ForegroundColor Green
     & $msgfmtPath --version
@@ -17,7 +22,7 @@ Set-Location $PSScriptRoot
 
 # Compilar traducciones manualmente (solo del proyecto)
 Write-Host "Compilando traducciones del proyecto..." -ForegroundColor Yellow
-$msgfmtExe = "C:\Program Files\gettext-iconv\bin\msgfmt.exe"
+$msgfmtExe = $msgfmtPath
 
 # Compilar español
 $esPo = Join-Path $PSScriptRoot "locale\es\LC_MESSAGES\django.po"

@@ -384,6 +384,13 @@
 .badge--new           { background: #3b82f6; color: white; }
 .badge--best-seller   { background: #eab308; color: black; }
 .badge--offer         { background: #10b981; color: white; }
+/* Reglas de visibilidad y limpieza en mobile/tablet */
+@media (max-width: 1023px) {
+    .card-price-hidden .price-login-hint {
+        display: none !important;
+    }
+}
+
 /* Grid de productos responsivo (5 | 3 | 2) */
 .products-grid {
     display: grid;
@@ -508,8 +515,33 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 28px; /* Altura fija para alineación */
+    height: 28px; /* Altura fija para alineación en desktop */
     margin-bottom: 12px;
+}
+
+@media (max-width: 768px) {
+    .card-meta-row {
+        flex-direction: column;
+        align-items: flex-start;
+        height: auto;
+        gap: 6px;
+        margin-bottom: 14px;
+    }
+    
+    .badge {
+        font-size: 10px;
+        padding: 3px 10px;
+        white-space: normal; /* Permitir wrap en badges muy largos */
+        text-align: center;
+        max-width: 100%;
+        display: inline-flex;
+    }
+
+    .card-badges-container {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+    }
 }
 
 .card-price-main {
@@ -622,6 +654,7 @@
     padding: 0;
     outline: none;
     -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 .qty-input::-webkit-inner-spin-button,

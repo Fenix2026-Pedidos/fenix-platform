@@ -30,19 +30,19 @@ class Product(models.Model):
     ]
 
     PROMO_LABEL_DISPLAY_MAP = {
-        'oferta_semana': '🔥 Oferta semanal',
-        'pack': '📦 Pack oferta',
-        'mas_vendido': '⭐ Más vendido',
-        'estrella': '🌟 Prod. estrella',
-        'novedad': '🆕 Novedad',
-        'oferta_flash': '⚡ Oferta flash',
-        'super_oferta': '💥 Superoferta',
-        'limitada': '⏳ Edic. limitada',
-        'navidad': '🎄 Navidad',
-        'verano': '☀️ Verano',
-        'barbacoa': '🍖 Para BBQ',
-        'recomendado': '👍 Recomendado',
-        'mejor_precio': '💰 Mejor precio',
+        'oferta_semana': _('🔥 Oferta semanal'),
+        'pack': _('📦 Pack oferta'),
+        'mas_vendido': _('⭐ Más vendido'),
+        'estrella': _('🌟 Prod. estrella'),
+        'novedad': _('🆕 Novedad'),
+        'oferta_flash': _('⚡ Oferta flash'),
+        'super_oferta': _('💥 Superoferta'),
+        'limitada': _('⏳ Edic. limitada'),
+        'navidad': _('🎄 Navidad'),
+        'verano': _('☀️ Verano'),
+        'barbacoa': _('🍖 Para BBQ'),
+        'recomendado': _('👍 Recomendado'),
+        'mejor_precio': _('💰 Mejor precio'),
     }
 
     name_es = models.CharField(max_length=200, verbose_name=_('Nombre (ES)'))

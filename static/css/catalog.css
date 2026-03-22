@@ -1,0 +1,893 @@
+/* ============================================
+   FENIX - Catálogo de Productos (UI Compacta Mejorada)
+   ============================================ */
+
+/* Variables específicas del catálogo */
+:root {
+    --catalog-card-height: 300px;
+    --catalog-card-min-height: 450px;
+    --catalog-card-height-fixed: 450px;
+    --catalog-card-min-width: 220px;
+    --catalog-image-height: 250px;
+    --catalog-card-padding: 12px;
+    --catalog-card-padding-bottom: 2px;
+    --catalog-gap: 16px;
+    --filters-panel-width: 320px;
+}
+
+/* Permitir que el catálogo escape del padding del content-wrapper para usar todo el ancho */
+.content-wrapper > .catalog-container {
+    margin-left: calc(-1 * var(--content-padding));
+    margin-right: calc(-1 * var(--content-padding));
+    padding-left: var(--content-padding);
+    padding-right: var(--content-padding);
+    width: calc(100% + 2 * var(--content-padding));
+}
+
+/* Header del catálogo mantiene padding interno */
+.catalog-container .catalog-header {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Contenedor principal - Sin limitaciones de ancho */
+.catalog-container {
+    padding: 0;
+    position: relative;
+    width: 100%;
+    max-width: none !important;
+    margin: 0;
+    flex: 1;
+    overflow: visible;
+}
+
+/* Header del catálogo */
+.catalog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.catalog-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin: 0;
+}
+
+.catalog-header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.catalog-search {
+    display: flex;
+    gap: 8px;
+    max-width: 400px;
+    flex: 1;
+    min-width: 200px;
+}
+
+.catalog-search-input {
+    flex: 1;
+}
+
+.btn-filters-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+/* Panel de filtros desplegable */
+.catalog-filters-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: var(--filters-panel-width);
+    height: 100vh;
+    background: white;
+    box-shadow: var(--shadow-xl);
+    border-left: 1px solid var(--gray-200);
+    padding: 0;
+    z-index: 1000;
+    transform: translateX(100%);
+    transition: transform var(--transition-slow);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.catalog-filters-panel.open {
+    transform: translateX(0);
+}
+
+.filters-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--gray-200);
+    background: var(--gray-50);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.filters-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 0;
+}
+
+.btn-close-filters {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: var(--radius);
+    color: var(--gray-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition);
+    width: 32px;
+    height: 32px;
+}
+
+.btn-close-filters:hover {
+    background: var(--gray-200);
+    color: var(--gray-900);
+}
+
+/* Contenedor principal del contenido de filtros */
+.filters-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+}
+
+/* Sección de filtros - Compacta */
+.filters-section {
+    padding: 16px 20px;
+}
+
+.filters-section:first-child {
+    padding-top: 16px;
+}
+
+.filters-section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 0 0 10px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+}
+
+/* Separador visual entre secciones - Compacto */
+.filters-separator {
+    margin: 8px 20px;
+    border: none;
+    border-top: 1px solid var(--gray-200);
+}
+
+/* Lista de radio buttons para tipos de producto - Compacta */
+.filters-radio-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.filter-radio {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: var(--radius);
+    transition: background-color var(--transition);
+    margin: 0;
+    min-height: auto;
+}
+
+.filter-radio:hover {
+    background: var(--gray-50);
+}
+
+.filter-type-radio {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary-600);
+    flex-shrink: 0;
+    margin: 0;
+}
+
+/* Lista de checkboxes para características especiales - Compacta */
+.filters-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: var(--radius);
+    transition: background-color var(--transition);
+    margin: 0;
+    min-height: auto;
+}
+
+.filter-checkbox:hover {
+    background: var(--gray-50);
+}
+
+.filter-input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary-600);
+    flex-shrink: 0;
+    margin: 0;
+}
+
+.filter-label {
+    font-size: 14px;
+    color: var(--gray-700);
+    cursor: pointer;
+    user-select: none;
+    line-height: 1.3;
+    padding: 0;
+}
+
+.filters-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--gray-200);
+    background: var(--gray-50);
+    position: sticky;
+    bottom: 0;
+}
+
+.btn-clear-filters {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px 16px;
+}
+
+/* Overlay para móvil */
+.filters-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-slow), visibility var(--transition-slow);
+}
+
+.filters-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Área principal con grid - Ocupa ancho máximo sin limitaciones */
+.catalog-main-area {
+    width: 100%;
+    max-width: none !important;
+    padding: 0;
+    flex: 1;
+    overflow: visible;
+}
+
+/* Grid de productos - Forzar 5 columnas en laptops y pantallas grandes */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--catalog-card-min-width), 1fr));
+    gap: var(--catalog-gap);
+    padding-bottom: 100px;
+    width: 100%;
+    align-items: start;
+}
+
+/* Laptop 15" y pantallas grandes (≥1200px): 5 columnas forzadas */
+@media (min-width: 1200px) {
+    .products-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+    
+    /* Asegurar ancho mínimo de card para evitar compresión excesiva */
+    .product-card {
+        min-width: 0; /* Permitir que se comprima ligeramente si es necesario */
+    }
+}
+
+/* Pantallas muy grandes (≥1400px): mantener 5 columnas con más espacio */
+@media (min-width: 1400px) {
+    .products-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+/* Desktop medio (≥992px y <1200px): 4 columnas */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .products-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+/* Tablet (≥768px y <992px): 3 columnas */
+@media (min-width: 768px) and (max-width: 991px) {
+    .products-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* Tablet pequeño (≥576px y <768px): 2 columnas */
+@media (min-width: 576px) and (max-width: 767px) {
+    .products-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+}
+
+/* Móvil (<576px): 1 columna */
+@media (max-width: 575px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .catalog-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .catalog-header-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .catalog-search {
+        max-width: 100%;
+    }
+    
+    .catalog-filters-panel {
+        width: 100%;
+    }
+}
+
+/* Responsive: Fila de acciones en móvil */
+@media (max-width: 767.98px) {
+    .product-actions-row {
+        flex-wrap: wrap;
+    }
+    
+    .product-stepper-wrap {
+        width: auto;
+        max-width: none;
+        min-width: 120px;
+        flex: 0 0 auto;
+    }
+    
+    .product-add-wrap {
+        width: 100%;
+        flex: 0 0 100%;
+        justify-content: stretch;
+        margin-top: 8px;
+        min-width: 0;
+    }
+    
+    .product-add-wrap .btn-add-product {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+/* Card de producto - Compacta y optimizada con altura fija */
+.product-card {
+    background: white;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--gray-200);
+    overflow: hidden;
+    transition: all var(--transition);
+    display: flex;
+    flex-direction: column;
+    height: var(--catalog-card-height-fixed);
+    min-height: var(--catalog-card-height-fixed);
+    max-height: var(--catalog-card-height-fixed);
+    position: relative;
+    width: 100%;
+    min-width: 0; /* Permitir compresión en grid de 5 columnas */
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Asegurar que el contenido de la card no se corte */
+.product-card > .product-card-content {
+    overflow: visible;
+}
+
+/* Permitir overflow visible solo para el badge overlay */
+.product-image-container {
+    position: relative;
+    overflow: visible;
+}
+
+.product-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-300);
+}
+
+.product-card.hidden {
+    display: none;
+}
+
+/* Contenido de la card (orden específico) */
+.product-card-content {
+    padding: var(--catalog-card-padding) var(--catalog-card-padding) 1rem var(--catalog-card-padding);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 4px;
+    height: 100%;
+    overflow: visible;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: unset;
+    justify-content: flex-start;
+}
+
+/* (a) Nombre del producto */
+.product-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 0;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 2.6em;
+    max-height: 2.6em;
+    flex-shrink: 0;
+}
+
+/* (c) Fila de precio (izq) + referencia (der) */
+.product-meta-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-shrink: 0;
+    margin: 2px 0 4px 0;
+    width: 100%;
+}
+
+/* Precio destacado estilo Amazon */
+.product-price-section {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    flex-shrink: 0;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+/* Referencia/ID del producto (a la derecha del precio) */
+.product-reference {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.product-ref-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.product-ref-value {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray-600);
+    font-family: var(--font-mono);
+    letter-spacing: 0.5px;
+}
+
+.product-price-main {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    line-height: 1;
+    flex-wrap: wrap;
+}
+
+/* Precio completo (se parseará con JS) */
+.price-full {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary-600);
+    line-height: 1;
+}
+
+/* Parte entera del precio (grande) */
+.price-int {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary-600);
+    line-height: 1;
+}
+
+/* Decimales del precio (pequeños) */
+.price-dec {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-600);
+    line-height: 1;
+}
+
+/* Símbolo de moneda (pequeño) */
+.price-cur {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary-600);
+    line-height: 1;
+    margin-left: 2px;
+}
+
+/* Unidad/gramos (discreto, a la derecha) */
+.price-unit {
+    font-size: 12px;
+    color: var(--gray-500);
+    font-weight: 400;
+    margin-left: 8px;
+    white-space: nowrap;
+}
+
+/* (d) Imagen del producto (grande, protagonista) con badge overlay */
+.product-image-container {
+    width: 100%;
+    height: var(--catalog-image-height);
+    min-height: var(--catalog-image-height);
+    background: var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: var(--radius);
+    margin: 4px 0 0 0;
+    margin-bottom: 0;
+    position: relative;
+}
+
+/* Badge overlay "En carrito: X" en la esquina superior derecha */
+.product-cart-badge-overlay {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(14, 165, 233, 0.95);
+    backdrop-filter: blur(4px);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    display: none;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.product-cart-badge-overlay.visible {
+    display: flex;
+}
+
+.cart-badge-text {
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.cart-badge-quantity {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    padding: 10px;
+    background: var(--gray-100);
+}
+
+.product-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+    color: var(--gray-400);
+}
+
+.product-image-placeholder i {
+    font-size: 40px;
+}
+
+/* (e) Contenedor de acciones: Stepper y Botón en columna siempre */
+/* Layout ahora manejado con clases Tailwind en el template */
+/* Implementación de utilidades Tailwind usadas en el template */
+
+/* Clases de utilidad Tailwind */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-row { flex-direction: row; }
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.mt-4 { margin-top: 1rem; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.rounded-lg { border-radius: var(--radius-md); }
+.border { border: 1px solid var(--gray-300); }
+.px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.text-white { color: white; }
+.bg-blue-600 { background-color: #2563eb; }
+.hover\:bg-blue-700:hover { background-color: #1d4ed8; }
+.overflow-hidden { overflow: hidden; }
+
+/* max-w-[240px] - Ancho máximo de 240px */
+.max-w-\[240px\] {
+    max-width: 240px;
+}
+
+/* Contenedor de acciones - Siempre en columna */
+.mt-3.w-full.flex.flex-col.items-center.gap-2 {
+    margin-top: 0.75rem;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    overflow: visible;
+}
+
+/* Clases de utilidad adicionales */
+.mt-3 { margin-top: 0.75rem; }
+.pb-4 { padding-bottom: 1rem; }
+.gap-2 { gap: 0.5rem; }
+.h-10 { height: 2.5rem; }
+.h-8 { height: 2rem; }
+.w-8 { width: 2rem; }
+.w-10 { width: 2.5rem; }
+.text-sm { font-size: 0.875rem; }
+.whitespace-nowrap { white-space: nowrap; }
+.max-w-\[260px\] { max-width: 260px; }
+
+/* Selector de cantidad - ahora es el contenedor directo con clases Tailwind */
+/* Clases: w-full max-w-[260px] h-10 flex items-center justify-between rounded-lg border px-2 */
+.product-quantity-selector {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin: 0;
+    width: 100%;
+    max-width: 260px;
+    height: 2.5rem;
+    box-sizing: border-box;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    padding: 0 0.5rem;
+    background: white;
+    overflow: visible;
+    min-width: 0;
+    flex-shrink: 0;
+}
+
+.qty-btn {
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--gray-300);
+    background: white;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition);
+    color: var(--gray-700);
+    font-size: 14px;
+    flex-shrink: 0;
+    flex-grow: 0;
+    min-width: 2rem;
+    max-width: 2rem;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* Botones con clases h-8 w-8 */
+.h-8.w-8.qty-btn {
+    height: 2rem;
+    width: 2rem;
+    min-width: 2rem;
+    max-width: 2rem;
+}
+
+.qty-btn:hover {
+    background: var(--gray-50);
+    border-color: var(--primary-500);
+    color: var(--primary-600);
+}
+
+.qty-btn:active {
+    transform: scale(0.95);
+}
+
+.qty-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.qty-input {
+    flex: 0 0 auto;
+    text-align: center;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gray-900);
+    background: transparent;
+    width: 2.5rem;
+    height: auto;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+/* Input con clases w-10 text-center text-sm */
+.w-10.text-center.text-sm.qty-input {
+    width: 2.5rem;
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+.qty-input:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1);
+}
+
+/* (f) Botón Añadir - Dentro del wrapper, ocupa el espacio disponible sin recorte */
+/* Estilos para el botón Añadir con las nuevas clases Tailwind */
+/* El botón ahora tiene clases: w-full max-w-[260px] h-10 flex items-center justify-center gap-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 whitespace-nowrap */
+button.btn-add-product.w-full {
+    width: 100%;
+    max-width: 260px;
+    height: 2.5rem;
+    min-width: 0;
+    padding: 0 1rem;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-md);
+    background-color: #2563eb; /* bg-blue-600 */
+    color: white;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: visible;
+    flex-shrink: 0;
+}
+
+button.btn-add-product.w-full:hover {
+    background-color: #1d4ed8; /* hover:bg-blue-700 */
+}
+
+/* Estilos legacy para compatibilidad */
+.product-add-wrap .btn-add-product {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 8px 16px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    max-height: 32px !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    border-radius: var(--radius) !important;
+    position: relative !important;
+    float: none !important;
+    transform: none !important;
+}
+
+/* Feedback de carrito ELIMINADO - ahora se usa badge overlay en imagen */
+
+/* Estado vacío */
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 48px 24px;
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--gray-200);
+}
+
+.empty-state i {
+    font-size: 48px;
+    color: var(--gray-400);
+    margin-bottom: 16px;
+}
+
+/* Panel de carrito flotante ELIMINADO - ahora se usa el botón en topbar */
+
+/* Asegurar que el contenedor del catálogo no tenga limitaciones de ancho */
+/* NOTA: Esta regla ya está definida arriba, pero se mantiene por compatibilidad */
+
+/* Scrollbar personalizado para panel de filtros */
+.catalog-filters-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.catalog-filters-panel::-webkit-scrollbar-track {
+    background: var(--gray-100);
+    border-radius: 3px;
+}
+
+.catalog-filters-panel::-webkit-scrollbar-thumb {
+    background: var(--gray-400);
+    border-radius: 3px;
+}
+
+.catalog-filters-panel::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-500);
+}

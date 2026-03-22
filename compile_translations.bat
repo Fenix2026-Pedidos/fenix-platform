@@ -1,11 +1,13 @@
 @echo off
 REM Script para compilar traducciones añadiendo gettext al PATH
 echo Añadiendo gettext al PATH...
-set "PATH=%PATH%;C:\Program Files\gettext-iconv\bin"
+set "PATH=%PATH%;C:\Program Files\gettext-iconv\bin;C:\Users\vladi\AppData\Local\Programs\gettext-iconv\bin"
 cd /d "%~dp0"
 echo.
 echo Verificando gettext...
-"C:\Program Files\gettext-iconv\bin\msgfmt.exe" --version
+set "MSGFMT_PATH=C:\Program Files\gettext-iconv\bin\msgfmt.exe"
+if not exist "%MSGFMT_PATH%" set "MSGFMT_PATH=C:\Users\vladi\AppData\Local\Programs\gettext-iconv\bin\msgfmt.exe"
+"%MSGFMT_PATH%" --version
 echo.
 echo Compilando traducciones...
 python manage.py compilemessages
