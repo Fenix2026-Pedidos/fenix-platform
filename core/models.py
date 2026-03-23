@@ -63,7 +63,7 @@ class PlatformSettings(models.Model):
             obj.order_notification_email = getattr(
                 settings,
                 'DEFAULT_ORDER_NOTIFICATION_EMAIL',
-                'plataformafenix2026@gmail.com',
+                'distribuciones722@gmail.com',
             )
             obj.save(update_fields=['order_notification_email'])
         return obj

@@ -53,7 +53,7 @@ def _resolve_recipient(platform_settings: PlatformSettings) -> str:
     configured = (platform_settings.order_notification_email or '').strip()
     if configured:
         return configured
-    return getattr(settings, 'DEFAULT_ORDER_NOTIFICATION_EMAIL', 'plataformafenix2026@gmail.com')
+    return getattr(settings, 'DEFAULT_ORDER_NOTIFICATION_EMAIL', 'distribuciones722@gmail.com')
 
 
 def _resolve_from_email(platform_settings: PlatformSettings) -> str:

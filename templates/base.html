@@ -20,10 +20,7 @@
     <link rel="stylesheet" href="{% static 'css/navbar_public.css' %}?v=3">
     {% endif %}
     
-    <!-- WhatsApp FAB CSS - Solo en zona pública -->
-    {% if not user.is_authenticated %}
-    <link rel="stylesheet" href="{% static 'css/whatsapp.css' %}">
-    {% endif %}
+    <!-- WhatsApp FAB CSS se incluye ahora directamente en el partial para evitar conflictos -->
     
     {% block extra_css %}{% endblock %}
 </head>

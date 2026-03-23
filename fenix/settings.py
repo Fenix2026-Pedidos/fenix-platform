@@ -168,15 +168,15 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'true').lower() in ('1', 'true', 'yes')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@fenix.com')
-DEFAULT_ORDER_NOTIFICATION_EMAIL = os.getenv('DEFAULT_ORDER_NOTIFICATION_EMAIL', 'plataformafenix2026@gmail.com')
+DEFAULT_ORDER_NOTIFICATION_EMAIL = os.getenv('DEFAULT_ORDER_NOTIFICATION_EMAIL', 'distribuciones722@gmail.com')
 DEFAULT_ORDER_CURRENCY = os.getenv('DEFAULT_ORDER_CURRENCY', 'EUR')
 
 # Admin email para notificaciones de aprobación
-ADMIN_APPROVAL_EMAIL = os.getenv('ADMIN_APPROVAL_EMAIL', 'plataformafenix2026@gmail.com')
+ADMIN_APPROVAL_EMAIL = os.getenv('ADMIN_APPROVAL_EMAIL', 'distribuciones722@gmail.com')
 
 # Lista de administradores (también se puede usar para notificaciones)
 ADMINS = [
-    ('Admin Fenix', os.getenv('ADMIN_APPROVAL_EMAIL', 'plataformafenix2026@gmail.com')),
+    ('Admin Fenix', os.getenv('ADMIN_APPROVAL_EMAIL', 'distribuciones722@gmail.com')),
 ]
 
 
