@@ -201,11 +201,13 @@ class PromotionalProduct(models.Model):
         related_name='promotions',
         verbose_name=_('Producto')
     )
-    promo_title = models.CharField(max_length=200, verbose_name=_('Título promocional'))
+    promo_title = models.CharField(max_length=200, blank=True, verbose_name=_('Título promocional'))
     promo_image = models.ImageField(
         upload_to='promotions/', 
+        blank=True,
+        null=True,
         verbose_name=_('Imagen promocional'),
-        help_text=_('Imagen que aparecerá en el hero de la Home')
+        help_text=_('Imagen que aparecerá en el hero de la Home (Opcional, se usará la del producto si está vacío)')
     )
     promo_label = models.CharField(
         max_length=50, 
@@ -247,7 +249,29 @@ class PromotionalProduct(models.Model):
         ordering = ['display_order', '-created_at']
 
     def __str__(self):
-        return f"{self.promo_title} ({self.product.name_es})"
+        return f"{self.display_title} ({self.product.name_es})"
+
+    @property
+    def display_title(self):
+        """Título para mostrar: manual o el nombre del producto."""
+        return self.promo_title or self.product.translated_name
+
+    @property
+    def display_image_url(self):
+        """URL de imagen para mostrar: manual o la del producto."""
+        if self.promo_image:
+            return self.promo_image.url
+        return self.product.image_url
+
+    @property
+    def display_price(self):
+        """Precio heredado del catálogo."""
+        return self.product.price
+
+    @property
+    def display_unit(self):
+        """Unidad de medida heredada del catálogo."""
+        return self.product.unit_display
 
     @property
     def promo_label_display(self):

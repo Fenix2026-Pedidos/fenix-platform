@@ -17,9 +17,9 @@ def update_role_values(apps, schema_editor):
     # Actualizar 'client' a 'user'
     updated_client = User.objects.filter(role='client').update(role='user')
     
-    print(f"✅ Migración de roles completada:")
-    print(f"   - {updated_manager} usuarios 'manager' → 'admin'")
-    print(f"   - {updated_client} usuarios 'client' → 'user'")
+    print(f"Migración de roles completada:")
+    print(f"   - {updated_manager} usuarios 'manager' -> 'admin'")
+    print(f"   - {updated_client} usuarios 'client' -> 'user'")
 
 
 def reverse_update_role_values(apps, schema_editor):

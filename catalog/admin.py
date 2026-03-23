@@ -12,11 +12,21 @@ class PromotionalProductAdmin(admin.ModelAdmin):
     search_fields = ('promo_title', 'product__name_es')
     autocomplete_fields = ['product']  # Hace que el desplegable sea un buscador
     ordering = ('display_order', '-created_at')
-    readonly_fields = ('image_preview',)
+    readonly_fields = ('image_preview', 'display_price_admin', 'display_unit_admin')
     
     fieldsets = (
         (None, {
-            'fields': ('product', 'promo_title', 'promo_image', 'image_preview', 'promo_label', 'promo_type', 'target_category', 'target_query')
+            'fields': (
+                'product', 
+                'promo_title', 
+                'promo_image', 
+                'image_preview', 
+                ('display_price_admin', 'display_unit_admin'),
+                'promo_label', 
+                'promo_type', 
+                'target_category', 
+                'target_query'
+            )
         }),
         (_('Configuración de visualización'), {
             'fields': ('display_order', 'is_active', 'start_date', 'end_date')
@@ -24,10 +34,21 @@ class PromotionalProductAdmin(admin.ModelAdmin):
     )
 
     def image_preview(self, obj):
-        if obj.promo_image:
-            return mark_safe(f'<img src="{obj.promo_image.url}" style="max-height: 200px; border-radius: 8px;" />')
-        return _("No hay imagen")
-    image_preview.short_description = _("Vista previa de la imagen")
+        url = obj.display_image_url
+        if url:
+            return mark_safe(f'<img src="{url}" style="max-height: 200px; border-radius: 8px;" />')
+        return _("Sin imagen")
+    image_preview.short_description = _("Vista previa (Heredada/Manual)")
+
+    def display_price_admin(self, obj):
+        if not obj.product: return "-"
+        return f"{obj.display_price} €"
+    display_price_admin.short_description = _("Precio heredado")
+
+    def display_unit_admin(self, obj):
+        if not obj.product: return "-"
+        return obj.display_unit
+    display_unit_admin.short_description = _("Unidad heredada")
 from .utils import translate_product_fields
 
 logger = logging.getLogger(__name__)

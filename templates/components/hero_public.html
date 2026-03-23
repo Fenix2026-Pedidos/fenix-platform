@@ -26,11 +26,11 @@
             <div class="public-hero__cards">
                 {% if featured_products %}
                     {% for promo in featured_products %}
-                    <a href="{% url 'catalog:product_list' %}?q={{ promo.target_query|default:promo.promo_title }}&type={{ promo.target_category|default:'todos' }}" 
+                    <a href="{% url 'catalog:product_list' %}?q={{ promo.target_query|default:promo.display_title }}&type={{ promo.target_category|default:'todos' }}" 
                        class="hero-product-link js-promo-card" 
-                       data-promo-q="{{ promo.target_query|default:promo.promo_title }}" 
+                       data-promo-q="{{ promo.target_query|default:promo.display_title }}" 
                        data-promo-type="{{ promo.target_category|default:'todos' }}"
-                       data-promo-name="{{ promo.promo_title }}">
+                       data-promo-name="{{ promo.display_title }}">
                         <article class="hero-product-card">
                             <div class="hero-product-card__badge-wrapper">
                                 {% if promo.promo_label %}
@@ -40,14 +40,20 @@
                                 {% endif %}
                             </div>
                             <div class="hero-product-card__image">
-                                {% if promo.promo_image %}
-                                <img src="{{ promo.promo_image.url }}" alt="{{ promo.promo_title }}" loading="lazy">
+                                {% if promo.display_image_url %}
+                                <img src="{{ promo.display_image_url }}" alt="{{ promo.display_title }}" loading="lazy">
                                 {% else %}
-                                <img src="{% static 'img/placeholder.png' %}" alt="{{ promo.promo_title }}" loading="lazy">
+                                <img src="{% static 'img/placeholder.png' %}" alt="{{ promo.display_title }}" loading="lazy">
                                 {% endif %}
                             </div>
                             <div class="hero-product-card__info">
-                                <p class="hero-product-card__name">{{ promo.promo_title }}</p>
+                                <p class="hero-product-card__name">{{ promo.display_title }}</p>
+                                <p class="hero-product-card__price">
+                                    <strong>{{ promo.display_price|floatformat:2 }} €</strong>
+                                    {% if promo.display_unit %}
+                                    <span class="text-muted" style="font-size: 0.8em;">/ {{ promo.display_unit }}</span>
+                                    {% endif %}
+                                </p>
                             </div>
                         </article>
                     </a>
