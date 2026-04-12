@@ -1,40 +1,37 @@
 {% load i18n static %}
-<!-- Public navbar for non-authenticated users -->
-<nav class="navbar-public">
+<!-- Public navbar for non-authenticated users — Premium Redesign v2 -->
+<nav class="navbar-public" id="navbarPublic">
     <div class="navbar-public__container">
 
-        <!-- Center-Left: Logo -->
+        <!-- Left: Logo -->
         <div class="navbar-public__logo-section">
-            <a href="/" class="navbar-public__logo-link">
-                <!-- Single Unified Logo -->
-                <img src="{% static 'img/logo.jpeg' %}" alt="Logo Fenix" class="navbar-public__logo-img">
+            <a href="/" class="navbar-public__logo-link" aria-label="Fenix - Inicio">
+                <img src="{% static 'img/logo sin fondo3.png' %}" alt="Logo Fenix" class="navbar-public__logo-img">
             </a>
         </div>
 
         <!-- Right: Actions -->
         <div class="navbar-public__actions">
-            <!-- Language Selector (Compact & Premium) -->
+            <!-- Language Selector -->
             <div class="navbar-public__language" id="publicLangContainer" style="position: relative;">
-                <button class="lang-selector-btn no-caret" type="button" id="publicLangBtn" title="{% trans 'Cambiar idioma' %}">
-                    <i class="bi bi-globe"></i>
+                <button class="navbar-public__action-btn" type="button" id="publicLangBtn" title="{% trans 'Cambiar idioma' %}">
+                    <i class="bi bi-globe2"></i>
                     {% get_current_language as CURRENT_LANGUAGE %}
                     {% if CURRENT_LANGUAGE == 'es' %}
-                        <img src="https://flagcdn.com/w20/es.png" width="18" alt="ES" class="lang-flag-mini">
-                        <span class="lang-code-compact">Español</span>
+                        <span class="navbar-public__action-label">Español</span>
                     {% elif CURRENT_LANGUAGE == 'zh-hans' %}
-                        <img src="https://flagcdn.com/w20/cn.png" width="18" alt="ZH" class="lang-flag-mini">
-                        <span class="lang-code-compact">中文 (简体)</span>
+                        <span class="navbar-public__action-label">中文</span>
                     {% else %}
-                        <span class="lang-code-compact text-uppercase">{{ CURRENT_LANGUAGE }}</span>
+                        <span class="navbar-public__action-label text-uppercase">{{ CURRENT_LANGUAGE }}</span>
                     {% endif %}
                 </button>
-                <ul class="lang-dropdown-menu" id="publicLangMenu" style="display: none; position: absolute; right: 0; top: 100%; z-index: 1050;">
+                <ul class="navbar-public__dropdown" id="publicLangMenu" style="display: none;">
                     <li>
                         <form action="{% url 'set_language' %}" method="post">
                             {% csrf_token %}
                             <input name="next" type="hidden" value="{{ request.get_full_path }}">
                             <input name="language" type="hidden" value="es">
-                            <button type="submit" class="lang-dropdown-item {% if CURRENT_LANGUAGE == 'es' %}active{% endif %}">
+                            <button type="submit" class="navbar-public__dropdown-item {% if CURRENT_LANGUAGE == 'es' %}active{% endif %}">
                                 <img src="https://flagcdn.com/w20/es.png" width="20" alt="ES"> Español
                             </button>
                         </form>
@@ -44,7 +41,7 @@
                             {% csrf_token %}
                             <input name="next" type="hidden" value="{{ request.get_full_path }}">
                             <input name="language" type="hidden" value="zh-hans">
-                            <button type="submit" class="lang-dropdown-item {% if CURRENT_LANGUAGE == 'zh-hans' %}active{% endif %}">
+                            <button type="submit" class="navbar-public__dropdown-item {% if CURRENT_LANGUAGE == 'zh-hans' %}active{% endif %}">
                                 <img src="https://flagcdn.com/w20/cn.png" width="20" alt="ZH"> 中文 (简体)
                             </button>
                         </form>
@@ -75,9 +72,13 @@
                 });
             </script>
 
-            <!-- Login/User Icon -->
-            <a href="{% url 'accounts:login' %}" class="action-icon-btn" title="{% trans 'Iniciar Sesión' %}">
-                <i class="bi bi-person"></i>
+            <!-- Divider -->
+            <div class="navbar-public__divider"></div>
+
+            <!-- Área Cliente -->
+            <a href="{% url 'accounts:login' %}" class="navbar-public__action-btn" title="{% trans 'Área cliente' %}">
+                <i class="bi bi-person-circle"></i>
+                <span class="navbar-public__action-label">{% trans "Área cliente" %}</span>
             </a>
         </div>
     </div>

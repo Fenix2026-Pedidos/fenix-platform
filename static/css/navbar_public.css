@@ -1,17 +1,19 @@
 /* ============================================
-   FENIX - Public Navbar (Premium Redesign)
+   FENIX - Public Navbar (Premium v2)
+   Dark Red Gradient — Elegant & Corporate
    ============================================ */
 
+/* ---------- Core Bar ---------- */
 .navbar-public {
-    background: #ffffff;
+    background: linear-gradient(135deg, #5a0a0a 0%, #7a1414 35%, #8b1a1a 60%, #6e1010 100%);
     padding: 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     width: 100%;
     position: sticky;
     top: 0;
     z-index: 1001;
-    display: flex;
-    flex-direction: column;
+    box-shadow:
+        0 2px 12px rgba(0, 0, 0, 0.35),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .navbar-public__container {
@@ -19,142 +21,216 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: 100px; /* Incrementado de 70px */
-    padding: 0 var(--content-padding);
-    gap: 15px;
+    max-width: 1400px;
+    margin: 0 auto;
+    height: 72px;
+    padding: 0 32px;
+    gap: 20px;
+    overflow: visible;
 }
 
-/* Lado izquierdo: Botón menú */
-.navbar-public__menu-section {
-    display: flex;
-    align-items: center;
-}
-
-.menu-toggle-btn {
-    background: none;
-    border: none;
-    font-size: 28px;
-    color: var(--gray-800);
-    cursor: pointer;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-}
-
-/* Centro-Izquierda: Logo */
+/* ---------- Logo ---------- */
 .navbar-public__logo-section {
-    flex: 1;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
+}
+
+.navbar-public__logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
 }
 
 .navbar-public__logo-img {
-    height: 85px; /* Incrementado de 60px */
+    height: 120px;
     width: auto;
     object-fit: contain;
-    transition: transform 0.3s ease;
-    transform: scale(1.1); /* Ligero escalado para suavizar los bordes del logo */
-    transform-origin: left center;
+    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.3));
+    transition: transform 0.3s ease, filter 0.3s ease;
+    transform: translateY(8px);
 }
 
-/* Derecha: Acciones */
+.navbar-public__logo-link:hover .navbar-public__logo-img {
+    transform: translateY(8px) scale(1.03);
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+}
+
+/* ---------- Right Actions ---------- */
 .navbar-public__actions {
     display: flex;
-    gap: 15px;
     align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
 }
 
-.action-icon-btn {
+/* Action button (shared style for language + area cliente) */
+.navbar-public__action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     background: none;
-    border: none;
-    font-size: 24px;
-    color: var(--gray-800);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
     cursor: pointer;
-    position: relative;
     text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px;
-    transition: color 0.2s;
+    white-space: nowrap;
+    transition: all 0.25s ease;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
-.action-icon-btn:hover {
-    color: var(--primary-600);
+.navbar-public__action-btn i {
+    font-size: 18px;
+    color: rgba(255, 215, 140, 0.9);
+    transition: color 0.25s ease;
 }
 
-/* Carrito con badge */
-.cart-btn-public {
-    position: relative;
+.navbar-public__action-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 215, 140, 0.35);
+    color: #fff;
+    text-decoration: none;
 }
 
-.cart-badge-public {
+.navbar-public__action-btn:hover i {
+    color: #ffd78c;
+}
+
+.navbar-public__action-label {
+    font-size: 14px;
+    line-height: 1;
+}
+
+/* ---------- Divider ---------- */
+.navbar-public__divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.15);
+    margin: 0 4px;
+    flex-shrink: 0;
+}
+
+/* ---------- Dropdown (Language) ---------- */
+.navbar-public__dropdown {
     position: absolute;
-    top: -2px;
-    right: -2px;
-    background: #ff4d4f;
-    color: white;
-    font-size: 10px;
-    font-weight: 700;
-    min-width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid #fff;
+    right: 0;
+    top: calc(100% + 8px);
+    z-index: 1100;
+    list-style: none;
+    margin: 0;
+    padding: 6px 0;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow:
+        0 10px 36px rgba(0, 0, 0, 0.18),
+        0 0 0 1px rgba(0, 0, 0, 0.04);
+    min-width: 170px;
+    overflow: hidden;
+    animation: navDropFadeIn 0.2s ease;
 }
 
-/* RESPONSIVE */
+@keyframes navDropFadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
 
+.navbar-public__dropdown li {
+    list-style: none;
+}
+
+.navbar-public__dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 18px;
+    border: none;
+    background: none;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    font-family: inherit;
+}
+
+.navbar-public__dropdown-item:hover {
+    background: #f5f0eb;
+}
+
+.navbar-public__dropdown-item.active {
+    background: #fdf2e6;
+    color: #8b1a1a;
+    font-weight: 600;
+}
+
+.navbar-public__dropdown-item img {
+    border-radius: 2px;
+}
+
+/* ---------- RESPONSIVE — Tablet ---------- */
 @media (max-width: 768px) {
     .navbar-public__container {
-        height: 100px; /* Reducido de 120px */
-        padding: 0 15px;
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 10px;
-    }
-
-    .navbar-public__logo-section {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        padding-left: 5px;
+        height: 64px;
+        padding: 0 16px;
+        gap: 12px;
     }
 
     .navbar-public__logo-img {
-        height: 50px; /* Ajuste para mobile */
-        width: auto;
-        object-fit: contain;
-        transform: scale(1.6); /* Crece aún más en proporción en móvil (60% más) */
-        transform-origin: left center;
+        height: 90px;
+        transform: translateY(6px);
     }
 
-    /* Mostrar selector de idioma en mobile como solicita la Imagen 1 */
-    .navbar-public__language {
-        display: block;
+    .navbar-public__action-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+        gap: 6px;
     }
 
-    .navbar-public__actions {
-        gap: 8px; /* Espaciado más compacto entre iconos */
+    .navbar-public__action-btn i {
+        font-size: 16px;
     }
 
-    .action-icon-btn {
-        font-size: 22px;
-        padding: 4px;
+    .navbar-public__divider {
+        height: 22px;
+        margin: 0 2px;
     }
 }
 
+/* ---------- RESPONSIVE — Phone ---------- */
 @media (max-width: 480px) {
     .navbar-public__container {
-        height: 85px;
+        height: 58px;
+        padding: 0 12px;
+        gap: 8px;
     }
 
     .navbar-public__logo-img {
-        height: 45px;
-        transform: scale(1.7);
+        height: 78px;
+        transform: translateY(5px);
+    }
+
+    /* Hide text labels but keep icons */
+    .navbar-public__action-label {
+        display: none;
+    }
+
+    .navbar-public__action-btn {
+        padding: 8px 10px;
+        border-radius: 8px;
+        gap: 0;
+    }
+
+    .navbar-public__action-btn i {
+        font-size: 20px;
+    }
+
+    .navbar-public__divider {
+        height: 20px;
     }
 }
