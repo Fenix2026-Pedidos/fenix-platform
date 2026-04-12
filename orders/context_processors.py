@@ -1,5 +1,13 @@
 def cart_count(request):
-    """Context processor para añadir el contador del carrito a todos los templates"""
+    """
+    Retorna el número de productos distintos (líneas) en el carrito.
+    Ejemplo: 3 Croissants + 2 Jamones = 2 líneas.
+    """
+    total_lines = 0
     cart = request.session.get('cart', {})
-    count = sum(int(qty) for qty in cart.values())
-    return {'cart_count': count}
+    total_lines = len(cart)
+        
+    return {
+        'cart_count': total_lines
+    }
+

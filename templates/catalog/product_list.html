@@ -475,7 +475,7 @@
     window.Fenix = window.Fenix || {};
     window.Fenix.isAuthenticated = ("{{ request.user.is_authenticated|yesno:'true,false' }}" === "true");
 </script>
-<script src="{% static 'js/catalog.js' %}"></script>
+<script src="{% static 'js/catalog.js' %}?v={% now 'U' %}"></script>
 <script>
     // Inicializar catálogo al cargar la página
     document.addEventListener('DOMContentLoaded', function () {

@@ -52,12 +52,8 @@
             <a href="{% url 'orders:cart' %}"
                 class="sidebar-menu-link {% if request.resolver_match.url_name == 'cart' %}active{% endif %}">
                 <i class="bi bi-cart3 sidebar-menu-icon"></i>
-                <span class="sidebar-menu-text">{% trans "Carrito" %}</span>
-                {% if cart_count > 0 %}
-                <span
-                    style="background-color: var(--danger); color: white; margin-left: auto; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; min-width: 20px; text-align: center;">{{
-                    cart_count }}</span>
-                {% endif %}
+                <span class="sidebar-menu-text">{% trans "Cesta" %}</span>
+                <span class="badge rounded-pill bg-primary ms-auto" id="sidebarBadgeLines" style="display: none;"></span>
             </a>
         </div>
         {% endif %}

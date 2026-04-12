@@ -39,8 +39,15 @@ const CatalogCart = {
         // Vincular eventos (con protección contra duplicados)
         this.bindEvents();
         
-        // Actualizar badge del topbar con lo que hay en cart
-        this.updateTopbarBadge();
+        // Sincronización inicial desde el estado real (pasado por el servidor de forma segura)
+        const globalCountElem = document.getElementById('global-cart-count');
+        if (globalCountElem) {
+            const initialCount = parseInt(globalCountElem.textContent) || 0;
+            this.updateTopbarBadgeCount(initialCount);
+        } else {
+            // Si no hay elemento global, intentar actualizar con lo que tengamos en this.cart
+            this.updateTopbarBadge();
+        }
         
         console.log('[CatalogCart] Inicialización completa');
     },
@@ -306,8 +313,9 @@ const CatalogCart = {
      * Actualiza el badge del topbar
      */
     updateTopbarBadge: function() {
-        const totalItems = Object.values(this.cart).reduce((sum, qty) => sum + qty, 0);
-        this.updateTopbarBadgeCount(totalItems);
+        // Contar productos distintos (líneas), no unidades totales
+        const totalLines = Object.keys(this.cart).length;
+        this.updateTopbarBadgeCount(totalLines);
     },
     
     /**
@@ -315,29 +323,20 @@ const CatalogCart = {
      */
     updateTopbarBadgeCount: function(count) {
         const topbarBadge = document.getElementById('topbarCartBadge');
+        const sidebarBadge = document.getElementById('sidebarBadgeLines');
         const topbarCartBtn = document.getElementById('topbarCartBtn');
         
+        const totalCount = parseInt(count) || 0;
+        // Lógica "9+": si supera 9, mostrar 9+ para mantener estética circular
+        const displayCount = totalCount > 9 ? '9+' : totalCount;
+
+        // Actualizar Topbar
         if (topbarBadge) {
-            const totalCount = count || 0;
             if (totalCount > 0) {
-                topbarBadge.textContent = totalCount;
+                topbarBadge.textContent = displayCount;
                 topbarBadge.setAttribute('data-count', totalCount);
                 topbarBadge.style.display = 'flex';
                 
-                // Ajustar tamaño del badge si el número es mayor a 9
-                if (totalCount > 9) {
-                    topbarBadge.style.minWidth = '18px';
-                    topbarBadge.style.height = '18px';
-                    topbarBadge.style.fontSize = '12px';
-                    topbarBadge.style.padding = '0 5px';
-                } else {
-                    topbarBadge.style.minWidth = '16px';
-                    topbarBadge.style.height = '16px';
-                    topbarBadge.style.fontSize = '11px';
-                    topbarBadge.style.padding = '0 4px';
-                }
-                
-                // Actualizar aria-label y title
                 if (topbarCartBtn) {
                     const cartLabel = 'Carrito (' + totalCount + ')';
                     topbarCartBtn.setAttribute('aria-label', cartLabel);
@@ -354,7 +353,21 @@ const CatalogCart = {
                 }
             }
         }
+
+        // Sincronizar Sidebar
+        if (sidebarBadge) {
+            if (totalCount > 0) {
+                sidebarBadge.textContent = displayCount;
+                sidebarBadge.setAttribute('data-count', totalCount);
+                sidebarBadge.style.display = 'flex';
+            } else {
+                sidebarBadge.textContent = '';
+                sidebarBadge.setAttribute('data-count', '0');
+                sidebarBadge.style.display = 'none';
+            }
+        }
     },
+
     
     /**
      * Establece la cantidad en cesta para un producto (usado al cargar carrito inicial)

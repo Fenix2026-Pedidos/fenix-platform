@@ -197,8 +197,8 @@ def cart_add(request):
         return JsonResponse({
             'success': True,
             'message': message,
-            'product_quantity': new_quantity,  # Cantidad total del producto en cesta
-            'cart_count': sum(cart.values())   # Total de items en cesta
+            'product_quantity': new_quantity,
+            'cart_count': len(cart)
         })
     except Exception as e:
         error_msg = _('Error al añadir producto al carrito')
@@ -219,7 +219,7 @@ def cart_remove(request):
         
         return JsonResponse({
             'success': True,
-            'cart_count': sum(cart.values())
+            'cart_count': len(cart)
         })
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)}, status=400)
@@ -242,7 +242,7 @@ def cart_update(request):
         
         return JsonResponse({
             'success': True,
-            'cart_count': sum(cart.values())
+            'cart_count': len(cart)
         })
     except Exception as e:
         error_msg = _('Error al actualizar el carrito')

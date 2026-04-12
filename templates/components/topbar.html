@@ -83,18 +83,10 @@
             {% if user.is_authenticated %}
             <!-- Carrito minimalista estilo Amazon -->
             <a href="{% url 'orders:cart' %}" class="topbar-cart-btn fenix-cart-minimal" id="topbarCartBtn"
-                aria-label="{% if cart_count > 0 %}{% trans 'Carrito' %} ({{ cart_count }}){% else %}{% trans 'Carrito' %}{% endif %}"
-                title="{% if cart_count > 0 %}{% trans 'Carrito' %} ({{ cart_count }}){% else %}{% trans 'Carrito' %}{% endif %}">
-                <span class="topbar-cart-icon">🛒</span>
-                {% with count=cart_count|default:0 %}
-                {% if count == 0 %}
-                <span class="topbar-cart-badge" id="topbarCartBadge" data-count="{{ count }}" style="display: none;">
-                    {% else %}
-                    <span class="topbar-cart-badge" id="topbarCartBadge" data-count="{{ count }}">
-                        {% endif %}
-                        {% if count > 0 %}{{ count }}{% endif %}
-                    </span>
-                    {% endwith %}
+               aria-label="{% if cart_count > 0 %}{% trans 'Carrito' %} ({{ cart_count }}){% else %}{% trans 'Carrito' %}{% endif %}"
+               title="{% if cart_count > 0 %}{% trans 'Carrito' %} ({{ cart_count }}){% else %}{% trans 'Carrito' %}{% endif %}">
+                <i class="bi bi-cart3"></i>
+                <span class="topbar-cart-badge" id="topbarCartBadge" style="display: none;"></span>
             </a>
 
             <!-- Perfil de usuario -->
