@@ -7,12 +7,15 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.timesince import timesince
 from django.utils.translation import gettext as _
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 from accounts.models import User
 from catalog.models import Product
 from notifications.models import Notification
 from orders.models import Order
+from .models import ContactLead
 
 MAX_RESULTS = 5
 PUBLIC_CONTACT_INFO = {
@@ -149,3 +152,76 @@ def public_privacy(request):
         'contact_info': PUBLIC_CONTACT_INFO,
     }
     return render(request, 'public/privacy.html', context)
+
+def public_contact(request):
+    context = {
+        'page_heading': _('Contacto'),
+        'contact_info': PUBLIC_CONTACT_INFO,
+    }
+    return render(request, 'public/contact.html', context)
+
+
+@require_POST
+def api_contact_submit(request):
+    """Endpoint para procesar el formulario de contacto vía AJAX"""
+    try:
+        # 1. Honeypot check (anti-spam)
+        # Un campo oculto que los bots suelen rellenar
+        if request.POST.get('website'):
+            return JsonResponse({'success': False, 'message': _('Detección de actividad sospechosa.')}, status=400)
+
+        # 2. Get and validate data
+        nombre = request.POST.get('nombre_completo', '').strip()
+        email = request.POST.get('email', '').strip()
+        empresa = request.POST.get('empresa', '').strip()
+        telefono = request.POST.get('telefono', '').strip()
+        asunto = request.POST.get('asunto', '').strip()
+        mensaje = request.POST.get('mensaje', '').strip()
+        acepta_privacidad = request.POST.get('acepta_privacidad') == 'on' or request.POST.get('acepta_privacidad') == 'true'
+
+        errors = {}
+        if not nombre:
+            errors['nombre_completo'] = _('El nombre es obligatorio.')
+        
+        if not email:
+            errors['email'] = _('El correo electrónico es obligatorio.')
+        else:
+            try:
+                validate_email(email)
+            except ValidationError:
+                errors['email'] = _('El correo electrónico no es válido.')
+
+        if not mensaje:
+            errors['mensaje'] = _('El mensaje no puede estar vacío.')
+
+        if not acepta_privacidad:
+            errors['acepta_privacidad'] = _('Debes aceptar la política de privacidad.')
+
+        if errors:
+            return JsonResponse({'success': False, 'errors': errors}, status=400)
+
+        # 3. Create Lead
+        lead = ContactLead.objects.create(
+            nombre_completo=nombre,
+            email=email,
+            empresa=empresa,
+            telefono=telefono,
+            asunto=asunto,
+            mensaje=mensaje,
+            acepta_privacidad=acepta_privacidad,
+            acepta_comunicaciones=request.POST.get('acepta_comunicaciones') == 'on' or request.POST.get('acepta_comunicaciones') == 'true',
+            ip=request.META.get('REMOTE_ADDR'),
+            user_agent=request.META.get('HTTP_USER_AGENT'),
+            origen='formulario_contacto_web'
+        )
+
+        return JsonResponse({
+            'success': True,
+            'message': _('Hemos recibido tu solicitud correctamente. Te contactaremos lo antes posible.')
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': _('No hemos podido enviar tu solicitud. Inténtalo de nuevo en unos minutos.')
+        }, status=500)

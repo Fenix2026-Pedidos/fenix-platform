@@ -1,0 +1,559 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block title %}Fenix - {% trans "Contacto" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Contact Page - Premium Styles */
+    .contact-hero {
+        padding: 50px 0 30px;
+        background: linear-gradient(180deg, #fdfbf7 0%, #f9fafb 100%);
+        text-align: center;
+    }
+
+    .contact-hero__title {
+        font-family: 'Cinzel', serif;
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: #5a0a0a;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+    }
+
+    .contact-hero__subtitle {
+        font-family: 'Inter', sans-serif;
+        font-size: 1.25rem;
+        color: #64748b;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    .contact-section {
+        padding: 20px 20px 60px;
+        background-color: #f9fafb;
+    }
+
+    .contact-container {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 32px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Form Card */
+    .contact-card {
+        background: #ffffff;
+        padding: 32px 40px;
+        border-radius: 24px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+    .contact-form__group {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .contact-form__label {
+        display: block;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+    }
+
+    .contact-form__input,
+    .contact-form__textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        font-family: 'Inter', sans-serif;
+        font-size: 1rem;
+        color: #1e293b;
+        background-color: #f8fafc;
+        transition: all 0.2s ease;
+        outline: none;
+    }
+
+    .contact-form__input:focus,
+    .contact-form__textarea:focus {
+        border-color: #f97316;
+        background-color: #ffffff;
+        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+    }
+
+    .contact-form__textarea {
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    /* Checkbox Styles */
+    .contact-form__checkbox-group {
+        margin-bottom: 24px;
+    }
+
+    .contact-form__checkbox-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 12px;
+        cursor: pointer;
+    }
+
+    .contact-form__checkbox {
+        width: 18px;
+        height: 18px;
+        margin-top: 3px;
+        accent-color: #f97316;
+        cursor: pointer;
+    }
+
+    .contact-form__checkbox-label {
+        font-size: 0.875rem;
+        color: #64748b;
+        line-height: 1.5;
+    }
+
+    .contact-form__checkbox-label a {
+        color: #5a0a0a;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .contact-form__checkbox-label a:hover {
+        text-decoration: underline;
+    }
+
+    /* Button Style - Orange Premium */
+    .contact-form__submit {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        color: #ffffff;
+        border: none;
+        border-radius: 14px;
+        font-family: 'Inter', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 25px rgba(234, 88, 12, 0.25);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .contact-form__submit:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(234, 88, 12, 0.35);
+        filter: brightness(1.05);
+    }
+
+    .contact-form__submit:active:not(:disabled) {
+        transform: translateY(0);
+    }
+
+    .contact-form__submit:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        background: #94a3b8;
+        box-shadow: none;
+    }
+
+    /* Info Sidebar */
+    .contact-info {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .contact-info__card {
+        background: #ffffff;
+        padding: 32px;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        border: 1px solid rgba(0, 0, 0, 0.02);
+    }
+
+    .contact-info__title {
+        font-family: 'Cinzel', serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #5a0a0a;
+        margin-bottom: 20px;
+    }
+
+    .contact-info__item {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .contact-info__icon {
+        width: 44px;
+        height: 44px;
+        background: #fdf2f2;
+        color: #8b1a1a;
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .contact-info__content-label {
+        font-size: 0.8rem;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 700;
+        display: block;
+    }
+
+    .contact-info__content-value {
+        font-size: 1rem;
+        color: #1e293b;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .contact-info__content-value:hover {
+        color: #ea580c;
+    }
+
+    /* Direct Attention Card */
+    .contact-direct {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        color: #ffffff;
+        padding: 32px;
+        border-radius: 24px;
+        text-align: center;
+    }
+
+    .contact-direct__title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .contact-direct__subtitle {
+        font-size: 0.9rem;
+        color: #94a3b8;
+        margin-bottom: 24px;
+    }
+
+    .contact-direct__btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #ffffff;
+        color: #1e293b;
+        padding: 12px 24px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 700;
+        transition: all 0.2s;
+    }
+
+    .contact-direct__btn:hover {
+        background: #f1f5f9;
+        transform: scale(1.03);
+    }
+
+    /* Feedback Messages */
+    .form-feedback {
+        margin-bottom: 24px;
+        padding: 16px;
+        border-radius: 12px;
+        display: none;
+    }
+
+    .form-feedback--success {
+        display: block;
+        background-color: #dcfce7;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+    }
+
+    .form-feedback--error {
+        display: block;
+        background-color: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
+    .invalid-feedback {
+        color: #dc2626;
+        font-size: 0.75rem;
+        margin-top: 4px;
+        display: none;
+    }
+
+    .is-invalid {
+        border-color: #dc2626 !important;
+    }
+
+    .is-invalid + .invalid-feedback {
+        display: block;
+    }
+
+    /* Loader */
+    .btn-loader {
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 0.8s linear infinite;
+        display: none;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .contact-container {
+            grid-template-columns: 1fr;
+            gap: 32px;
+        }
+        .contact-card {
+            padding: 32px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .contact-hero__title {
+            font-size: 2.5rem;
+        }
+        .contact-hero {
+            padding: 60px 20px 40px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main>
+    <!-- Hero Section -->
+    <section class="contact-hero">
+        <div class="container">
+            <h1 class="contact-hero__title">{% trans "Contacto" %}</h1>
+            <p class="contact-hero__subtitle">
+                {% trans "Estamos aquí para ayudarte. Completa el formulario y nos pondremos en contacto contigo lo antes posible." %}
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="contact-section">
+        <div class="contact-container">
+            <!-- Form Block -->
+            <div class="contact-card">
+                <div id="form-message" class="form-feedback"></div>
+                
+                <form id="contactForm" method="POST" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Honeypot -->
+                    <div style="display:none;">
+                        <input type="text" name="website" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="contact-form__group">
+                                <label class="contact-form__label" for="nombre_completo">{% trans "Nombre completo" %} *</label>
+                                <input type="text" id="nombre_completo" name="nombre_completo" class="contact-form__input" placeholder="Juan Pérez" required>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="contact-form__group">
+                                <label class="contact-form__label" for="empresa">{% trans "Empresa" %}</label>
+                                <input type="text" id="empresa" name="empresa" class="contact-form__input" placeholder="Nombre de tu empresa">
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="contact-form__group">
+                                <label class="contact-form__label" for="email">{% trans "Correo electrónico" %} *</label>
+                                <input type="email" id="email" name="email" class="contact-form__input" placeholder="tu@email.com" required>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="contact-form__group">
+                                <label class="contact-form__label" for="telefono">{% trans "Teléfono" %}</label>
+                                <input type="tel" id="telefono" name="telefono" class="contact-form__input" placeholder="+34 000 000 000">
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-form__group">
+                        <label class="contact-form__label" for="asunto">{% trans "Asunto" %}</label>
+                        <input type="text" id="asunto" name="asunto" class="contact-form__input" placeholder="Motivo del contacto">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="contact-form__group">
+                        <label class="contact-form__label" for="mensaje">{% trans "Mensaje" %} *</label>
+                        <textarea id="mensaje" name="mensaje" class="contact-form__textarea" placeholder="¿En qué podemos ayudarte?" required></textarea>
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="contact-form__checkbox-group">
+                        <label class="contact-form__checkbox-item">
+                            <input type="checkbox" name="acepta_privacidad" id="acepta_privacidad" class="contact-form__checkbox" required>
+                            <span class="contact-form__checkbox-label">
+                                {% trans "He leído y acepto la" %} <a href="{% url 'public_privacy' %}" target="_blank">{% trans "Política de Privacidad" %}</a> *
+                            </span>
+                        </label>
+                        <label class="contact-form__checkbox-item">
+                            <input type="checkbox" name="acepta_comunicaciones" id="acepta_comunicaciones" class="contact-form__checkbox">
+                            <span class="contact-form__checkbox-label">
+                                {% trans "Acepto recibir información comercial" %}
+                            </span>
+                        </label>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="contact-form__submit">
+                        <span class="btn-text">{% trans "Enviar mensaje" %}</span>
+                        <div class="btn-loader" id="loader"></div>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Info Sidebar -->
+            <div class="contact-info">
+                <div class="contact-info__card">
+                    <h2 class="contact-info__title">{% trans "Datos de contacto" %}</h2>
+                    
+                    <div class="contact-info__item">
+                        <div class="contact-info__icon">
+                            <i class="bi bi-envelope-fill"></i>
+                        </div>
+                        <div>
+                            <span class="contact-info__content-label">{% trans "Escríbenos" %}</span>
+                            <a href="mailto:{{ contact_info.email }}" class="contact-info__content-value">{{ contact_info.email }}</a>
+                        </div>
+                    </div>
+
+                    <div class="contact-info__item">
+                        <div class="contact-info__icon">
+                            <i class="bi bi-telephone-fill"></i>
+                        </div>
+                        <div>
+                            <span class="contact-info__content-label">{% trans "Llámanos" %}</span>
+                            <a href="tel:{{ contact_info.phone|cut:' ' }}" class="contact-info__content-value">{{ contact_info.phone }}</a>
+                        </div>
+                    </div>
+
+                    <div class="contact-info__item">
+                        <div class="contact-info__icon">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <div>
+                            <span class="contact-info__content-label">{% trans "Zona de servicio" %}</span>
+                            <span class="contact-info__content-value">Ciudad Real y Toledo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-direct">
+                    <h3 class="contact-direct__title">{% trans "¿Prefieres atención directa?" %}</h3>
+                    <p class="contact-direct__subtitle">{% trans "Pulsa aquí para contactar por WhatsApp de forma inmediata." %}</p>
+                    <a href="https://wa.me/{{ contact_info.phone|cut:'+'|cut:' ' }}" target="_blank" class="contact-direct__btn">
+                        <i class="bi bi-whatsapp"></i>
+                        {% trans "Abrir WhatsApp" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const loader = document.getElementById('loader');
+    const feedback = document.getElementById('form-message');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Reset states
+        feedback.style.display = 'none';
+        feedback.className = 'form-feedback';
+        document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        
+        // Disable button
+        submitBtn.disabled = true;
+        loader.style.display = 'block';
+        
+        const formData = new FormData(form);
+
+        fetch('{% url "api_contact_submit" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': formData.get('csrf_token')
+            }
+        })
+        .then(response => response.json().then(data => ({status: response.status, data: data})))
+        .then(({status, data}) => {
+            if (status === 200 && data.success) {
+                // Success
+                feedback.textContent = data.message;
+                feedback.classList.add('form-feedback--success');
+                feedback.style.display = 'block';
+                form.reset();
+                window.scrollTo({ top: feedback.offsetTop - 100, behavior: 'smooth' });
+            } else {
+                // Error / Validation
+                if (data.errors) {
+                    for (const [field, message] of Object.entries(data.errors)) {
+                        const input = form.querySelector(`[name="${field}"]`);
+                        if (input) {
+                            input.classList.add('is-invalid');
+                            const errDiv = input.parentElement.querySelector('.invalid-feedback');
+                            if (errDiv) errDiv.textContent = message;
+                        }
+                    }
+                }
+                
+                feedback.textContent = data.message || '{% trans "Revisa los campos del formulario." %}';
+                feedback.classList.add('form-feedback--error');
+                feedback.style.display = 'block';
+            }
+        })
+        .catch(err => {
+            feedback.textContent = '{% trans "Ocurrió un error inesperado. Inténtalo de nuevo." %}';
+            feedback.classList.add('form-feedback--error');
+            feedback.style.display = 'block';
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            loader.style.display = 'none';
+        });
+    });
+});
+</script>
+{% endblock %}

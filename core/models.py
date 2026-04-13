@@ -69,5 +69,52 @@ class PlatformSettings(models.Model):
         return obj
 
 
+
+class ContactLead(models.Model):
+    """Leads recibidos desde el formulario de contacto público"""
+    STATUS_NEW = 'nuevo'
+    STATUS_CONTACTED = 'contactado'
+    STATUS_DISCARDED = 'descartado'
+
+    STATUS_CHOICES = [
+        (STATUS_NEW, _('Nuevo')),
+        (STATUS_CONTACTED, _('Contactado')),
+        (STATUS_DISCARDED, _('Descartado')),
+    ]
+
+    nombre_completo = models.CharField(max_length=255, verbose_name=_('Nombre completo'))
+    empresa = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('Empresa'))
+    email = models.EmailField(verbose_name=_('Correo electrónico'))
+    telefono = models.CharField(max_length=50, blank=True, null=True, verbose_name=_('Teléfono'))
+    asunto = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('Asunto'))
+    mensaje = models.TextField(verbose_name=_('Mensaje'))
+    
+    acepta_privacidad = models.BooleanField(default=False, verbose_name=_('Acepta política de privacidad'))
+    acepta_comunicaciones = models.BooleanField(default=False, verbose_name=_('Acepta comunicaciones comerciales'))
+    
+    origen = models.CharField(max_length=100, default='formulario_contacto_web', verbose_name=_('Origen'))
+    estado = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_NEW, verbose_name=_('Estado'))
+    
+    ip = models.GenericIPAddressField(blank=True, null=True, verbose_name=_('Dirección IP'))
+    user_agent = models.TextField(blank=True, null=True, verbose_name=_('User Agent'))
+    metadata = models.JSONField(blank=True, null=True, verbose_name=_('Metadatos adicionales'))
+    
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Fecha de creación'))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Última actualización'))
+
+    class Meta:
+        verbose_name = _('Lead de contacto')
+        verbose_name_plural = _('Leads de contacto')
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['-created_at']),
+            models.Index(fields=['email']),
+            models.Index(fields=['estado']),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.nombre_completo} ({self.email}) - {self.created_at.strftime('%Y-%m-%d %H:%M')}"
+
+
 # AuditLog model is now imported from audit.py
-__all__ = ['PlatformSettings', 'AuditLog']
+__all__ = ['PlatformSettings', 'AuditLog', 'ContactLead']

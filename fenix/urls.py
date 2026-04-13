@@ -7,7 +7,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.i18n import set_language
 
-from core.views import global_search, public_about, public_legal, public_privacy
+from core.views import global_search, public_about, public_legal, public_privacy, public_contact, api_contact_submit
 
 # Personalizar el admin de Django
 admin.site.site_header = 'BackOffice Fenix'
@@ -21,6 +21,8 @@ urlpatterns = [
     path('about/', public_about, name='public_about'),
     path('legal/', public_legal, name='public_legal'),
     path('privacy/', public_privacy, name='public_privacy'),
+    path('contacto/', public_contact, name='public_contact'),
+    path('api/contacto/submit/', api_contact_submit, name='api_contact_submit'),
     path('', include('catalog.urls')),
     path('orders/', include('orders.urls')),
     path('accounts/', include('accounts.urls')),

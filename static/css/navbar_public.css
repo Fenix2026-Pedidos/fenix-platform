@@ -106,6 +106,26 @@
     line-height: 1;
 }
 
+/* ---------- Contact Button (Orange) ---------- */
+.navbar-public__action-btn--orange {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
+}
+
+.navbar-public__action-btn--orange i {
+    color: #ffffff !important;
+}
+
+.navbar-public__action-btn--orange:hover {
+    background: linear-gradient(135deg, #fb923c 0%, #f97316 100%) !important;
+    box-shadow: 0 6px 16px rgba(234, 88, 12, 0.4);
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
 /* ---------- Divider ---------- */
 .navbar-public__divider {
     width: 1px;

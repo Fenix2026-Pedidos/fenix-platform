@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import PlatformSettings, AuditLog
+from .models import PlatformSettings, AuditLog, ContactLead
 
 
 @admin.register(PlatformSettings)
@@ -40,3 +40,25 @@ class AuditLogAdmin(admin.ModelAdmin):
         # Solo super admins pueden borrar logs
         return request.user.is_superuser
 
+
+@admin.register(ContactLead)
+class ContactLeadAdmin(admin.ModelAdmin):
+    list_display = ['nombre_completo', 'email', 'empresa', 'estado', 'created_at']
+    list_filter = ['estado', 'acepta_privacidad', 'created_at']
+    search_fields = ['nombre_completo', 'email', 'empresa', 'mensaje']
+    readonly_fields = ['created_at', 'updated_at', 'ip', 'user_agent']
+    date_hierarchy = 'created_at'
+    ordering = ['-created_at']
+    
+    fieldsets = (
+        ('Información del Lead', {
+            'fields': ('nombre_completo', 'email', 'telefono', 'empresa', 'asunto', 'mensaje')
+        }),
+        ('Estado y Consentimiento', {
+            'fields': ('estado', 'acepta_privacidad', 'acepta_comunicaciones', 'origen')
+        }),
+        ('Rastreo y Metadatos', {
+            'fields': ('ip', 'user_agent', 'metadata', 'created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )

@@ -75,11 +75,18 @@
             <!-- Divider -->
             <div class="navbar-public__divider"></div>
 
-            <!-- Área Cliente -->
             <a href="{% url 'accounts:login' %}" class="navbar-public__action-btn" title="{% trans 'Área cliente' %}">
                 <i class="bi bi-person-circle"></i>
                 <span class="navbar-public__action-label">{% trans "Área cliente" %}</span>
             </a>
+
+            <!-- Contacto — Ocultar si ya estamos en la página de contacto -->
+            {% if request.resolver_match.url_name != 'public_contact' %}
+            <a href="{% url 'public_contact' %}" class="navbar-public__action-btn navbar-public__action-btn--orange" title="{% trans 'Contacto' %}">
+                <i class="bi bi-chat-dots-fill"></i>
+                <span class="navbar-public__action-label">{% trans "Contacto" %}</span>
+            </a>
+            {% endif %}
         </div>
     </div>
 </nav>
