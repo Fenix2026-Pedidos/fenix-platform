@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-18 20:51+0100\n"
+"POT-Creation-Date: 2026-04-13 17:07+0200\n"
 "PO-Revision-Date: 2026-01-25 18:00+0100\n"
 "Last-Translator: Fenix Platform\n"
 "Language-Team: Chinese\n"
@@ -109,22 +109,30 @@ msgstr "您的邮箱@email.com"
 msgid "Nombre de tu empresa"
 msgstr "您的公司名称"
 
-#: .\accounts\forms.py:61 .\templates\accounts\register.html:27
+#: .\accounts\forms.py:61 .\core\models.py:85
+#: .\templates\accounts\register.html:27
 #: .\templates\accounts\user_management_modern.html:435
+#: .\templates\public\contact.html:375
+#, fuzzy
 msgid "Nombre completo"
-msgstr "全名"
+msgstr ""
+"#-#-#-#-#  django.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"全名\n"
+"#-#-#-#-#  django.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"姓名"
 
-#: .\accounts\forms.py:62
+#: .\accounts\forms.py:62 .\core\models.py:87
 #: .\templates\accounts\profile\profile_dashboard_new.html:587
 #: .\templates\accounts\register.html:41
 #: .\templates\accounts\user_approval_dashboard.html:423
 #: .\templates\accounts\user_approval_dashboard.html:562
 #: .\templates\accounts\user_management_modern.html:104
 #: .\templates\accounts\user_management_modern.html:274
+#: .\templates\public\contact.html:392
 msgid "Correo electrónico"
 msgstr "电子邮件"
 
-#: .\accounts\forms.py:63 .\accounts\profile_forms.py:64
+#: .\accounts\forms.py:63 .\accounts\profile_forms.py:64 .\core\models.py:86
 #: .\organizations\models.py:67 .\templates\accounts\profile.html:423
 #: .\templates\accounts\profile\admin_edit_user.html:63
 #: .\templates\accounts\profile\admin_view_user.html:139
@@ -138,7 +146,7 @@ msgstr "电子邮件"
 #: .\templates\accounts\user_management_modern.html:103
 #: .\templates\accounts\user_management_modern.html:273
 #: .\templates\accounts\user_management_modern.html:440
-#: .\templates\orders\order_detail.html:92
+#: .\templates\orders\order_detail.html:92 .\templates\public\contact.html:382
 msgid "Empresa"
 msgstr "公司"
 
@@ -151,7 +159,9 @@ msgid "La empresa es obligatoria."
 msgstr "公司字段必填。"
 
 #: .\accounts\middleware.py:68
-msgid "Tu cuenta está pendiente de aprobación. Un administrador revisará tu solicitud."
+msgid ""
+"Tu cuenta está pendiente de aprobación. Un administrador revisará tu "
+"solicitud."
 msgstr "您的账户正在等待审批。管理员将审核您的申请。"
 
 #: .\accounts\models.py:37 .\templates\accounts\profile\admin_edit_user.html:76
@@ -182,7 +192,7 @@ msgid "Pendiente"
 msgstr "待处理"
 
 #: .\accounts\models.py:58 .\accounts\views.py:379 .\catalog\models.py:75
-#: .\catalog\models.py:240 .\recurring\models.py:25
+#: .\catalog\models.py:242 .\recurring\models.py:25
 #: .\templates\accounts\profile.html:399 .\templates\accounts\profile.html:438
 #: .\templates\accounts\profile\admin_edit_user.html:85
 #: .\templates\accounts\profile\admin_view_user.html:65
@@ -238,13 +248,13 @@ msgstr "姓名"
 msgid "Apellidos"
 msgstr "姓氏"
 
-#: .\accounts\models.py:71 .\accounts\profile_forms.py:87
+#: .\accounts\models.py:71 .\accounts\profile_forms.py:87 .\core\models.py:88
 #: .\templates\accounts\profile.html:448
 #: .\templates\accounts\profile\admin_view_user.html:112
 #: .\templates\accounts\profile\profile_dashboard.html:606
 #: .\templates\accounts\profile\profile_dashboard_new.html:596
-#: .\templates\public\about.html:13 .\templates\public\legal.html:13
-#: .\templates\public\privacy.html:13
+#: .\templates\public\about.html:13 .\templates\public\contact.html:399
+#: .\templates\public\legal.html:13 .\templates\public\privacy.html:13
 msgid "Teléfono"
 msgstr "电话"
 
@@ -434,7 +444,8 @@ msgstr "资料未完成"
 
 #: .\accounts\models.py:190
 #, fuzzy
-#| msgid "Tu perfil operativo está completo. Puedes crear pedidos sin problemas."
+#| msgid ""
+#| "Tu perfil operativo está completo. Puedes crear pedidos sin problemas."
 msgid "Indica si el perfil operativo está completo para realizar pedidos"
 msgstr "您的运营资料已完善。您可以顺利创建订单。"
 
@@ -886,7 +897,9 @@ msgstr "偏好设置更新成功"
 
 #: .\accounts\profile_views.py:624
 #, fuzzy
-#| msgid "Debes completar los siguientes campos obligatorios para poder realizar pedidos:"
+#| msgid ""
+#| "Debes completar los siguientes campos obligatorios para poder realizar "
+#| "pedidos:"
 msgid "Por favor completa los siguientes campos obligatorios: "
 msgstr "您必须填写以下必填项才能下单："
 
@@ -990,7 +1003,9 @@ msgstr "此验证链接已过期或已被使用。"
 #: .\accounts\views.py:214
 #, fuzzy
 #| msgid "Tu cuenta está pendiente de aprobación por un administrador."
-msgid "¡Email verificado exitosamente! Tu cuenta está pendiente de aprobación por un administrador."
+msgid ""
+"¡Email verificado exitosamente! Tu cuenta está pendiente de aprobación por "
+"un administrador."
 msgstr "您的账户正等待管理员审批。"
 
 #: .\accounts\views.py:228
@@ -1021,7 +1036,7 @@ msgstr "您已成功退出登录。"
 msgid "No tienes permiso para editar este usuario."
 msgstr "您没有权限编辑此用户。"
 
-#: .\accounts\views.py:434
+#: .\accounts\views.py:434 .\core\views.py:184
 #, fuzzy
 #| msgid "El nombre completo es obligatorio."
 msgid "El nombre es obligatorio."
@@ -1040,7 +1055,9 @@ msgid "Estado inválido."
 msgstr "无效状态。"
 
 #: .\accounts\views.py:479
-msgid "No puedes desactivar tu propia cuenta de Super Admin. Esto causaría pérdida de acceso a la plataforma."
+msgid ""
+"No puedes desactivar tu propia cuenta de Super Admin. Esto causaría pérdida "
+"de acceso a la plataforma."
 msgstr ""
 
 #: .\accounts\views.py:508
@@ -1064,23 +1081,30 @@ msgstr "此用户已被处理。"
 
 #: .\accounts\views.py:578
 #, python-format
-msgid "Usuario %(email)s aprobado exitosamente. Se ha enviado un email de notificación."
+msgid ""
+"Usuario %(email)s aprobado exitosamente. Se ha enviado un email de "
+"notificación."
 msgstr "用户 %(email)s 已成功批准。已发送通知邮件。"
 
 #: .\accounts\views.py:584
 #, python-format
-msgid "Usuario %(email)s aprobado, pero hubo un error al enviar el email: %(error)s"
+msgid ""
+"Usuario %(email)s aprobado, pero hubo un error al enviar el email: %(error)s"
 msgstr "用户 %(email)s 已批准，但在发送邮件时出错：%(error)s"
 
 #: .\accounts\views.py:650
 #, fuzzy, python-format
-#| msgid "Usuario %(email)s aprobado, pero hubo un error al enviar el email: %(error)s"
+#| msgid ""
+#| "Usuario %(email)s aprobado, pero hubo un error al enviar el email: "
+#| "%(error)s"
 msgid "Usuario actualizado pero no se pudo enviar email: %(error)s"
 msgstr "用户 %(email)s 已批准，但在发送邮件时出错：%(error)s"
 
 #: .\accounts\views.py:657
 #, fuzzy, python-format
-#| msgid "Usuario %(email)s aprobado, pero hubo un error al enviar el email: %(error)s"
+#| msgid ""
+#| "Usuario %(email)s aprobado, pero hubo un error al enviar el email: "
+#| "%(error)s"
 msgid "Usuario rechazado pero no se pudo enviar email: %(error)s"
 msgstr "用户 %(email)s 已批准，但在发送邮件时出错：%(error)s"
 
@@ -1092,7 +1116,8 @@ msgstr "头像更新成功"
 
 #: .\accounts\views.py:691
 #, python-format
-msgid "Solicitud de %(email)s rechazada. Se ha enviado un email de notificación."
+msgid ""
+"Solicitud de %(email)s rechazada. Se ha enviado un email de notificación."
 msgstr "已拒绝 %(email)s 的申请。已发送通知邮件。"
 
 #: .\accounts\views.py:697
@@ -1100,46 +1125,62 @@ msgstr "已拒绝 %(email)s 的申请。已发送通知邮件。"
 msgid "Solicitud rechazada, pero hubo un error al enviar el email: %(error)s"
 msgstr "申请已拒绝，但在发送邮件时出错：%(error)s"
 
-#: .\catalog\admin.py:21
+#: .\catalog\admin.py:31
 #, fuzzy
 #| msgid "Configuración de Seguridad"
 msgid "Configuración de visualización"
 msgstr "安全设置"
 
-#: .\catalog\admin.py:29
-msgid "No hay imagen"
+#: .\catalog\admin.py:40
+#, fuzzy
+#| msgid "Seleccionar imagen"
+msgid "Sin imagen"
+msgstr "选择图片"
+
+#: .\catalog\admin.py:41
+msgid "Vista previa (Heredada/Manual)"
 msgstr ""
 
-#: .\catalog\admin.py:30
-msgid "Vista previa de la imagen"
-msgstr ""
+#: .\catalog\admin.py:46
+#, fuzzy
+#| msgid "Producto recomendado"
+msgid "Precio heredado"
+msgstr "推荐产品"
 
-#: .\catalog\admin.py:47
+#: .\catalog\admin.py:51
+#, fuzzy
+#| msgid "Línea de Pedido"
+msgid "Unidad heredada"
+msgstr "订单行"
+
+#: .\catalog\admin.py:68
 msgid "Etiqueta Promocional (Único Sistema)"
 msgstr ""
 
-#: .\catalog\admin.py:48
+#: .\catalog\admin.py:69
 msgid "Stock (solo managers)"
 msgstr ""
 
-#: .\catalog\admin.py:49
+#: .\catalog\admin.py:70
 msgid "Etiquetas Especiales (LEGACY - No usar para badges)"
 msgstr ""
 
-#: .\catalog\admin.py:52
-msgid "Estas etiquetas están obsoletas. Usa el campo \"Etiqueta promocional\" de arriba."
+#: .\catalog\admin.py:73
+msgid ""
+"Estas etiquetas están obsoletas. Usa el campo \"Etiqueta promocional\" de "
+"arriba."
 msgstr ""
 
-#: .\catalog\admin.py:54
+#: .\catalog\admin.py:75
 #: .\templates\accounts\profile\profile_dashboard.html:916
 msgid "Auditoría"
 msgstr "审计"
 
-#: .\catalog\admin.py:199
+#: .\catalog\admin.py:220
 msgid "Traducción automática aplicada. Revisa los campos en chino."
 msgstr "已应用自动翻译。请检查中文内容。"
 
-#: .\catalog\admin.py:201
+#: .\catalog\admin.py:222
 #, python-format
 msgid "No se pudo traducir automáticamente: %(error)s"
 msgstr "无法自动翻译：%(error)s"
@@ -1197,7 +1238,6 @@ msgid "Mejor precio"
 msgstr "最佳价格"
 
 #: .\catalog\models.py:33
-#: .\catalog\models.py:33
 msgid "🔥 Oferta semanal"
 msgstr "🔥 每周优惠"
 
@@ -1206,31 +1246,25 @@ msgid "📦 Pack oferta"
 msgstr "📦 优惠套装"
 
 #: .\catalog\models.py:35
-#: .\catalog\models.py:35
 msgid "⭐ Más vendido"
 msgstr "⭐ 畅销产品"
 
-#: .\catalog\models.py:36
 #: .\catalog\models.py:36
 msgid "🌟 Prod. estrella"
 msgstr "🌟 明星产品"
 
 #: .\catalog\models.py:37
-#: .\catalog\models.py:37
 msgid "🆕 Novedad"
 msgstr "🆕 新品上架"
 
-#: .\catalog\models.py:38
 #: .\catalog\models.py:38
 msgid "⚡ Oferta flash"
 msgstr "⚡ 闪购特惠"
 
 #: .\catalog\models.py:39
-#: .\catalog\models.py:39
 msgid "💥 Superoferta"
 msgstr "💥 超级优惠"
 
-#: .\catalog\models.py:40
 #: .\catalog\models.py:40
 msgid "⏳ Edic. limitada"
 msgstr "⏳ 限量发售"
@@ -1248,11 +1282,9 @@ msgid "🍖 Para BBQ"
 msgstr "🍖 烧烤推荐"
 
 #: .\catalog\models.py:44
-#: .\catalog\models.py:44
 msgid "👍 Recomendado"
 msgstr "👍 店长推荐"
 
-#: .\catalog\models.py:45
 #: .\catalog\models.py:45
 msgid "💰 Mejor precio"
 msgstr "💰 超值价格"
@@ -1298,7 +1330,9 @@ msgid "Precio"
 msgstr "价格"
 
 #: .\catalog\models.py:72
-msgid "Ejemplo: \"100 g\", \"1 Kg\", \"Unidad\". Aparecerá junto al precio: 1,00€ / 100 g"
+msgid ""
+"Ejemplo: \"100 g\", \"1 Kg\", \"Unidad\". Aparecerá junto al precio: 1,00€ / "
+"100 g"
 msgstr ""
 
 #: .\catalog\models.py:73
@@ -1337,7 +1371,7 @@ msgstr "最畅销"
 msgid "En Oferta (Legacy)"
 msgstr "优惠"
 
-#: .\catalog\models.py:92 .\catalog\models.py:215
+#: .\catalog\models.py:92 .\catalog\models.py:217
 msgid "Etiqueta promocional"
 msgstr ""
 
@@ -1360,7 +1394,7 @@ msgstr "创建日期"
 msgid "Producto"
 msgstr "产品"
 
-#: .\catalog\models.py:99 .\templates\components\topbar.html:217
+#: .\catalog\models.py:99 .\templates\components\topbar.html:206
 #: .\templates\recurring\recurring_order_detail.html:86
 #: .\templates\recurring\recurring_order_list.html:42
 msgid "Productos"
@@ -1370,80 +1404,85 @@ msgstr "产品"
 msgid "Título promocional"
 msgstr ""
 
-#: .\catalog\models.py:207
+#: .\catalog\models.py:209
 msgid "Imagen promocional"
 msgstr ""
 
-#: .\catalog\models.py:208
-msgid "Imagen que aparecerá en el hero de la Home"
+#: .\catalog\models.py:210
+msgid ""
+"Imagen que aparecerá en el hero de la Home (Opcional, se usará la del "
+"producto si está vacío)"
 msgstr ""
 
-#: .\catalog\models.py:221
+#: .\catalog\models.py:223
 #, fuzzy
 #| msgid "Tipos de producto"
 msgid "Tipo de promoción"
 msgstr "产品类型"
 
-#: .\catalog\models.py:227
+#: .\catalog\models.py:229
 msgid "Categoría de destino"
 msgstr ""
 
-#: .\catalog\models.py:228
+#: .\catalog\models.py:230
 msgid "Slug de la categoría en el catálogo (ej: jamon-curado, packs)."
 msgstr ""
 
-#: .\catalog\models.py:234
+#: .\catalog\models.py:236
 msgid "Búsqueda específica"
 msgstr ""
 
-#: .\catalog\models.py:235
-msgid "Término de búsqueda para filtrar el catálogo (ej: Chorizo, Pack 10 sandwiches)."
+#: .\catalog\models.py:237
+msgid ""
+"Término de búsqueda para filtrar el catálogo (ej: Chorizo, Pack 10 "
+"sandwiches)."
 msgstr ""
 
-#: .\catalog\models.py:237
+#: .\catalog\models.py:239
 #, fuzzy
 #| msgid "Token de Verificación"
 msgid "Orden de visualización"
 msgstr "验证令牌"
 
-#: .\catalog\models.py:238
+#: .\catalog\models.py:240
 #, fuzzy
 #| msgid "Fecha Inicio"
 msgid "Fecha inicio"
 msgstr "开始日期"
 
-#: .\catalog\models.py:239
+#: .\catalog\models.py:241
 #, fuzzy
 #| msgid "Fecha Fin"
 msgid "Fecha fin"
 msgstr "结束日期"
 
-#: .\catalog\models.py:241
+#: .\catalog\models.py:243
 #, fuzzy
 #| msgid "Fecha Creación"
 msgid "Fecha creación"
 msgstr "创建日期"
 
-#: .\catalog\models.py:242
+#: .\catalog\models.py:244
 #, fuzzy
 #| msgid "Última actualización"
 msgid "Fecha actualización"
 msgstr "最后更新"
 
-#: .\catalog\models.py:245
+#: .\catalog\models.py:247
 #, fuzzy
 #| msgid "Producto recomendado"
 msgid "Producto Promocional"
 msgstr "推荐产品"
 
-#: .\catalog\models.py:246
+#: .\catalog\models.py:248
 #, fuzzy
 #| msgid "Producto recomendado"
 msgid "Productos Promocionales"
 msgstr "推荐产品"
 
-#: .\catalog\models.py:268
-msgid "No puedes tener más de 8 productos promocionales activos simultáneamente."
+#: .\catalog\models.py:292
+msgid ""
+"No puedes tener más de 8 productos promocionales activos simultáneamente."
 msgstr ""
 
 #: .\catalog\views.py:253 .\catalog\views.py:290 .\catalog\views.py:313
@@ -1556,11 +1595,11 @@ msgstr "受影响的模型类型 (订单, 产品, 用户等)"
 msgid "ID del objeto"
 msgstr "对象 ID"
 
-#: .\core\audit.py:68
+#: .\core\audit.py:68 .\core\models.py:98
 msgid "Dirección IP"
 msgstr "IP 地址"
 
-#: .\core\audit.py:73
+#: .\core\audit.py:73 .\core\models.py:99
 msgid "User Agent"
 msgstr "浏览器/客户端信息"
 
@@ -1576,7 +1615,97 @@ msgstr "审计日志"
 msgid "Registros de Auditoría"
 msgstr "审计日志"
 
-#: .\core\views.py:74 .\orders\document_models.py:26 .\orders\models.py:55
+#: .\core\models.py:80 .\orders\models.py:17
+#: .\orders\templatetags\orders_filters.py:47
+msgid "Nuevo"
+msgstr "新建"
+
+#: .\core\models.py:81
+#, fuzzy
+#| msgid "Contacto"
+msgid "Contactado"
+msgstr "联系方式"
+
+#: .\core\models.py:82
+#, fuzzy
+#| msgid "Deshabilitado"
+msgid "Descartado"
+msgstr "已禁用"
+
+msgid "Asunto"
+msgstr "主题"
+
+msgid "Mensaje"
+msgstr "消息"
+
+#: .\core\models.py:92
+#, fuzzy
+#| msgid "Política de privacidad"
+msgid "Acepta política de privacidad"
+msgstr "隐私政策"
+
+#: .\core\models.py:93
+msgid "Acepta comunicaciones comerciales"
+msgstr ""
+
+#: .\core\models.py:95
+msgid "Origen"
+msgstr ""
+
+#: .\core\models.py:96
+#: .\notifications\templates\notifications\order_email.html:146
+#: .\orders\models.py:35 .\orders\models.py:101
+#: .\templates\accounts\profile.html:434
+#: .\templates\accounts\profile\admin_edit_user.html:82
+#: .\templates\accounts\profile\login_history.html:25
+#: .\templates\accounts\profile\profile_dashboard.html:636
+#: .\templates\accounts\user_approval_dashboard.html:424
+#: .\templates\accounts\user_approval_dashboard.html:508
+#: .\templates\accounts\user_approval_dashboard.html:563
+#: .\templates\accounts\user_approve.html:43
+#: .\templates\accounts\user_management_modern.html:106
+#: .\templates\accounts\user_management_modern.html:276
+#: .\templates\accounts\user_management_modern.html:445
+#: .\templates\catalog\product_manage_detail.html:71
+#: .\templates\catalog\product_manage_list.html:24
+#: .\templates\orders\_orders_table.html:114
+#: .\templates\orders\order_dashboard.html:63
+#: .\templates\orders\order_detail.html:164
+#: .\templates\orders\order_manage_list.html:24
+#: .\templates\orders\order_manage_list.html:48
+#: .\templates\orders\order_manage_list.html:91
+#: .\templates\orders\order_update_eta.html:18
+#: .\templates\recurring\recurring_order_confirm_delete.html:23
+msgid "Estado"
+msgstr "状态"
+
+#: .\core\models.py:100
+msgid "Metadatos adicionales"
+msgstr ""
+
+#: .\core\models.py:102 .\whatsapp\models.py:11
+#, fuzzy
+#| msgid "Fecha de creación:"
+msgid "Fecha de creación"
+msgstr "创建日期："
+
+#: .\core\models.py:103 .\templates\accounts\profile\profile_dashboard.html:849
+msgid "Última actualización"
+msgstr "最后更新"
+
+#: .\core\models.py:106
+#, fuzzy
+#| msgid "1. Datos de Contacto"
+msgid "Lead de contacto"
+msgstr "1. 联系信息"
+
+#: .\core\models.py:107
+#, fuzzy
+#| msgid "1. Datos de Contacto"
+msgid "Leads de contacto"
+msgstr "1. 联系信息"
+
+#: .\core\views.py:77 .\orders\document_models.py:26 .\orders\models.py:55
 #: .\orders\models.py:68 .\orders\models.py:99 .\orders\models.py:139
 #: .\templates\orders\order_detail.html:5
 #: .\templates\orders\order_detail.html:6
@@ -1589,7 +1718,7 @@ msgstr "审计日志"
 msgid "Pedido"
 msgstr "订单"
 
-#: .\core\views.py:94 .\templates\catalog\product_confirm_delete.html:31
+#: .\core\views.py:97 .\templates\catalog\product_confirm_delete.html:31
 #: .\templates\catalog\product_manage_list.html:32
 #: .\templates\catalog\product_manage_list.html:57
 #: .\templates\catalog\product_manage_list.html:96
@@ -1597,24 +1726,68 @@ msgstr "订单"
 msgid "Stock"
 msgstr "库存"
 
-#: .\core\views.py:117 .\templates\dashboard\index.html:118
+#: .\core\views.py:120 .\templates\dashboard\index.html:118
 msgid "atrás"
 msgstr "前"
 
-#: .\core\views.py:132 .\templates\components\public_footer.html:18
+#: .\core\views.py:135 .\templates\components\public_footer.html:18
 #: .\templates\public\about.html:4 .\templates\public\about.html:8
 msgid "Quiénes somos"
 msgstr "关于我们"
 
-#: .\core\views.py:140 .\templates\components\public_footer.html:19
+#: .\core\views.py:143 .\templates\components\public_footer.html:19
 #: .\templates\public\legal.html:4 .\templates\public\legal.html:8
 msgid "Aviso legal"
 msgstr "法律声明"
 
-#: .\core\views.py:148 .\templates\components\public_footer.html:20
+#: .\core\views.py:151 .\templates\components\public_footer.html:20
 #: .\templates\public\privacy.html:4 .\templates\public\privacy.html:8
 msgid "Política de privacidad"
 msgstr "隐私政策"
+
+#: .\core\views.py:158 .\templates\accounts\profile\edit_operative.html:71
+#: .\templates\accounts\profile\profile_dashboard.html:1115
+#: .\templates\components\navbar_public.html:85
+#: .\templates\components\navbar_public.html:87
+#: .\templates\public\contact.html:4 .\templates\public\contact.html:350
+msgid "Contacto"
+msgstr "联系方式"
+
+#: .\core\views.py:171
+msgid "Detección de actividad sospechosa."
+msgstr ""
+
+#: .\core\views.py:187
+#, fuzzy
+#| msgid "El nombre completo es obligatorio."
+msgid "El correo electrónico es obligatorio."
+msgstr "必须填写全名。"
+
+#: .\core\views.py:192
+#, fuzzy
+#| msgid "Correo electrónico"
+msgid "El correo electrónico no es válido."
+msgstr "电子邮件"
+
+#: .\core\views.py:195
+msgid "El mensaje no puede estar vacío."
+msgstr ""
+
+#: .\core\views.py:198
+#, fuzzy
+#| msgid "Política de privacidad"
+msgid "Debes aceptar la política de privacidad."
+msgstr "隐私政策"
+
+#: .\core\views.py:220
+msgid ""
+"Hemos recibido tu solicitud correctamente. Te contactaremos lo antes posible."
+msgstr ""
+
+#: .\core\views.py:226
+msgid ""
+"No hemos podido enviar tu solicitud. Inténtalo de nuevo en unos minutos."
+msgstr ""
 
 #: .\notifications\models.py:18
 msgid "Pedido confirmado"
@@ -1697,32 +1870,6 @@ msgstr "订单信息"
 #| msgid "Pedido"
 msgid "Pedido #"
 msgstr "订单"
-
-#: .\notifications\templates\notifications\order_email.html:146
-#: .\orders\models.py:35 .\orders\models.py:101
-#: .\templates\accounts\profile.html:434
-#: .\templates\accounts\profile\admin_edit_user.html:82
-#: .\templates\accounts\profile\login_history.html:25
-#: .\templates\accounts\profile\profile_dashboard.html:636
-#: .\templates\accounts\user_approval_dashboard.html:424
-#: .\templates\accounts\user_approval_dashboard.html:508
-#: .\templates\accounts\user_approval_dashboard.html:563
-#: .\templates\accounts\user_approve.html:43
-#: .\templates\accounts\user_management_modern.html:106
-#: .\templates\accounts\user_management_modern.html:276
-#: .\templates\accounts\user_management_modern.html:445
-#: .\templates\catalog\product_manage_detail.html:71
-#: .\templates\catalog\product_manage_list.html:24
-#: .\templates\orders\_orders_table.html:114
-#: .\templates\orders\order_dashboard.html:63
-#: .\templates\orders\order_detail.html:164
-#: .\templates\orders\order_manage_list.html:24
-#: .\templates\orders\order_manage_list.html:48
-#: .\templates\orders\order_manage_list.html:91
-#: .\templates\orders\order_update_eta.html:18
-#: .\templates\recurring\recurring_order_confirm_delete.html:23
-msgid "Estado"
-msgstr "状态"
 
 #: .\notifications\templates\notifications\order_email.html:151
 #: .\orders\models.py:29 .\recurring\models.py:23
@@ -1846,10 +1993,6 @@ msgstr "预计日期 (结束)"
 #: .\orders\forms.py:55
 msgid "La fecha de inicio debe ser anterior a la fecha de fin."
 msgstr "开始日期必须早于结束日期。"
-
-#: .\orders\models.py:17 .\orders\templatetags\orders_filters.py:47
-msgid "Nuevo"
-msgstr "新建"
 
 #: .\orders\models.py:18 .\orders\templatetags\orders_filters.py:48
 msgid "Confirmado"
@@ -1985,7 +2128,9 @@ msgstr "更新购物车时出错"
 
 #: .\orders\views.py:266
 #, python-format
-msgid "Debes completar tu perfil operativo antes de crear un pedido. Campos faltantes: %(missing_fields)s"
+msgid ""
+"Debes completar tu perfil operativo antes de crear un pedido. Campos "
+"faltantes: %(missing_fields)s"
 msgstr ""
 
 #: .\orders\views.py:305
@@ -2042,7 +2187,9 @@ msgstr "定期订单已成功创建。"
 
 #: .\orders\views.py:633
 #, python-format
-msgid "Stock insuficiente para %(product)s. Stock disponible: %(stock)s, requerido: %(qty)s"
+msgid ""
+"Stock insuficiente para %(product)s. Stock disponible: %(stock)s, requerido: "
+"%(qty)s"
 msgstr "%(product)s 库存不足。可用库存：%(stock)s，需求数量：%(qty)s"
 
 #: .\orders\views.py:653
@@ -2232,7 +2379,9 @@ msgid "Hemos enviado un enlace de verificación a"
 msgstr "我们已向以下地址发送了验证链接："
 
 #: .\templates\accounts\email_verification.html:20
-msgid "Por favor revisa tu bandeja de entrada y haz clic en el enlace para verificar tu cuenta."
+msgid ""
+"Por favor revisa tu bandeja de entrada y haz clic en el enlace para "
+"verificar tu cuenta."
 msgstr "请检查您的收件箱，并点击链接以验证您的账户。"
 
 #: .\templates\accounts\email_verification.html:26
@@ -2269,9 +2418,8 @@ msgstr "发送邮件时出错。请重试。"
 #: .\templates\accounts\login.html:74
 #: .\templates\accounts\password_reset_complete.html:24
 #: .\templates\catalog\product_detail.html:85
-#: .\templates\components\navbar_public.html:79
 #: ⁨.\templates\components\topbar - copia.html⁩:74
-#: .\templates\components\topbar.html:148
+#: .\templates\components\topbar.html:137
 msgid "Iniciar Sesión"
 msgstr "登录"
 
@@ -2307,7 +2455,8 @@ msgid "Completar Perfil Operativo"
 msgstr "完善运营资料"
 
 #: .\templates\accounts\operative_profile_form.html:12
-msgid "Estos datos son necesarios para poder realizar pedidos en la plataforma."
+msgid ""
+"Estos datos son necesarios para poder realizar pedidos en la plataforma."
 msgstr "这些数据是能够在平台上进行下单所必需的。"
 
 #: .\templates\accounts\operative_profile_form.html:24
@@ -2315,7 +2464,9 @@ msgid "Tu perfil está incompleto"
 msgstr "您的资料未完成"
 
 #: .\templates\accounts\operative_profile_form.html:27
-msgid "Debes completar los siguientes campos obligatorios para poder realizar pedidos:"
+msgid ""
+"Debes completar los siguientes campos obligatorios para poder realizar "
+"pedidos:"
 msgstr "您必须填写以下必填项才能下单："
 
 #: .\templates\accounts\operative_profile_form.html:49
@@ -2359,7 +2510,6 @@ msgstr "3. 送货地址"
 #: .\templates\orders\order_document_upload.html:57
 #: .\templates\orders\order_update_eta.html:48
 #: .\templates\orders\order_update_status.html:49
-#: .\templates\public\partials\whatsapp_fab.html:47
 #: .\templates\recurring\recurring_order_confirm_delete.html:39
 #: .\templates\recurring\recurring_order_create.html:61
 #: .\templates\recurring\recurring_order_toggle.html:44
@@ -2395,7 +2545,9 @@ msgid "¡Contraseña Cambiada!"
 msgstr "密码已更改！"
 
 #: .\templates\accounts\password_reset_complete.html:19
-msgid "Tu contraseña ha sido restablecida exitosamente. Ya puedes iniciar sesión con tu nueva contraseña."
+msgid ""
+"Tu contraseña ha sido restablecida exitosamente. Ya puedes iniciar sesión "
+"con tu nueva contraseña."
 msgstr "您的密码已成功重置。您现在可以使用新密码登录了。"
 
 #: .\templates\accounts\password_reset_confirm.html:4
@@ -2418,7 +2570,9 @@ msgstr "确认密码"
 
 #: .\templates\accounts\password_reset_confirm.html:65
 #: .\templates\accounts\profile\change_password.html:26
-msgid "Tu contraseña debe contener al menos 8 caracteres y no puede ser completamente numérica."
+msgid ""
+"Tu contraseña debe contener al menos 8 caracteres y no puede ser "
+"completamente numérica."
 msgstr "您的密码必须包含至少 8 个字符，且不能全部为数字。"
 
 #: .\templates\accounts\password_reset_confirm.html:71
@@ -2433,7 +2587,8 @@ msgid "Enlace Inválido"
 msgstr "失效链接"
 
 #: .\templates\accounts\password_reset_confirm.html:85
-msgid "Este enlace de restablecimiento de contraseña es inválido o ha expirado."
+msgid ""
+"Este enlace de restablecimiento de contraseña es inválido o ha expirado."
 msgstr "此密码重置链接无效或已过期。"
 
 #: .\templates\accounts\password_reset_confirm.html:89
@@ -2450,7 +2605,9 @@ msgid "Hemos enviado instrucciones para restablecer tu contraseña a tu email."
 msgstr "我们已将重置密码的说明发送到您的电子邮箱。"
 
 #: .\templates\accounts\password_reset_done.html:25
-msgid "Si no recibes el email en unos minutos, revisa tu carpeta de spam o correo no deseado."
+msgid ""
+"Si no recibes el email en unos minutos, revisa tu carpeta de spam o correo "
+"no deseado."
 msgstr "如果您在几分钟内没有收到邮件，请检查垃圾邮件文件夹。"
 
 #: .\templates\accounts\password_reset_email.html:2
@@ -2462,11 +2619,14 @@ msgid "Has solicitado restablecer tu contraseña para tu cuenta en FENIX."
 msgstr "您申请重置 FENIX 账户的密码。"
 
 #: .\templates\accounts\password_reset_email.html:6
-msgid "Por favor haz clic en el siguiente enlace para establecer una nueva contraseña:"
+msgid ""
+"Por favor haz clic en el siguiente enlace para establecer una nueva "
+"contraseña:"
 msgstr "请点击以下链接设置新密码："
 
 #: .\templates\accounts\password_reset_email.html:10
-msgid "Si no solicitaste este cambio, puedes ignorar este email de manera segura."
+msgid ""
+"Si no solicitaste este cambio, puedes ignorar este email de manera segura."
 msgstr "如果您没有申请此更改，可以放心地忽略此邮件。"
 
 #: .\templates\accounts\password_reset_email.html:12
@@ -2507,7 +2667,8 @@ msgid "Cuenta Pendiente de Aprobación"
 msgstr "账户待审批"
 
 #: .\templates\accounts\pending_approval.html:19
-msgid "Tu cuenta ha sido registrada exitosamente y tu email ha sido verificado."
+msgid ""
+"Tu cuenta ha sido registrada exitosamente y tu email ha sido verificado."
 msgstr "您的账户已成功注册，电子邮件已通过验证。"
 
 #: .\templates\accounts\pending_approval.html:26
@@ -2516,9 +2677,15 @@ msgstr "账户注册为："
 
 #: .\templates\accounts\pending_approval.html:37
 #, fuzzy
-#| msgid "Un administrador debe revisar y aprobar tu cuenta antes de que puedas acceder la plataforma. Recibirás un email cuando tu cuenta sea aprobada."
-msgid "Un administrador debe revisar y aprobar tu cuenta antes de que puedas acceder a la plataforma. Recibirás un email cuando tu cuenta sea aprobada."
-msgstr "在您可以访问平台之前，管理员必须审核并批准您的账户。您的账户获得批准后，您将收到一封电子邮件。"
+#| msgid ""
+#| "Un administrador debe revisar y aprobar tu cuenta antes de que puedas "
+#| "acceder la plataforma. Recibirás un email cuando tu cuenta sea aprobada."
+msgid ""
+"Un administrador debe revisar y aprobar tu cuenta antes de que puedas "
+"acceder a la plataforma. Recibirás un email cuando tu cuenta sea aprobada."
+msgstr ""
+"在您可以访问平台之前，管理员必须审核并批准您的账户。您的账户获得批准后，您将"
+"收到一封电子邮件。"
 
 #: .\templates\accounts\pending_approval.html:43
 msgid "Próximos pasos:"
@@ -2549,7 +2716,7 @@ msgstr "如果您认为有任何问题，请联系我们的支持团队。"
 #: .\templates\accounts\profile\profile_dashboard.html:530
 #: .\templates\accounts\profile\profile_dashboard_new.html:5
 #: ⁨.\templates\components\topbar - copia.html⁩:58
-#: .\templates\components\topbar.html:127
+#: .\templates\components\topbar.html:119
 msgid "Mi Perfil"
 msgstr "我的资料"
 
@@ -2558,8 +2725,11 @@ msgid "Gestiona tu información personal, empresa, seguridad y preferencias"
 msgstr "管理您的个人信息、公司、安全和偏好设置"
 
 #: .\templates\accounts\profile.html:364
-msgid "Tu cuenta está pendiente de aprobación por un administrador. Recibirás una notificación por email una vez que tu cuenta sea aprobada."
-msgstr "您的账户正在等待管理员审批。一旦您的账户被批准，您将收到一封电子邮件通知。"
+msgid ""
+"Tu cuenta está pendiente de aprobación por un administrador. Recibirás una "
+"notificación por email una vez que tu cuenta sea aprobada."
+msgstr ""
+"您的账户正在等待管理员审批。一旦您的账户被批准，您将收到一封电子邮件通知。"
 
 #: .\templates\accounts\profile.html:374
 #: .\templates\accounts\profile\admin_view_user.html:89
@@ -2755,7 +2925,9 @@ msgid "Guardar Cambios"
 msgstr "保存更改"
 
 #: .\templates\accounts\profile\admin_edit_user.html:114
-msgid "Para editar datos operativos completos (direcciones, teléfonos, etc.) usa la vista avanzada:"
+msgid ""
+"Para editar datos operativos completos (direcciones, teléfonos, etc.) usa la "
+"vista avanzada:"
 msgstr "要编辑完整的运营数据（地址、电话等），请使用高级视图："
 
 #: .\templates\accounts\profile\admin_edit_user.html:117
@@ -2920,8 +3092,12 @@ msgid "Información Importante"
 msgstr "重要信息"
 
 #: .\templates\accounts\profile\edit_complete_profile.html:412
-msgid "Tu perfil es fundamental para asegurar entregas rápidas y precisas. Los datos proporcionados serán utilizados exclusivamente con fines logísticos y de contacto."
-msgstr "您的资料对于确保快速准确的送货至关重要。提供的数据将仅用于物流和联系目的。"
+msgid ""
+"Tu perfil es fundamental para asegurar entregas rápidas y precisas. Los "
+"datos proporcionados serán utilizados exclusivamente con fines logísticos y "
+"de contacto."
+msgstr ""
+"您的资料对于确保快速准确的送货至关重要。提供的数据将仅用于物流和联系目的。"
 
 #: .\templates\accounts\profile\edit_operative.html:42
 msgid "Perfil Operativo: Completo"
@@ -2931,18 +3107,18 @@ msgstr "运营资料：已完成"
 msgid "Tu perfil operativo está completo. Puedes crear pedidos sin problemas."
 msgstr "您的运营资料已完善。您可以顺利创建订单。"
 
-#: .\templates\accounts\profile\edit_operative.html:71
-#: .\templates\accounts\profile\profile_dashboard.html:1115
-msgid "Contacto"
-msgstr "联系方式"
-
 #: .\templates\accounts\profile\edit_operative.html:317
 msgid "¿Por qué es necesario este información?"
 msgstr "为什么需要此信息？"
 
 #: .\templates\accounts\profile\edit_operative.html:320
-msgid "Tu perfil operativo es fundamental para asegurar entregas rápidas y precisas. Los datos proporcionados serán utilizados exclusivamente con fines logísticos y de contacto."
-msgstr "您的运营资料对于确保快速准确的送货至关重要。提供的数据将仅用于物流和联系目的。"
+msgid ""
+"Tu perfil operativo es fundamental para asegurar entregas rápidas y "
+"precisas. Los datos proporcionados serán utilizados exclusivamente con fines "
+"logísticos y de contacto."
+msgstr ""
+"您的运营资料对于确保快速准确的送货至关重要。提供的数据将仅用于物流和联系目"
+"的。"
 
 #: .\templates\accounts\profile\edit_personal.html:4
 #: .\templates\accounts\profile\edit_personal.html:20
@@ -2978,7 +3154,8 @@ msgid "Número máximo de dispositivos conectados simultáneamente (1-10)"
 msgstr "最大同时连接设备数 (1-10)"
 
 #: .\templates\accounts\profile\edit_security.html:85
-msgid "Tiempo de inactividad antes de cerrar sesión automáticamente (5-1440 min)"
+msgid ""
+"Tiempo de inactividad antes de cerrar sesión automáticamente (5-1440 min)"
 msgstr "自动注销前的闲置时间 (5-1440 分钟)"
 
 #: .\templates\accounts\profile\login_history.html:4
@@ -3049,10 +3226,6 @@ msgstr "您尚未关联任何公司"
 #: .\templates\accounts\profile\profile_dashboard.html:829
 msgid "Seguridad"
 msgstr "安全"
-
-#: .\templates\accounts\profile\profile_dashboard.html:849
-msgid "Última actualización"
-msgstr "最后更新"
 
 #: .\templates\accounts\profile\profile_dashboard.html:856
 msgid "Cambiar contraseña"
@@ -3284,8 +3457,11 @@ msgid "Proceso de registro:"
 msgstr "注册流程："
 
 #: .\templates\accounts\register.html:115
-msgid "Al crear tu cuenta, recibirás un correo de confirmación. Una vez validado, un administrador revisará y activará tu acceso."
-msgstr "创建账户后，您将收到一封确认邮件。验证后，管理员将审核并激活您的访问权限。"
+msgid ""
+"Al crear tu cuenta, recibirás un correo de confirmación. Una vez validado, "
+"un administrador revisará y activará tu acceso."
+msgstr ""
+"创建账户后，您将收到一封确认邮件。验证后，管理员将审核并激活您的访问权限。"
 
 #: .\templates\accounts\register.html:124
 msgid "Volver a la home"
@@ -3313,7 +3489,7 @@ msgstr "正在创建账户..."
 #: .\templates\accounts\user_approval_dashboard.html:363
 #: .\templates\accounts\user_management_modern.html:4
 #: .\templates\accounts\user_management_modern.html:11
-#: .\templates\components\sidebar.html:71
+#: .\templates\components\sidebar_v2.html:67
 msgid "Gestión de Usuarios"
 msgstr "用户管理"
 
@@ -3464,11 +3640,13 @@ msgstr "每页用户数："
 #, python-format
 msgid ""
 "\n"
-"                        %(page_registered.start_index)s–%(page_registered.end_index)s de %(counter)s usuario\n"
+"                        %(page_registered.start_index)s–"
+"%(page_registered.end_index)s de %(counter)s usuario\n"
 "                    "
 msgid_plural ""
 "\n"
-"                        %(page_registered.start_index)s–%(page_registered.end_index)s de %(counter)s usuarios\n"
+"                        %(page_registered.start_index)s–"
+"%(page_registered.end_index)s de %(counter)s usuarios\n"
 "                    "
 msgstr[0] ""
 msgstr[1] ""
@@ -3535,11 +3713,13 @@ msgstr "电子邮件未验证"
 #| "                        "
 msgid ""
 "\n"
-"                        %(page_pending.start_index)s–%(page_pending.end_index)s de %(counter)s usuario\n"
+"                        %(page_pending.start_index)s–"
+"%(page_pending.end_index)s de %(counter)s usuario\n"
 "                    "
 msgid_plural ""
 "\n"
-"                        %(page_pending.start_index)s–%(page_pending.end_index)s de %(counter)s usuarios\n"
+"                        %(page_pending.start_index)s–"
+"%(page_pending.end_index)s de %(counter)s usuarios\n"
 "                    "
 msgstr[0] ""
 "\n"
@@ -3578,7 +3758,9 @@ msgid "¿Estás seguro de que deseas desactivar este producto?"
 msgstr "您确定要禁用此产品吗？"
 
 #: .\templates\catalog\product_confirm_delete.html:35
-msgid "El producto no será visible para los clientes, pero se mantendrá en el sistema."
+msgid ""
+"El producto no será visible para los clientes, pero se mantendrá en el "
+"sistema."
 msgstr "该产品将对客户不可见，但仍保留在系统中。"
 
 #: .\templates\catalog\product_confirm_delete.html:45
@@ -3587,7 +3769,7 @@ msgid "Sí, desactivar"
 msgstr "是的，禁用"
 
 #: .\templates\catalog\product_detail.html:21
-#: .\templates\components\sidebar.html:38
+#: .\templates\components\sidebar_v2.html:38
 msgid "Catálogo"
 msgstr "目录"
 
@@ -3652,7 +3834,6 @@ msgstr "关闭筛选"
 
 #: .\templates\catalog\product_list.html:133
 #: .\templates\components\auth_required_modal.html:5
-#: .\templates\public\partials\whatsapp_fab.html:21
 msgid "Cerrar"
 msgstr "关闭"
 
@@ -3785,11 +3966,13 @@ msgstr "目前没有可用产品。"
 #, python-format
 msgid ""
 "\n"
-"                        Mostrando <span class=\"count-numbers\">%(start)s–%(end)s</span> de <span class=\"count-numbers\">%(total)s</span> productos\n"
+"                        Mostrando <span class=\"count-numbers\">%(start)s–"
+"%(end)s</span> de <span class=\"count-numbers\">%(total)s</span> productos\n"
 "                        "
 msgstr ""
 "\n"
-"                        正在显示 %(total)s 个产品中的 <span class=\"count-numbers\">%(start)s–%(end)s</span> 个\n"
+"                        正在显示 %(total)s 个产品中的 <span class=\"count-"
+"numbers\">%(start)s–%(end)s</span> 个\n"
 "                        "
 
 #: .\templates\catalog\product_list.html:396
@@ -3895,7 +4078,9 @@ msgid "Regístrate o inicia sesión para realizar pedidos"
 msgstr "注册或登录以进行下单"
 
 #: .\templates\components\auth_required_modal.html:12
-msgid "Necesitas una cuenta aprobada para añadir productos al carrito y completar pedidos."
+msgid ""
+"Necesitas una cuenta aprobada para añadir productos al carrito y completar "
+"pedidos."
 msgstr "您需要一个经批准的账户才能将产品加入购物车并完成订单。"
 
 #: .\templates\components\auth_required_modal.html:14
@@ -3904,7 +4089,7 @@ msgstr "登录"
 
 #: .\templates\components\auth_required_modal.html:15
 #: ⁨.\templates\components\topbar - copia.html⁩:77
-#: .\templates\components\topbar.html:151
+#: .\templates\components\topbar.html:140
 msgid "Registrarse"
 msgstr "注册"
 
@@ -3943,11 +4128,13 @@ msgstr "名称：A-Z"
 #, python-format
 msgid ""
 "\n"
-"                Mostrando <span class=\"count-highlight\">%(start)s–%(end)s</span> de <span class=\"count-highlight\">%(total)s</span> productos\n"
+"                Mostrando <span class=\"count-highlight\">%(start)s–%(end)s</"
+"span> de <span class=\"count-highlight\">%(total)s</span> productos\n"
 "                "
 msgstr ""
 "\n"
-"                正在显示 %(total)s 个产品中的 <span class=\"count-highlight\">%(start)s–%(end)s</span> 个\n"
+"                正在显示 %(total)s 个产品中的 <span class=\"count-"
+"highlight\">%(start)s–%(end)s</span> 个\n"
 "                "
 
 #: .\templates\components\category_tabs.html:110
@@ -3968,21 +4155,10 @@ msgstr "这是您个人资料的当前状态摘要"
 msgid "DISTRIBUCIONES"
 msgstr ""
 
-#: .\templates\components\hero_public.html:9
-msgid "FÉNIX"
-msgstr ""
-
 #: .\templates\components\hero_public.html:10
-msgid "DE LA"
-msgstr ""
-
-#: .\templates\components\hero_public.html:11
-msgid "MANCHA"
-msgstr ""
-
-#: .\templates\components\hero_public.html:16
-#: .\templates\components\hero_public.html:16
-msgid "Distribuidor profesional de alimentación y charcutería en <strong>Ciudad Real y Toledo</strong>"
+msgid ""
+"Distribuidor profesional de alimentación y charcutería en <strong>Ciudad "
+"Real y Toledo</strong>"
 msgstr "<strong>雷阿尔城和托莱多</strong>的专业食品和熟食分销商"
 
 #: .\templates\components\hero_public.html:56
@@ -3992,15 +4168,22 @@ msgid "Frankfurt Salchichas"
 msgstr "法兰克福香肠"
 
 #: .\templates\components\hero_public.html:100
-msgid "<strong>Servicio garantizado:</strong> entregamos de forma inmediata en toda la provincia de <strong>Ciudad Real y Toledo</strong>"
-msgstr "<strong>服务保证：</strong> 我们在 <strong>雷阿尔城和托莱多</strong> 全境提供即时送货服务"
+msgid ""
+"<strong>Servicio garantizado:</strong> entregamos de forma inmediata en toda "
+"la provincia de <strong>Ciudad Real y Toledo</strong>"
+msgstr ""
+"<strong>服务保证：</strong> 我们在 <strong>雷阿尔城和托莱多</strong> 全境提供"
+"即时送货服务"
 
-#: .\templates\components\navbar_public.html:18
-#: .\templates\components\topbar.html:23
+#: .\templates\components\navbar_public.html:17
+#: .\templates\components\topbar.html:24
 #, fuzzy
 #| msgid "Cambiar foto"
 msgid "Cambiar idioma"
 msgstr "更换照片"
+
+msgid "Área cliente"
+msgstr "客户区域"
 
 #: .\templates\components\public_footer.html:2
 msgid "Información legal y de contacto"
@@ -4014,27 +4197,24 @@ msgstr "法律链接"
 msgid "Textos legales"
 msgstr "法律条文"
 
-#: .\templates\components\sidebar.html:28 .\templates\dashboard\index.html:5
+#: .\templates\components\sidebar_v2.html:28 .\templates\dashboard\index.html:5
 #: .\templates\recurring\recurring_order_list.html:32
 msgid "Inicio"
 msgstr "首页"
 
-#: .\templates\components\sidebar.html:47
-#: .\templates\components\topbar.html:216 .\templates\dashboard\index.html:19
+#: .\templates\components\sidebar_v2.html:47
+#: .\templates\components\topbar.html:205 .\templates\dashboard\index.html:19
 #: .\templates\orders\_orders_table.html:14
 #: .\templates\orders\order_detail.html:13 .\templates\orders\order_list.html:8
 #: .\templates\orders\order_list.html:16
 msgid "Mis Pedidos"
 msgstr "我的订单"
 
-#: .\templates\components\sidebar.html:55
-#: ⁨.\templates\components\topbar - copia.html⁩:36
-#: ⁨.\templates\components\topbar - copia.html⁩:37
-#: .\templates\components\topbar.html:86 .\templates\components\topbar.html:87
-msgid "Carrito"
-msgstr "购物车"
+#: .\templates\components\sidebar_v2.html:55
+msgid "Cesta"
+msgstr ""
 
-#: .\templates\components\sidebar.html:86
+#: .\templates\components\sidebar_v2.html:82
 msgid "Administración"
 msgstr "管理"
 
@@ -4043,8 +4223,14 @@ msgstr "管理"
 msgid "Dashboard"
 msgstr "仪表板"
 
+#: ⁨.\templates\components\topbar - copia.html⁩:36
+#: ⁨.\templates\components\topbar - copia.html⁩:37
+#: .\templates\components\topbar.html:87 .\templates\components\topbar.html:88
+msgid "Carrito"
+msgstr "购物车"
+
 #: ⁨.\templates\components\topbar - copia.html⁩:66
-#: .\templates\components\topbar.html:140
+#: .\templates\components\topbar.html:129
 msgid "Cerrar Sesión"
 msgstr "退出登录"
 
@@ -4052,29 +4238,29 @@ msgstr "退出登录"
 msgid "Abrir menú"
 msgstr "打开菜单"
 
-#: .\templates\components\topbar.html:13
+#: .\templates\components\topbar.html:14
 #, fuzzy
 #| msgid "🔍 Buscar pedidos, productos o acciones…"
 msgid "Buscar pedidos, productos o acciones…"
 msgstr "🔍 搜索订单、产品或操作…"
 
-#: .\templates\components\topbar.html:218 .\templates\dashboard\index.html:66
+#: .\templates\components\topbar.html:207 .\templates\dashboard\index.html:66
 msgid "Acciones Pendientes"
 msgstr "待办事项"
 
-#: .\templates\components\topbar.html:219
+#: .\templates\components\topbar.html:208
 msgid "No se encontraron resultados"
 msgstr "未找到结果"
 
-#: .\templates\components\topbar.html:220
+#: .\templates\components\topbar.html:209
 msgid "Escribe al menos 2 caracteres para buscar"
 msgstr "请输入至少 2 个字符进行搜索"
 
-#: .\templates\components\topbar.html:221
+#: .\templates\components\topbar.html:210
 msgid "Ha ocurrido un error"
 msgstr ""
 
-#: .\templates\components\topbar.html:222
+#: .\templates\components\topbar.html:211
 #, fuzzy
 #| msgid "Creando cuenta..."
 msgid "Cargando..."
@@ -4229,8 +4415,12 @@ msgstr "订单导航"
 
 #: .\templates\orders\_orders_table.html:163
 #, python-format
-msgid "Mostrando %(page_obj.start_index)s–%(page_obj.end_index)s de %(counter)s pedido"
-msgid_plural "Mostrando %(page_obj.start_index)s–%(page_obj.end_index)s de %(counter)s pedidos"
+msgid ""
+"Mostrando %(page_obj.start_index)s–%(page_obj.end_index)s de %(counter)s "
+"pedido"
+msgid_plural ""
+"Mostrando %(page_obj.start_index)s–%(page_obj.end_index)s de %(counter)s "
+"pedidos"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -4445,7 +4635,9 @@ msgid "Documento"
 msgstr "文档"
 
 #: .\templates\orders\order_document_confirm_delete.html:28
-msgid "Esta acción es permanente y no se puede deshacer. El archivo será eliminado del servidor."
+msgid ""
+"Esta acción es permanente y no se puede deshacer. El archivo será eliminado "
+"del servidor."
 msgstr "此操作是永久性的，且无法撤销。该文件将从服务器中删除。"
 
 #: .\templates\orders\order_document_confirm_delete.html:38
@@ -4505,7 +4697,9 @@ msgid "Estado actual"
 msgstr "当前状态"
 
 #: .\templates\orders\order_update_status.html:43
-msgid "Si cambias el estado a 'Preparando', el stock de los productos se descontará automáticamente."
+msgid ""
+"Si cambias el estado a 'Preparando', el stock de los productos se descontará "
+"automáticamente."
 msgstr "如果将状态更改为“准备中”，产品库存将自动扣除。"
 
 #: .\templates\orders\orders_admin_summary.html:9
@@ -4549,53 +4743,100 @@ msgid "No hay pedidos que coincidan con los filtros."
 msgstr "没有符合筛选条件的订单。"
 
 #: .\templates\public\about.html:9
-msgid "Somos Distribuciones Fenix de la Mancha, especialistas en surtido cárnico para negocios con necesidades recurrentes."
-msgstr "我们是 Distribuciones Fenix de la Mancha，专门为具有定期需求的业务提供肉类系列产品。"
+msgid ""
+"Somos Distribuciones Fenix de la Mancha, especialistas en surtido cárnico "
+"para negocios con necesidades recurrentes."
+msgstr ""
+"我们是 Distribuciones Fenix de la Mancha，专门为具有定期需求的业务提供肉类系"
+"列产品。"
 
 #: .\templates\public\about.html:10
-msgid "Gestionamos pedidos programados y controlados para que nunca te falte producto."
+msgid ""
+"Gestionamos pedidos programados y controlados para que nunca te falte "
+"producto."
 msgstr "我们管理预定和受控的订单，确保您永远不缺货。"
 
+msgid ""
+"Estamos aquí para ayudarte. Completa el formulario y nos pondremos en "
+"contacto contigo lo antes posible."
+msgstr "我们在这里为您提供帮助。请填写表格，我们将尽快与您联系。"
+
+msgid "He leído y acepto la"
+msgstr "我已阅读并接受"
+
+msgid "Política de Privacidad"
+msgstr "隐私政策"
+
+msgid "Acepto recibir información comercial"
+msgstr "我同意接收商业信息"
+
+msgid "Enviar mensaje"
+msgstr "发送消息"
+
+msgid "Datos de contacto"
+msgstr "联系信息"
+
+msgid "Escríbenos"
+msgstr "写信给我们"
+
+msgid "Llámanos"
+msgstr "致电我们"
+
+msgid "Zona de servicio"
+msgstr "服务区域"
+
+msgid "¿Prefieres atención directa?"
+msgstr "您更喜欢直接咨询吗？"
+
+msgid "Pulsa aquí para contactar por WhatsApp de forma inmediata."
+msgstr "点击此处立即通过 WhatsApp 联系我们。"
+
+msgid "Abrir WhatsApp"
+msgstr "打开 WhatsApp"
+
+msgid "Revisa los campos del formulario."
+msgstr "请检查表单字段。"
+
+msgid "Ocurrió un error inesperado. Inténtalo de nuevo."
+msgstr "发生意外错误。请重试。"
+
 #: .\templates\public\legal.html:9
-msgid "Este sitio pertenece a Distribuciones Fenix de la Mancha SL. CIF pendiente."
+msgid ""
+"Este sitio pertenece a Distribuciones Fenix de la Mancha SL. CIF pendiente."
 msgstr "本网站属于 Distribuciones Fenix de la Mancha SL。税号待定。"
 
 #: .\templates\public\legal.html:10
-msgid "Los datos publicados tienen carácter informativo y pueden variar sin previo aviso."
+msgid ""
+"Los datos publicados tienen carácter informativo y pueden variar sin previo "
+"aviso."
 msgstr "发布的数据仅供参考，如有更改，恕不另行通知。"
 
-#: .\templates\public\partials\whatsapp_fab.html:8
-#: .\templates\public\partials\whatsapp_fab.html:9
-#: .\templates\public\partials\whatsapp_fab.html:20
-msgid "Contactar por WhatsApp"
-msgstr "通过 WhatsApp 联系"
+#: .\templates\public\partials\whatsapp_fab.html:168
+msgid "En línea"
+msgstr ""
 
-#: .\templates\public\partials\whatsapp_fab.html:27
-msgid "Tu nombre"
-msgstr "您的姓名"
+#: .\templates\public\partials\whatsapp_fab.html:173
+msgid ""
+"Hola, gracias por contactar con Fénix 😊. <br><br>En breve uno de nuestros "
+"comerciales se pondrá en contacto con usted para ofrecerle una atención "
+"personalizada."
+msgstr ""
 
-#: .\templates\public\partials\whatsapp_fab.html:33
-msgid "Ej: Juan Pérez"
-msgstr "例如：张三"
-
-#: .\templates\public\partials\whatsapp_fab.html:37
-msgid "Tu mensaje"
-msgstr "您的消息"
-
-#: .\templates\public\partials\whatsapp_fab.html:43
-msgid "Escribe tu mensaje aquí..."
-msgstr "在此编写您的消息..."
-
-#: .\templates\public\partials\whatsapp_fab.html:50
-msgid "Enviar"
-msgstr "发送"
+#: .\templates\public\partials\whatsapp_fab.html:185
+msgid "¿Necesitas ayuda?"
+msgstr ""
 
 #: .\templates\public\privacy.html:9
-msgid "Protegemos tus datos siguiendo la normativa vigente. Solo utilizamos la información para procesar pedidos y comunicaciones comerciales consentidas."
-msgstr "我们根据现行法规保护您的数据。我们仅将信息用于处理订单和经同意的商业沟通。"
+msgid ""
+"Protegemos tus datos siguiendo la normativa vigente. Solo utilizamos la "
+"información para procesar pedidos y comunicaciones comerciales consentidas."
+msgstr ""
+"我们根据现行法规保护您的数据。我们仅将信息用于处理订单和经同意的商业沟通。"
 
 #: .\templates\public\privacy.html:10
-msgid "Puedes solicitar acceso, rectificación o eliminación contactando con nuestro equipo."
+msgid ""
+"Puedes solicitar acceso, rectificación o eliminación contactando con nuestro "
+"equipo."
 msgstr "您可以通过联系我们的团队申请访问、更正或删除。"
 
 #: .\templates\recurring\recurring_order_confirm_delete.html:4
@@ -4609,7 +4850,9 @@ msgid "¿Estás seguro de que deseas eliminar este pedido recurrente?"
 msgstr "您确定要删除此定期订单吗？"
 
 #: .\templates\recurring\recurring_order_confirm_delete.html:32
-msgid "Esta acción es permanente y no se puede deshacer. Los pedidos ya generados no se verán afectados."
+msgid ""
+"Esta acción es permanente y no se puede deshacer. Los pedidos ya generados "
+"no se verán afectados."
 msgstr "此操作是永久性的，且无法撤销。已生成的订单将不受影响。"
 
 #: .\templates\recurring\recurring_order_create.html:4
@@ -4631,7 +4874,9 @@ msgid "No hay productos en el carrito"
 msgstr "购物车中没有产品"
 
 #: .\templates\recurring\recurring_order_create.html:99
-msgid "El pedido recurrente se generará automáticamente según la frecuencia seleccionada, comenzando desde la fecha de inicio."
+msgid ""
+"El pedido recurrente se generará automáticamente según la frecuencia "
+"seleccionada, comenzando desde la fecha de inicio."
 msgstr "定期订单将根据选定的频率自动生成，从开始日期起算。"
 
 #: .\templates\recurring\recurring_order_detail.html:23
@@ -4689,38 +4934,32 @@ msgid "No tienes pedidos recurrentes activos."
 msgstr "您没有活跃的定期订单。"
 
 #: .\templates\recurring\recurring_order_list.html:71
-msgid "Agrega productos al carrito y crea un pedido recurrente para automatizar tus compras."
+msgid ""
+"Agrega productos al carrito y crea un pedido recurrente para automatizar tus "
+"compras."
 msgstr "将产品添加到购物车，并创建定期订单以实现自动购买。"
 
 #: .\templates\recurring\recurring_order_toggle.html:34
-msgid "¿Estás seguro de que deseas desactivar este pedido recurrente? No se generarán más pedidos automáticos hasta que lo reactives."
+msgid ""
+"¿Estás seguro de que deseas desactivar este pedido recurrente? No se "
+"generarán más pedidos automáticos hasta que lo reactives."
 msgstr "您确定要禁用此定期订单吗？在您重新启用之前，不会再自动生成订单。"
 
 #: .\templates\recurring\recurring_order_toggle.html:36
-msgid "¿Deseas reactivar este pedido recurrente? Los pedidos se generarán automáticamente según la configuración."
+msgid ""
+"¿Deseas reactivar este pedido recurrente? Los pedidos se generarán "
+"automáticamente según la configuración."
 msgstr "您想重新启用此定期订单吗？订单将根据设置自动生成。"
 
 #: .\templates\recurring\recurring_order_toggle.html:50
 msgid "Sí, activar"
 msgstr "确定，启用"
 
-#: .\whatsapp\models.py:9
-#, fuzzy
-#| msgid "Mensaje (ES)"
-msgid "Mensaje"
-msgstr "消息 (西班牙语)"
-
 #: .\whatsapp\models.py:10
 #, fuzzy
 #| msgid "Primera página"
 msgid "URL de la página"
 msgstr "第一页"
-
-#: .\whatsapp\models.py:11
-#, fuzzy
-#| msgid "Fecha de creación:"
-msgid "Fecha de creación"
-msgstr "创建日期："
 
 #: .\whatsapp\models.py:12
 #, fuzzy
@@ -4740,14 +4979,30 @@ msgstr ""
 msgid "Leads de WhatsApp"
 msgstr ""
 
+#~ msgid "Tu nombre"
+#~ msgstr "您的姓名"
+
+#~ msgid "Ej: Juan Pérez"
+#~ msgstr "例如：张三"
+
+#~ msgid "Escribe tu mensaje aquí..."
+#~ msgstr "在此编写您的消息..."
+
+#~ msgid "Enviar"
+#~ msgstr "发送"
+
 #~ msgid "Oferta"
 #~ msgstr "优惠"
 
 #~ msgid "¡Email verificado exitosamente! Ahora puedes iniciar sesión."
 #~ msgstr "电子邮件验证成功！您现在可以登录了。"
 
-#~ msgid "Un administrador debe aprobar tu cuenta antes de que puedas acceder a la plataforma. Recibirás un email cuando tu cuenta sea aprobada."
-#~ msgstr "在您可以访问平台之前，管理员必须批准您的账户。您的账户获批后，您将收到一封告知邮件。"
+#~ msgid ""
+#~ "Un administrador debe aprobar tu cuenta antes de que puedas acceder a la "
+#~ "plataforma. Recibirás un email cuando tu cuenta sea aprobada."
+#~ msgstr ""
+#~ "在您可以访问平台之前，管理员必须批准您的账户。您的账户获批后，您将收到一封"
+#~ "告知邮件。"
 
 #~ msgid "Espera la aprobación del administrador"
 #~ msgstr "等待管理员批准"
@@ -4847,7 +5102,9 @@ msgstr ""
 #~ msgid "Pedidos recurrentes para tu negocio, sin complicaciones"
 #~ msgstr "为您的业务提供定期订单，无忧无虑"
 
-#~ msgid "Pide online tus productos de siempre con entregas periódicas y sin preocupaciones."
+#~ msgid ""
+#~ "Pide online tus productos de siempre con entregas periódicas y sin "
+#~ "preocupaciones."
 #~ msgstr "在线订购您心仪的产品，定期送达，无忧无虑。"
 
 #~ msgid "Relevancia"
