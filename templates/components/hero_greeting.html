@@ -45,12 +45,12 @@
 <style>
 /* ===== HERO COMPACTO ===== */
 .hero-greeting-banner {
-    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    background: linear-gradient(135deg, #a81d1d 0%, #7a0f0f 100%);
     color: white;
     padding: 1rem 0;
     margin-bottom: 1.5rem;
-    border-radius: 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 12px; /* Redondeado para match con sidebar items */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .hero-content {
@@ -93,7 +93,7 @@
     font-size: 0.9rem;
     font-weight: 400;
     margin-bottom: 0;
-    opacity: 0.9;
+    color: rgba(255, 255, 255, 0.85);
     line-height: 1.4;
 }
 
@@ -114,27 +114,27 @@
     padding: 0.5rem 1rem;
     border-radius: 2rem;
     font-size: 0.8125rem;
-    font-weight: 500;
+    font-weight: 600;
     white-space: nowrap;
-    background-color: rgba(255, 255, 255, 0.95);
-    color: #1e40af;
+    background-color: #f5e6c8; /* Oro suave */
+    color: #7a0f0f;
     border: none;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
 }
 
 .status-indicator.status-success {
-    background-color: rgba(255, 255, 255, 0.95);
-    color: #059669;
+    background-color: #f5e6c8;
+    color: #1A4325; /* Verde oscuro orgánico */
 }
 
 .status-indicator.status-warning {
-    background-color: rgba(255, 255, 255, 0.95);
-    color: #d97706;
+    background-color: #f5e6c8;
+    color: #92400e;
 }
 
 .status-indicator.status-danger {
-    background-color: rgba(255, 255, 255, 0.95);
-    color: #dc2626;
+    background-color: #f5e6c8;
+    color: #b91c1c;
 }
 
 .status-icon {
