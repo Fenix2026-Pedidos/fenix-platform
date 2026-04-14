@@ -1469,3 +1469,36 @@ body.sidebar-open {
         padding: 16px;
     }
 }
+
+/* ============================================
+   Utility Classes (Tailwind Style)
+   ============================================ */
+.text-center { text-align: center; }
+.mt-3 { margin-top: 0.75rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.gap-2 { gap: 0.5rem; }
+.gap-1\.5 { gap: 6px; }
+.opacity-80 { opacity: 0.8; }
+.hover\:opacity-100:hover { opacity: 1; }
+.transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+.duration-300 { transition-duration: 300ms; }
+.h-\[16px\] { height: 16px; }
+.text-\[11px\] { font-size: 11px; }
+.text-gray-400 { color: var(--gray-400); }
+.text-gray-500 { color: var(--gray-500); }
+.text-gray-600 { color: var(--gray-600); }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.opacity-90 { opacity: 0.9; }
+.opacity-100 { opacity: 1; }
+.no-underline { text-decoration: none !important; }
+.text-white { color: #ffffff !important; }
+.text-\[13px\] { font-size: 13px; }
+.h-\[20px\] { height: 20px !important; width: auto; }
+.hover\:opacity-80:hover { opacity: 0.8 !important; }
+.hover\:opacity-100:hover { opacity: 1 !important; }
+
+
