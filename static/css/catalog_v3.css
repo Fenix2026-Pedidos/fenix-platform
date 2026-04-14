@@ -114,7 +114,6 @@
     transform: translateX(-50%);
     width: clamp(300px, 80%, 1000px); /* Ancho dinámico para el marco horizontal */
     height: 140px;
-    background: url('../img/hero_frame_horizontal.png') no-repeat center bottom;
     background-size: contain;
     mix-blend-mode: multiply;
     z-index: 1;

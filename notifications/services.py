@@ -207,3 +207,44 @@ def send_order_notification(
         logger.warning('Error enviando email de pedido %s: %s', order_id, e)
 
     return n
+
+
+def send_contact_form_notification(lead) -> bool:
+    """
+    Envía una notificación por email al administrador cuando se recibe un nuevo lead.
+    """
+    from core.models import PlatformSettings
+    
+    try:
+        ps = PlatformSettings.get_settings()
+        
+        # 1. Configurar contexto
+        context = {
+            'lead': lead,
+            'year': timezone.now().year,
+            'platform_name': ps.email_from_name,
+        }
+
+        # 2. Renderizar cuerpo HTML
+        subject = f"[{ps.email_from_name}] Nuevo lead de contacto: {lead.nombre_completo}"
+        body = render_to_string('notifications/contact_email.html', context)
+        
+        # 3. Configurar destinatarios
+        recipient = ps.order_notification_email or 'distribuciones722@gmail.com'
+        from_email = f'{ps.email_from_name} <{ps.email_from}>'
+
+        # 4. Enviar email
+        email = EmailMessage(
+            subject=subject,
+            body=body,
+            from_email=from_email,
+            to=[recipient],
+        )
+        email.content_subtype = "html"
+        email.send(fail_silently=False)
+        
+        logger.info('Email de lead %s enviado a %s', lead.id, recipient)
+        return True
+    except Exception as e:
+        logger.warning('Error enviando email de lead %s: %s', lead.id, e)
+        return False

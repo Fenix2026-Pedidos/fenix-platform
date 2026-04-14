@@ -22,7 +22,7 @@ PUBLIC_CONTACT_INFO = {
     'company_name': 'Fenix Distribuciones S.L.',
     'tax_id': 'CIF pendiente',
     'email': 'info@fenixdelamancha.es',
-    'phone': '+34 600 159 456',
+    'phone': '+34 624 14 92 50',
 }
 
 
@@ -214,6 +214,10 @@ def api_contact_submit(request):
             user_agent=request.META.get('HTTP_USER_AGENT'),
             origen='formulario_contacto_web'
         )
+
+        # 4. Enviar notificación al administrador
+        from notifications.services import send_contact_form_notification
+        send_contact_form_notification(lead)
 
         return JsonResponse({
             'success': True,

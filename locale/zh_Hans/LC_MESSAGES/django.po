@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-13 17:07+0200\n"
+"POT-Creation-Date: 2026-04-13 20:10+0200\n"
 "PO-Revision-Date: 2026-01-25 18:00+0100\n"
 "Last-Translator: Fenix Platform\n"
 "Language-Team: Chinese\n"
@@ -101,11 +101,11 @@ msgstr "确认密码"
 msgid "Tu nombre completo"
 msgstr "您的全名"
 
-#: .\accounts\forms.py:53
+#: .\accounts\forms.py:53 .\templates\public\contact.html:393
 msgid "tu@email.com"
 msgstr "您的邮箱@email.com"
 
-#: .\accounts\forms.py:57
+#: .\accounts\forms.py:57 .\templates\public\contact.html:383
 msgid "Nombre de tu empresa"
 msgstr "您的公司名称"
 
@@ -113,13 +113,8 @@ msgstr "您的公司名称"
 #: .\templates\accounts\register.html:27
 #: .\templates\accounts\user_management_modern.html:435
 #: .\templates\public\contact.html:375
-#, fuzzy
 msgid "Nombre completo"
-msgstr ""
-"#-#-#-#-#  django.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"全名\n"
-"#-#-#-#-#  django.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"姓名"
+msgstr "全名"
 
 #: .\accounts\forms.py:62 .\core\models.py:87
 #: .\templates\accounts\profile\profile_dashboard_new.html:587
@@ -1632,9 +1627,12 @@ msgstr "联系方式"
 msgid "Descartado"
 msgstr "已禁用"
 
+#: .\core\models.py:89 .\templates\public\contact.html:407
 msgid "Asunto"
 msgstr "主题"
 
+#: .\core\models.py:90 .\templates\public\contact.html:413
+#: .\whatsapp\models.py:9
 msgid "Mensaje"
 msgstr "消息"
 
@@ -1764,25 +1762,21 @@ msgid "El correo electrónico es obligatorio."
 msgstr "必须填写全名。"
 
 #: .\core\views.py:192
-#, fuzzy
-#| msgid "Correo electrónico"
 msgid "El correo electrónico no es válido."
-msgstr "电子邮件"
+msgstr "电子邮件无效。"
 
 #: .\core\views.py:195
 msgid "El mensaje no puede estar vacío."
-msgstr ""
+msgstr "消息不能为空。"
 
 #: .\core\views.py:198
-#, fuzzy
-#| msgid "Política de privacidad"
 msgid "Debes aceptar la política de privacidad."
-msgstr "隐私政策"
+msgstr "您必须接受隐私政策。"
 
 #: .\core\views.py:220
 msgid ""
 "Hemos recibido tu solicitud correctamente. Te contactaremos lo antes posible."
-msgstr ""
+msgstr "我们已成功收到您的申请。我们将尽可能快地与您联系。"
 
 #: .\core\views.py:226
 msgid ""
@@ -4177,11 +4171,11 @@ msgstr ""
 
 #: .\templates\components\navbar_public.html:17
 #: .\templates\components\topbar.html:24
-#, fuzzy
-#| msgid "Cambiar foto"
 msgid "Cambiar idioma"
-msgstr "更换照片"
+msgstr "更改语言"
 
+#: .\templates\components\navbar_public.html:78
+#: .\templates\components\navbar_public.html:80
 msgid "Área cliente"
 msgstr "客户区域"
 
@@ -4212,7 +4206,7 @@ msgstr "我的订单"
 
 #: .\templates\components\sidebar_v2.html:55
 msgid "Cesta"
-msgstr ""
+msgstr "购物篮"
 
 #: .\templates\components\sidebar_v2.html:82
 msgid "Administración"
@@ -4239,8 +4233,6 @@ msgid "Abrir menú"
 msgstr "打开菜单"
 
 #: .\templates\components\topbar.html:14
-#, fuzzy
-#| msgid "🔍 Buscar pedidos, productos o acciones…"
 msgid "Buscar pedidos, productos o acciones…"
 msgstr "🔍 搜索订单、产品或操作…"
 
@@ -4756,47 +4748,78 @@ msgid ""
 "producto."
 msgstr "我们管理预定和受控的订单，确保您永远不缺货。"
 
+#: .\templates\public\contact.html:352
 msgid ""
 "Estamos aquí para ayudarte. Completa el formulario y nos pondremos en "
 "contacto contigo lo antes posible."
 msgstr "我们在这里为您提供帮助。请填写表格，我们将尽快与您联系。"
 
+#: .\templates\public\contact.html:376
+msgid "Juan Pérez"
+msgstr "例如：张三"
+
+#: .\templates\public\contact.html:408
+msgid "Motivo del contacto"
+msgstr "联系原因"
+
+#: .\templates\public\contact.html:414
+msgid "¿En qué podemos ayudarte?"
+msgstr "我们如何为您提供帮助？"
+
+#: .\templates\public\contact.html:422
 msgid "He leído y acepto la"
 msgstr "我已阅读并接受"
 
+#: .\templates\public\contact.html:422
 msgid "Política de Privacidad"
 msgstr "隐私政策"
 
+#: .\templates\public\contact.html:428
 msgid "Acepto recibir información comercial"
 msgstr "我同意接收商业信息"
 
+#: .\templates\public\contact.html:434
 msgid "Enviar mensaje"
 msgstr "发送消息"
 
+#: .\templates\public\contact.html:443
 msgid "Datos de contacto"
 msgstr "联系信息"
 
+#: .\templates\public\contact.html:450
 msgid "Escríbenos"
 msgstr "写信给我们"
 
+#: .\templates\public\contact.html:460
 msgid "Llámanos"
 msgstr "致电我们"
 
+#: .\templates\public\contact.html:470
 msgid "Zona de servicio"
 msgstr "服务区域"
 
+#: .\templates\public\contact.html:471
+msgid "Ciudad Real y Toledo"
+msgstr "雷阿尔城和托莱多"
+
+#: .\templates\public\contact.html:477
 msgid "¿Prefieres atención directa?"
 msgstr "您更喜欢直接咨询吗？"
 
+#: .\templates\public\contact.html:478
 msgid "Pulsa aquí para contactar por WhatsApp de forma inmediata."
 msgstr "点击此处立即通过 WhatsApp 联系我们。"
 
+#: .\templates\public\contact.html:481
+#: .\templates\public\partials\whatsapp_fab.html:179
 msgid "Abrir WhatsApp"
 msgstr "打开 WhatsApp"
 
+#: .\templates\public\contact.html:542
 msgid "Revisa los campos del formulario."
 msgstr "请检查表单字段。"
 
+#: .\templates\public\contact.html:548
 msgid "Ocurrió un error inesperado. Inténtalo de nuevo."
 msgstr "发生意外错误。请重试。"
 
@@ -4813,18 +4836,18 @@ msgstr "发布的数据仅供参考，如有更改，恕不另行通知。"
 
 #: .\templates\public\partials\whatsapp_fab.html:168
 msgid "En línea"
-msgstr ""
+msgstr "在线"
 
 #: .\templates\public\partials\whatsapp_fab.html:173
 msgid ""
 "Hola, gracias por contactar con Fénix 😊. <br><br>En breve uno de nuestros "
 "comerciales se pondrá en contacto con usted para ofrecerle una atención "
 "personalizada."
-msgstr ""
+msgstr "您好，感谢联系 Fénix 😊。<br><br>我们的销售代表将很快与您联系，为您提供个性化服务。"
 
 #: .\templates\public\partials\whatsapp_fab.html:185
 msgid "¿Necesitas ayuda?"
-msgstr ""
+msgstr "需要帮助吗？"
 
 #: .\templates\public\privacy.html:9
 msgid ""
@@ -4981,9 +5004,6 @@ msgstr ""
 
 #~ msgid "Tu nombre"
 #~ msgstr "您的姓名"
-
-#~ msgid "Ej: Juan Pérez"
-#~ msgstr "例如：张三"
 
 #~ msgid "Escribe tu mensaje aquí..."
 #~ msgstr "在此编写您的消息..."
