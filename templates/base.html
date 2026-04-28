@@ -25,6 +25,8 @@
     
     <!-- WhatsApp FAB CSS se incluye ahora directamente en el partial para evitar conflictos -->
     
+    <link rel="stylesheet" href="{% static 'css/ai_assistant.css' %}?v=2">
+    
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -76,6 +78,8 @@
     {% if user.is_authenticated %}
     <span id="global-cart-count" style="display: none;">{{ cart_count|default:0 }}</span>
     {% endif %}
+
+    {% include 'components/ai_chat_widget.html' %}
 
     <script src="{% static 'js/catalog-filters.js' %}?v={% now 'U' %}"></script>
     {% block extra_js %}{% endblock %}

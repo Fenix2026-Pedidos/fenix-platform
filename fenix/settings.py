@@ -70,7 +70,11 @@ INSTALLED_APPS = [
     'core',  # Configuración de plataforma
     'whatsapp',  # Integración WhatsApp Business Cloud API
     'storages',  # Gestión de almacenamiento en la nube (GCS)
+    'ai_assistant',  # Asistente Inteligente con Gemini
 ]
+
+# AI Assistant Settings
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY', '')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

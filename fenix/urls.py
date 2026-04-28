@@ -28,6 +28,7 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('recurring/', include('recurring.urls')),
     path('', include('whatsapp.urls')),  # WhatsApp API endpoints
+    path('ai/', include('ai_assistant.urls')),  # Inteligencia Artificial
 ]
 
 # Servir archivos media en desarrollo

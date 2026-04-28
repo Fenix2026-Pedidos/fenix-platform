@@ -1,0 +1,289 @@
+{% load i18n static %}
+<div id="ai-assistant-container">
+    <!-- Chat Window -->
+    <div id="ai-chat-window">
+        <!-- Header -->
+        <div id="ai-chat-header">
+            <div class="ai-header-info">
+                <div class="ai-avatar">AI</div>
+                <div>
+                    <div style="font-weight: 800; font-size: 14px; color: #0f172a;">Fenix Assistant</div>
+                    <div style="font-size: 11px; color: #64748b; display: flex; align-items: center;">
+                        <span class="ai-status-dot"></span> Soporte Estratégico
+                    </div>
+                </div>
+            </div>
+            <button id="ai-close-btn" style="background: none; border: none; color: #94a3b8; cursor: pointer;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+        </div>
+
+        <!-- Messages Area -->
+        <div id="ai-chat-messages">
+            <!-- Initial Message -->
+            <div class="ai-msg-group bot">
+                <div class="ai-msg-meta">Fenix AI</div>
+                <div class="ai-bubble bot">
+                    <strong>¡Hola! Es un placer saludarte.</strong><br><br>
+                    Para ofrecerte un asesoramiento estratégico a medida, por favor facilítanos tus datos. Una vez completado, analizaremos juntos cómo Fenix puede optimizar tu gestión.
+                </div>
+            </div>
+
+            <!-- Lead Form -->
+            <div id="ai-lead-container" class="ai-msg-group">
+                <form id="ai-lead-form" class="ai-bubble bot" style="max-width: 100%; border: 2px solid #dbeafe;">
+                    <div style="margin-bottom: 1rem;">
+                        <h4 style="margin: 0; font-size: 16px; font-weight: 800;">Configura tu consulta</h4>
+                        <p style="margin: 4px 0 0; font-size: 11px; color: #64748b;">Analizaremos tu caso específico.</p>
+                    </div>
+                    
+                    <div class="ai-form-group">
+                        <label class="ai-label">Nombre Completo</label>
+                        <input type="text" id="lead-name" class="ai-input" placeholder="Ej. Juan Pérez" required>
+                    </div>
+                    
+                    <div class="ai-form-group">
+                        <label class="ai-label">Email Corporativo</label>
+                        <input type="email" id="lead-email" class="ai-input" placeholder="juan@empresa.com" required>
+                    </div>
+
+                    <div style="display: flex; gap: 8px; align-items: flex-start; margin-top: 4px;">
+                        <input type="checkbox" id="lead-gdpr" required style="margin-top: 3px;">
+                        <label for="lead-gdpr" style="font-size: 10px; color: #64748b; line-height: 1.2;">
+                            Acepto la <a href="/privacy" target="_blank" style="color: var(--ai-primary); font-weight: 700;">Política de Privacidad</a>.
+                        </label>
+                    </div>
+
+                    <button type="submit" class="ai-btn-primary">Comenzar consultoría</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Input Area (Initially Hidden) -->
+        <div id="ai-chat-input-area" style="display: none;">
+            <div class="ai-input-wrapper">
+                <input type="text" id="ai-user-input" placeholder="Describe un proceso a optimizar..." autocomplete="off">
+                <button id="ai-send-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                </button>
+            </div>
+            <div style="margin-top: 12px; display: flex; align-items: center; gap: 4px; opacity: 0.6;">
+                <span style="font-size: 8px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: #94a3b8;">Powered by</span>
+                <span style="font-size: 8px; font-weight: 900; text-transform: uppercase; color: #0f172a; background: #f1f5f9; padding: 2px 4px; border-radius: 4px;">Synerg-IA Framework</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tooltip -->
+    <div id="ai-tooltip" style="position: absolute; bottom: 90px; right: 0; width: 240px; padding: 1.25rem; background: var(--ai-primary); color: white; border-radius: 20px; border-bottom-right-radius: 0; box-shadow: 0 10px 25px rgba(37,99,235,0.3); display: none; animation: ai-slide-up 0.5s ease-out;">
+        <p style="margin: 0; font-weight: 800; font-size: 15px; line-height: 1.2;">
+            ¡Hola! <br>Soy tu asistente. <br>¿Cómo puedo ayudarte?
+        </p>
+        <div style="position: absolute; bottom: -8px; right: 0; width: 16px; height: 16px; background: var(--ai-primary); clip-path: polygon(0 0, 100% 0, 100% 100%);"></div>
+    </div>
+
+    <!-- Floating Button -->
+    <div id="ai-chat-button-container" style="position: relative;">
+        <div class="ai-pulse-bg"></div>
+        <button id="ai-chat-button">
+            <div id="ai-icon-closed" class="ai-btn-label">AI</div>
+            <div id="ai-icon-open" style="display: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </div>
+        </button>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatBtn = document.getElementById('ai-chat-button');
+    const chatWindow = document.getElementById('ai-chat-window');
+    const closeBtn = document.getElementById('ai-close-btn');
+    const sendBtn = document.getElementById('ai-send-btn');
+    const userInput = document.getElementById('ai-user-input');
+    const messagesContainer = document.getElementById('ai-chat-messages');
+    const leadForm = document.getElementById('ai-lead-form');
+    const leadContainer = document.getElementById('ai-lead-container');
+    const inputArea = document.getElementById('ai-chat-input-area');
+    const tooltip = document.getElementById('ai-tooltip');
+
+    let currentStep = 'lead';
+    let leadData = null;
+    let chatHistory = []; // Para mantener el contexto de la charla
+
+    // Check for existing lead
+    const savedLead = localStorage.getItem('fenix_ai_lead');
+    if (savedLead) {
+        const data = JSON.parse(savedLead);
+        const now = new Date().getTime();
+        if (now - data.timestamp < 24 * 60 * 60 * 1000) {
+            leadData = data;
+            currentStep = 'chat';
+            leadContainer.style.display = 'none';
+            inputArea.style.display = 'block';
+        }
+    }
+
+    // Tooltip logic
+    setTimeout(() => {
+        if (chatWindow.style.display !== 'flex') {
+            tooltip.style.display = 'block';
+        }
+    }, 3000);
+
+    // Toggle window
+    chatBtn.addEventListener('click', () => {
+        const isOpen = chatWindow.style.display === 'flex';
+        chatWindow.style.display = isOpen ? 'none' : 'flex';
+        chatBtn.classList.toggle('open');
+        tooltip.style.display = 'none';
+        
+        const iconClosed = document.getElementById('ai-icon-closed');
+        const iconOpen = document.getElementById('ai-icon-open');
+        
+        if (!isOpen) {
+            iconClosed.style.display = 'none';
+            iconOpen.style.display = 'block';
+            if (currentStep === 'chat') userInput.focus();
+        } else {
+            iconClosed.style.display = 'block';
+            iconOpen.style.display = 'none';
+        }
+    });
+
+    closeBtn.addEventListener('click', () => chatBtn.click());
+
+    // Lead Submission
+    leadForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        leadData = {
+            name: document.getElementById('lead-name').value,
+            email: document.getElementById('lead-email').value,
+            timestamp: new Date().getTime()
+        };
+        localStorage.setItem('fenix_ai_lead', JSON.stringify(leadData));
+        
+        currentStep = 'chat';
+        leadContainer.style.display = 'none';
+        inputArea.style.display = 'block';
+
+        appendMessage(`Gracias, **${leadData.name}**. Ya tengo tus datos.\n\n¿En qué proceso de tu empresa te gustaría aplicar Inteligencia Artificial hoy?`, 'bot');
+        userInput.focus();
+    });
+
+    // Chat Logic
+    async function sendMessage(overrideText) {
+        const text = overrideText || userInput.value.trim();
+        if (!text) return;
+
+        appendMessage(text, 'user');
+        userInput.value = '';
+
+        const typingId = 'typing-' + Date.now();
+        const typingDiv = document.createElement('div');
+        typingDiv.id = typingId;
+        typingDiv.className = 'ai-msg-group bot';
+        typingDiv.innerHTML = `<div class="ai-msg-meta">Fenix AI</div><div class="ai-bubble bot" style="color: #94a3b8; font-style: italic;">Analizando propuesta estratégica...</div>`;
+        messagesContainer.appendChild(typingDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        try {
+            const response = await fetch('/ai/chat/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ 
+                    message: text,
+                    lead: leadData,
+                    history: chatHistory
+                })
+            });
+
+            const data = await response.json();
+            document.getElementById(typingId).remove();
+
+            if (data.response) {
+                appendMessage(data.response, 'bot');
+                // Actualizar historial local
+                chatHistory.push({ role: 'user', parts: [{ text: text }] });
+                chatHistory.push({ role: 'model', parts: [{ text: data.response }] });
+            } else if (data.error) {
+                appendMessage(data.error, 'bot');
+            }
+        } catch (error) {
+            document.getElementById(typingId).remove();
+            appendMessage('Error de conexión.', 'bot');
+        }
+    }
+
+    function appendMessage(text, side) {
+        const group = document.createElement('div');
+        group.className = `ai-msg-group ${side}`;
+        
+        const meta = document.createElement('div');
+        meta.className = 'ai-msg-meta';
+        const now = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        meta.innerText = side === 'user' ? `Tú ${now}` : `Fenix AI ${now}`;
+        
+        const bubble = document.createElement('div');
+        bubble.className = `ai-bubble ${side}`;
+        
+        // Basic Markdown support (simplified for Vanilla JS)
+        let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        html = html.replace(/\n/g, '<br>');
+        
+        // Handle Suggestions [Label](suggestion:text)
+        const suggestions = [];
+        html = html.replace(/\[(.*?)\]\(suggestion:(.*?)\)/g, (match, label, suggestion) => {
+            suggestions.push({label, suggestion});
+            return '';
+        });
+
+        bubble.innerHTML = html;
+        
+        if (suggestions.length > 0) {
+            const suggContainer = document.createElement('div');
+            suggContainer.style.display = 'flex';
+            suggContainer.style.flexWrap = 'wrap';
+            suggContainer.style.gap = '8px';
+            suggContainer.style.marginTop = '12px';
+            
+            suggestions.forEach(s => {
+                const btn = document.createElement('button');
+                btn.className = 'ai-suggestion';
+                btn.innerText = s.label;
+                btn.onclick = () => sendMessage(s.suggestion);
+                suggContainer.appendChild(btn);
+            });
+            bubble.appendChild(suggContainer);
+        }
+
+        group.appendChild(meta);
+        group.appendChild(bubble);
+        messagesContainer.appendChild(group);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    sendBtn.addEventListener('click', () => sendMessage());
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+});
+</script>
