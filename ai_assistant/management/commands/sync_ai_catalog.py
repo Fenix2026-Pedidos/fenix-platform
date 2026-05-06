@@ -54,6 +54,7 @@ class Command(BaseCommand):
             Los envíos se realizan de forma urgente con logística especializada en frío para garantizar la cadena térmica de los alimentos.
             Los pedidos realizados antes de las 13:00 se entregan en 24/48 horas laborables en la península.
             El pedido mínimo es de 50€. El coste de envío es gratuito para pedidos superiores a 150€. Para pedidos inferiores, el coste es de 15€.
+            IMPORTANTE: La distribución directa y completa de todo el catálogo está disponible únicamente para Toledo y Ciudad Real. A nivel nacional se realizan exclusivamente para envíos de mercancía.
             """,
             """
             Para realizar pedidos por WhatsApp o contactar con soporte técnico de Fenix, el cliente puede usar el botón de WhatsApp presente en la plataforma.
