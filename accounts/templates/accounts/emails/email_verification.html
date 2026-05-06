@@ -1,0 +1,36 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .button { display: inline-block; padding: 12px 24px; background-color: #2563eb; color: white !important; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 20px 0; }
+        .footer { margin-top: 30px; font-size: 0.875rem; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>FENIX</h1>
+        </div>
+        <p>{% blocktrans with name=user.full_name %}Hola {{ name }},{% endblocktrans %}</p>
+        <p>{% trans "Gracias por registrarte en FENIX. Para completar tu registro y asegurar tu cuenta, por favor verifica tu dirección de correo electrónico haciendo clic en el siguiente botón:" %}</p>
+        
+        <div style="text-align: center;">
+            <a href="{{ verification_link }}" class="button">{% trans "Verificar mi email" %}</a>
+        </div>
+        
+        <p>{% trans "O copia y pega este enlace en tu navegador:" %}</p>
+        <p style="word-break: break-all; color: #2563eb;">{{ verification_link }}</p>
+        
+        <p>{% trans "Este enlace expirará en 24 horas por motivos de seguridad." %}</p>
+        
+        <div class="footer">
+            <p>{% trans "Si no has creado una cuenta en FENIX, puedes ignorar este mensaje." %}</p>
+            <p>{% trans "Saludos," %}<br>{% trans "El equipo de FENIX" %}</p>
+        </div>
+    </div>
+</body>
+</html>

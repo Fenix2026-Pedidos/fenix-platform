@@ -65,7 +65,6 @@ INSTALLED_APPS = [
     'orders',  # Pedidos
     'recurring',  # Pedidos Recurrentes
     'notifications',  # Notificaciones
-    'organizations',  # Organizaciones
     'accounts',  # Cuentas
     'core',  # Configuración de plataforma
     'whatsapp',  # Integración WhatsApp Business Cloud API
@@ -75,6 +74,7 @@ INSTALLED_APPS = [
 
 # AI Assistant Settings
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY', '')
+GOOGLE_SHEETS_WEBHOOK_URL = os.getenv('GOOGLE_SHEETS_WEBHOOK_URL', '')  # Webhook para CRM Fenix
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -89,6 +89,7 @@ MIDDLEWARE = [
     'accounts.middleware.SessionTrackingMiddleware',  # Tracking de sesiones
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.middleware.AuditLogMiddleware',  # Auditoría Synerg-IA
 ]
 
 # Security settings for production

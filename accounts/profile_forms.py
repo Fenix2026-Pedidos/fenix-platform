@@ -4,7 +4,6 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from .models import User, UserPreferences, SecuritySettings
-from organizations.models import UserCompany
 
 # Timezones comunes
 TIMEZONE_CHOICES = [
@@ -108,21 +107,21 @@ class CompanyDataForm(forms.ModelForm):
     """Formulario para editar datos de la empresa del usuario"""
     
     class Meta:
-        model = UserCompany
-        fields = ['job_title', 'department']
+        model = User
+        fields = ['job_title', 'vat_number']
         widgets = {
             'job_title': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': _('Ej: Gerente de Ventas')
             }),
-            'department': forms.TextInput(attrs={
+            'vat_number': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': _('Ej: Ventas')
+                'placeholder': _('Ej: B12345678')
             }),
         }
         labels = {
             'job_title': _('Cargo'),
-            'department': _('Departamento'),
+            'vat_number': _('CIF/NIF'),
         }
 
 

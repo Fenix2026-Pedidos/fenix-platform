@@ -1,0 +1,1 @@
+{% load i18n %}{% trans "FENIX - Estado de tu solicitud de registro" %}

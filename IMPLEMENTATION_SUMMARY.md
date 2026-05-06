@@ -17,9 +17,10 @@
 - **Emails**: Funciones `send_verification_email()` y `send_approval_notification()` con soporte ES/zh-hans
 
 ### 2. ✅ Verificación de Email y Registro
-- **Registro**: `register_view()` crea usuario con `pending_approval=True` y `email_verified=False`
-- **Email de verificación**: `send_verification_email()` envía email informativo (ES/zh-hans)
-- **Estado**: Usuario queda en estado "pendiente de aprobación" hasta que Manager/Super Admin lo apruebe
+- **Registro**: `register_view()` crea usuario con `status='pending'` y `email_verified=False`
+- **Email de verificación**: `send_verification_email()` envía email con token real (HTML/TXT con i18n)
+- **Token**: `EmailVerificationToken` implementado con expiración de 24h
+- **Estado**: Usuario queda en estado "pendiente" hasta que verifica email y Manager/Super Admin lo aprueba
 
 ### 3. ✅ Vista de Aprobación de Usuarios
 - **Vista de lista**: `user_approval_list()` - Muestra usuarios pendientes (solo Managers/Super Admin)

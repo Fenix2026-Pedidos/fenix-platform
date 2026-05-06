@@ -141,9 +141,24 @@ def register_view(request):
             user.is_active = True  # Activo pero pendiente de aprobación
             user.save()
             
+            # Sincronizar con CRM (Google Sheets) de Fenix
+            try:
+                from core.crm_services import CRMService
+                CRMService.sync_lead({
+                    "source": "Registro Plataforma Fenix",
+                    "name": f"{user.first_name} {user.last_name}",
+                    "email": user.email,
+                    "phone_prefix": user.phone_prefix or "+34",
+                    "phone_number": user.phone_number or "",
+                    "company": user.vat_number or "-",
+                    "message": f"Nuevo registro: {user.job_title}"
+                })
+            except Exception as e:
+                print(f"Error syncing with CRM: {e}")
+            
             # Enviar email de verificación con token
             try:
-                verification_url = request.build_absolute_uri('/accounts/verify-email/')
+                verification_url = request.build_absolute_uri(reverse('accounts:verify_email'))
                 send_verification_email(user, verification_url)
             except Exception as e:
                 print(f"Error sending verification email: {e}")
@@ -249,7 +264,7 @@ def resend_confirmation(request):
             }, status=429)
         
         # Enviar nuevo email de verificación
-        verification_url = request.build_absolute_uri('/accounts/verify-email/')
+        verification_url = request.build_absolute_uri(reverse('accounts:verify_email'))
         send_verification_email(user, verification_url)
         
         return JsonResponse({

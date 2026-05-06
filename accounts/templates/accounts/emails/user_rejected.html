@@ -1,0 +1,27 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .footer { margin-top: 30px; font-size: 0.875rem; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>FENIX</h1>
+        </div>
+        <p>{% blocktrans with name=user.full_name %}Hola {{ name }},{% endblocktrans %}</p>
+        <p>{% trans "Gracias por tu interés en registrarte en FENIX." %}</p>
+        <p>{% trans "Tras revisar tu solicitud, lamentamos informarte de que en este momento no podemos aprobar tu acceso a la plataforma." %}</p>
+        <p>{% trans "Si crees que esto es un error o deseas proporcionar más información para que revisemos tu caso, por favor contacta con nuestro equipo de soporte." %}</p>
+        
+        <div class="footer">
+            <p>{% trans "Atentamente," %}<br>{% trans "El equipo de FENIX" %}</p>
+        </div>
+    </div>
+</body>
+</html>

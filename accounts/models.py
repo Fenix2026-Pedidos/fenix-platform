@@ -73,6 +73,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     # EMPRESA (legacy - mantener)
     company = models.CharField(max_length=200, blank=True, default='')
+    job_title = models.CharField(max_length=100, blank=True, verbose_name=_('Cargo'))
+    vat_number = models.CharField(max_length=20, blank=True, verbose_name=_('CIF/NIF'))
     
     # ============================================================================
     # PERFIL OPERATIVO - Campos obligatorios para realizar pedidos

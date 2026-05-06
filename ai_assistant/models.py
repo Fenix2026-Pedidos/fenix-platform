@@ -27,3 +27,28 @@ class KnowledgeBase(models.Model):
     def __str__(self):
         source = self.metadata.get('source', 'General')
         return f"[{source}] {self.content[:50]}..."
+
+class AILead(models.Model):
+    """
+    Captura de leads desde el asistente de IA.
+    Gestiona la verificación OTP y la cuota de consultas.
+    """
+    name = models.CharField(max_length=255)
+    email = models.EmailField(unique=True)
+    phone_prefix = models.CharField(max_length=10, default="+34")
+    phone_number = models.CharField(max_length=20)
+    
+    otp_code = models.CharField(max_length=6, null=True, blank=True)
+    otp_expires_at = models.DateTimeField(null=True, blank=True)
+    otp_attempts = models.IntegerField(default=0)
+    
+    email_verified = models.BooleanField(default=False)
+    queries_used = models.IntegerField(default=0)
+    last_query_at = models.DateTimeField(auto_now=True)
+    reset_at = models.DateTimeField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.email})"

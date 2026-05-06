@@ -15,7 +15,6 @@ from .profile_forms import (
     PersonalDataForm, CompanyDataForm, PreferencesForm,
     SecurityForm, PasswordChangeForm, AvatarUploadForm, OperativeProfileForm
 )
-from organizations.models import UserCompany, Company
 from core.audit import log_action
 
 
@@ -50,11 +49,6 @@ def profile_dashboard(request):
     # Obtener o crear preferencias y configuración de seguridad
     preferences = user.get_or_create_preferences()
     security = user.get_or_create_security()
-    
-    # Obtener relación con empresa
-    user_company = UserCompany.objects.filter(
-        user=user
-    ).select_related('company').order_by('-is_active', '-joined_at').first()
     
     # Obtener sesiones activas
     active_sessions = UserSession.objects.filter(
@@ -92,7 +86,6 @@ def profile_dashboard(request):
         'user': user,
         'preferences': preferences,
         'security': security,
-        'user_company': user_company,
         'active_sessions': active_sessions,
         'recent_logins': recent_logins,
         'session_count': active_sessions.count(),
@@ -566,7 +559,6 @@ def operative_profile_edit(request):
 def update_complete_profile(request):
     """Actualizar perfil completo del usuario (datos personales + perfil operativo)"""
     user = request.user
-    user_company = UserCompany.objects.filter(user=user).select_related('company').order_by('-is_active', '-joined_at').first()
     
     if request.method == 'POST':
         # Actualizar todos los campos del formulario
@@ -576,9 +568,8 @@ def update_complete_profile(request):
         user.company = request.POST.get('company', '').strip()
         user.phone = request.POST.get('phone', '').strip()
 
-        # Campos adicionales opcionales
-        job_title = request.POST.get('job_title', '').strip()
-        tax_id = request.POST.get('tax_id', '').strip()
+        user.job_title = request.POST.get('job_title', '').strip()
+        user.vat_number = request.POST.get('tax_id', '').strip()
         
         # Contacto operativo
         user.telefono_empresa = request.POST.get('telefono_empresa', '').strip()
@@ -624,25 +615,6 @@ def update_complete_profile(request):
             messages.error(request, _('Por favor completa los siguientes campos obligatorios: ') + ', '.join(errors))
         else:
             user.save()
-
-            # Asegurar relacion UserCompany/Company para guardar Cargo y CIF/NIF
-            if not user_company:
-                company_name = user.company.strip() or user.email
-                company, _created = Company.objects.get_or_create(name=company_name)
-                user_company, _created = UserCompany.objects.get_or_create(
-                    user=user,
-                    company=company,
-                    defaults={'is_active': True}
-                )
-
-            if user_company:
-                user_company.job_title = job_title
-                user_company.is_active = True
-                user_company.save()
-
-                if user_company.company:
-                    user_company.company.vat_number = tax_id
-                    user_company.company.save()
             
             # Log action
             log_profile_action(
@@ -677,7 +649,6 @@ def update_complete_profile(request):
     
     context = {
         'user': user,
-        'user_company': user_company,
         'edit_mode': True,
         'missing_fields': missing_fields,
     }
@@ -722,9 +693,6 @@ def admin_view_user_profile(request, user_id):
     except:
         security = None
     
-    # Obtener organización
-    user_company = UserCompany.objects.filter(user=target_user).first()
-    
     # Sesiones activas
     active_sessions_count = UserSession.objects.filter(
         user=target_user,
@@ -736,7 +704,6 @@ def admin_view_user_profile(request, user_id):
         'target_user': target_user,
         'preferences': preferences,
         'security': security,
-        'user_company': user_company,
         'active_sessions_count': active_sessions_count,
         'view_mode': True,  # Solo lectura
         'is_admin_view': True,
@@ -780,14 +747,10 @@ def admin_edit_user_profile(request, user_id):
     except:
         security = None
     
-    # Obtener organización
-    user_company = UserCompany.objects.filter(user=target_user).first()
-    
     context = {
         'target_user': target_user,
         'preferences': preferences,
         'security': security,
-        'user_company': user_company,
         'active_tab': active_tab,
         'edit_mode': True,
         'is_admin_view': True,

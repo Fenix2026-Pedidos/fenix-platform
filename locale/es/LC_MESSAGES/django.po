@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-25 14:00+0100\n"
+"POT-Creation-Date: 2026-05-04 20:27+0200\n"
 "PO-Revision-Date: 2026-01-25 18:00+0100\n"
 "Last-Translator: Fenix Platform\n"
 "Language-Team: Spanish\n"
@@ -16,54 +16,3349 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: templates/components/sidebar.html
-msgid "Catálogo"
-msgstr "Catálogo"
+msgid "Filtros"
+msgstr ""
 
-#: templates/components/sidebar.html
-msgid "Mis Pedidos"
+msgid "Todos los meses"
+msgstr ""
+
+msgid "página"
+msgstr ""
+
+msgid "Filtrar"
+msgstr ""
+
+msgid "Limpiar"
+msgstr ""
+
+msgid "Filtros activos:"
+msgstr ""
+
+msgid "Año"
+msgstr ""
+
+msgid "Todos"
+msgstr ""
+
+msgid "pedido"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mis Pedidos"
+msgid "pedidos"
 msgstr "Mis Pedidos"
 
-#: templates/components/sidebar.html
-msgid "Carrito"
-msgstr "Carrito"
+msgid "Email"
+msgstr ""
 
-#: templates/components/sidebar.html
-msgid "Aprobación de Usuarios"
+msgid "Contraseña"
+msgstr ""
+
+msgid "Confirmar contraseña"
+msgstr ""
+
+msgid "Tu nombre completo"
+msgstr ""
+
+msgid "tu@email.com"
+msgstr ""
+
+msgid "Nombre de tu empresa"
+msgstr ""
+
+msgid "Nombre completo"
+msgstr ""
+
+msgid "Correo electrónico"
+msgstr ""
+
+msgid "Empresa"
+msgstr ""
+
+msgid "Las contraseñas no coinciden."
+msgstr ""
+
+msgid "La empresa es obligatoria."
+msgstr ""
+
+msgid ""
+"Tu cuenta está pendiente de aprobación. Un administrador revisará tu "
+"solicitud."
+msgstr ""
+
+msgid "Super Admin"
+msgstr ""
+
+msgid "Admin"
+msgstr ""
+
+msgid "User"
+msgstr ""
+
+msgid "Español"
+msgstr ""
+
+msgid "Chinese (Simplified)"
+msgstr ""
+
+msgid "Pendiente"
+msgstr ""
+
+msgid "Activo"
+msgstr ""
+
+msgid "Rechazado"
+msgstr ""
+
+msgid "Deshabilitado"
+msgstr ""
+
+msgid "Nombre"
+msgstr ""
+
+msgid "Apellidos"
+msgstr ""
+
+msgid "Teléfono"
+msgstr ""
+
+msgid "Cargo"
+msgstr ""
+
+msgid "CIF/NIF"
+msgstr ""
+
+msgid "Teléfono empresa"
+msgstr ""
+
+msgid "Teléfono de contacto de la empresa"
+msgstr ""
+
+msgid "Teléfono reparto"
+msgstr ""
+
+msgid "Teléfono de contacto para el reparto (OBLIGATORIO)"
+msgstr ""
+
+msgid "Dirección local"
+msgstr ""
+
+msgid "Dirección fiscal o del local (OBLIGATORIO)"
+msgstr ""
+
+msgid "Ciudad"
+msgstr ""
+
+msgid "Ciudad del local (OBLIGATORIO)"
+msgstr ""
+
+msgid "Provincia"
+msgstr ""
+
+msgid "Provincia del local (OBLIGATORIO)"
+msgstr ""
+
+msgid "Código postal"
+msgstr ""
+
+msgid "Código postal del local (OBLIGATORIO)"
+msgstr ""
+
+msgid "País"
+msgstr ""
+
+msgid "País del local"
+msgstr ""
+
+msgid "Recogida en local"
+msgstr ""
+
+msgid "Envío a domicilio"
+msgstr ""
+
+msgid "Tipo de entrega"
+msgstr ""
+
+msgid "Método de entrega preferido (OBLIGATORIO)"
+msgstr ""
+
+msgid "Dirección de entrega"
+msgstr ""
+
+msgid "Dirección donde se realizará la entrega (OBLIGATORIO)"
+msgstr ""
+
+msgid "Ciudad entrega"
+msgstr ""
+
+msgid "Ciudad de entrega (OBLIGATORIO)"
+msgstr ""
+
+msgid "Provincia entrega"
+msgstr ""
+
+msgid "Provincia de entrega (OBLIGATORIO)"
+msgstr ""
+
+msgid "Código postal entrega"
+msgstr ""
+
+msgid "Código postal de entrega (OBLIGATORIO)"
+msgstr ""
+
+msgid "Ventana de entrega"
+msgstr ""
+
+msgid "Horario o ventana de entrega preferida (opcional)"
+msgstr ""
+
+msgid "Observaciones de entrega"
+msgstr ""
+
+msgid "Instrucciones especiales para la entrega (opcional)"
+msgstr ""
+
+msgid "Contador de items"
+msgstr ""
+
+msgid "Número de items en el perfil operativo"
+msgstr ""
+
+msgid "Perfil completado"
+msgstr ""
+
+msgid "Indica si el perfil operativo está completo para realizar pedidos"
+msgstr ""
+
+msgid "Zona horaria"
+msgstr ""
+
+msgid "Estado del usuario en el sistema"
+msgstr ""
+
+msgid "Último acceso"
+msgstr ""
+
+msgid "IP último acceso"
+msgstr ""
+
+msgid "Usuario que aprobó esta cuenta"
+msgstr ""
+
+msgid "Usuario"
+msgstr ""
+
+msgid "Usuarios"
+msgstr ""
+
+msgid "Teléfono de reparto"
+msgstr ""
+
+msgid "Ciudad de entrega"
+msgstr ""
+
+msgid "Provincia de entrega"
+msgstr ""
+
+msgid "Código postal de entrega"
+msgstr ""
+
+msgid "Token de Verificación"
+msgstr ""
+
+msgid "Tokens de Verificación"
+msgstr ""
+
+msgid "Claro"
+msgstr ""
+
+msgid "Oscuro"
+msgstr ""
+
+msgid "Sistema"
+msgstr ""
+
+msgid "Bajo"
+msgstr ""
+
+msgid "Medio"
+msgstr ""
+
+msgid "Alto"
+msgstr ""
+
+msgid "Estructurado"
+msgstr ""
+
+msgid "Narrativo"
+msgstr ""
+
+msgid "Puntos clave"
+msgstr ""
+
+msgid "Idioma IA"
+msgstr ""
+
+#, fuzzy
+#| msgid "Aprobación de Usuarios"
+msgid "Preferencias de Usuario"
 msgstr "Aprobación de Usuarios"
 
-#: templates/components/sidebar.html
-msgid "Administración"
-msgstr "Administración"
+#, fuzzy
+#| msgid "Aprobación de Usuarios"
+msgid "Preferencias de Usuarios"
+msgstr "Aprobación de Usuarios"
 
-#: templates/catalog/product_list.html
-msgid "Catálogo de Productos"
-msgstr "Catálogo de Productos"
+msgid "Configuración de Seguridad"
+msgstr ""
 
-#: templates/catalog/product_list.html
-msgid "Buscar productos..."
-msgstr "Buscar productos..."
+msgid "Configuraciones de Seguridad"
+msgstr ""
 
-#: templates/catalog/product_list.html
-msgid "Añadir"
-msgstr "Añadir"
+#, fuzzy
+#| msgid "Aprobación de Usuarios"
+msgid "Sesión de Usuario"
+msgstr "Aprobación de Usuarios"
 
-#: templates/catalog/product_list.html
-msgid "En carrito:"
-msgstr "En carrito:"
+#, fuzzy
+#| msgid "Aprobación de Usuarios"
+msgid "Sesiones de Usuarios"
+msgstr "Aprobación de Usuarios"
 
-#: templates/components/topbar.html
-msgid "Mi Perfil"
-msgstr "Mi Perfil"
+msgid "Historial de Login"
+msgstr ""
 
-#: templates/components/topbar.html
-msgid "Cerrar Sesión"
+msgid "Historiales de Login"
+msgstr ""
+
+msgid "Actualización datos personales"
+msgstr ""
+
+msgid "Actualización datos empresa"
+msgstr ""
+
+msgid "Actualización preferencias"
+msgstr ""
+
+msgid "Actualización seguridad"
+msgstr ""
+
+msgid "Cambio de contraseña"
+msgstr ""
+
+msgid "Activación 2FA"
+msgstr ""
+
+msgid "Desactivación 2FA"
+msgstr ""
+
+msgid "Subida de avatar"
+msgstr ""
+
+msgid "Eliminación de avatar"
+msgstr ""
+
+msgid "Log de Auditoría"
+msgstr ""
+
+msgid "Logs de Auditoría"
+msgstr ""
+
+msgid "No tienes permisos para acceder a esta sección."
+msgstr ""
+
+msgid "Zona Horaria"
+msgstr ""
+
+msgid "Configurable por administrador"
+msgstr ""
+
+msgid "Apellido"
+msgstr ""
+
+msgid "Ej: Gerente de Ventas"
+msgstr ""
+
+msgid "Ej: B12345678"
+msgstr ""
+
+msgid "Tema"
+msgstr ""
+
+msgid "Idioma"
+msgstr ""
+
+msgid "Notificaciones por Email"
+msgstr ""
+
+msgid "Notificaciones en la Plataforma"
+msgstr ""
+
+msgid "Emails de Marketing"
+msgstr ""
+
+msgid "Nivel de Detalle IA"
+msgstr ""
+
+msgid "Formato de Respuesta IA"
+msgstr ""
+
+msgid "Habilitar Autenticación de Dos Factores"
+msgstr ""
+
+msgid "Método de 2FA"
+msgstr ""
+
+msgid "Máximo de Sesiones Simultáneas"
+msgstr ""
+
+msgid "Tiempo de Espera de Sesión (minutos)"
+msgstr ""
+
+msgid "Contraseña actual"
+msgstr ""
+
+msgid "Nueva contraseña"
+msgstr ""
+
+msgid "Confirmar nueva contraseña"
+msgstr ""
+
+msgid "El archivo es demasiado grande. Tamaño máximo: 5MB"
+msgstr ""
+
+msgid "Tipo de archivo no permitido. Use JPG, PNG, GIF o WebP"
+msgstr ""
+
+msgid "Teléfono de empresa"
+msgstr ""
+
+msgid "Teléfono de reparto *"
+msgstr ""
+
+msgid "Dirección local *"
+msgstr ""
+
+msgid "Ciudad *"
+msgstr ""
+
+msgid "Provincia *"
+msgstr ""
+
+msgid "Código postal *"
+msgstr ""
+
+msgid "Tipo de entrega *"
+msgstr ""
+
+msgid "Dirección de entrega *"
+msgstr ""
+
+msgid "Ciudad de entrega *"
+msgstr ""
+
+msgid "Provincia de entrega *"
+msgstr ""
+
+msgid "Código postal de entrega *"
+msgstr ""
+
+msgid "Observaciones"
+msgstr ""
+
+msgid "Teléfono de contacto para confirmar la entrega"
+msgstr ""
+
+msgid "Selecciona si prefieres recoger en el local o que se envíe a domicilio"
+msgstr ""
+
+msgid "Ej: Lunes a viernes 9:00-14:00"
+msgstr ""
+
+msgid "Datos personales actualizados correctamente"
+msgstr ""
+
+msgid "Datos de empresa actualizados correctamente"
+msgstr ""
+
+msgid "Preferencias actualizadas correctamente"
+msgstr ""
+
+msgid "Configuración de seguridad actualizada"
+msgstr ""
+
+msgid "Contraseña cambiada correctamente"
+msgstr ""
+
+msgid "Autenticación de dos factores habilitada"
+msgstr ""
+
+msgid "Autenticación de dos factores deshabilitada"
+msgstr ""
+
+msgid "Sesión revocada correctamente"
+msgstr ""
+
+msgid "No puedes revocar tu sesión actual"
+msgstr ""
+
+msgid "Todas las demás sesiones han sido revocadas"
+msgstr ""
+
+msgid "Foto de perfil actualizada correctamente"
+msgstr ""
+
+msgid "Foto de perfil eliminada correctamente"
+msgstr ""
+
+msgid "Token de API generado correctamente"
+msgstr ""
+
+msgid "Token de API revocado correctamente"
+msgstr ""
+
+msgid "Perfil operativo actualizado correctamente"
+msgstr ""
+
+msgid "Por favor completa los siguientes campos obligatorios: "
+msgstr ""
+
+msgid "Tu perfil ha sido actualizado correctamente"
+msgstr ""
+
+msgid "No tienes permisos para acceder a esta sección"
+msgstr ""
+
+msgid "No tienes permisos para ver este usuario"
+msgstr ""
+
+msgid "El perfil de Super Admin solo puede modificarse por codigo."
+msgstr ""
+
+#, python-format
+msgid "Hola %(name)s,"
+msgstr ""
+
+msgid ""
+"Gracias por registrarte en FENIX. Para completar tu registro y asegurar tu "
+"cuenta, por favor verifica tu dirección de correo electrónico haciendo clic "
+"en el siguiente botón:"
+msgstr ""
+"Gracias por registrarte en FENIX. Para completar tu registro y asegurar tu "
+"cuenta, por favor verifica tu dirección de correo electrónico haciendo clic "
+"en el siguiente botón:"
+
+msgid "Verificar mi email"
+msgstr "Verificar mi email"
+
+msgid "O copia y pega este enlace en tu navegador:"
+msgstr "O copia y pega este enlace en tu navegador:"
+
+msgid "Este enlace expirará en 24 horas por motivos de seguridad."
+msgstr "Este enlace expirará en 24 horas por motivos de seguridad."
+
+msgid "Si no has creado una cuenta en FENIX, puedes ignorar este mensaje."
+msgstr "Si no has creado una cuenta en FENIX, puedes ignorar este mensaje."
+
+msgid "Saludos,"
+msgstr "Saludos,"
+
+msgid "El equipo de FENIX"
+msgstr "El equipo de FENIX"
+
+msgid "FENIX - Verifica tu email"
+msgstr "FENIX - Verifica tu email"
+
+#, python-format
+msgid "¡Hola %(name)s!"
+msgstr ""
+
+msgid ""
+"Tenemos excelentes noticias: tu cuenta de FENIX ha sido aprobada por nuestro "
+"equipo administrativo."
+msgstr ""
+"Tenemos excelentes noticias: tu cuenta de FENIX ha sido aprobada por nuestro "
+"equipo administrativo."
+
+msgid ""
+"Ya puedes acceder a todas las funcionalidades de la plataforma, gestionar "
+"tus pedidos y configurar tu perfil."
+msgstr ""
+"Ya puedes acceder a todas las funcionalidades de la plataforma, gestionar "
+"tus pedidos y configurar tu perfil."
+
+msgid "Acceder a FENIX"
+msgstr "Acceder a FENIX"
+
+msgid ""
+"Si tienes cualquier duda, nuestro equipo de soporte está a tu disposición."
+msgstr ""
+"Si tienes cualquier duda, nuestro equipo de soporte está a tu disposición."
+
+msgid "¡Bienvenido a la comunidad FENIX!"
+msgstr "¡Bienvenido a la comunidad FENIX!"
+
+msgid "FENIX - Tu cuenta ha sido aprobada"
+msgstr "FENIX - Tu cuenta ha sido aprobada"
+
+msgid "Gracias por tu interés en registrarte en FENIX."
+msgstr "Gracias por tu interés en registrarte en FENIX."
+
+msgid ""
+"Tras revisar tu solicitud, lamentamos informarte de que en este momento no "
+"podemos aprobar tu acceso a la plataforma."
+msgstr ""
+"Tras revisar tu solicitud, lamentamos informarte de que en este momento no "
+"podemos aprobar tu acceso a la plataforma."
+
+msgid ""
+"Si crees que esto es un error o deseas proporcionar más información para que "
+"revisemos tu caso, por favor contacta con nuestro equipo de soporte."
+msgstr ""
+"Si crees que esto es un error o deseas proporcionar más información para que "
+"revisemos tu caso, por favor contacta con nuestro equipo de soporte."
+
+msgid "Atentamente,"
+msgstr "Atentamente,"
+
+msgid "FENIX - Estado de tu solicitud de registro"
+msgstr "FENIX - Estado de tu solicitud de registro"
+
+msgid "Buenos días"
+msgstr ""
+
+msgid "Buenas tardes"
+msgstr ""
+
+msgid "Buenas noches"
+msgstr ""
+
+#, python-format
+msgid "¡%(greeting)s, %(name)s!"
+msgstr ""
+
+msgid "Requiere atención inmediata"
+msgstr ""
+
+msgid "Tienes acciones pendientes"
+msgstr ""
+
+msgid "Todo está en orden por ahora"
+msgstr ""
+
+msgid "Plataforma operativa"
+msgstr ""
+
+msgid "Oferta especial"
+msgstr ""
+
+msgid "-10% en pedidos esta semana"
+msgstr ""
+
+msgid "Debes verificar tu email antes de iniciar sesión."
+msgstr ""
+
+msgid "Tu cuenta ha sido rechazada. Contacta con soporte."
+msgstr ""
+
+msgid "Tu cuenta ha sido deshabilitada. Contacta con soporte."
+msgstr ""
+
+msgid "Tu cuenta está pendiente de aprobación por un administrador."
+msgstr ""
+
+msgid "Tu cuenta está desactivada por el sistema."
+msgstr ""
+
+msgid "Registro exitoso. Por favor verifica tu email para continuar."
+msgstr ""
+
+msgid "Token de verificación no válido."
+msgstr ""
+
+msgid "Este enlace de verificación ha expirado o ya fue usado."
+msgstr ""
+
+msgid ""
+"¡Email verificado exitosamente! Tu cuenta está pendiente de aprobación por "
+"un administrador."
+msgstr ""
+
+msgid "Email requerido."
+msgstr ""
+
+msgid "El email ya está verificado."
+msgstr ""
+
+msgid "Ya se envió un email recientemente. Por favor espera unos minutos."
+msgstr ""
+
+msgid "Email de confirmación enviado."
+msgstr ""
+
+msgid "Usuario no encontrado."
+msgstr ""
+
+msgid "Has cerrado sesión correctamente."
+msgstr ""
+
+msgid "No tienes permiso para editar este usuario."
+msgstr ""
+
+msgid "El nombre es obligatorio."
+msgstr ""
+
+msgid "Rol inválido."
+msgstr ""
+
+msgid "No tienes permiso para asignar este rol."
+msgstr ""
+
+msgid "Estado inválido."
+msgstr ""
+
+msgid ""
+"No puedes desactivar tu propia cuenta de Super Admin. Esto causaría pérdida "
+"de acceso a la plataforma."
+msgstr ""
+
+#, python-format
+msgid "Usuario %(email)s actualizado correctamente."
+msgstr ""
+
+msgid "No tienes permiso para eliminar este usuario."
+msgstr ""
+
+#, python-format
+msgid "Usuario %(email)s eliminado correctamente."
+msgstr ""
+
+msgid "Este usuario ya fue procesado."
+msgstr ""
+
+#, python-format
+msgid ""
+"Usuario %(email)s aprobado exitosamente. Se ha enviado un email de "
+"notificación."
+msgstr ""
+
+#, python-format
+msgid ""
+"Usuario %(email)s aprobado, pero hubo un error al enviar el email: %(error)s"
+msgstr ""
+
+#, python-format
+msgid "Usuario actualizado pero no se pudo enviar email: %(error)s"
+msgstr ""
+
+#, python-format
+msgid "Usuario rechazado pero no se pudo enviar email: %(error)s"
+msgstr ""
+
+msgid "Solicitud actualizada correctamente."
+msgstr ""
+
+#, python-format
+msgid ""
+"Solicitud de %(email)s rechazada. Se ha enviado un email de notificación."
+msgstr ""
+
+#, python-format
+msgid "Solicitud rechazada, pero hubo un error al enviar el email: %(error)s"
+msgstr ""
+
+msgid "Configuración de visualización"
+msgstr ""
+
+msgid "Sin imagen"
+msgstr ""
+
+msgid "Vista previa (Heredada/Manual)"
+msgstr ""
+
+msgid "Precio heredado"
+msgstr ""
+
+msgid "Unidad heredada"
+msgstr ""
+
+msgid "Etiqueta Promocional (Único Sistema)"
+msgstr ""
+
+msgid "Stock (solo managers)"
+msgstr ""
+
+msgid "Etiquetas Especiales (LEGACY - No usar para badges)"
+msgstr ""
+
+msgid ""
+"Estas etiquetas están obsoletas. Usa el campo \"Etiqueta promocional\" de "
+"arriba."
+msgstr ""
+
+msgid "Auditoría"
+msgstr ""
+
+msgid "Traducción automática aplicada. Revisa los campos en chino."
+msgstr ""
+
+#, python-format
+msgid "No se pudo traducir automáticamente: %(error)s"
+msgstr ""
+
+msgid "Oferta de la semana"
+msgstr ""
+
+msgid "Pack"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mis Pedidos"
+msgid "Más vendido"
+msgstr "Mis Pedidos"
+
+msgid "Producto estrella"
+msgstr ""
+
+msgid "Novedad"
+msgstr ""
+
+msgid "Oferta flash"
+msgstr ""
+
+msgid "Super oferta"
+msgstr ""
+
+msgid "Edición limitada"
+msgstr ""
+
+msgid "Especial Navidad"
+msgstr ""
+
+msgid "Especial verano"
+msgstr ""
+
+msgid "Ideal para barbacoas"
+msgstr ""
+
+msgid "Producto recomendado"
+msgstr ""
+
+msgid "Mejor precio"
+msgstr ""
+
+msgid "🔥 Oferta semanal"
+msgstr ""
+
+msgid "📦 Pack oferta"
+msgstr ""
+
+msgid "⭐ Más vendido"
+msgstr ""
+
+msgid "🌟 Prod. estrella"
+msgstr ""
+
+msgid "🆕 Novedad"
+msgstr ""
+
+msgid "⚡ Oferta flash"
+msgstr ""
+
+msgid "💥 Superoferta"
+msgstr ""
+
+msgid "⏳ Edic. limitada"
+msgstr ""
+
+msgid "🎄 Navidad"
+msgstr ""
+
+msgid "☀️ Verano"
+msgstr ""
+
+msgid "🍖 Para BBQ"
+msgstr ""
+
+msgid "👍 Recomendado"
+msgstr ""
+
+msgid "💰 Mejor precio"
+msgstr ""
+
+msgid "Nombre (ES)"
+msgstr ""
+
+msgid "Nombre (中文)"
+msgstr ""
+
+msgid "Referencia"
+msgstr ""
+
+msgid "Código único del producto (SKU)"
+msgstr ""
+
+msgid "Descripción (ES)"
+msgstr ""
+
+msgid "Descripción (中文)"
+msgstr ""
+
+msgid "Imagen"
+msgstr ""
+
+msgid "Precio"
+msgstr ""
+
+msgid ""
+"Ejemplo: \"100 g\", \"1 Kg\", \"Unidad\". Aparecerá junto al precio: 1,00€ / "
+"100 g"
+msgstr ""
+
+msgid "Unidad de medida"
+msgstr ""
+
+msgid "Stock Disponible"
+msgstr ""
+
+msgid "Stock Mínimo"
+msgstr ""
+
+msgid "Estado Stock"
+msgstr ""
+
+msgid "Es Nuevo (Legacy)"
+msgstr ""
+
+msgid "Más Vendido (Legacy)"
+msgstr ""
+
+msgid "En Oferta (Legacy)"
+msgstr ""
+
+msgid "Etiqueta promocional"
+msgstr ""
+
+msgid "Orden en catálogo"
+msgstr ""
+
+msgid "Fecha Creación"
+msgstr ""
+
+msgid "Producto"
+msgstr ""
+
+msgid "Productos"
+msgstr ""
+
+msgid "Título promocional"
+msgstr ""
+
+msgid "Imagen promocional"
+msgstr ""
+
+msgid ""
+"Imagen que aparecerá en el hero de la Home (Opcional, se usará la del "
+"producto si está vacío)"
+msgstr ""
+
+msgid "Tipo de promoción"
+msgstr ""
+
+msgid "Categoría de destino"
+msgstr ""
+
+msgid "Slug de la categoría en el catálogo (ej: jamon-curado, packs)."
+msgstr ""
+
+msgid "Búsqueda específica"
+msgstr ""
+
+msgid ""
+"Término de búsqueda para filtrar el catálogo (ej: Chorizo, Pack 10 "
+"sandwiches)."
+msgstr ""
+
+msgid "Orden de visualización"
+msgstr ""
+
+msgid "Fecha inicio"
+msgstr ""
+
+msgid "Fecha fin"
+msgstr ""
+
+msgid "Fecha creación"
+msgstr ""
+
+msgid "Fecha actualización"
+msgstr ""
+
+msgid "Producto Promocional"
+msgstr ""
+
+msgid "Productos Promocionales"
+msgstr ""
+
+msgid ""
+"No puedes tener más de 8 productos promocionales activos simultáneamente."
+msgstr ""
+
+msgid "No tienes permiso para acceder a esta página."
+msgstr ""
+
+msgid "Producto creado exitosamente."
+msgstr ""
+
+msgid "Producto actualizado exitosamente."
+msgstr ""
+
+msgid "No tienes permiso para realizar esta acción."
+msgstr ""
+
+msgid "Producto desactivado exitosamente."
+msgstr ""
+
+#, python-format
+msgid "Stock actualizado: %(adj)s. Nuevo stock: %(stock)s"
+msgstr ""
+
+msgid "Permiso denegado"
+msgstr ""
+
+msgid "Método no permitido"
+msgstr ""
+
+#, fuzzy
+#| msgid "Iniciar Sesión"
+msgid "Inicio de sesión"
+msgstr "Iniciar Sesión"
+
+#, fuzzy
+#| msgid "Cerrar Sesión"
+msgid "Cierre de sesión"
 msgstr "Cerrar Sesión"
 
-#: templates/base.html
+msgid "Usuario aprobado"
+msgstr ""
+
+msgid "Usuario rechazado"
+msgstr ""
+
+msgid "Pedido creado"
+msgstr ""
+
+msgid "Estado de pedido cambiado"
+msgstr ""
+
+msgid "ETA actualizado"
+msgstr ""
+
+msgid "Producto creado"
+msgstr ""
+
+msgid "Producto actualizado"
+msgstr ""
+
+msgid "Producto eliminado"
+msgstr ""
+
+msgid "Stock actualizado"
+msgstr ""
+
+msgid "Documento subido"
+msgstr ""
+
+msgid "Documento eliminado"
+msgstr ""
+
+msgid "Acción"
+msgstr ""
+
+msgid "Descripción"
+msgstr ""
+
+msgid "Tipo de objeto"
+msgstr ""
+
+msgid "Tipo de modelo afectado (Order, Product, User, etc.)"
+msgstr ""
+
+msgid "ID del objeto"
+msgstr ""
+
+msgid "Dirección IP"
+msgstr ""
+
+msgid "User Agent"
+msgstr ""
+
+msgid "Fecha y hora"
+msgstr ""
+
+msgid "Registro de Auditoría"
+msgstr ""
+
+msgid "Registros de Auditoría"
+msgstr ""
+
+msgid "Nuevo"
+msgstr ""
+
+msgid "Contactado"
+msgstr ""
+
+msgid "Descartado"
+msgstr ""
+
+msgid "Asunto"
+msgstr ""
+
+msgid "Mensaje"
+msgstr ""
+
+msgid "Acepta política de privacidad"
+msgstr ""
+
+msgid "Acepta comunicaciones comerciales"
+msgstr ""
+
+msgid "Origen"
+msgstr ""
+
+msgid "Estado"
+msgstr ""
+
+msgid "Metadatos adicionales"
+msgstr ""
+
+msgid "Fecha de creación"
+msgstr ""
+
+msgid "Última actualización"
+msgstr ""
+
+msgid "Lead de contacto"
+msgstr ""
+
+msgid "Leads de contacto"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mis Pedidos"
+msgid "Pedido"
+msgstr "Mis Pedidos"
+
+msgid "Stock"
+msgstr ""
+
+msgid "atrás"
+msgstr ""
+
+msgid "Quiénes somos"
+msgstr ""
+
+msgid "Aviso legal"
+msgstr ""
+
+msgid "Política de privacidad"
+msgstr ""
+
+msgid "Contacto"
+msgstr ""
+
+msgid "Detección de actividad sospechosa."
+msgstr ""
+
+msgid "El correo electrónico es obligatorio."
+msgstr ""
+
+msgid "El correo electrónico no es válido."
+msgstr ""
+
+msgid "El mensaje no puede estar vacío."
+msgstr ""
+
+msgid "Debes aceptar la política de privacidad."
+msgstr ""
+
+msgid ""
+"Hemos recibido tu solicitud correctamente. Te contactaremos lo antes posible."
+msgstr ""
+
+msgid ""
+"No hemos podido enviar tu solicitud. Inténtalo de nuevo en unos minutos."
+msgstr ""
+
+msgid "Pedido confirmado"
+msgstr ""
+
+msgid "En reparto"
+msgstr ""
+
+msgid "Entregado"
+msgstr ""
+
+msgid "Cancelado"
+msgstr ""
+
+msgid "ETA modificada"
+msgstr ""
+
+msgid "Pedido fuera de ETA"
+msgstr ""
+
+msgid "Tipo de Evento"
+msgstr ""
+
+msgid "Asunto (ES)"
+msgstr ""
+
+msgid "Asunto (中文)"
+msgstr ""
+
+msgid "Mensaje (ES)"
+msgstr ""
+
+msgid "Mensaje (中文)"
+msgstr ""
+
+msgid "Leído"
+msgstr ""
+
+msgid "Fecha"
+msgstr ""
+
+msgid "Notificación"
+msgstr ""
+
+msgid "Notificaciones"
+msgstr ""
+
+msgid "Confirmación de Pedido"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mis Pedidos"
+msgid "Pedido #"
+msgstr "Mis Pedidos"
+
+msgid "Cliente"
+msgstr ""
+
+msgid "Dirección"
+msgstr ""
+
+msgid "Cant."
+msgstr ""
+
+msgid "Subtotal"
+msgstr ""
+
+msgid "TOTAL"
+msgstr ""
+
+msgid "Se adjunta el pedido en formato PDF para su gestión administrativa."
+msgstr ""
+
+msgid "Plataforma de Gestión de Pedidos"
+msgstr ""
+
+msgid "Este es un mensaje automático, por favor no responda a este email."
+msgstr ""
+
+msgid "Factura"
+msgstr ""
+
+msgid "Comprobante"
+msgstr ""
+
+msgid "Guía de Envío"
+msgstr ""
+
+msgid "Otro"
+msgstr ""
+
+msgid "Tipo de documento"
+msgstr ""
+
+msgid "Título"
+msgstr ""
+
+msgid "Archivo"
+msgstr ""
+
+msgid "Subido por"
+msgstr ""
+
+msgid "Fecha de subida"
+msgstr ""
+
+msgid "Documento de Pedido"
+msgstr ""
+
+msgid "Documentos de Pedidos"
+msgstr ""
+
+msgid "Nuevo Estado"
+msgstr ""
+
+msgid "Nota"
+msgstr ""
+
+msgid "Añade comentarios sobre este cambio de estado..."
+msgstr ""
+
+msgid "Fecha estimada (inicio)"
+msgstr ""
+
+msgid "Fecha estimada (fin)"
+msgstr ""
+
+msgid "La fecha de inicio debe ser anterior a la fecha de fin."
+msgstr ""
+
+msgid "Confirmado"
+msgstr ""
+
+msgid "Preparando"
+msgstr ""
+
+msgid "ETA Inicio"
+msgstr ""
+
+msgid "ETA Fin"
+msgstr ""
+
+msgid "Total"
+msgstr ""
+
+msgid "Stock Descontado"
+msgstr ""
+
+msgid "Fecha de Entrega"
+msgstr ""
+
+msgid "Última Actualización"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mis Pedidos"
+msgid "Pedidos"
+msgstr "Mis Pedidos"
+
+msgid "Cantidad"
+msgstr ""
+
+msgid "Precio Unitario"
+msgstr ""
+
+msgid "Total Línea"
+msgstr ""
+
+msgid "Línea de Pedido"
+msgstr ""
+
+msgid "Líneas de Pedido"
+msgstr ""
+
+msgid "Creado por"
+msgstr ""
+
+msgid "Evento de Pedido"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mis Pedidos"
+msgid "Eventos de Pedidos"
+msgstr "Mis Pedidos"
+
+msgid "Enero"
+msgstr ""
+
+msgid "Febrero"
+msgstr ""
+
+msgid "Marzo"
+msgstr ""
+
+msgid "Abril"
+msgstr ""
+
+msgid "Mayo"
+msgstr ""
+
+msgid "Junio"
+msgstr ""
+
+msgid "Julio"
+msgstr ""
+
+msgid "Agosto"
+msgstr ""
+
+msgid "Septiembre"
+msgstr ""
+
+msgid "Octubre"
+msgstr ""
+
+msgid "Noviembre"
+msgstr ""
+
+msgid "Diciembre"
+msgstr ""
+
+msgid "Error al añadir producto al carrito"
+msgstr ""
+
+msgid "Error al actualizar el carrito"
+msgstr ""
+
+#, python-format
+msgid ""
+"Debes completar tu perfil operativo antes de crear un pedido. Campos "
+"faltantes: %(missing_fields)s"
+msgstr ""
+
+#, python-format
+msgid "Pedido #%(id)s creado exitosamente."
+msgstr ""
+
+msgid "Todos los clientes"
+msgstr ""
+
+msgid "El pedido ya no se puede cancelar."
+msgstr ""
+
+msgid "No puedes cancelar con menos de 24 horas de antelación."
+msgstr ""
+
+msgid "No tienes permiso para cancelar este pedido."
+msgstr ""
+
+msgid "Este pedido ya esta cancelado."
+msgstr ""
+
+msgid "Este pedido ya fue entregado y no se puede cancelar."
+msgstr ""
+
+msgid "No puedes cancelar con menos de 24 horas de antelacion."
+msgstr ""
+
+msgid "Pedido cancelado"
+msgstr ""
+
+msgid "Pedido cancelado correctamente."
+msgstr ""
+
+#, python-format
+msgid ""
+"Stock insuficiente para %(product)s. Stock disponible: %(stock)s, requerido: "
+"%(qty)s"
+msgstr ""
+
+msgid "Estado del pedido actualizado exitosamente."
+msgstr ""
+
+#, python-format
+msgid "ETA actualizado: %(start)s - %(end)s"
+msgstr ""
+
+msgid "ETA actualizado exitosamente."
+msgstr ""
+
+msgid "Documento subido exitosamente."
+msgstr ""
+
+msgid "Documento eliminado exitosamente."
+msgstr ""
+
+msgid "Frecuencia"
+msgstr ""
+
+msgid "Fecha de inicio"
+msgstr ""
+
+msgid "Fecha de fin (opcional)"
+msgstr ""
+
+msgid "Ventana de entrega (horas)"
+msgstr ""
+
+msgid "Dejar vacío para pedidos recurrentes indefinidos"
+msgstr ""
+
+msgid "La fecha de fin debe ser posterior a la fecha de inicio."
+msgstr ""
+
+msgid "Diaria"
+msgstr ""
+
+msgid "Semanal"
+msgstr ""
+
+msgid "Mensual"
+msgstr ""
+
+msgid "Fecha Inicio"
+msgstr ""
+
+msgid "Fecha Fin"
+msgstr ""
+
+msgid "Próxima Ejecución"
+msgstr ""
+
+msgid "Ventana Entrega (horas)"
+msgstr ""
+
+msgid "Pedido Recurrente"
+msgstr ""
+
+msgid "Pedidos Recurrentes"
+msgstr ""
+
+msgid "Línea de Pedido Recurrente"
+msgstr ""
+
+msgid "Líneas de Pedidos Recurrentes"
+msgstr ""
+
+msgid "Tu carrito está vacío."
+msgstr ""
+
+msgid "Pedido recurrente creado exitosamente."
+msgstr ""
+
+msgid "Pedido recurrente activado."
+msgstr ""
+
+msgid "Pedido recurrente desactivado."
+msgstr ""
+
+msgid "Pedido recurrente eliminado."
+msgstr ""
+
+msgid "Verificación de Email"
+msgstr ""
+
+msgid "Verifica tu Email"
+msgstr ""
+
+msgid "Hemos enviado un enlace de verificación a"
+msgstr ""
+
+msgid ""
+"Por favor revisa tu bandeja de entrada y haz clic en el enlace para "
+"verificar tu cuenta."
+msgstr ""
+
+msgid "El enlace de verificación expira en 24 horas"
+msgstr ""
+
+msgid "¿No recibiste el email?"
+msgstr ""
+
+msgid "Reenviar Email de Verificación"
+msgstr ""
+
+msgid "Volver al inicio de sesión"
+msgstr ""
+
+msgid "Enviando..."
+msgstr ""
+
+msgid "Error al enviar el email. Inténtalo de nuevo."
+msgstr ""
+
 msgid "Iniciar Sesión"
 msgstr "Iniciar Sesión"
 
-#: templates/base.html
+msgid "Accede a tu cuenta de Fenix"
+msgstr ""
+
+msgid "Correo electrónico o contraseña incorrectos. Inténtalo de nuevo."
+msgstr ""
+
+msgid "¿Olvidaste tu contraseña?"
+msgstr ""
+
+msgid "¿No tienes cuenta?"
+msgstr ""
+
+msgid "Regístrate aquí"
+msgstr ""
+
+msgid "Perfil Operativo"
+msgstr ""
+
+msgid "Completar Perfil Operativo"
+msgstr ""
+
+msgid ""
+"Estos datos son necesarios para poder realizar pedidos en la plataforma."
+msgstr ""
+
+msgid "Tu perfil está incompleto"
+msgstr ""
+
+msgid ""
+"Debes completar los siguientes campos obligatorios para poder realizar "
+"pedidos:"
+msgstr ""
+
+msgid "✓ Tu perfil está completo"
+msgstr ""
+
+msgid "Puedes realizar pedidos en la plataforma."
+msgstr ""
+
+msgid "1. Datos de Contacto"
+msgstr ""
+
+msgid "2. Dirección Local/Fiscal"
+msgstr ""
+
+msgid "3. Dirección de Entrega"
+msgstr ""
+
+msgid "Cancelar"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mi Perfil"
+msgid "Guardar Perfil"
+msgstr "Mi Perfil"
+
+msgid "¿Por qué solicitamos estos datos?"
+msgstr ""
+
+msgid "Para poder contactar contigo en caso de incidencias en el reparto"
+msgstr ""
+
+msgid "Para gestionar correctamente la entrega de tus pedidos"
+msgstr ""
+
+msgid "Para cumplir con normativas de facturación y logística"
+msgstr ""
+
+msgid "Contraseña Cambiada"
+msgstr ""
+
+msgid "¡Contraseña Cambiada!"
+msgstr ""
+
+msgid ""
+"Tu contraseña ha sido restablecida exitosamente. Ya puedes iniciar sesión "
+"con tu nueva contraseña."
+msgstr ""
+
+msgid "Nueva Contraseña"
+msgstr ""
+
+msgid "Establecer Nueva Contraseña"
+msgstr ""
+
+msgid "Ingresa tu nueva contraseña"
+msgstr ""
+
+msgid "Confirmar Contraseña"
+msgstr ""
+
+msgid ""
+"Tu contraseña debe contener al menos 8 caracteres y no puede ser "
+"completamente numérica."
+msgstr ""
+
+msgid "Cambiar Contraseña"
+msgstr ""
+
+msgid "Enlace Inválido"
+msgstr ""
+
+msgid ""
+"Este enlace de restablecimiento de contraseña es inválido o ha expirado."
+msgstr ""
+
+msgid "Solicitar Nuevo Enlace"
+msgstr ""
+
+msgid "Email Enviado"
+msgstr ""
+
+msgid "Hemos enviado instrucciones para restablecer tu contraseña a tu email."
+msgstr ""
+
+msgid ""
+"Si no recibes el email en unos minutos, revisa tu carpeta de spam o correo "
+"no deseado."
+msgstr ""
+
+msgid "Hola"
+msgstr ""
+
+msgid "Has solicitado restablecer tu contraseña para tu cuenta en FENIX."
+msgstr ""
+
+msgid ""
+"Por favor haz clic en el siguiente enlace para establecer una nueva "
+"contraseña:"
+msgstr ""
+
+msgid ""
+"Si no solicitaste este cambio, puedes ignorar este email de manera segura."
+msgstr ""
+
+msgid "Este enlace expirará en unas horas."
+msgstr ""
+
+msgid "Saludos"
+msgstr ""
+
+msgid "Restablecer Contraseña"
+msgstr ""
+
+msgid "Ingresa tu email y te enviaremos instrucciones"
+msgstr ""
+
+msgid "Enviar Instrucciones"
+msgstr ""
+
+msgid "Pendiente de Aprobación"
+msgstr ""
+
+msgid "Cuenta Pendiente de Aprobación"
+msgstr ""
+
+msgid ""
+"Tu cuenta ha sido registrada exitosamente y tu email ha sido verificado."
+msgstr ""
+
+msgid "Cuenta registrada como:"
+msgstr ""
+
+msgid ""
+"Un administrador debe revisar y aprobar tu cuenta antes de que puedas "
+"acceder a la plataforma. Recibirás un email cuando tu cuenta sea aprobada."
+msgstr ""
+
+msgid "Próximos pasos:"
+msgstr ""
+
+msgid "Espera la revisión del administrador (suele tomar 24-48 horas)"
+msgstr ""
+
+msgid "Recibirás un email de notificación cuando sea aprobado"
+msgstr ""
+
+msgid "Podrás iniciar sesión inmediatamente después"
+msgstr ""
+
+msgid "Si crees que hay algún problema, contacta a nuestro equipo de soporte."
+msgstr ""
+
+msgid "Mi Perfil"
+msgstr "Mi Perfil"
+
+msgid "Gestiona tu información personal, empresa, seguridad y preferencias"
+msgstr ""
+
+msgid ""
+"Tu cuenta está pendiente de aprobación por un administrador. Recibirás una "
+"notificación por email una vez que tu cuenta sea aprobada."
+msgstr ""
+
+msgid "Datos Personales"
+msgstr ""
+
+msgid "Editar"
+msgstr ""
+
+msgid "Inactivo"
+msgstr ""
+
+msgid "Cambiar foto"
+msgstr ""
+
+msgid "Rol"
+msgstr ""
+
+msgid "Fecha de Registro"
+msgstr ""
+
+msgid "Detalles Técnicos"
+msgstr ""
+
+msgid "ID Interno"
+msgstr ""
+
+msgid "UUID Público"
+msgstr ""
+
+msgid "Último Acceso"
+msgstr ""
+
+msgid "Sesiones Activas"
+msgstr ""
+
+msgid "Volver"
+msgstr ""
+
+msgid "Revoca las sesiones que no reconozcas para mantener tu cuenta segura."
+msgstr ""
+
+msgid "¿Cerrar todas las demás sesiones?"
+msgstr ""
+
+msgid "Cerrar todas las demás sesiones"
+msgstr ""
+
+msgid "Dispositivo"
+msgstr ""
+
+msgid "Navegador"
+msgstr ""
+
+msgid "Sistema Operativo"
+msgstr ""
+
+msgid "IP"
+msgstr ""
+
+msgid "Última Actividad"
+msgstr ""
+
+msgid "Acciones"
+msgstr ""
+
+msgid "Sesión Actual"
+msgstr ""
+
+#, fuzzy
+#| msgid "Cerrar Sesión"
+msgid "¿Cerrar esta sesión?"
+msgstr "Cerrar Sesión"
+
+msgid "Revocar"
+msgstr ""
+
+msgid "No hay sesiones activas"
+msgstr ""
+
+msgid "Editar Usuario"
+msgstr ""
+
+msgid "Editar Perfil de Usuario"
+msgstr ""
+
+msgid "Edición del perfil por administrador"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mi Perfil"
+msgid "Ver Perfil"
+msgstr "Mi Perfil"
+
+msgid "Estás editando el perfil de:"
+msgstr ""
+
+msgid "Edición Rápida"
+msgstr ""
+
+msgid "Email verificado"
+msgstr ""
+
+msgid "Guardar Cambios"
+msgstr ""
+
+msgid ""
+"Para editar datos operativos completos (direcciones, teléfonos, etc.) usa la "
+"vista avanzada:"
+msgstr ""
+
+msgid "Próximamente: Vista de edición completa"
+msgstr ""
+
+msgid "Ver Usuario"
+msgstr ""
+
+#, fuzzy
+#| msgid "Aprobación de Usuarios"
+msgid "Perfil de Usuario"
+msgstr "Aprobación de Usuarios"
+
+msgid "Vista de solo lectura del perfil del usuario"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mi Perfil"
+msgid "Editar Perfil"
+msgstr "Mi Perfil"
+
+msgid "Rol:"
+msgstr ""
+
+msgid "Estado:"
+msgstr ""
+
+msgid "Empresa:"
+msgstr ""
+
+msgid "Fecha de registro"
+msgstr ""
+
+msgid "Datos de Empresa"
+msgstr ""
+
+msgid "Sesiones activas:"
+msgstr ""
+
+msgid "Log de Auditoría del Perfil"
+msgstr ""
+
+msgid "Todas las acciones"
+msgstr ""
+
+msgid "Campo"
+msgstr ""
+
+msgid "Valor Anterior"
+msgstr ""
+
+msgid "Valor Nuevo"
+msgstr ""
+
+#, fuzzy
+#| msgid "Administración"
+msgid "Paginación"
+msgstr "Administración"
+
+msgid "Anterior"
+msgstr ""
+
+msgid "Siguiente"
+msgstr ""
+
+msgid "No hay registros de auditoría"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mi Perfil"
+msgid "Volver a Mi Perfil"
+msgstr "Mi Perfil"
+
+msgid "Editar Datos de Empresa"
+msgstr ""
+
+msgid "NIF/CIF"
+msgstr ""
+
+msgid "Tu cargo o puesto en la empresa"
+msgstr ""
+
+msgid "El departamento al que perteneces"
+msgstr ""
+
+msgid "Perfil Incompleto"
+msgstr ""
+
+msgid "Debes completar los siguientes campos para poder crear pedidos:"
+msgstr ""
+
+msgid "Perfil Completo"
+msgstr ""
+
+msgid "Tu perfil está completo. Puedes crear pedidos sin problemas."
+msgstr ""
+
+msgid "Información Básica"
+msgstr ""
+
+msgid "Contacto Operativo"
+msgstr ""
+
+msgid "Dirección Local/Fiscal"
+msgstr ""
+
+msgid "Dirección de Entrega"
+msgstr ""
+
+msgid "Información Importante"
+msgstr ""
+
+msgid ""
+"Tu perfil es fundamental para asegurar entregas rápidas y precisas. Los "
+"datos proporcionados serán utilizados exclusivamente con fines logísticos y "
+"de contacto."
+msgstr ""
+
+msgid "Perfil Operativo: Completo"
+msgstr ""
+
+msgid "Tu perfil operativo está completo. Puedes crear pedidos sin problemas."
+msgstr ""
+
+msgid "¿Por qué es necesario este información?"
+msgstr ""
+
+msgid ""
+"Tu perfil operativo es fundamental para asegurar entregas rápidas y "
+"precisas. Los datos proporcionados serán utilizados exclusivamente con fines "
+"logísticos y de contacto."
+msgstr ""
+
+msgid "Editar Datos Personales"
+msgstr ""
+
+msgid "Editar Preferencias"
+msgstr ""
+
+msgid "Interfaz"
+msgstr ""
+
+msgid "Asistente IA"
+msgstr ""
+
+msgid "Autenticación de Dos Factores"
+msgstr ""
+
+msgid "Gestión de Sesiones"
+msgstr ""
+
+msgid "Número máximo de dispositivos conectados simultáneamente (1-10)"
+msgstr ""
+
+msgid ""
+"Tiempo de inactividad antes de cerrar sesión automáticamente (5-1440 min)"
+msgstr ""
+
+msgid "Historial de Inicios de Sesión"
+msgstr ""
+
+msgid "Ubicación"
+msgstr ""
+
+msgid "Motivo"
+msgstr ""
+
+msgid "Exitoso"
+msgstr ""
+
+msgid "Fallido"
+msgstr ""
+
+msgid "No hay historial de inicios de sesión"
+msgstr ""
+
+msgid "Gestiona tu información personal y operativa para poder crear pedidos"
+msgstr ""
+
+msgid "¿Eliminar foto de perfil?"
+msgstr ""
+
+msgid "Eliminar foto"
+msgstr ""
+
+msgid "Empresa / Organización"
+msgstr ""
+
+msgid "Sector"
+msgstr ""
+
+msgid "Tamaño"
+msgstr ""
+
+msgid "Tu posición"
+msgstr ""
+
+#, fuzzy
+#| msgid "Administración"
+msgid "Administrador"
+msgstr "Administración"
+
+msgid "Unido el"
+msgstr ""
+
+msgid "No estás asociado a ninguna empresa"
+msgstr ""
+
+msgid "Seguridad"
+msgstr ""
+
+msgid "Cambiar contraseña"
+msgstr ""
+
+msgid "Habilitado"
+msgstr ""
+
+msgid "Deshabilitar 2FA"
+msgstr ""
+
+msgid "Habilitar 2FA"
+msgstr ""
+
+msgid "sesión(es) activa(s)"
+msgstr ""
+
+msgid "Ver sesiones"
+msgstr ""
+
+msgid "Historial"
+msgstr ""
+
+msgid "Token de API"
+msgstr ""
+
+msgid "Creado"
+msgstr ""
+
+msgid "Mostrar"
+msgstr ""
+
+msgid "Generar Token"
+msgstr ""
+
+msgid "Preferencias"
+msgstr ""
+
+msgid "Plataforma"
+msgstr ""
+
+msgid "Marketing"
+msgstr ""
+
+msgid "Nivel de Detalle"
+msgstr ""
+
+msgid "Formato"
+msgstr ""
+
+msgid "Puedes crear pedidos"
+msgstr ""
+
+msgid "Incompleto"
+msgstr ""
+
+msgid "campos"
+msgstr ""
+
+msgid "Teléfono Reparto"
+msgstr ""
+
+msgid "Teléfono Empresa"
+msgstr ""
+
+msgid "Dirección Local"
+msgstr ""
+
+msgid "Código Postal"
+msgstr ""
+
+msgid "Entrega"
+msgstr ""
+
+msgid "Tipo"
+msgstr ""
+
+msgid "Faltan"
+msgstr ""
+
+msgid "campos obligatorios"
+msgstr ""
+
+msgid "Completa tu perfil para poder crear pedidos"
+msgstr ""
+
+msgid "Información General"
+msgstr ""
+
+msgid "Nombre de la empresa"
+msgstr ""
+
+msgid "Cargo (opcional)"
+msgstr ""
+
+msgid "CIF / NIF / Número de Identificación Fiscal"
+msgstr ""
+
+msgid "CIF / NIF (opcional)"
+msgstr ""
+
+msgid "Este campo es obligatorio"
+msgstr ""
+
+msgid "Dirección Local / Fiscal"
+msgstr ""
+
+msgid "España"
+msgstr ""
+
+msgid "Selecciona una opción"
+msgstr ""
+
+msgid "Preferencias de Entrega"
+msgstr ""
+
+msgid "Ej: Lunes 9:00-13:00 (opcional)"
+msgstr ""
+
+msgid "Preferencias de Idioma"
+msgstr ""
+
+msgid "Guardar cambios"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mi Perfil"
+msgid "Editar perfil"
+msgstr "Mi Perfil"
+
+msgid "Cambiar Foto de Perfil"
+msgstr ""
+
+msgid "Foto actual"
+msgstr ""
+
+msgid "Sin foto de perfil"
+msgstr ""
+
+msgid "Tamaño máximo: 5MB. Formatos: JPG, PNG, GIF, WebP"
+msgstr ""
+
+msgid "Seleccionar imagen"
+msgstr ""
+
+msgid "Guardar Foto"
+msgstr ""
+
+msgid "Crear Cuenta"
+msgstr ""
+
+msgid "Bienvenido"
+msgstr ""
+
+msgid "Regístrate para comenzar a usar Fenix"
+msgstr ""
+
+msgid "Crear cuenta"
+msgstr ""
+
+msgid "Proceso de registro:"
+msgstr ""
+
+msgid ""
+"Al crear tu cuenta, recibirás un correo de confirmación. Una vez validado, "
+"un administrador revisará y activará tu acceso."
+msgstr ""
+
+msgid "Volver a la home"
+msgstr ""
+
+msgid "¿Ya tienes cuenta?"
+msgstr ""
+
+#, fuzzy
+#| msgid "Iniciar Sesión"
+msgid "Inicia sesión"
+msgstr "Iniciar Sesión"
+
+msgid "Todos los derechos reservados"
+msgstr ""
+
+msgid "Creando cuenta..."
+msgstr ""
+
+#, fuzzy
+#| msgid "Aprobación de Usuarios"
+msgid "Gestión de Usuarios"
+msgstr "Aprobación de Usuarios"
+
+msgid "Usuarios Registrados"
+msgstr ""
+
+msgid "Nuevos Usuarios"
+msgstr ""
+
+msgid "Buscar email, nombre o empresa..."
+msgstr ""
+
+msgid "Todos los estados"
+msgstr ""
+
+msgid "Procesado por"
+msgstr ""
+
+msgid "Fecha de Solicitud"
+msgstr ""
+
+msgid "Usuario sin nombre"
+msgstr ""
+
+msgid "Sin permisos"
+msgstr ""
+
+msgid "Eliminar"
+msgstr ""
+
+msgid "Guardar"
+msgstr ""
+
+msgid "No hay usuarios registrados"
+msgstr ""
+
+msgid "Aprobar"
+msgstr ""
+
+msgid "¿Aprobar a"
+msgstr ""
+
+msgid "Rechazar"
+msgstr ""
+
+msgid "¿Rechazar a"
+msgstr ""
+
+msgid "Email no verificado"
+msgstr ""
+
+msgid "No hay solicitudes pendientes"
+msgstr ""
+
+msgid "¿Estás seguro de que deseas deshabilitar a"
+msgstr ""
+
+msgid "Aprobación de Usuarios"
+msgstr "Aprobación de Usuarios"
+
+msgid "Nombre Completo"
+msgstr ""
+
+msgid "Revisar"
+msgstr ""
+
+msgid "No hay usuarios pendientes de aprobación."
+msgstr ""
+
+msgid "Revisar Usuario"
+msgstr ""
+
+#, fuzzy
+#| msgid "Aprobación de Usuarios"
+msgid "Información del Usuario"
+msgstr "Aprobación de Usuarios"
+
+msgid "¿Estás seguro de rechazar esta solicitud?"
+msgstr ""
+
+#, fuzzy
+#| msgid "Aprobación de Usuarios"
+msgid "Aprobar Usuario"
+msgstr "Aprobación de Usuarios"
+
+msgid "Administra todos los usuarios de la plataforma"
+msgstr ""
+
+msgid "Buscar por nombre, email o empresa..."
+msgstr ""
+
+msgid "Buscar"
+msgstr ""
+
+msgid "Usuarios por página:"
+msgstr ""
+
+#, python-format
+msgid ""
+"\n"
+"                        %(page_registered.start_index)s–"
+"%(page_registered.end_index)s de %(counter)s usuario\n"
+"                    "
+msgid_plural ""
+"\n"
+"                        %(page_registered.start_index)s–"
+"%(page_registered.end_index)s de %(counter)s usuarios\n"
+"                    "
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid ""
+"\n"
+"                        %(counter)s usuario\n"
+"                    "
+msgid_plural ""
+"\n"
+"                        %(counter)s usuarios\n"
+"                    "
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Página"
+msgstr ""
+
+msgid "de"
+msgstr ""
+
+msgid "No hay usuarios para mostrar"
+msgstr ""
+
+msgid "Los usuarios se muestran solo tras verificar su email"
+msgstr ""
+
+msgid "Email sin verificar"
+msgstr ""
+
+#, python-format
+msgid ""
+"\n"
+"                        %(page_pending.start_index)s–"
+"%(page_pending.end_index)s de %(counter)s usuario\n"
+"                    "
+msgid_plural ""
+"\n"
+"                        %(page_pending.start_index)s–"
+"%(page_pending.end_index)s de %(counter)s usuarios\n"
+"                    "
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Editar solicitud"
+msgstr ""
+
+msgid "Rol a asignar"
+msgstr ""
+
+msgid "Confirmar"
+msgstr ""
+
+msgid "Resultados para:"
+msgstr ""
+
+#, fuzzy
+#| msgid "Buscar productos..."
+msgid "Desactivar Producto"
+msgstr "Buscar productos..."
+
+msgid "¿Estás seguro de que deseas desactivar este producto?"
+msgstr ""
+
+msgid ""
+"El producto no será visible para los clientes, pero se mantendrá en el "
+"sistema."
+msgstr ""
+
+msgid "Sí, desactivar"
+msgstr ""
+
+msgid "Catálogo"
+msgstr "Catálogo"
+
+msgid "Inicia sesión para ver el precio"
+msgstr ""
+
+msgid "Añadir al Carrito"
+msgstr ""
+
+msgid "Debes iniciar sesión para añadir productos al carrito."
+msgstr ""
+
+msgid "Sin descripción disponible."
+msgstr ""
+
+msgid "Error al añadir al carrito"
+msgstr ""
+
+msgid "Nuevo Producto"
+msgstr ""
+
+msgid "Editar Producto"
+msgstr ""
+
+#, fuzzy
+#| msgid "Catálogo de Productos"
+msgid "Crear Producto"
+msgstr "Catálogo de Productos"
+
+msgid "Catálogo de Productos"
+msgstr "Catálogo de Productos"
+
+msgid "CATÁLOGO ACTUALIZADO"
+msgstr ""
+
+msgid "Selecciona cantidades y añade tus básicos al carrito inteligente."
+msgstr ""
+
+msgid "Explora el surtido completo y crea tu cuenta para comprar."
+msgstr ""
+
+msgid "Cerrar filtros"
+msgstr ""
+
+#, fuzzy
+#| msgid "Cerrar Sesión"
+msgid "Cerrar"
+msgstr "Cerrar Sesión"
+
+msgid "TIPOS DE PRODUCTO"
+msgstr ""
+
+msgid "Sándwich"
+msgstr ""
+
+msgid "Salchichas"
+msgstr ""
+
+msgid "Pizzas"
+msgstr ""
+
+msgid "Jamón Cocido y York"
+msgstr ""
+
+msgid "Jamón Curado"
+msgstr ""
+
+msgid "Pavo"
+msgstr ""
+
+msgid "Charcutería"
+msgstr ""
+
+msgid "Curados"
+msgstr ""
+
+msgid "Ibéricos"
+msgstr ""
+
+msgid "Pollo"
+msgstr ""
+
+msgid "Fuet"
+msgstr ""
+
+msgid "Características especiales"
+msgstr ""
+
+msgid "Sin lactosa"
+msgstr ""
+
+msgid "Sin conservantes"
+msgstr ""
+
+msgid "Sin colorantes"
+msgstr ""
+
+msgid "Sin azúcares añadidos"
+msgstr ""
+
+msgid "Ver resultados"
+msgstr ""
+
+msgid "Eliminar selección"
+msgstr ""
+
+msgid "Mover al principio"
+msgstr ""
+
+msgid "REF"
+msgstr ""
+
+msgid "En carrito:"
+msgstr "En carrito:"
+
+msgid "Consultar"
+msgstr ""
+
+msgid "Inicia sesión para ver precios"
+msgstr ""
+
+msgid "Reducir cantidad"
+msgstr ""
+
+msgid "Aumentar cantidad"
+msgstr ""
+
+msgid "Añadir al carrito"
+msgstr ""
+
+msgid "No se encontraron productos que coincidan con tu búsqueda."
+msgstr ""
+
+msgid "No hay productos disponibles en este momento."
+msgstr ""
+
+#, python-format
+msgid ""
+"\n"
+"                        Mostrando <span class=\"count-numbers\">%(start)s–"
+"%(end)s</span> de <span class=\"count-numbers\">%(total)s</span> productos\n"
+"                        "
+msgstr ""
+
+msgid "Mostrar:"
+msgstr ""
+
+msgid "Paginación del catálogo"
+msgstr ""
+
+msgid "Cancelar ordenación"
+msgstr ""
+
+#, fuzzy
+#| msgid "Catálogo"
+msgid "Ordenar catálogo"
+msgstr "Catálogo"
+
+msgid "Guardando..."
+msgstr ""
+
+msgid "Guardar orden"
+msgstr ""
+
+msgid "Error al guardar el orden. Inténtalo de nuevo."
+msgstr ""
+
+#, fuzzy
+#| msgid "Catálogo de Productos"
+msgid "Detalle del Producto"
+msgstr "Catálogo de Productos"
+
+msgid "Ajustar Stock"
+msgstr ""
+
+msgid "Desactivar"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Agotado"
+msgstr ""
+
+msgid "Volver a la lista"
+msgstr ""
+
+#, fuzzy
+#| msgid "Catálogo de Productos"
+msgid "Gestión de Productos"
+msgstr "Catálogo de Productos"
+
+#, fuzzy
+#| msgid "Buscar productos..."
+msgid "Nombre del producto..."
+msgstr "Buscar productos..."
+
+msgid "Ver"
+msgstr ""
+
+#, fuzzy
+#| msgid "Buscar productos..."
+msgid "No hay productos"
+msgstr "Buscar productos..."
+
+msgid "Stock actual"
+msgstr ""
+
+msgid "Actualizar Stock"
+msgstr ""
+
+msgid "Regístrate o inicia sesión para realizar pedidos"
+msgstr ""
+
+msgid ""
+"Necesitas una cuenta aprobada para añadir productos al carrito y completar "
+"pedidos."
+msgstr ""
+
+#, fuzzy
+#| msgid "Iniciar Sesión"
+msgid "Iniciar sesión"
+msgstr "Iniciar Sesión"
+
 msgid "Registrarse"
 msgstr "Registrarse"
+
+msgid "Jamón Cocido"
+msgstr ""
+
+msgid "¿Qué producto buscas?"
+msgstr ""
+
+#, fuzzy
+#| msgid "Buscar productos..."
+msgid "Ordenar productos"
+msgstr "Buscar productos..."
+
+msgid "Ordenar"
+msgstr ""
+
+msgid "Precio: Bajo a Alto"
+msgstr ""
+
+msgid "Precio: Alto a Bajo"
+msgstr ""
+
+msgid "Nombre: A-Z"
+msgstr ""
+
+#, python-format
+msgid ""
+"\n"
+"                Mostrando <span class=\"count-highlight\">%(start)s–%(end)s</"
+"span> de <span class=\"count-highlight\">%(total)s</span> productos\n"
+"                "
+msgstr ""
+
+#, fuzzy
+#| msgid "Catálogo"
+msgid "Ordenar Catálogo"
+msgstr "Catálogo"
+
+msgid "Aquí tienes un resumen del estado actual de tu cuenta en Fénix"
+msgstr ""
+
+msgid "Aquí tienes un resumen del estado actual de tu perfil en"
+msgstr ""
+
+msgid "DISTRIBUCIONES"
+msgstr ""
+
+msgid ""
+"Distribuidor profesional de alimentación y charcutería en <strong>Ciudad "
+"Real y Toledo</strong>"
+msgstr ""
+
+msgid "Frankfurt Salchichas"
+msgstr ""
+
+msgid ""
+"<strong>Servicio garantizado:</strong> entregamos de forma inmediata en toda "
+"la provincia de <strong>Ciudad Real y Toledo</strong>"
+msgstr ""
+
+msgid "Cambiar idioma"
+msgstr ""
+
+msgid "Área cliente"
+msgstr ""
+
+msgid "Información legal y de contacto"
+msgstr ""
+
+msgid "Enlaces legales"
+msgstr ""
+
+msgid "Textos legales"
+msgstr ""
+
+msgid "Inicio"
+msgstr ""
+
+msgid "Mis Pedidos"
+msgstr "Mis Pedidos"
+
+msgid "Cesta"
+msgstr ""
+
+msgid "Administración"
+msgstr "Administración"
+
+msgid "Dashboard"
+msgstr ""
+
+msgid "Carrito"
+msgstr "Carrito"
+
+msgid "Cerrar Sesión"
+msgstr "Cerrar Sesión"
+
+msgid "Abrir menú"
+msgstr ""
+
+msgid "Buscar pedidos, productos o acciones…"
+msgstr ""
+
+msgid "Acciones Pendientes"
+msgstr ""
+
+msgid "No se encontraron resultados"
+msgstr ""
+
+msgid "Escribe al menos 2 caracteres para buscar"
+msgstr ""
+
+msgid "Ha ocurrido un error"
+msgstr ""
+
+msgid "Cargando..."
+msgstr ""
+
+msgid "Beneficios del servicio"
+msgstr ""
+
+msgid "Garantía de Calidad"
+msgstr ""
+
+msgid "Entregas en transporte adaptado"
+msgstr ""
+
+msgid "Entrega en 48–72 Horas"
+msgstr ""
+
+msgid "Cobertura nacional con logística programada"
+msgstr ""
+
+msgid "Tienda Online 24HRS"
+msgstr ""
+
+msgid "Disponibles en todo momento"
+msgstr ""
+
+msgid "¿Dudas? Contáctanos"
+msgstr ""
+
+msgid "Te asesoramos para elegir el mejor surtido"
+msgstr ""
+
+msgid "Estado de tus pedidos actuales"
+msgstr ""
+
+msgid "Pedidos en mes en curso"
+msgstr ""
+
+msgid "Pendientes"
+msgstr ""
+
+msgid "Último pedido"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mis Pedidos"
+msgid "Ver pedidos"
+msgstr "Mis Pedidos"
+
+msgid "Oferta especial activa"
+msgstr ""
+
+msgid "No hay promociones activas en este momento"
+msgstr ""
+
+msgid "Tareas que requieren tu atención"
+msgstr ""
+
+msgid "Tienes acciones urgentes pendientes"
+msgstr ""
+
+#, python-format
+msgid ""
+"\n"
+"                            Tienes %(counter)s acción pendiente\n"
+"                        "
+msgid_plural ""
+"\n"
+"                            Tienes %(counter)s acciones pendientes\n"
+"                        "
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "No tienes acciones pendientes"
+msgstr ""
+
+msgid "Actividad Reciente"
+msgstr ""
+
+msgid "Tu última actividad en la plataforma"
+msgstr ""
+
+msgid "Pedido actualizado"
+msgstr ""
+
+msgid "No hay actividad reciente"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mis Pedidos"
+msgid "Pedidos de"
+msgstr "Mis Pedidos"
+
+msgid "Seleccionar cliente..."
+msgstr ""
+
+msgid "por página"
+msgstr ""
+
+msgid "Remover filtro de mes"
+msgstr ""
+
+msgid "Remover filtro de año"
+msgstr ""
+
+msgid "ID (Nº Pedido)"
+msgstr ""
+
+msgid "Ver detalles del pedido"
+msgstr ""
+
+msgid "Navegación de pedidos"
+msgstr ""
+
+#, python-format
+msgid ""
+"Mostrando %(page_obj.start_index)s–%(page_obj.end_index)s de %(counter)s "
+"pedido"
+msgid_plural ""
+"Mostrando %(page_obj.start_index)s–%(page_obj.end_index)s de %(counter)s "
+"pedidos"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Primera página"
+msgstr ""
+
+msgid "Página anterior"
+msgstr ""
+
+msgid "Página siguiente"
+msgstr ""
+
+msgid "Última página"
+msgstr ""
+
+msgid "No hay pedidos"
+msgstr ""
+
+msgid "No hay pedidos para este período."
+msgstr ""
+
+#, fuzzy
+#| msgid "Mis Pedidos"
+msgid "No tienes pedidos"
+msgstr "Mis Pedidos"
+
+msgid "Comienza a comprar en nuestro catálogo."
+msgstr ""
+
+#, fuzzy
+#| msgid "Catálogo"
+msgid "Ver Catálogo"
+msgstr "Catálogo"
+
+msgid "Carrito de Compras"
+msgstr ""
+
+msgid "Total:"
+msgstr ""
+
+msgid "Seguir Comprando"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mis Pedidos"
+msgid "Crear Pedido"
+msgstr "Mis Pedidos"
+
+msgid "Error al eliminar del carrito"
+msgstr ""
+
+msgid "Dashboard - Backoffice"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mis Pedidos"
+msgid "Total Pedidos"
+msgstr "Mis Pedidos"
+
+msgid "Pedidos Nuevos"
+msgstr ""
+
+msgid "Usuarios Pendientes"
+msgstr ""
+
+msgid "Pedidos Recientes"
+msgstr ""
+
+msgid "Ver todos"
+msgstr ""
+
+msgid "Alertas de Stock"
+msgstr ""
+
+msgid "Gestionar"
+msgstr ""
+
+msgid "No hay alertas de stock"
+msgstr ""
+
+msgid "Acceso Rápido"
+msgstr ""
+
+#, fuzzy
+#| msgid "Aprobación de Usuarios"
+msgid "Aprobar Usuarios"
+msgstr "Aprobación de Usuarios"
+
+#, fuzzy
+#| msgid "Mis Pedidos"
+msgid "Gestionar Pedidos"
+msgstr "Mis Pedidos"
+
+msgid "Cancelar Pedido"
+msgstr ""
+
+msgid "Imprimir"
+msgstr ""
+
+msgid "Fecha de creación:"
+msgstr ""
+
+msgid "Información del Pedido"
+msgstr ""
+
+msgid "INFORMACIÓN DEL CLIENTE"
+msgstr ""
+
+msgid "Teléfono Reparto/Incidencias"
+msgstr ""
+
+msgid "DATOS DEL PEDIDO"
+msgstr ""
+
+msgid "Nº Pedido / ID"
+msgstr ""
+
+msgid "Fecha de Creación"
+msgstr ""
+
+msgid "DIRECCIÓN DE ENTREGA"
+msgstr ""
+
+msgid "Ventana de Entrega"
+msgstr ""
+
+msgid "Detalles del Pedido"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mis Pedidos"
+msgid "ID Pedido"
+msgstr "Mis Pedidos"
+
+msgid "No hay productos en este pedido"
+msgstr ""
+
+msgid "Subtotal:"
+msgstr ""
+
+msgid "Gastos de Envío:"
+msgstr ""
+
+msgid "Historial del Pedido"
+msgstr ""
+
+msgid "¿Cancelar pedido?"
+msgstr ""
+
+msgid "Estás a punto de cancelar el pedido #"
+msgstr ""
+
+msgid "Esta acción no se puede deshacer."
+msgstr ""
+
+msgid "No, mantener"
+msgstr ""
+
+msgid "Sí, cancelar"
+msgstr ""
+
+msgid "Eliminar Documento"
+msgstr ""
+
+msgid "¿Estás seguro de que deseas eliminar este documento?"
+msgstr ""
+
+msgid "Documento"
+msgstr ""
+
+msgid ""
+"Esta acción es permanente y no se puede deshacer. El archivo será eliminado "
+"del servidor."
+msgstr ""
+
+msgid "Sí, eliminar"
+msgstr ""
+
+msgid "Subir Documento"
+msgstr ""
+
+msgid "Subir Documento al Pedido"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mis Pedidos"
+msgid "Gestión de Pedidos"
+msgstr "Mis Pedidos"
+
+msgid "Buscar cliente"
+msgstr ""
+
+msgid "Email o nombre..."
+msgstr ""
+
+msgid "ETA"
+msgstr ""
+
+msgid "Actualizar ETA"
+msgstr ""
+
+msgid "Actualizar ETA (Fecha Estimada)"
+msgstr ""
+
+msgid "Actualizar Estado"
+msgstr ""
+
+msgid "Actualizar Estado del Pedido"
+msgstr ""
+
+msgid "Estado actual"
+msgstr ""
+
+msgid ""
+"Si cambias el estado a 'Preparando', el stock de los productos se descontará "
+"automáticamente."
+msgstr ""
+
+msgid "Gestión de Pedidos General"
+msgstr ""
+
+msgid "Resumen de pedidos por cliente"
+msgstr ""
+
+msgid "Empresa / Cliente (opcional)"
+msgstr ""
+
+msgid "Empresa / Cliente"
+msgstr ""
+
+msgid "Mes"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mis Pedidos"
+msgid "Nº Pedidos"
+msgstr "Mis Pedidos"
+
+msgid "Entregados"
+msgstr ""
+
+msgid "Total €"
+msgstr ""
+
+msgid "Ver detalle"
+msgstr ""
+
+msgid "No hay pedidos que coincidan con los filtros."
+msgstr ""
+
+msgid ""
+"Somos Distribuciones Fenix de la Mancha, especialistas en surtido cárnico "
+"para negocios con necesidades recurrentes."
+msgstr ""
+
+msgid ""
+"Gestionamos pedidos programados y controlados para que nunca te falte "
+"producto."
+msgstr ""
+
+msgid ""
+"Estamos aquí para ayudarte. Completa el formulario y nos pondremos en "
+"contacto contigo lo antes posible."
+msgstr ""
+
+msgid "Juan Pérez"
+msgstr ""
+
+msgid "Motivo del contacto"
+msgstr ""
+
+msgid "¿En qué podemos ayudarte?"
+msgstr ""
+
+msgid "He leído y acepto la"
+msgstr ""
+
+msgid "Política de Privacidad"
+msgstr ""
+
+msgid "Acepto recibir información comercial"
+msgstr ""
+
+msgid "Enviar mensaje"
+msgstr ""
+
+msgid "Datos de contacto"
+msgstr ""
+
+msgid "Escríbenos"
+msgstr ""
+
+msgid "Llámanos"
+msgstr ""
+
+msgid "Zona de servicio"
+msgstr ""
+
+msgid "Ciudad Real y Toledo"
+msgstr ""
+
+msgid "¿Prefieres atención directa?"
+msgstr ""
+
+msgid "Pulsa aquí para contactar por WhatsApp de forma inmediata."
+msgstr ""
+
+msgid "Abrir WhatsApp"
+msgstr ""
+
+msgid "Revisa los campos del formulario."
+msgstr ""
+
+msgid "Ocurrió un error inesperado. Inténtalo de nuevo."
+msgstr ""
+
+msgid ""
+"Este sitio pertenece a Distribuciones Fenix de la Mancha SL. CIF pendiente."
+msgstr ""
+
+msgid ""
+"Los datos publicados tienen carácter informativo y pueden variar sin previo "
+"aviso."
+msgstr ""
+
+msgid "En línea"
+msgstr ""
+
+msgid ""
+"Hola, gracias por contactar con Fénix 😊. <br><br>En breve uno de nuestros "
+"comerciales se pondrá en contacto con usted para ofrecerle una atención "
+"personalizada."
+msgstr ""
+
+msgid "¿Necesitas ayuda?"
+msgstr ""
+
+msgid ""
+"Protegemos tus datos siguiendo la normativa vigente. Solo utilizamos la "
+"información para procesar pedidos y comunicaciones comerciales consentidas."
+msgstr ""
+
+msgid ""
+"Puedes solicitar acceso, rectificación o eliminación contactando con nuestro "
+"equipo."
+msgstr ""
+
+msgid "Eliminar Pedido Recurrente"
+msgstr ""
+
+msgid "¿Estás seguro de que deseas eliminar este pedido recurrente?"
+msgstr ""
+
+msgid ""
+"Esta acción es permanente y no se puede deshacer. Los pedidos ya generados "
+"no se verán afectados."
+msgstr ""
+
+msgid "Crear Pedido Recurrente"
+msgstr ""
+
+msgid "Configuración del Pedido Recurrente"
+msgstr ""
+
+msgid "Productos del Pedido"
+msgstr ""
+
+msgid "No hay productos en el carrito"
+msgstr ""
+
+msgid ""
+"El pedido recurrente se generará automáticamente según la frecuencia "
+"seleccionada, comenzando desde la fecha de inicio."
+msgstr ""
+
+#, fuzzy
+#| msgid "Administración"
+msgid "Configuración"
+msgstr "Administración"
+
+msgid "Fecha de fin"
+msgstr ""
+
+msgid "Próximo pedido"
+msgstr ""
+
+msgid "horas"
+msgstr ""
+
+msgid "Desactivar Pedido Recurrente"
+msgstr ""
+
+msgid "Activar Pedido Recurrente"
+msgstr ""
+
+#, fuzzy
+#| msgid "Mis Pedidos"
+msgid "Mis Pedidos Recurrentes"
+msgstr "Mis Pedidos"
+
+msgid "Nuevo Pedido Recurrente"
+msgstr ""
+
+msgid "Fin"
+msgstr ""
+
+msgid "Ver Detalle"
+msgstr ""
+
+msgid "Activar"
+msgstr ""
+
+msgid "No tienes pedidos recurrentes activos."
+msgstr ""
+
+msgid ""
+"Agrega productos al carrito y crea un pedido recurrente para automatizar tus "
+"compras."
+msgstr ""
+
+msgid ""
+"¿Estás seguro de que deseas desactivar este pedido recurrente? No se "
+"generarán más pedidos automáticos hasta que lo reactives."
+msgstr ""
+
+msgid ""
+"¿Deseas reactivar este pedido recurrente? Los pedidos se generarán "
+"automáticamente según la configuración."
+msgstr ""
+
+msgid "Sí, activar"
+msgstr ""
+
+msgid "URL de la página"
+msgstr ""
+
+msgid "Enviado correctamente"
+msgstr ""
+
+msgid "Respuesta de la API"
+msgstr ""
+
+msgid "Lead de WhatsApp"
+msgstr ""
+
+msgid "Leads de WhatsApp"
+msgstr ""
+
+msgid "Hola {{ name }},"
+msgstr "Hola {{ name }},"
+
+msgid "¡Hola {{ name }}!"
+msgstr "¡Hola {{ name }}!"

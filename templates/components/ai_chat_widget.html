@@ -1,289 +1,531 @@
 {% load i18n static %}
-<div id="ai-assistant-container">
+<div id="ai-assistant-container" class="font-inter">
     <!-- Chat Window -->
-    <div id="ai-chat-window">
-        <!-- Header -->
-        <div id="ai-chat-header">
-            <div class="ai-header-info">
-                <div class="ai-avatar">AI</div>
+    <div id="ai-chat-window" class="hidden animate-ai-slide-up">
+        <!-- Header: Réplica 1:1 Synerg-IA -->
+        <div id="ai-chat-header" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #f1f5f9; background: white;">
+            <div class="ai-header-info" style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 65px; height: 65px; border-radius: 50%; overflow: hidden; border: 2px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.08); position: relative; flex-shrink: 0;">
+                    <img src="{% static 'images/Neus.png' %}" alt="Neus Avatar" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.65);">
+                </div>
                 <div>
-                    <div style="font-weight: 800; font-size: 14px; color: #0f172a;">Fenix Assistant</div>
-                    <div style="font-size: 11px; color: #64748b; display: flex; align-items: center;">
-                        <span class="ai-status-dot"></span> Soporte Estratégico
+                    <div class="ai-title" style="font-weight: 800; font-size: 16px; color: #0f172a; line-height: 1.2;">Neus</div>
+                    <div class="ai-subtitle" style="font-size: 11px; color: #64748b; display: flex; align-items: center; gap: 6px; margin-top: 2px;">
+                        <span class="ai-status-dot" style="width: 7px; height: 7px; border-radius: 50%; background: #22c55e;"></span>
+                        Asistente comercial de Fenix
                     </div>
                 </div>
             </div>
-            <button id="ai-close-btn" style="background: none; border: none; color: #94a3b8; cursor: pointer;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            </button>
-        </div>
-
-        <!-- Messages Area -->
-        <div id="ai-chat-messages">
-            <!-- Initial Message -->
-            <div class="ai-msg-group bot">
-                <div class="ai-msg-meta">Fenix AI</div>
-                <div class="ai-bubble bot">
-                    <strong>¡Hola! Es un placer saludarte.</strong><br><br>
-                    Para ofrecerte un asesoramiento estratégico a medida, por favor facilítanos tus datos. Una vez completado, analizaremos juntos cómo Fenix puede optimizar tu gestión.
-                </div>
-            </div>
-
-            <!-- Lead Form -->
-            <div id="ai-lead-container" class="ai-msg-group">
-                <form id="ai-lead-form" class="ai-bubble bot" style="max-width: 100%; border: 2px solid #dbeafe;">
-                    <div style="margin-bottom: 1rem;">
-                        <h4 style="margin: 0; font-size: 16px; font-weight: 800;">Configura tu consulta</h4>
-                        <p style="margin: 4px 0 0; font-size: 11px; color: #64748b;">Analizaremos tu caso específico.</p>
-                    </div>
-                    
-                    <div class="ai-form-group">
-                        <label class="ai-label">Nombre Completo</label>
-                        <input type="text" id="lead-name" class="ai-input" placeholder="Ej. Juan Pérez" required>
-                    </div>
-                    
-                    <div class="ai-form-group">
-                        <label class="ai-label">Email Corporativo</label>
-                        <input type="email" id="lead-email" class="ai-input" placeholder="juan@empresa.com" required>
-                    </div>
-
-                    <div style="display: flex; gap: 8px; align-items: flex-start; margin-top: 4px;">
-                        <input type="checkbox" id="lead-gdpr" required style="margin-top: 3px;">
-                        <label for="lead-gdpr" style="font-size: 10px; color: #64748b; line-height: 1.2;">
-                            Acepto la <a href="/privacy" target="_blank" style="color: var(--ai-primary); font-weight: 700;">Política de Privacidad</a>.
-                        </label>
-                    </div>
-
-                    <button type="submit" class="ai-btn-primary">Comenzar consultoría</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Input Area (Initially Hidden) -->
-        <div id="ai-chat-input-area" style="display: none;">
-            <div class="ai-input-wrapper">
-                <input type="text" id="ai-user-input" placeholder="Describe un proceso a optimizar..." autocomplete="off">
-                <button id="ai-send-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+            <div style="display: flex; gap: 4px;">
+                <button class="ai-header-btn" onclick="location.reload()" style="background: none; border: none; padding: 8px; color: #94a3b8; cursor: pointer; border-radius: 10px; transition: all 0.2s;" onmouseover="this.style.background='#f8fafc'; this.style.color='#0f172a'" onmouseout="this.style.background='none'; this.style.color='#94a3b8'">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path></svg>
+                </button>
+                <button class="ai-header-btn" onclick="toggleAIChat()" style="background: none; border: none; padding: 8px; color: #94a3b8; cursor: pointer; border-radius: 10px; transition: all 0.2s;" onmouseover="this.style.background='#f8fafc'; this.style.color='#0f172a'" onmouseout="this.style.background='none'; this.style.color='#94a3b8'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
             </div>
-            <div style="margin-top: 12px; display: flex; align-items: center; gap: 4px; opacity: 0.6;">
-                <span style="font-size: 8px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: #94a3b8;">Powered by</span>
-                <span style="font-size: 8px; font-weight: 900; text-transform: uppercase; color: #0f172a; background: #f1f5f9; padding: 2px 4px; border-radius: 4px;">Synerg-IA Framework</span>
+        </div>
+
+        <div id="ai-chat-messages" style="flex: 1; overflow-y: auto; padding: 12px 16px; background: #fafafa; display: flex; flex-direction: column; gap: 12px;">
+            <!-- Formulario de Lead: Estilo Premium Compacto -->
+            <div id="ai-step-lead" class="ai-step-card" style="background: white; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                <div style="margin-bottom: 12px;">
+                    <h4 style="font-size: 16px; font-weight: 800; color: #0f172a; letter-spacing: -0.02em;">Compra asistida con IA para tu negocio</h4>
+                    <p style="font-size: 11px; color: #64748b; margin-top: 4px; line-height: 1.4;">Completa tus datos y empieza a consultar productos, promociones y pedidos con Fénix.</p>
+                </div>
+
+                <form id="ai-lead-form" style="display: flex; flex-direction: column; gap: 10px;">
+                    <div>
+                        <label style="display: block; font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.05em;">Nombre Completo</label>
+                        <input type="text" id="lead-name" class="ai-input" style="width: 100%; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; font-size: 13px; outline: none;" placeholder="Ej. Juan Pérez" required>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.05em;">Email</label>
+                        <input type="email" id="lead-email" class="ai-input" style="width: 100%; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; font-size: 13px; outline: none;" placeholder="juan@empresa.com" required>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.05em;">Teléfono</label>
+                        <div style="display: flex; gap: 6px; position: relative;">
+                            <div id="ai-prefix-trigger" style="width: 90px; height: 40px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">
+                                <img id="ai-current-flag" src="https://flagcdn.com/w40/es.png" style="width: 18px; border-radius: 2px;">
+                                <span id="ai-current-prefix">+34</span>
+                            </div>
+                            <input type="tel" id="lead-phone" class="ai-input" style="flex: 1; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; font-size: 13px; outline: none;" placeholder="600 000 000" required>
+                            
+                            <div id="ai-prefix-dropdown" class="ai-dropdown hidden" style="position: absolute; bottom: 45px; left: 0; width: 220px; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid #f1f5f9; max-height: 200px; overflow-y: auto; z-index: 100;"></div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 8px; margin: 4px 0;">
+                        <input type="checkbox" id="lead-privacy" required style="width: 14px; height: 14px; margin-top: 1px;">
+                        <label for="lead-privacy" style="font-size: 10px; color: #64748b; line-height: 1.4;">He leído y acepto la <a href="/privacy/" style="color: #2563eb; font-weight: 700; text-decoration: none;">Política de Privacidad</a>.</label>
+                    </div>
+
+                    <button type="submit" style="width: 100%; background: #3b82f6; color: white; border: none; border-radius: 10px; padding: 12px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(59,130,246,0.2);" onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'">
+                        Comenzar compra asistida
+                    </button>
+
+                    <div style="display: flex; align-items: center; text-align: center; margin: 12px 0;">
+                        <hr style="flex: 1; border: none; border-top: 1px solid #e2e8f0;">
+                        <span style="padding: 0 10px; color: #94a3b8; font-size: 11px;">o</span>
+                        <hr style="flex: 1; border: none; border-top: 1px solid #e2e8f0;">
+                    </div>
+
+                    <div style="text-align: center; margin-bottom: 2px;">
+                        <span style="font-size: 12px; font-weight: 700; color: #0f172a;">¿Prefieres hacer tu pedido por WhatsApp?</span>
+                    </div>
+                    <a href="https://wa.me/34624149250" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: #22c55e; color: white; text-decoration: none; padding: 10px; border-radius: 10px; font-weight: 700; font-size: 14px; transition: background 0.2s; width: 100%; box-shadow: 0 4px 12px rgba(34,197,94,0.2);" onmouseover="this.style.background='#16a34a'" onmouseout="this.style.background='#22c55e'">
+                        <i class="bi bi-whatsapp" style="font-size: 16px;"></i> Hablar por WhatsApp
+                    </a>
+                </form>
+            </div>
+
+            <!-- OTP Step -->
+            <div id="ai-step-otp" class="ai-step-card hidden" style="background: white; border: 2px solid #dbeafe; padding: 30px; border-radius: 20px; text-align: center;">
+                <div style="width: 56px; height: 56px; background: #eff6ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: #2563eb;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <h4 style="font-size: 19px; font-weight: 800; color: #0f172a;">Verifica tu email</h4>
+                <p style="font-size: 13px; color: #64748b; margin-top: 8px;">Introduce el código de 6 dígitos que hemos enviado a tu correo.</p>
+                
+                <div style="margin-top: 25px; display: flex; flex-direction: column; gap: 16px;">
+                    <input type="text" id="otp-input" maxlength="6" style="width: 100%; height: 60px; text-align: center; font-size: 32px; font-weight: 800; letter-spacing: 0.4em; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#2563eb'" onblur="this.style.borderColor='#e2e8f0'">
+                    <div id="otp-error" class="hidden" style="color: #ef4444; font-size: 11px; font-weight: 800; text-transform: uppercase;">Código incorrecto</div>
+                    <button id="ai-verify-otp-btn" style="width: 100%; background: #2563eb; color: white; border: none; border-radius: 14px; padding: 16px; font-weight: 800; font-size: 15px; cursor: pointer; transition: all 0.2s; box-shadow: 0 10px 20px rgba(37,99,235,0.2);">
+                        Verificar acceso
+                    </button>
+                    <button id="ai-resend-otp-btn" style="background: none; border: none; color: #2563eb; font-weight: 700; font-size: 12px; cursor: pointer;">¿No has recibido el código? Reenviar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area (Chat activo) -->
+        <div id="ai-chat-input-area" style="padding: 12px 16px; border-top: 1px solid #f1f5f9; background: white;">
+            <div style="position: relative; display: flex; align-items: center; border: 1px solid #e2e8f0; border-radius: 12px; padding: 4px;">
+                <input type="text" id="ai-user-input" disabled style="width: 100%; background: transparent; border: none; padding: 6px 50px 6px 12px; font-size: 13px; outline: none; color: #334155; opacity: 0.6;" placeholder="Escribe tu mensaje...">
+                <button id="ai-send-btn" disabled style="position: absolute; right: 4px; background: #a5b4fc; color: white; border: none; border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: not-allowed; transition: all 0.2s;" onmouseover="if(!this.disabled) this.style.background='#818cf8'" onmouseout="if(!this.disabled) this.style.background='#a5b4fc'">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                </button>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center; margin-top: 12px;">
+                <span style="font-size: 10px; font-weight: 600; color: #94a3b8; letter-spacing: 0.02em;">by Synerg-IA Automation</span>
             </div>
         </div>
     </div>
 
-    <!-- Tooltip -->
-    <div id="ai-tooltip" style="position: absolute; bottom: 90px; right: 0; width: 240px; padding: 1.25rem; background: var(--ai-primary); color: white; border-radius: 20px; border-bottom-right-radius: 0; box-shadow: 0 10px 25px rgba(37,99,235,0.3); display: none; animation: ai-slide-up 0.5s ease-out;">
-        <p style="margin: 0; font-weight: 800; font-size: 15px; line-height: 1.2;">
-            ¡Hola! <br>Soy tu asistente. <br>¿Cómo puedo ayudarte?
+    <!-- Expanded Card Inicial -->
+    <div id="ai-expanded-card" class="hidden animate-ai-slide-up" style="position: absolute; bottom: 90px; right: 0; width: 280px; background: white; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid #f1f5f9; padding: 16px; z-index: 20; transform-origin: bottom right; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+        <button id="ai-close-expanded" style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px; transition: color 0.2s;" onmouseover="this.style.color='#0f172a'" onmouseout="this.style.color='#94a3b8'">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
+            <img src="{% static 'images/Neus.png' %}" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #eff6ff;">
+            <div>
+                <div style="font-weight: 800; font-size: 15px; color: #0f172a;">Neus</div>
+                <div style="font-size: 11px; color: #64748b; display: flex; align-items: center; gap: 4px;">
+                    <span style="width: 6px; height: 6px; border-radius: 50%; background: #22c55e;"></span>
+                    Asistente comercial de Fenix
+                </div>
+            </div>
+        </div>
+        <p style="font-size: 13px; color: #334155; margin-bottom: 16px; line-height: 1.4; font-weight: 500;">
+            Te ayudo con pedidos y promociones
         </p>
-        <div style="position: absolute; bottom: -8px; right: 0; width: 16px; height: 16px; background: var(--ai-primary); clip-path: polygon(0 0, 100% 0, 100% 100%);"></div>
+        <button id="ai-cta-hablar" style="width: 100%; background: #2563eb; color: white; border: none; border-radius: 10px; padding: 10px; font-weight: 700; font-size: 13px; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 12px rgba(37,99,235,0.2);" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">
+            Hablar con Neus
+        </button>
+        <div style="text-align: center; margin-top: 10px;">
+            <span style="font-size: 9px; font-weight: 600; color: #cbd5e1; letter-spacing: 0.02em;">by Synerg-IA Automation</span>
+        </div>
     </div>
 
-    <!-- Floating Button -->
+    <!-- Hover Tooltip -->
+    <div id="ai-hover-tooltip" style="position: absolute; right: 90px; bottom: 20px; background: white; color: #0f172a; padding: 10px 14px; border-radius: 12px; border-bottom-right-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid #f1f5f9; font-size: 12px; font-weight: 600; white-space: nowrap; pointer-events: none; opacity: 0; transform: translateX(10px); transition: opacity 0.2s, transform 0.2s; z-index: 5;">
+        ¿Te ayudo con pedidos y promociones?
+    </div>
+
+    <!-- Botón Flotante Principal -->
     <div id="ai-chat-button-container" style="position: relative;">
-        <div class="ai-pulse-bg"></div>
-        <button id="ai-chat-button">
-            <div id="ai-icon-closed" class="ai-btn-label">AI</div>
-            <div id="ai-icon-open" style="display: none;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        <div class="ai-pulse-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #2563eb; border-radius: 50%; opacity: 0.2; animation: ai-pulse 2s infinite;"></div>
+        <button id="ai-chat-button" class="ai-fab-btn" style="background: #2563eb; border: none; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 30px rgba(37,99,235,0.4); position: relative; z-index: 10; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding: 0; overflow: hidden;">
+            <div id="ai-icon-closed" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                <img src="{% static 'images/Neus.png' %}" alt="Neus" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.65);">
+            </div>
+            <div id="ai-icon-open" class="hidden" style="position: absolute;">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </div>
         </button>
     </div>
 </div>
 
+<style>
+@keyframes ai-pulse { 0% { transform: scale(1); opacity: 0.3; } 100% { transform: scale(1.6); opacity: 0; } }
+@keyframes ai-slide-up { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+#ai-chat-window:not(.hidden) {
+    transform: translateY(0);
+    opacity: 1;
+}
+.animate-ai-slide-up { animation: ai-slide-up 0.4s ease-out; }
+.hidden { display: none !important; }
+
+/* FAB Responsive Sizes */
+#ai-chat-button {
+    width: 120px !important;
+    height: 120px !important;
+}
+
+#ai-chat-button.ai-fab-open {
+    width: 60px !important;
+    height: 60px !important;
+}
+
+@media (max-width: 768px) {
+    #ai-chat-button {
+        width: 86px !important;
+        height: 86px !important;
+    }
+    #ai-chat-button.ai-fab-open {
+        width: 50px !important;
+        height: 50px !important;
+    }
+}
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const chatBtn = document.getElementById('ai-chat-button');
+    const COUNTRIES = [
+        { code: 'ES', flag: 'es', prefix: '+34', name: 'España' },
+        { code: 'MX', flag: 'mx', prefix: '+52', name: 'México' },
+        { code: 'CO', flag: 'co', prefix: '+57', name: 'Colombia' },
+        { code: 'AR', flag: 'ar', prefix: '+54', name: 'Argentina' },
+        { code: 'CL', flag: 'cl', prefix: '+56', name: 'Chile' },
+        { code: 'PE', flag: 'pe', prefix: '+51', name: 'Perú' },
+        { code: 'US', flag: 'us', prefix: '+1', name: 'USA' }
+    ];
+
+    let currentLead = null;
+
+    // --- DOM ELEMENTS ---
+    const btnContainer = document.getElementById('ai-chat-button-container');
+    const chatButton = document.getElementById('ai-chat-button');
     const chatWindow = document.getElementById('ai-chat-window');
-    const closeBtn = document.getElementById('ai-close-btn');
-    const sendBtn = document.getElementById('ai-send-btn');
-    const userInput = document.getElementById('ai-user-input');
-    const messagesContainer = document.getElementById('ai-chat-messages');
+    const iconClosed = document.getElementById('ai-icon-closed');
+    const iconOpen = document.getElementById('ai-icon-open');
+    const expandedCard = document.getElementById('ai-expanded-card');
+    const closeExpandedBtn = document.getElementById('ai-close-expanded');
+    const ctaHablarBtn = document.getElementById('ai-cta-hablar');
+    const hoverTooltip = document.getElementById('ai-hover-tooltip');
+    const prefixTrigger = document.getElementById('ai-prefix-trigger');
+    const prefixDropdown = document.getElementById('ai-prefix-dropdown');
     const leadForm = document.getElementById('ai-lead-form');
-    const leadContainer = document.getElementById('ai-lead-container');
+    const stepLead = document.getElementById('ai-step-lead');
+    const stepOtp = document.getElementById('ai-step-otp');
+    const otpInput = document.getElementById('otp-input');
+    const verifyOtpBtn = document.getElementById('ai-verify-otp-btn');
     const inputArea = document.getElementById('ai-chat-input-area');
-    const tooltip = document.getElementById('ai-tooltip');
+    const messagesArea = document.getElementById('ai-chat-messages');
+    const userInput = document.getElementById('ai-user-input');
+    const sendBtn = document.getElementById('ai-send-btn');
 
-    let currentStep = 'lead';
-    let leadData = null;
-    let chatHistory = []; // Para mantener el contexto de la charla
+    // --- SMART BEHAVIOR LOGIC ---
+    const isMobile = window.innerWidth <= 768;
+    let autoMinimizeTimer = null;
 
-    // Check for existing lead
-    const savedLead = localStorage.getItem('fenix_ai_lead');
-    if (savedLead) {
-        const data = JSON.parse(savedLead);
-        const now = new Date().getTime();
-        if (now - data.timestamp < 24 * 60 * 60 * 1000) {
-            leadData = data;
-            currentStep = 'chat';
-            leadContainer.style.display = 'none';
-            inputArea.style.display = 'block';
-        }
+    function hideExpandedCard() {
+        expandedCard.classList.add('hidden');
+        sessionStorage.setItem('neus_card_closed', 'true');
+        if (autoMinimizeTimer) clearTimeout(autoMinimizeTimer);
     }
 
-    // Tooltip logic
-    setTimeout(() => {
-        if (chatWindow.style.display !== 'flex') {
-            tooltip.style.display = 'block';
-        }
-    }, 3000);
-
-    // Toggle window
-    chatBtn.addEventListener('click', () => {
-        const isOpen = chatWindow.style.display === 'flex';
-        chatWindow.style.display = isOpen ? 'none' : 'flex';
-        chatBtn.classList.toggle('open');
-        tooltip.style.display = 'none';
+    // Inicialización del estado
+    if (!isMobile && sessionStorage.getItem('neus_card_closed') !== 'true') {
+        expandedCard.classList.remove('hidden');
         
-        const iconClosed = document.getElementById('ai-icon-closed');
-        const iconOpen = document.getElementById('ai-icon-open');
-        
-        if (!isOpen) {
-            iconClosed.style.display = 'none';
-            iconOpen.style.display = 'block';
-            if (currentStep === 'chat') userInput.focus();
-        } else {
-            iconClosed.style.display = 'block';
-            iconOpen.style.display = 'none';
-        }
-    });
+        // Auto-minimizar tras 10 segundos
+        autoMinimizeTimer = setTimeout(() => {
+            hideExpandedCard();
+        }, 10000);
 
-    closeBtn.addEventListener('click', () => chatBtn.click());
-
-    // Lead Submission
-    leadForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        leadData = {
-            name: document.getElementById('lead-name').value,
-            email: document.getElementById('lead-email').value,
-            timestamp: new Date().getTime()
+        // Auto-minimizar al hacer scroll > 300px
+        const scrollListener = () => {
+            if (window.scrollY > 300) {
+                hideExpandedCard();
+                window.removeEventListener('scroll', scrollListener);
+            }
         };
-        localStorage.setItem('fenix_ai_lead', JSON.stringify(leadData));
-        
-        currentStep = 'chat';
-        leadContainer.style.display = 'none';
-        inputArea.style.display = 'block';
+        window.addEventListener('scroll', scrollListener);
+    }
 
-        appendMessage(`Gracias, **${leadData.name}**. Ya tengo tus datos.\n\n¿En qué proceso de tu empresa te gustaría aplicar Inteligencia Artificial hoy?`, 'bot');
-        userInput.focus();
+    // Eventos de la tarjeta expandida
+    closeExpandedBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        hideExpandedCard();
     });
 
-    // Chat Logic
-    async function sendMessage(overrideText) {
-        const text = overrideText || userInput.value.trim();
+    ctaHablarBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        hideExpandedCard();
+        if (chatWindow.classList.contains('hidden')) {
+            window.toggleAIChat();
+        }
+    });
+
+    // Eventos de Hover en el FAB
+    chatButton.addEventListener('mouseenter', () => {
+        if (!isMobile && chatWindow.classList.contains('hidden') && expandedCard.classList.contains('hidden')) {
+            hoverTooltip.style.opacity = '1';
+            hoverTooltip.style.transform = 'translateX(0)';
+        }
+    });
+    chatButton.addEventListener('mouseleave', () => {
+        hoverTooltip.style.opacity = '0';
+        hoverTooltip.style.transform = 'translateX(10px)';
+    });
+
+    // --- TOGGLE CHAT ---
+    window.toggleAIChat = function() {
+        chatWindow.classList.toggle('hidden');
+        
+        if (!chatWindow.classList.contains('hidden')) {
+            iconClosed.classList.add('hidden');
+            iconOpen.classList.remove('hidden');
+            if (!expandedCard.classList.contains('hidden')) hideExpandedCard();
+            hoverTooltip.style.opacity = '0';
+            chatButton.classList.add('ai-fab-open');
+            chatButton.style.transform = 'rotate(90deg)';
+            chatButton.style.background = '#0f172a';
+        } else {
+            iconClosed.classList.remove('hidden');
+            iconOpen.classList.add('hidden');
+            chatButton.classList.remove('ai-fab-open');
+            chatButton.style.transform = 'rotate(0deg)';
+            chatButton.style.background = '#2563eb';
+        }
+    };
+
+    chatButton.addEventListener('click', () => {
+        if (!isMobile && chatWindow.classList.contains('hidden')) {
+            if (expandedCard.classList.contains('hidden')) {
+                // Si está minimizada, abrir tarjeta en PC
+                expandedCard.classList.remove('hidden');
+                sessionStorage.removeItem('neus_card_closed');
+                hoverTooltip.style.opacity = '0';
+            } else {
+                // Si está expandida, cerrar tarjeta
+                hideExpandedCard();
+            }
+        } else {
+            // En móvil, o si el chat está abierto, toggle normal
+            toggleAIChat();
+        }
+    });
+
+    // --- PREFIX SELECTOR ---
+    prefixTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        prefixDropdown.classList.toggle('hidden');
+        if (prefixDropdown.innerHTML === "") {
+            prefixDropdown.innerHTML = COUNTRIES.map(c => `
+                <div class="country-item" data-prefix="${c.prefix}" data-flag="${c.flag}" style="padding: 12px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='none'">
+                    <img src="https://flagcdn.com/w40/${c.flag}.png" style="width: 20px; border-radius: 2px;">
+                    <span style="font-weight: 700; color: #64748b; width: 40px; font-size: 13px;">${c.prefix}</span>
+                    <span style="font-size: 13px; color: #0f172a;">${c.name}</span>
+                </div>
+            `).join('');
+            
+            prefixDropdown.querySelectorAll('.country-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    document.getElementById('ai-current-flag').src = `https://flagcdn.com/w40/${item.dataset.flag}.png`;
+                    document.getElementById('ai-current-prefix').innerText = item.dataset.prefix;
+                    prefixDropdown.classList.add('hidden');
+                });
+            });
+        }
+    });
+
+    document.addEventListener('click', () => prefixDropdown.classList.add('hidden'));
+
+    // --- LEAD SUBMISSION ---
+    leadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = leadForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerText;
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Procesando...";
+
+        try {
+            const response = await fetch('/ai/capture-lead/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: document.getElementById('lead-name').value,
+                    email: document.getElementById('lead-email').value,
+                    phone_prefix: document.getElementById('ai-current-prefix').innerText,
+                    phone_number: document.getElementById('lead-phone').value,
+                    privacy_accepted: document.getElementById('lead-privacy').checked
+                })
+            });
+            const data = await response.json();
+            if (data.success) {
+                currentLead = data.email; // Usamos el email como identificador
+                stepLead.classList.add('hidden');
+                stepOtp.classList.remove('hidden');
+            } else {
+                alert(data.error || "Error al capturar datos");
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerText = originalText;
+        }
+    });
+
+    // --- OTP VERIFICATION ---
+    verifyOtpBtn.addEventListener('click', async () => {
+        const otp = otpInput.value;
+        if (otp.length !== 6) return;
+        
+        verifyOtpBtn.disabled = true;
+        verifyOtpBtn.innerText = "Verificando...";
+
+        try {
+            const response = await fetch('/ai/verify-otp/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: currentLead, otp: otp })
+            });
+            const data = await response.json();
+            if (data.success) {
+                stepOtp.classList.add('hidden');
+                
+                // Activar el input area tras validación
+                const chatInput = document.getElementById('ai-user-input');
+                const chatSendBtn = document.getElementById('ai-send-btn');
+                chatInput.disabled = false;
+                chatInput.style.opacity = '1';
+                chatSendBtn.disabled = false;
+                chatSendBtn.style.cursor = 'pointer';
+                
+                appendMessage('bot', "<strong>¡Hola! 👋 Bienvenido a Fénix.</strong><br>Estoy aquí para ayudarte a encontrar productos, promociones y gestionar tus pedidos de forma rápida.");
+                setTimeout(() => {
+                    appendMessage('bot', "Puedes preguntarme por alimentación, bebidas, charcutería, congelados o recomendaciones para tu negocio.<br><br>¿Qué necesitas hoy?");
+                }, 800);
+            } else {
+                document.getElementById('otp-error').classList.remove('hidden');
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            verifyOtpBtn.disabled = false;
+            verifyOtpBtn.innerText = "Verificar acceso";
+        }
+    });
+
+    const resendOtpBtn = document.getElementById('ai-resend-otp-btn');
+    if(resendOtpBtn) {
+        resendOtpBtn.addEventListener('click', async () => {
+            const originalText = resendOtpBtn.innerText;
+            resendOtpBtn.disabled = true;
+            resendOtpBtn.innerText = "Reenviando...";
+            
+            try {
+                const response = await fetch('/ai/capture-lead/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: document.getElementById('lead-name').value,
+                        email: document.getElementById('lead-email').value,
+                        phone_prefix: document.getElementById('ai-current-prefix').innerText,
+                        phone_number: document.getElementById('lead-phone').value,
+                        privacy_accepted: document.getElementById('lead-privacy').checked
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    if (data.fallback_otp) {
+                        alert("Aviso de Desarrollo:\nGoogle ha bloqueado temporalmente el correo (límite superado).\n\nTu NUEVO código de prueba es: " + data.fallback_otp);
+                    } else {
+                        alert("Nuevo código enviado.");
+                    }
+                    document.getElementById('otp-error').classList.add('hidden');
+                    otpInput.value = '';
+                } else {
+                    alert(data.error || "Error al reenviar el código.");
+                }
+            } catch (err) {
+                console.error(err);
+            } finally {
+                resendOtpBtn.disabled = false;
+                resendOtpBtn.innerText = originalText;
+            }
+        });
+    }
+
+    // --- CHAT LOGIC ---
+    async function sendMessage() {
+        const text = userInput.value.trim();
         if (!text) return;
 
-        appendMessage(text, 'user');
-        userInput.value = '';
-
-        const typingId = 'typing-' + Date.now();
-        const typingDiv = document.createElement('div');
-        typingDiv.id = typingId;
-        typingDiv.className = 'ai-msg-group bot';
-        typingDiv.innerHTML = `<div class="ai-msg-meta">Fenix AI</div><div class="ai-bubble bot" style="color: #94a3b8; font-style: italic;">Analizando propuesta estratégica...</div>`;
-        messagesContainer.appendChild(typingDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        appendMessage('user', text);
+        userInput.value = "";
+        
+        const typingId = appendTyping();
 
         try {
             const response = await fetch('/ai/chat/', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ 
-                    message: text,
-                    lead: leadData,
-                    history: chatHistory
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text, lead_id: currentLead })
             });
-
             const data = await response.json();
-            document.getElementById(typingId).remove();
-
-            if (data.response) {
-                appendMessage(data.response, 'bot');
-                // Actualizar historial local
-                chatHistory.push({ role: 'user', parts: [{ text: text }] });
-                chatHistory.push({ role: 'model', parts: [{ text: data.response }] });
-            } else if (data.error) {
-                appendMessage(data.error, 'bot');
-            }
-        } catch (error) {
-            document.getElementById(typingId).remove();
-            appendMessage('Error de conexión.', 'bot');
+            removeTyping(typingId);
+            appendMessage('bot', data.response);
+        } catch (err) {
+            removeTyping(typingId);
+            appendMessage('bot', "Lo siento, ha habido un problema técnico. Por favor, inténtalo de nuevo.");
         }
     }
 
-    function appendMessage(text, side) {
-        const group = document.createElement('div');
-        group.className = `ai-msg-group ${side}`;
-        
-        const meta = document.createElement('div');
-        meta.className = 'ai-msg-meta';
-        const now = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        meta.innerText = side === 'user' ? `Tú ${now}` : `Fenix AI ${now}`;
-        
-        const bubble = document.createElement('div');
-        bubble.className = `ai-bubble ${side}`;
-        
-        // Basic Markdown support (simplified for Vanilla JS)
-        let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        html = html.replace(/\n/g, '<br>');
-        
-        // Handle Suggestions [Label](suggestion:text)
-        const suggestions = [];
-        html = html.replace(/\[(.*?)\]\(suggestion:(.*?)\)/g, (match, label, suggestion) => {
-            suggestions.push({label, suggestion});
-            return '';
-        });
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-        bubble.innerHTML = html;
-        
-        if (suggestions.length > 0) {
-            const suggContainer = document.createElement('div');
-            suggContainer.style.display = 'flex';
-            suggContainer.style.flexWrap = 'wrap';
-            suggContainer.style.gap = '8px';
-            suggContainer.style.marginTop = '12px';
-            
-            suggestions.forEach(s => {
-                const btn = document.createElement('button');
-                btn.className = 'ai-suggestion';
-                btn.innerText = s.label;
-                btn.onclick = () => sendMessage(s.suggestion);
-                suggContainer.appendChild(btn);
-            });
-            bubble.appendChild(suggContainer);
-        }
+    function appendMessage(role, text) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `ai-msg-group ${role}`;
+        msgDiv.style.alignSelf = role === 'user' ? 'flex-end' : 'flex-start';
+        msgDiv.style.maxWidth = '90%';
+        msgDiv.style.display = 'flex';
+        msgDiv.style.flexDirection = 'column';
+        msgDiv.style.alignItems = role === 'user' ? 'flex-end' : 'flex-start';
 
-        group.appendChild(meta);
-        group.appendChild(bubble);
-        messagesContainer.appendChild(group);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        msgDiv.innerHTML = `
+            <div class="ai-msg-meta" style="font-size: 10px; font-weight: 800; color: #94a3b8; margin-bottom: 6px; text-transform: uppercase;">${role === 'user' ? 'Tú' : 'Fenix AI'}</div>
+            <div class="ai-bubble ${role}" style="background: ${role === 'user' ? '#2563eb' : 'white'}; color: ${role === 'user' ? 'white' : '#334155'}; border: ${role === 'user' ? 'none' : '1px solid #f1f5f9'}; padding: 14px 18px; border-radius: 18px; border-top-${role === 'user' ? 'right' : 'left'}-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); font-size: 14px; line-height: 1.5;">
+                ${text}
+            </div>
+        `;
+        messagesArea.appendChild(msgDiv);
+        messagesArea.scrollTop = messagesArea.scrollHeight;
     }
 
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
+    function appendTyping() {
+        const id = 'typing-' + Date.now();
+        const msgDiv = document.createElement('div');
+        msgDiv.id = id;
+        msgDiv.className = 'ai-msg-group bot';
+        msgDiv.style.alignSelf = 'flex-start';
+        msgDiv.innerHTML = `<div class="ai-bubble bot" style="background: white; border: 1px solid #f1f5f9; padding: 14px 18px; border-radius: 18px; font-size: 14px; color: #94a3b8;">Escribiendo...</div>`;
+        messagesArea.appendChild(msgDiv);
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+        return id;
     }
 
-    sendBtn.addEventListener('click', () => sendMessage());
-    userInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
-    });
+    function removeTyping(id) {
+        const el = document.getElementById(id);
+        if (el) el.remove();
+    }
 });
 </script>

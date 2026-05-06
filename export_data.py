@@ -38,7 +38,7 @@ except Exception as e:
     print("Intentando exportar app por app...")
     apps_to_export = [
         'accounts', 'catalog', 'orders', 'recurring',
-        'notifications', 'core', 'organizations', 'auth.Group',
+        'notifications', 'core', 'auth.Group',
     ]
     all_data = []
     import json
