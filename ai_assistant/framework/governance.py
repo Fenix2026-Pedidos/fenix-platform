@@ -23,8 +23,14 @@ class SynergIAGovernance:
     ]
     
     @classmethod
-    def get_system_prompt(cls, knowledge_base=""):
-        rules_str = "\n    ".join(cls.RULES)
+    def get_system_prompt(cls, knowledge_base="", is_authenticated=False):
+        rules = cls.RULES.copy()
+        if is_authenticated:
+            rules.append("REGLA CRÍTICA DE PRECIOS (ZONA PRIVADA - AUTENTICADO): El usuario ha iniciado sesión. Tienes permiso absoluto para mostrar precios exactos del catálogo y guiarle con su compra.")
+        else:
+            rules.append("REGLA CRÍTICA DE PRECIOS (ZONA PÚBLICA - NO AUTENTICADO): El usuario NO ha iniciado sesión. Tienes TERMINANTEMENTE PROHIBIDO revelar precios exactos en euros (€), ofertas monetarias específicas o costes del catálogo. Si preguntan por precios, indícales amablemente que deben registrarse o iniciar sesión en Fenix para visualizar las tarifas oficiales y rellenar su carrito.")
+        
+        rules_str = "\n    ".join(rules)
         return f"""ERES {cls.IDENTITY} de {cls.TEAM}.
     
     INSTRUCCIÓN CRÍTICA DE PRIVACIDAD:

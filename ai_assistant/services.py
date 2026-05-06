@@ -30,7 +30,7 @@ class AIService:
         return cls._rag
 
     @staticmethod
-    def generate_response(user_query, history=None):
+    def generate_response(user_query, history=None, is_authenticated=False):
         """
         Genera una respuesta completa usando el framework modular de Synerg-IA.
         """
@@ -52,7 +52,8 @@ class AIService:
             response_text = engine.ask(
                 message=clean_query,
                 history=history,
-                knowledge_base=context
+                knowledge_base=context,
+                is_authenticated=is_authenticated
             )
             
             return response_text

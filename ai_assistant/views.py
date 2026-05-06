@@ -184,7 +184,7 @@ def assistant_chat(request):
             })
 
         # Generar respuesta
-        ai_response = AIService.generate_response(user_message, history=history)
+        ai_response = AIService.generate_response(user_message, history=history, is_authenticated=request.user.is_authenticated)
         
         lead.queries_used += 1
         lead.save()

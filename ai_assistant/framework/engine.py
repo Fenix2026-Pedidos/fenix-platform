@@ -14,8 +14,8 @@ class SynergIAEngine:
     def __init__(self, api_key):
         self.api_key = api_key
         # Configuración de modelos (v1beta para soporte de system_instruction nativo)
-        self.primary_model_name = "gemini-1.5-pro"
-        self.fallback_model_name = "gemini-1.5-flash"
+        self.primary_model_name = "gemini-2.5-pro"
+        self.fallback_model_name = "gemini-2.5-flash"
         
         if api_key:
             genai.configure(api_key=api_key)
@@ -46,12 +46,12 @@ class SynergIAEngine:
         response = chat.send_message(message)
         return response.text
 
-    def ask(self, message, history=None, knowledge_base=""):
+    def ask(self, message, history=None, knowledge_base="", is_authenticated=False):
         """
         Método principal con lógica de Failover.
         """
         # 1. Preparar instrucciones del sistema (Gobernanza)
-        system_instruction = SynergIAGovernance.get_system_prompt(knowledge_base)
+        system_instruction = SynergIAGovernance.get_system_prompt(knowledge_base, is_authenticated=is_authenticated)
         
         # 2. Limpiar historia: Google exige que el primer mensaje sea siempre del 'user'
         sanitized_history = history or []

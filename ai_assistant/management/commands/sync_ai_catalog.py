@@ -27,8 +27,23 @@ class Command(BaseCommand):
         # Inicializar el gestor de RAG
         rag = SynergIARAG(getattr(settings, 'GOOGLE_API_KEY', ''))
 
-        # 2. Inyectar Contexto General del Sistema (Fenix)
+        # 2. Inyectar Contexto General del Sistema (Fenix y Backoffice Settings)
+        try:
+            from core.models import PlatformSettings
+            settings_obj = PlatformSettings.get_settings()
+            backoffice_context = (
+                f"Configuración oficial y políticas de la plataforma Fenix (Backoffice):\n"
+                f"- Email de soporte y recepción de pedidos: {settings_obj.order_notification_email}\n"
+                f"- Remitente de correos del sistema: {settings_obj.email_from} (Nombre: {settings_obj.email_from_name})\n"
+                f"- Ventana de entrega de pedidos por defecto: {settings_obj.default_delivery_window_hours} horas laborables.\n"
+                f"- Idioma principal del sitio: {dict(PlatformSettings.LANGUAGE_CHOICES).get(settings_obj.default_language, 'Español')}"
+            )
+        except Exception as e:
+            logger.error(f"Error al cargar PlatformSettings para RAG: {e}")
+            backoffice_context = "Configuración del backoffice: Pedido mínimo de 50€, envíos urgentes en 24/48 horas laborables."
+
         system_contexts = [
+            backoffice_context,
             """
             Fenix es una plataforma B2B de distribución mayorista.
             La empresa Fenix se dedica a la venta y distribución de productos de alimentación premium para hostelería y comercios.
