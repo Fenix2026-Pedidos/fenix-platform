@@ -494,13 +494,54 @@ document.addEventListener('DOMContentLoaded', function() {
     function formatMessageText(text) {
         if (!text) return "";
         
-        // Convertir patrones [Texto del Botón](suggestion:Consulta del usuario) en botones píldora interactivos reales
-        let formatted = text.replace(/\[(.*?)\]\(suggestion:(.*?)\)/g, (match, btnText, query) => {
+        // 1. Extraer los botones CTA de sugerencia para mostrarlos como un bloque separado de acciones al final
+        const suggestions = [];
+        let cleanText = text.replace(/\[(.*?)\]\(suggestion:(.*?)\)/g, (match, btnText, query) => {
             const escapedQuery = query.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-            return `<button class="ai-suggestion-pill" onclick="window.sendAIQuery('${escapedQuery}')" style="display: inline-block; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 600; margin: 6px 4px 0 0; cursor: pointer; transition: all 0.2s; outline: none; line-height: 1.2;" onmouseover="this.style.background='#dbeafe'; this.style.borderColor='#3b82f6'" onmouseout="this.style.background='#eff6ff'; this.style.borderColor='#bfdbfe'">${btnText}</button>`;
+            const btnHtml = `<button class="ai-suggestion-pill" onclick="window.sendAIQuery('${escapedQuery}')" style="display: inline-block; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; border-radius: 20px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; outline: none; line-height: 1.2; box-shadow: 0 2px 4px rgba(37,99,235,0.04); margin: 4px;" onmouseover="this.style.background='#dbeafe'; this.style.borderColor='#3b82f6'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#eff6ff'; this.style.borderColor='#bfdbfe'; this.style.transform='none'">${btnText}</button>`;
+            suggestions.push(btnHtml);
+            return "";
+        });
+
+        // Limpiar espacios y normalizar saltos de línea
+        cleanText = cleanText.trim().replace(/\r\n/g, "\n");
+
+        // 2. Renderizar Encabezados (###, ##, #) con estilos elegantes y margen inferior
+        cleanText = cleanText.replace(/^### (.*?)$/gm, '<h5 style="font-weight: 800; font-size: 14px; color: #0f172a; margin-top: 14px; margin-bottom: 8px; letter-spacing: -0.01em; line-height: 1.4;">$1</h5>');
+        cleanText = cleanText.replace(/^## (.*?)$/gm, '<h4 style="font-weight: 800; font-size: 15px; color: #0f172a; margin-top: 16px; margin-bottom: 10px; letter-spacing: -0.01em; line-height: 1.4;">$1</h4>');
+        cleanText = cleanText.replace(/^# (.*?)$/gm, '<h3 style="font-weight: 800; font-size: 16px; color: #0f172a; margin-top: 18px; margin-bottom: 12px; letter-spacing: -0.02em; line-height: 1.4;">$1</h3>');
+
+        // 3. Renderizar Negritas (**texto**)
+        cleanText = cleanText.replace(/\*\*(.*?)\*\*/g, '<strong style="font-weight: 700; color: #0f172a;">$1</strong>');
+
+        // 4. Renderizar Listas con viñetas reales estilizadas en azul Fenix
+        cleanText = cleanText.replace(/^\s*[-*•]\s+(.*?)$/gm, '<div style="display: flex; gap: 8px; margin-left: 8px; margin-bottom: 8px; align-items: flex-start;"><span style="color: #2563eb; font-weight: bold; flex-shrink: 0; line-height: 1.4;">•</span><span style="line-height: 1.6; color: #334155;">$1</span></div>');
+
+        // 5. Organizar párrafos con márgenes cómodos para evitar bloques enormes sin respiración
+        const blocks = cleanText.split(/\n{2,}/);
+        const processedBlocks = blocks.map(block => {
+            const trimmed = block.trim();
+            if (!trimmed) return "";
+            
+            // Si el bloque es una lista div, encabezado o ya tiene formato HTML complejo, no envolverlo en <p>
+            if (trimmed.startsWith('<div') || trimmed.startsWith('<h') || trimmed.startsWith('<p') || trimmed.startsWith('<strong')) {
+                return trimmed;
+            }
+            
+            // Reemplazar saltos de línea simples por etiquetas <br>
+            const content = trimmed.replace(/\n/g, '<br>');
+            return `<p style="margin-bottom: 12px; line-height: 1.75; color: #334155;">${content}</p>`;
         });
         
-        return formatted;
+        let formattedHtml = processedBlocks.filter(b => b !== "").join("");
+
+        // 6. Añadir los botones de acción perfectamente alineados debajo de la respuesta
+        if (suggestions.length > 0) {
+            const suggestionBlock = `<div class="ai-suggestions-container" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px dashed #e2e8f0; width: 100%; justify-content: flex-start;">${suggestions.join("")}</div>`;
+            formattedHtml += suggestionBlock;
+        }
+        
+        return formattedHtml;
     }
 
     async function sendMessage() {
@@ -534,7 +575,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const msgDiv = document.createElement('div');
         msgDiv.className = `ai-msg-group ${role}`;
         msgDiv.style.alignSelf = role === 'user' ? 'flex-end' : 'flex-start';
-        msgDiv.style.maxWidth = '90%';
+        msgDiv.style.maxWidth = '85%';
         msgDiv.style.display = 'flex';
         msgDiv.style.flexDirection = 'column';
         msgDiv.style.alignItems = role === 'user' ? 'flex-end' : 'flex-start';
@@ -543,7 +584,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         msgDiv.innerHTML = `
             <div class="ai-msg-meta" style="font-size: 10px; font-weight: 800; color: #94a3b8; margin-bottom: 6px; text-transform: uppercase;">${role === 'user' ? 'Tú' : 'Fenix AI'}</div>
-            <div class="ai-bubble ${role}" style="background: ${role === 'user' ? '#2563eb' : 'white'}; color: ${role === 'user' ? 'white' : '#334155'}; border: ${role === 'user' ? 'none' : '1px solid #f1f5f9'}; padding: 14px 18px; border-radius: 18px; border-top-${role === 'user' ? 'right' : 'left'}-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); font-size: 14px; line-height: 1.5;">
+            <div class="ai-bubble ${role}" style="background: ${role === 'user' ? '#2563eb' : 'white'}; color: ${role === 'user' ? 'white' : '#334155'}; border: ${role === 'user' ? 'none' : '1px solid #f1f5f9'}; padding: 16px 20px; border-radius: 18px; border-top-${role === 'user' ? 'right' : 'left'}-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); font-size: 14px; line-height: 1.75;">
                 ${content}
             </div>
         `;
@@ -557,7 +598,7 @@ document.addEventListener('DOMContentLoaded', function() {
         msgDiv.id = id;
         msgDiv.className = 'ai-msg-group bot';
         msgDiv.style.alignSelf = 'flex-start';
-        msgDiv.innerHTML = `<div class="ai-bubble bot" style="background: white; border: 1px solid #f1f5f9; padding: 14px 18px; border-radius: 18px; font-size: 14px; color: #94a3b8;">Escribiendo...</div>`;
+        msgDiv.innerHTML = `<div class="ai-bubble bot" style="background: white; border: 1px solid #f1f5f9; padding: 16px 20px; border-radius: 18px; font-size: 14px; color: #94a3b8; line-height: 1.75;">Escribiendo...</div>`;
         messagesArea.appendChild(msgDiv);
         messagesArea.scrollTop = messagesArea.scrollHeight;
         return id;
