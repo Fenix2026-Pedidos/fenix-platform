@@ -160,45 +160,72 @@ def assistant_chat(request):
         data = json.loads(request.body)
         user_message = data.get('message', '').strip()
         history = data.get('history', [])
-        # Extraer el email del lead de manera flexible y tolerante
-        email = None
-        lead_info = data.get('lead')
-        if isinstance(lead_info, dict):
-            email = lead_info.get('email')
-        elif isinstance(lead_info, str):
-            email = lead_info
-            
-        if not email:
-            email = data.get('lead_id') or data.get('email')
-            
-        if not email:
-            return JsonResponse({'error': 'Acceso denegado. Se requiere el email del lead.'}, status=403)
-        lead = AILead.objects.filter(email=email).first()
-
-        if not lead or not lead.email_verified:
-            return JsonResponse({'error': 'Debes verificar tu email primero.'}, status=401)
-
-        # Control de cuota (24h)
-        if lead.reset_at and timezone.now() > lead.reset_at:
-            lead.queries_used = 0
-            lead.reset_at = timezone.now() + timedelta(days=1)
-            lead.save()
-
-        if lead.queries_used >= 4:
-            return JsonResponse({
-                'response': 'Has alcanzado el límite de consultoría gratuita. Agenda una cita.',
-                'is_quota_exceeded': True
-            })
-
-        # Generar respuesta
-        ai_response = AIService.generate_response(user_message, history=history, is_authenticated=request.user.is_authenticated)
+        is_auth = request.user.is_authenticated
         
+        if is_auth:
+            user = request.user
+            email = user.email
+            
+            # Obtener o crear AILead para mantener compatibilidad con contadores u otros procesos
+            lead, created = AILead.objects.get_or_create(
+                email=email,
+                defaults={
+                    'name': user.display_name if hasattr(user, 'display_name') else user.full_name,
+                    'phone_prefix': '+34',
+                    'phone_number': user.phone or getattr(user, 'telefono_reparto', '') or '',
+                    'email_verified': True
+                }
+            )
+            if not lead.email_verified:
+                lead.email_verified = True
+                lead.save()
+        else:
+            # Flujo Anónimo: requiere lead registrado y email verificado
+            email = None
+            lead_info = data.get('lead')
+            if isinstance(lead_info, dict):
+                email = lead_info.get('email')
+            elif isinstance(lead_info, str):
+                email = lead_info
+                
+            if not email:
+                email = data.get('lead_id') or data.get('email')
+                
+            if not email:
+                return JsonResponse({'error': 'Acceso denegado. Se requiere el email del lead.'}, status=403)
+                
+            lead = AILead.objects.filter(email=email).first()
+            if not lead or not lead.email_verified:
+                return JsonResponse({'error': 'Debes verificar tu email primero.'}, status=401)
+
+        # Control de cuota (Solo aplica a leads anónimos, usuarios registrados tienen consultas ilimitadas)
+        if not is_auth:
+            if lead.reset_at and timezone.now() > lead.reset_at:
+                lead.queries_used = 0
+                lead.reset_at = timezone.now() + timedelta(days=1)
+                lead.save()
+
+            if lead.queries_used >= 4:
+                return JsonResponse({
+                    'response': 'Has alcanzado el límite de consultoría gratuita. Agenda una cita.',
+                    'is_quota_exceeded': True
+                })
+
+        # Generar respuesta incluyendo objeto de usuario autenticado para RAG personalizado
+        ai_response = AIService.generate_response(
+            user_message, 
+            history=history, 
+            is_authenticated=is_auth,
+            user=request.user if is_auth else None
+        )
+        
+        # Incrementar contador (solo para control analítico, o cuota si es anónimo)
         lead.queries_used += 1
         lead.save()
         
         return JsonResponse({
             'response': ai_response,
-            'queries_remaining': max(0, 4 - lead.queries_used)
+            'queries_remaining': 999 if is_auth else max(0, 4 - lead.queries_used)
         })
 
     except Exception as e:

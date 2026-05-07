@@ -30,7 +30,7 @@ class AIService:
         return cls._rag
 
     @staticmethod
-    def generate_response(user_query, history=None, is_authenticated=False):
+    def generate_response(user_query, history=None, is_authenticated=False, user=None):
         """
         Genera una respuesta completa usando el framework modular de Synerg-IA.
         """
@@ -46,6 +46,21 @@ class AIService:
             # 3. Recuperación de Contexto (RAG)
             rag = AIService.get_rag()
             context = rag.get_relevant_context(clean_query)
+            
+            # Si el cliente está autenticado, inyectar dinámicamente sus datos en el contexto de conocimiento
+            if is_authenticated and user:
+                user_role_display = user.get_role_display() if hasattr(user, 'get_role_display') else getattr(user, 'role', 'user')
+                user_info_block = f"""
+INFORMACIÓN DEL CLIENTE ACTUAL AUTENTICADO:
+- ID de Usuario: {user.id}
+- Nombre Completo: {user.display_name if hasattr(user, 'display_name') else user.full_name}
+- Email: {user.email}
+- Teléfono: {user.phone or getattr(user, 'telefono_reparto', '') or 'No especificado'}
+- Empresa/Negocio: {user.company or 'No especificada'}
+- Rol/Perfil de Acceso: {user_role_display}
+- Estado del Perfil Operativo (Requerido para pedidos): {"Completado" if getattr(user, 'profile_completed', False) else "Incompleto"}
+"""
+                context = user_info_block + "\n" + context
             
             # 4. Generación con Failover (Engine)
             engine = AIService.get_engine()
