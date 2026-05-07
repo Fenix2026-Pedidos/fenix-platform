@@ -163,10 +163,17 @@ else:
     }
 
 # Email (notificaciones)
-EMAIL_BACKEND = os.getenv(
-    'EMAIL_BACKEND',
-    'django.core.mail.backends.console.EmailBackend' if not os.getenv('EMAIL_HOST') else 'django.core.mail.backends.smtp.EmailBackend',
-)
+_resend_api_key = os.getenv('RESEND_API_KEY', '')
+if _resend_api_key:
+    EMAIL_BACKEND = 'core.email_backends.ResendEmailBackend'
+    RESEND_API_KEY = _resend_api_key
+    RESEND_DEFAULT_FROM = os.getenv('RESEND_DEFAULT_FROM', 'onboarding@resend.dev')
+else:
+    EMAIL_BACKEND = os.getenv(
+        'EMAIL_BACKEND',
+        'django.core.mail.backends.console.EmailBackend' if not os.getenv('EMAIL_HOST') else 'django.core.mail.backends.smtp.EmailBackend',
+    )
+
 EMAIL_HOST = os.getenv('EMAIL_HOST', '')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')

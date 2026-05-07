@@ -377,8 +377,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             if (data.success) {
                 currentLead = data.email; // Usamos el email como identificador
+                
+                // BYPASS OTP: Ir directamente al chat activo sin pasar por la pantalla de OTP
                 stepLead.classList.add('hidden');
-                stepOtp.classList.remove('hidden');
+                
+                // Activar e inicializar los controles de chat
+                const chatInput = document.getElementById('ai-user-input');
+                const chatSendBtn = document.getElementById('ai-send-btn');
+                chatInput.disabled = false;
+                chatInput.style.opacity = '1';
+                chatSendBtn.disabled = false;
+                chatSendBtn.style.cursor = 'pointer';
+                
+                appendMessage('bot', "<strong>¡Hola! 👋 Bienvenido a Fénix.</strong><br>Estoy aquí para ayudarte a encontrar productos, promociones y gestionar tus pedidos de forma rápida.");
+                setTimeout(() => {
+                    appendMessage('bot', "Puedes preguntarme por alimentación, bebidas, charcutería, congelados o recomendaciones para tu negocio.<br><br>¿Qué necesitas hoy?");
+                }, 800);
             } else {
                 alert(data.error || "Error al capturar datos");
             }
@@ -472,6 +486,23 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // --- CHAT LOGIC ---
+    window.sendAIQuery = function(query) {
+        userInput.value = query;
+        sendMessage();
+    };
+
+    function formatMessageText(text) {
+        if (!text) return "";
+        
+        // Convertir patrones [Texto del Botón](suggestion:Consulta del usuario) en botones píldora interactivos reales
+        let formatted = text.replace(/\[(.*?)\]\(suggestion:(.*?)\)/g, (match, btnText, query) => {
+            const escapedQuery = query.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            return `<button class="ai-suggestion-pill" onclick="window.sendAIQuery('${escapedQuery}')" style="display: inline-block; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 600; margin: 6px 4px 0 0; cursor: pointer; transition: all 0.2s; outline: none; line-height: 1.2;" onmouseover="this.style.background='#dbeafe'; this.style.borderColor='#3b82f6'" onmouseout="this.style.background='#eff6ff'; this.style.borderColor='#bfdbfe'">${btnText}</button>`;
+        });
+        
+        return formatted;
+    }
+
     async function sendMessage() {
         const text = userInput.value.trim();
         if (!text) return;
@@ -508,10 +539,12 @@ document.addEventListener('DOMContentLoaded', function() {
         msgDiv.style.flexDirection = 'column';
         msgDiv.style.alignItems = role === 'user' ? 'flex-end' : 'flex-start';
 
+        const content = role === 'user' ? text : formatMessageText(text);
+
         msgDiv.innerHTML = `
             <div class="ai-msg-meta" style="font-size: 10px; font-weight: 800; color: #94a3b8; margin-bottom: 6px; text-transform: uppercase;">${role === 'user' ? 'Tú' : 'Fenix AI'}</div>
             <div class="ai-bubble ${role}" style="background: ${role === 'user' ? '#2563eb' : 'white'}; color: ${role === 'user' ? 'white' : '#334155'}; border: ${role === 'user' ? 'none' : '1px solid #f1f5f9'}; padding: 14px 18px; border-radius: 18px; border-top-${role === 'user' ? 'right' : 'left'}-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); font-size: 14px; line-height: 1.5;">
-                ${text}
+                ${content}
             </div>
         `;
         messagesArea.appendChild(msgDiv);

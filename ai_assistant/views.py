@@ -33,7 +33,7 @@ def capture_lead(request):
         otp = str(random.randint(100000, 999999))
         expires_at = timezone.now() + timedelta(minutes=10)
 
-        # 2. Crear o actualizar lead
+        # 2. Crear o actualizar lead (Bypass OTP activo: email_verified=True por defecto)
         lead, created = AILead.objects.update_or_create(
             email=email,
             defaults={
@@ -43,7 +43,7 @@ def capture_lead(request):
                 'otp_code': otp,
                 'otp_expires_at': expires_at,
                 'otp_attempts': 0,
-                'email_verified': False
+                'email_verified': True
             }
         )
 
@@ -159,13 +159,20 @@ def assistant_chat(request):
     try:
         data = json.loads(request.body)
         user_message = data.get('message', '').strip()
-        lead_info = data.get('lead')
         history = data.get('history', [])
-        
-        if not lead_info or not lead_info.get('email'):
-            return JsonResponse({'error': 'Acceso denegado.'}, status=403)
-
-        email = lead_info.get('email')
+        # Extraer el email del lead de manera flexible y tolerante
+        email = None
+        lead_info = data.get('lead')
+        if isinstance(lead_info, dict):
+            email = lead_info.get('email')
+        elif isinstance(lead_info, str):
+            email = lead_info
+            
+        if not email:
+            email = data.get('lead_id') or data.get('email')
+            
+        if not email:
+            return JsonResponse({'error': 'Acceso denegado. Se requiere el email del lead.'}, status=403)
         lead = AILead.objects.filter(email=email).first()
 
         if not lead or not lead.email_verified:
