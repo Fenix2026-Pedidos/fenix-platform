@@ -5,9 +5,7 @@
         <!-- Header: Réplica 1:1 Synerg-IA -->
         <div id="ai-chat-header" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #f1f5f9; background: white;">
             <div class="ai-header-info" style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 2px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.08); position: relative; flex-shrink: 0;">
-                    <img src="{% static 'images/Neus.png' %}" alt="Neus Avatar" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.45);">
-                </div>
+                <img src="{% static 'images/Neus.png' %}" alt="Neus Avatar" style="width: 67px !important; height: 67px !important; object-fit: contain !important; border: none !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important; overflow: visible !important; flex-shrink: 0 !important;">
                 <div>
                     <div class="ai-title" style="font-weight: 800; font-size: 16px; color: #0f172a; line-height: 1.2;">Neus</div>
                     <div class="ai-subtitle" style="font-size: 11px; color: #64748b; display: flex; align-items: center; gap: 6px; margin-top: 2px;">
@@ -142,18 +140,18 @@
     </div>
 
     <!-- Hover Tooltip -->
-    <div id="ai-hover-tooltip" style="position: absolute; right: 90px; bottom: 20px; background: white; color: #0f172a; padding: 10px 14px; border-radius: 12px; border-bottom-right-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid #f1f5f9; font-size: 12px; font-weight: 600; white-space: nowrap; pointer-events: none; opacity: 0; transform: translateX(10px); transition: opacity 0.2s, transform 0.2s; z-index: 5;">
+    <div id="ai-hover-tooltip" style="position: absolute; background: white; color: #0f172a; padding: 10px 14px; border-radius: 12px; border-bottom-right-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid #f1f5f9; font-size: 12px; font-weight: 600; white-space: nowrap; pointer-events: none; opacity: 0; transform: translateY(10px); transition: opacity 0.2s, transform 0.2s; z-index: 5;">
         ¿Te ayudo con pedidos y promociones?
     </div>
 
     <!-- Botón Flotante Principal -->
-    <div id="ai-chat-button-container" style="position: relative;">
+    <div id="ai-chat-button-container" style="position: relative; display: inline-block;">
         <div class="ai-pulse-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #2563eb; border-radius: 50%; opacity: 0.2; animation: ai-pulse 2s infinite;"></div>
-        <button id="ai-chat-button" class="ai-fab-btn" style="background: #2563eb; border: none; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 30px rgba(37,99,235,0.4); position: relative; z-index: 10; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding: 0; overflow: hidden;">
-            <div id="ai-icon-closed" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
-                <img src="{% static 'images/Neus.png' %}" alt="Neus" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.45);">
+        <button id="ai-chat-button" class="ai-fab-btn" style="background: transparent !important; border: none !important; border-radius: 0 !important; color: white; display: block !important; cursor: pointer; box-shadow: none !important; position: relative; z-index: 10; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding: 0 !important; overflow: visible !important; margin: 0 !important;">
+            <div id="ai-icon-closed" style="width: 100% !important; height: 100% !important; display: block; overflow: visible !important; margin: 0 !important; padding: 0 !important; border-radius: 0 !important; position: relative;">
+                <img src="{% static 'images/Neus.png' %}" alt="Neus" style="width: 100% !important; height: 100% !important; max-width: none !important; max-height: none !important; object-fit: contain !important; display: block !important; margin: 0 !important; padding: 0 !important; border: none !important; background: transparent !important; box-shadow: none !important; border-radius: 0 !important; overflow: visible !important;">
             </div>
-            <div id="ai-icon-open" class="hidden" style="position: absolute;">
+            <div id="ai-icon-open" class="hidden" style="position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; display: flex; align-items: center; justify-content: center; margin: 0 !important; padding: 0 !important; border-radius: 50% !important; background: #0f172a !important; box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </div>
         </button>
@@ -172,8 +170,13 @@
 
 /* FAB Responsive Sizes */
 #ai-chat-button {
-    width: 120px !important;
-    height: 120px !important;
+    width: 126px !important;
+    height: 126px !important;
+}
+
+#ai-hover-tooltip {
+    right: 0px !important;
+    bottom: 141px !important;
 }
 
 #ai-chat-button.ai-fab-open {
@@ -183,8 +186,12 @@
 
 @media (max-width: 768px) {
     #ai-chat-button {
-        width: 86px !important;
-        height: 86px !important;
+        width: 90px !important;
+        height: 90px !important;
+    }
+    #ai-hover-tooltip {
+        right: 0px !important;
+        bottom: 104px !important;
     }
     #ai-chat-button.ai-fab-open {
         width: 50px !important;
@@ -276,12 +283,12 @@ document.addEventListener('DOMContentLoaded', function() {
     chatButton.addEventListener('mouseenter', () => {
         if (!isMobile && chatWindow.classList.contains('hidden') && expandedCard.classList.contains('hidden')) {
             hoverTooltip.style.opacity = '1';
-            hoverTooltip.style.transform = 'translateX(0)';
+            hoverTooltip.style.transform = 'translateY(0)';
         }
     });
     chatButton.addEventListener('mouseleave', () => {
         hoverTooltip.style.opacity = '0';
-        hoverTooltip.style.transform = 'translateX(10px)';
+        hoverTooltip.style.transform = 'translateY(10px)';
     });
 
     // --- TOGGLE CHAT ---
@@ -295,13 +302,13 @@ document.addEventListener('DOMContentLoaded', function() {
             hoverTooltip.style.opacity = '0';
             chatButton.classList.add('ai-fab-open');
             chatButton.style.transform = 'rotate(90deg)';
-            chatButton.style.background = '#0f172a';
+            chatButton.style.background = 'transparent';
         } else {
             iconClosed.classList.remove('hidden');
             iconOpen.classList.add('hidden');
             chatButton.classList.remove('ai-fab-open');
             chatButton.style.transform = 'rotate(0deg)';
-            chatButton.style.background = '#2563eb';
+            chatButton.style.background = 'transparent';
         }
     };
 
