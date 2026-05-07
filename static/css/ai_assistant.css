@@ -15,7 +15,7 @@
 #ai-assistant-container {
     position: fixed;
     bottom: 28px;
-    right: 32px;
+    right: 28px;
     z-index: 2147483647;
     display: block !important;
 }
