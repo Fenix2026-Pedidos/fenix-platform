@@ -211,7 +211,7 @@ def assistant_chat(request):
 
             if lead.queries_used >= 4:
                 return JsonResponse({
-                    'response': 'Has alcanzado el límite de consultoría gratuita por hoy (4 consultas diarias). Estaremos encantados de atenderte en una sesión de asesoramiento comercial personalizado.\n\n[Agendar Cita](/contacto/) [Hablar por WhatsApp](https://wa.me/34624149250)',
+                    'response': 'Has alcanzado el límite diario de consultoría gratuita. Estaremos encantados de atenderte en una sesión de asesoramiento comercial personalizado.\n\n[Agendar Cita](/contacto/) [Hablar por WhatsApp](https://wa.me/34624149250)',
                     'is_quota_exceeded': True
                 })
 
