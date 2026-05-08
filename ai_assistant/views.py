@@ -200,14 +200,18 @@ def assistant_chat(request):
 
         # Control de cuota (Solo aplica a leads anónimos, usuarios registrados tienen consultas ilimitadas)
         if not is_auth:
-            if lead.reset_at and timezone.now() > lead.reset_at:
+            # Corrección crítica: Si reset_at es None, lo inicializamos para permitir el reinicio de cuota dentro de 24h
+            if not lead.reset_at:
+                lead.reset_at = timezone.now() + timedelta(days=1)
+                lead.save()
+            elif timezone.now() > lead.reset_at:
                 lead.queries_used = 0
                 lead.reset_at = timezone.now() + timedelta(days=1)
                 lead.save()
 
             if lead.queries_used >= 4:
                 return JsonResponse({
-                    'response': 'Has alcanzado el límite de consultoría gratuita. Agenda una cita.',
+                    'response': 'Has alcanzado el límite de consultoría gratuita por hoy (4 consultas diarias). Estaremos encantados de atenderte en una sesión de asesoramiento comercial personalizado.\n\n[Agendar Cita](/contacto/) [Hablar por WhatsApp](https://wa.me/34624149250)',
                     'is_quota_exceeded': True
                 })
 

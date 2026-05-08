@@ -503,6 +503,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return "";
         });
 
+        // 1b. Extraer enlaces markdown normales [Texto](url) y convertirlos en botones de acción reales
+        cleanText = cleanText.replace(/\[(.*?)\]\((?!suggestion:)(.*?)\)/g, (match, btnText, url) => {
+            const btnHtml = `<a href="${url}" target="_blank" style="display: inline-block; background: #2563eb; color: white; border: 1px solid #2563eb; border-radius: 20px; padding: 8px 16px; font-size: 13px; font-weight: 700; text-decoration: none; cursor: pointer; transition: all 0.2s; outline: none; line-height: 1.2; box-shadow: 0 4px 10px rgba(37,99,235,0.15); margin: 4px;" onmouseover="this.style.background='#1d4ed8'; this.style.borderColor='#1d4ed8'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#2563eb'; this.style.borderColor='#2563eb'; this.style.transform='none'">${btnText}</a>`;
+            suggestions.push(btnHtml);
+            return "";
+        });
+
         // Limpiar espacios y normalizar saltos de línea
         cleanText = cleanText.trim().replace(/\r\n/g, "\n");
 
