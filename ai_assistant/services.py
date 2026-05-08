@@ -47,6 +47,11 @@ class AIService:
             rag = AIService.get_rag()
             context = rag.get_relevant_context(clean_query)
             
+            # Inyectar dinámicamente el Menú Inteligente del Catálogo real de la BBDD
+            from .catalog_menu import build_smart_menu_prompt
+            smart_menu_prompt = build_smart_menu_prompt()
+            context = smart_menu_prompt + "\n" + context
+            
             # Si el cliente está autenticado, inyectar dinámicamente sus datos en el contexto de conocimiento
             if is_authenticated and user:
                 user_role_display = user.get_role_display() if hasattr(user, 'get_role_display') else getattr(user, 'role', 'user')

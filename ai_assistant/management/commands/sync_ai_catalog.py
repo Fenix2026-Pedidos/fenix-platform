@@ -129,10 +129,11 @@ class Command(BaseCommand):
 
             content = (
                 f"Catálogo de Productos Fenix - Información Comercial:\n"
+                f"ID_NUMERICO del Producto: {product.id}\n"
                 f"Nombre del Producto: {product.name_es}\n"
                 f"Referencia (SKU): {product.reference or 'N/A'}\n"
                 f"Precio: {product.price}€ por {product.unit_display or 'unidad'}\n"
-                f"Estado de Stock: {stock_str} ({product.stock_available} unidades disponibles)\n"
+                f"Estado de Disponibilidad: Siempre Disponible\n"
                 f"Promoción Activa: {promo_str}\n"
                 f"Categorías a las que pertenece: {cat_str}\n"
                 f"Características especiales y alérgenos: {feat_str}\n"

@@ -94,7 +94,7 @@ def _search_products(query: str) -> list[dict]:
         {
             'id': product.id,
             'title': product.name_es or product.name_zh_hans,
-            'subtitle': f"{_('Stock')}: {product.get_stock_status_display()}",
+            'subtitle': f"{_('Referencia')}: {product.reference}" if product.reference else "",
             'url': reverse('catalog:product_detail', args=[product.id]),
         }
         for product in qs

@@ -181,6 +181,25 @@ def product_list(request):
                         )
                 products = products.filter(feat_q)
 
+    # ── 3b. FILTRADO POR ETIQUETAS PROMOCIONALES (TAGS) ──────────────────────
+    active_tag = request.GET.get('tag', '').strip().lower()
+    if active_tag:
+        if active_tag in ['ofertas', 'oferta']:
+            products = products.filter(
+                Q(is_offer=True) |
+                Q(promo_label__in=['oferta_semana', 'oferta_flash', 'super_oferta', 'mejor_precio'])
+            )
+        elif active_tag in ['novedades', 'novedad']:
+            products = products.filter(
+                Q(is_new=True) |
+                Q(promo_label='novedad')
+            )
+        elif active_tag in ['mas-vendidos', 'mas_vendido', 'mas-vendido', 'bestseller']:
+            products = products.filter(
+                Q(is_best_seller=True) |
+                Q(promo_label='mas_vendido')
+            )
+
     # ── 4. ORDENACIÓN ─────────────────────────────────────────────────────────
     sort_by = request.GET.get('sort', 'relevance')
     if sort_by == 'price_asc':
@@ -224,6 +243,7 @@ def product_list(request):
         'page_size': page_size,
         'active_type': active_type,
         'active_features': feature_list,
+        'active_tag': active_tag,
         'lang': lang,
         'cart': cart,
         'featured_products': featured_products,
