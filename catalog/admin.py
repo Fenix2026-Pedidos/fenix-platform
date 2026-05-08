@@ -62,9 +62,17 @@ class ProductAdmin(admin.ModelAdmin):
     )
     list_filter = ('promo_label', 'stock_status', 'is_active', 'is_new', 'is_best_seller', 'is_offer')
     search_fields = ('name_es', 'name_zh_hans', 'reference')
-    readonly_fields = ('stock_status', 'created_at', 'image_preview', 'translate_button')
+    actions = ['batch_generate_ai_descriptions']
+    readonly_fields = (
+        'stock_status', 'created_at', 'image_preview', 'translate_button', 'generate_desc_button',
+        'description_ai_generated', 'description_source', 'description_last_generated_at'
+    )
     fieldsets = (
-        (None, {'fields': ('reference', 'name_es', 'name_zh_hans', 'description_es', 'description_zh_hans', 'translate_button', 'image', 'image_preview', 'price', 'unit_display', 'is_active')}),
+        (None, {'fields': ('reference', 'name_es', 'name_zh_hans', 'description_es', 'description_zh_hans', 'translate_button', 'generate_desc_button', 'image', 'image_preview', 'price', 'unit_display', 'is_active')}),
+        (_('Metadatos de IA (Solo lectura)'), {
+            'classes': ('collapse',),
+            'fields': ('description_ai_generated', 'description_source', 'description_last_generated_at')
+        }),
         (_('Etiqueta Promocional (Único Sistema)'), {'fields': ('promo_label',)}),
         (_('Stock (solo managers)'), {'fields': ('stock_available', 'stock_min_threshold', 'stock_status')}),
         (_('Etiquetas Especiales (LEGACY - No usar para badges)'), {
@@ -144,7 +152,7 @@ class ProductAdmin(admin.ModelAdmin):
     translate_button.allow_tags = True
     
     def get_urls(self):
-        """Añade URL personalizada para la traducción"""
+        """Añade URL de traducción y de generación de descripción por IA"""
         from django.urls import path
         urls = super().get_urls()
         custom_urls = [
@@ -152,6 +160,11 @@ class ProductAdmin(admin.ModelAdmin):
                 '<int:object_id>/translate/',
                 self.admin_site.admin_view(self.translate_view),
                 name='catalog_product_translate',
+            ),
+            path(
+                '<int:object_id>/generate_ai_desc/',
+                self.admin_site.admin_view(self.generate_ai_desc_view),
+                name='catalog_product_generate_ai_desc',
             ),
         ]
         return custom_urls + urls
@@ -222,4 +235,143 @@ class ProductAdmin(admin.ModelAdmin):
                 messages.warning(request, _('No se pudo traducir automáticamente: %(error)s') % {'error': str(e)})
         
         super().save_model(request, obj, form, change)
+
+    def generate_desc_button(self, obj):
+        """Botón para generar automáticamente la descripción del producto mediante Visión IA"""
+        if not obj or not obj.pk:
+            return mark_safe(f'<span style="color: #666; font-size: 12px;">{_("Guarda el producto primero para habilitar la generación de descripción.")}</span>')
+        
+        return mark_safe(
+            '<div style="background: #fdf6f0; border: 1px solid #f5e0cf; padding: 12px; border-radius: 6px; max-width: 600px; margin-top: 10px;">'
+            '<button type="button" onclick="generateAIDescription()" class="button" style="'
+            'background: #e67e22; color: white; border: none; padding: 8px 16px; '
+            'border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; margin-bottom: 8px;'
+            '">'
+            '✨ Generar descripción con Visión IA (OCR)'
+            '</button>'
+            '<p style="margin: 0; font-size: 12px; color: #555;">'
+            '<strong>¿Cómo funciona?</strong> Esta utilidad usa <strong>Gemini 2.5 Flash</strong> para analizar '
+            'visualmente el envase en la imagen, extraer marcas/textos y redactar una descripción comercial premium. '
+            'También se traducirá al chino automáticamente. Los textos resultantes se insertarán para tu revisión antes de guardar el formulario.'
+            '</p>'
+            '</div>'
+            '<script>'
+            'function generateAIDescription() {'
+            '  var btn = event.target; btn.textContent = "⌛ Analizando envase..."; btn.disabled = true;'
+            '  var currentPath = window.location.pathname;'
+            '  var parts = currentPath.split("/");'
+            '  var changeIndex = parts.indexOf("change");'
+            '  var baseAdminPath = "";'
+            '  if (changeIndex !== -1) {'
+            '    baseAdminPath = parts.slice(0, changeIndex).join("/") + "/";'
+            '  } else {'
+            '    baseAdminPath = currentPath.endsWith("/") ? currentPath : currentPath + "/";'
+            '  }'
+            '  var generateUrl = baseAdminPath + "generate_ai_desc/";'
+            '  fetch(generateUrl, {'
+            '    method: "POST",'
+            '    headers: { "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value }'
+            '  })'
+            '  .then(r => r.json())'
+            '  .then(data => {'
+            '    btn.textContent = "✨ Generar descripción con Visión IA (OCR)"; btn.disabled = false;'
+            '    if (data.success) {'
+            '      if (data.description_es) document.getElementById("id_description_es").value = data.description_es;'
+            '      if (data.description_zh_hans) document.getElementById("id_description_zh_hans").value = data.description_zh_hans;'
+            '      alert("¡Descripción generada y traducida con éxito! Revisa los cambios y haz clic en Guardar.");'
+            '    } else { alert("Error: " + (data.error || "No se pudo generar")); }'
+            '  })'
+            '  .catch(err => {'
+            '    btn.textContent = "✨ Generar descripción con Visión IA (OCR)"; btn.disabled = false;'
+            '    alert("Error de conexión: " + err);'
+            '  });'
+            '}'
+            '</script>'
+        )
+    generate_desc_button.short_description = 'Asistente de Descripción IA'
+    generate_desc_button.allow_tags = True
+
+    def generate_ai_desc_view(self, request, object_id):
+        """Vista para generar descripción del producto usando Visión IA"""
+        from django.http import JsonResponse
+        from django.utils import timezone
+        from ai_assistant.description_generator import DescriptionGenerator
+        
+        if request.method != 'POST':
+            return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=405)
+        
+        try:
+            product = Product.objects.get(pk=object_id)
+            result = DescriptionGenerator.generate_and_translate_for_product(product)
+            
+            desc_es = result.get('description_es', '')
+            desc_zh = result.get('description_zh_hans', '')
+            
+            if desc_es:
+                product.description_ai_generated = True
+                product.description_source = 'image_ocr' if product.image else 'ai_enriched'
+                product.description_last_generated_at = timezone.now()
+                product.save()
+                
+                return JsonResponse({
+                    'success': True,
+                    'description_es': desc_es,
+                    'description_zh_hans': desc_zh,
+                })
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'No se pudo generar una descripción válida'
+                })
+        except Product.DoesNotExist:
+            return JsonResponse({
+                'success': False,
+                'error': 'Producto no encontrado'
+            })
+        except Exception as e:
+            import traceback
+            logger.error(f"Error en generación AI de descripción: {traceback.format_exc()}")
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            })
+
+    def batch_generate_ai_descriptions(self, request, queryset):
+        """Acción en lote para generar descripciones mediante Visión IA"""
+        from django.utils import timezone
+        from ai_assistant.description_generator import DescriptionGenerator
+        
+        success_count = 0
+        error_count = 0
+        
+        for product in queryset:
+            desc_empty = (
+                not product.description_es or 
+                product.description_es.strip() == "" or 
+                "Sin descripción disponible" in product.description_es
+            )
+            
+            if desc_empty:
+                try:
+                    result = DescriptionGenerator.generate_and_translate_for_product(product)
+                    desc_es = result.get('description_es', '')
+                    desc_zh = result.get('description_zh_hans', '')
+                    
+                    if desc_es:
+                        product.description_es = desc_es
+                        product.description_zh_hans = desc_zh
+                        product.description_ai_generated = True
+                        product.description_source = 'image_ocr' if product.image else 'ai_enriched'
+                        product.description_last_generated_at = timezone.now()
+                        product.save()
+                        success_count += 1
+                except Exception as e:
+                    logger.error(f"Error generando descripción en lote para {product.name_es}: {e}")
+                    error_count += 1
+                    
+        self.message_user(
+            request,
+            _(f"Se han generado {success_count} descripciones con IA de forma exitosa. {error_count} errores.")
+        )
+    batch_generate_ai_descriptions.short_description = "✨ Generar descripción con IA (solo vacíos)"
 

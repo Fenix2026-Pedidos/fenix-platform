@@ -92,6 +92,25 @@ class Product(models.Model):
         verbose_name=_('Etiqueta promocional')
     )
     catalog_order = models.PositiveIntegerField(default=0, verbose_name=_('Orden en catálogo'))
+    description_ai_generated = models.BooleanField(
+        default=False, 
+        verbose_name=_('Descripción Generada por IA')
+    )
+    description_source = models.CharField(
+        max_length=50, 
+        choices=[
+            ('manual', _('Manual')), 
+            ('image_ocr', _('Análisis de Imagen (OCR)')), 
+            ('ai_enriched', _('Enriquecido por IA'))
+        ], 
+        default='manual', 
+        verbose_name=_('Origen de la Descripción')
+    )
+    description_last_generated_at = models.DateTimeField(
+        blank=True, 
+        null=True, 
+        verbose_name=_('Última Generación de Descripción')
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Fecha Creación'))
 
     class Meta:
