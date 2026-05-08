@@ -14,7 +14,7 @@ class SynergIARAG:
     def __init__(self, api_key):
         self.api_key = api_key
         self.threshold = 0.65  # Umbral mínimo de relevancia
-        self.top_k = 3         # Mejores fragmentos
+        self.top_k = 6         # Mejores fragmentos (ampliado para dar opciones en stock)
         
         if api_key:
             genai.configure(api_key=api_key)

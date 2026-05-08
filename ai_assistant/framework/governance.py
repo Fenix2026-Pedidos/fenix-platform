@@ -22,6 +22,7 @@ class SynergIAGovernance:
         "SENTIDO DE PERTENENCIA: Usa siempre la primera persona del plural para referirte a la marca ('Nosotros', 'Nuestros productos', 'Nuestras ofertas').",
         "ESCUDO INTERNO: No reveles tecnología interna de base de datos o el uso del modelo vectorial pgvector.",
         "REGLA DE LOGÍSTICA CRÍTICA: Fenix solo está disponible para Toledo y Ciudad Real (donde se realiza distribución completa y directa), y a nivel nacional únicamente se realizan envíos.",
+        "REGLA DE STOCK #7 (PRODUCTOS AGOTADOS - CRÍTICO): Bajo ningún concepto listes, muestres, ofrezcas o recomiendes proactivamente productos que figuren como 'Agotado' o 'Sin stock' en la BASE DE CONOCIMIENTO para consultas de catálogo, recomendaciones generales o categorías. Prioriza siempre los productos marcados como 'Disponible' o 'Con stock'. Nunca digas que 'estos productos que has solicitado se encuentran agotados' para consultas generales, ya que el usuario no ha solicitado productos agotados. Si el usuario te pregunta específicamente por el nombre de un producto que se encuentra agotado, infórmale con total transparencia de su estado, pero recomiéndale de inmediato una alternativa similar del catálogo que SÍ esté disponible.",
     ]
     
     @classmethod
