@@ -33,7 +33,8 @@
         <!-- Link simple a Catálogo (sin accordion) -->
         <div class="sidebar-menu-item">
             <a href="{% url 'catalog:product_list' %}"
-                class="sidebar-menu-link {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}">
+                class="sidebar-menu-link {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}"
+                id="sidebar-catalog-link">
                 <i class="bi bi-grid sidebar-menu-icon"></i>
                 <span class="sidebar-menu-text">{% trans "Catálogo" %}</span>
             </a>

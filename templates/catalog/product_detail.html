@@ -18,7 +18,7 @@
     <nav class="breadcrumb-nav" aria-label="breadcrumb">
         <ol class="breadcrumb-list">
             <li class="breadcrumb-item">
-                <a href="{% url 'catalog:product_list' %}">{% trans "Catálogo" %}</a>
+                <a href="{% url 'catalog:product_list' %}" id="breadcrumb-catalog-link">{% trans "Catálogo" %}</a>
             </li>
             <li class="breadcrumb-separator">
                 <i class="bi bi-chevron-right"></i>
@@ -27,6 +27,9 @@
                 {{ product.translated_name }}
             </li>
         </ol>
+        <a href="{% url 'catalog:product_list' %}" class="btn-back-action" id="detail-back-button">
+            <i class="bi bi-arrow-left"></i> {% trans "Volver al catálogo" %}
+        </a>
     </nav>
 
     <!-- Main Grid: Top Section (Image and Price) -->
@@ -148,6 +151,30 @@
             }
         } catch (error) {
             alert('{% trans "Error al añadir al carrito" %}');
+        }
+    });
+
+    // Volver a la posición exacta del catálogo preservando el estado (filtros, scroll, paginación)
+    document.addEventListener('DOMContentLoaded', function() {
+        const backBtn = document.getElementById('detail-back-button');
+        const breadcrumbLink = document.getElementById('breadcrumb-catalog-link');
+        const sidebarLink = document.getElementById('sidebar-catalog-link');
+
+        const isFromCatalog = document.referrer && (
+            document.referrer.includes('/catalog/') || 
+            new URL(document.referrer).pathname === '/' ||
+            new URL(document.referrer).pathname === '/catalog/'
+        );
+
+        if (isFromCatalog) {
+            const goBack = function(e) {
+                e.preventDefault();
+                history.back();
+            };
+
+            if (backBtn) backBtn.addEventListener('click', goBack);
+            if (breadcrumbLink) breadcrumbLink.addEventListener('click', goBack);
+            if (sidebarLink) sidebarLink.addEventListener('click', goBack);
         }
     });
 </script>

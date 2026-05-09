@@ -10,7 +10,38 @@
 
 /* --- Breadcrumb --- */
 .breadcrumb-nav {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.btn-back-action {
+    text-decoration: none;
+    color: var(--primary-600);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    padding: 6px 14px;
+    border: 1px solid var(--primary-100);
+    border-radius: 20px;
+    background: white;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    cursor: pointer;
+}
+
+.btn-back-action:hover {
+    color: var(--primary-700);
+    border-color: var(--primary-300);
+    background: var(--primary-50);
+    transform: translateX(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    text-decoration: none !important;
 }
 
 .breadcrumb-list {
@@ -18,6 +49,7 @@
     flex-wrap: wrap;
     list-style: none;
     padding: 0;
+    margin: 0;
     gap: 8px;
     align-items: center;
     font-size: 14px;
