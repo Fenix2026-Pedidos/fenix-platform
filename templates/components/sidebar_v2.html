@@ -75,6 +75,17 @@
         </div>
         {% endif %}
 
+        {# CRM Omnicanal (solo para staff) #}
+        {% if user.is_staff %}
+        <div class="sidebar-menu-item">
+            <a href="{% url 'crm:leads_list' %}"
+                class="sidebar-menu-link {% if 'crm' in request.path %}active{% endif %}">
+                <i class="bi bi-person-lines-fill sidebar-menu-icon"></i>
+                <span class="sidebar-menu-text">{% trans "CRM Leads" %}</span>
+            </a>
+        </div>
+        {% endif %}
+
         {# Administración Django (solo para staff) #}
         {% if user.is_staff %}
         <div class="sidebar-menu-item">

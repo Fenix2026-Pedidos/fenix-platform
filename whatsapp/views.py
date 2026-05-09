@@ -65,6 +65,19 @@ class SendWhatsAppMessageView(View):
                 page_url=page_url
             )
             
+            # Sincronizar con el CRM Omnicanal Unificado
+            try:
+                from crm.services import CRMLeadService
+                from crm.models import CRMLead
+                CRMLeadService.log_lead(
+                    channel=CRMLead.CHANNEL_WHATSAPP,
+                    full_name=name,
+                    message=message,
+                    source=f"Formulario de WhatsApp Web ({page_url or 'Sin URL'})"
+                )
+            except Exception as crm_err:
+                logger.warning(f"[CRM] Error registrando lead desde SendWhatsAppMessageView: {crm_err}")
+            
             # 2. Construir mensaje final para WhatsApp
             whatsapp_text = f"Nuevo contacto Fenix:\n\nNombre: {name}\nPágina: {page_url if page_url else 'No especificada'}\n\nMensaje:\n{message}"
             
@@ -148,8 +161,59 @@ class WhatsAppWebhookView(View):
             # Loggear payload para ver la estructura recibida de Meta
             logger.info(f"\n[WHATSAPP WEBHOOK] Evento entrante:\n{json.dumps(body, indent=2)}\n")
             
-            # TODO: En un futuro aquí parsearíamos el body para crear registros 
-            # de las respuestas o desencadenar acciones.
+            # PARSEO DEL BODY DE WHATSAPP WEBHOOK (META CLOUD API)
+            entries = body.get('entry', [])
+            for entry in entries:
+                changes = entry.get('changes', [])
+                for change in changes:
+                    value = change.get('value', {})
+                    messages = value.get('messages', [])
+                    contacts = value.get('contacts', [])
+                    
+                    # Mapear nombres de contacto por su wa_id
+                    contact_names = {}
+                    for contact in contacts:
+                        wa_id = contact.get('wa_id')
+                        profile = contact.get('profile', {})
+                        name = profile.get('name')
+                        if wa_id and name:
+                            contact_names[wa_id] = name
+                    
+                    for msg in messages:
+                        sender_phone = msg.get('from')  # Número de teléfono del emisor
+                        msg_type = msg.get('type')
+                        
+                        # Extraer el cuerpo del mensaje de texto
+                        msg_body = ""
+                        if msg_type == 'text':
+                            msg_body = msg.get('text', {}).get('body', '').strip()
+                        elif msg_type == 'button':
+                            msg_body = msg.get('button', {}).get('text', '').strip()
+                        elif msg_type == 'interactive':
+                            interactive = msg.get('interactive', {})
+                            if interactive.get('type') == 'button_reply':
+                                msg_body = interactive.get('button_reply', {}).get('title', '').strip()
+                            elif interactive.get('type') == 'list_reply':
+                                msg_body = interactive.get('list_reply', {}).get('title', '').strip()
+                        else:
+                            msg_body = f"[{msg_type.upper()}] Mensaje multimedia o interactivo recibido."
+
+                        if sender_phone and msg_body:
+                            # Obtener el nombre del perfil de WhatsApp, o fallback por defecto
+                            sender_name = contact_names.get(sender_phone, f"WhatsApp {sender_phone}")
+                            
+                            # Registrar/actualizar lead e historial en el CRM
+                            from crm.services import CRMLeadService
+                            from crm.models import CRMLead
+                            
+                            CRMLeadService.log_lead(
+                                channel=CRMLead.CHANNEL_WHATSAPP,
+                                full_name=sender_name,
+                                phone=sender_phone,
+                                message=msg_body,
+                                source="WhatsApp Incoming Webhook",
+                                metadata=msg
+                            )
             
             return HttpResponse('EVENT_RECEIVED', status=200)
         except json.JSONDecodeError:

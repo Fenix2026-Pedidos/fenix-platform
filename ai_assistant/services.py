@@ -80,4 +80,4 @@ INFORMACIÓN DEL CLIENTE ACTUAL AUTENTICADO:
             
         except Exception as e:
             logger.error(f"[AIService] Error crítico: {e}")
-            return "Ha habido un problema puntual al procesar la solicitud. Puedes intentarlo de nuevo o reformular tu consulta."
+            return "Lo siento, no he podido comprender del todo tu consulta. ¿Podrías intentar reformular tu pregunta o explicarla con otras palabras para poder ayudarte mejor? Te recuerdo que estoy aquí para ayudarte a navegar por nuestro catálogo de productos."

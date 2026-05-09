@@ -217,6 +217,22 @@ def api_contact_submit(request):
         from notifications.services import send_contact_form_notification
         send_contact_form_notification(lead)
 
+        # 5. Registrar en el CRM Omnicanal Unificado
+        try:
+            from crm.services import CRMLeadService
+            from crm.models import CRMLead
+            CRMLeadService.log_lead(
+                channel=CRMLead.CHANNEL_CONTACT_FORM,
+                full_name=nombre,
+                email=email,
+                phone=telefono,
+                company_name=empresa,
+                message=f"[{asunto or 'Contacto'}] {mensaje}",
+                source="Formulario de Contacto Web"
+            )
+        except Exception as crm_err:
+            logger.warning(f"[CRM] Error registrando lead desde formulario de contacto: {crm_err}")
+
         return JsonResponse({
             'success': True,
             'message': _('Hemos recibido tu solicitud correctamente. Te contactaremos lo antes posible.')

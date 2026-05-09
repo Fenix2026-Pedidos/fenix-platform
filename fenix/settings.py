@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'whatsapp',  # Integración WhatsApp Business Cloud API
     'storages',  # Gestión de almacenamiento en la nube (GCS)
     'ai_assistant',  # Asistente Inteligente con Gemini
+    'crm',  # CRM Omnicanal Unificado
 ]
 
 # AI Assistant Settings

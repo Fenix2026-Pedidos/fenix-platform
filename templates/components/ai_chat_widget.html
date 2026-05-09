@@ -487,6 +487,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- CHAT LOGIC ---
     window.sendAIQuery = function(query) {
+        const lowerQuery = query.toLowerCase();
+        if (lowerQuery.includes('whatsapp')) {
+            window.open('https://wa.me/34624149250', '_blank');
+            return;
+        }
         userInput.value = query;
         sendMessage();
     };
@@ -498,6 +503,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const suggestions = [];
         let cleanText = text.replace(/\[(.*?)\]\(suggestion:(.*?)\)/g, (match, btnText, query) => {
             const escapedQuery = query.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            
+            // Interceptar sugerencias de WhatsApp a nivel de renderizado si tienen texto/query que mencione whatsapp
+            if (escapedQuery.toLowerCase().includes('whatsapp')) {
+                const style = "display: inline-block; background: #22c55e; color: white !important; border: 1px solid #22c55e; border-radius: 20px; padding: 8px 16px; font-size: 13px; font-weight: 700; text-decoration: none; cursor: pointer; transition: all 0.2s; outline: none; line-height: 1.2; margin: 4px; box-shadow: 0 4px 10px rgba(34,197,94,0.25);";
+                const btnHtml = `<a href="https://wa.me/34624149250" target="_blank" style="${style}" onmouseover="this.style.background='#16a34a'; this.style.borderColor='#16a34a'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#22c55e'; this.style.borderColor='#22c55e'; this.style.transform='none'"><i class="bi bi-whatsapp"></i> ${btnText}</a>`;
+                suggestions.push(btnHtml);
+                return "";
+            }
+            
             const btnHtml = `<button class="ai-suggestion-pill" onclick="window.sendAIQuery('${escapedQuery}')" style="display: inline-block; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; border-radius: 20px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; outline: none; line-height: 1.2; box-shadow: 0 2px 4px rgba(37,99,235,0.04); margin: 4px;" onmouseover="this.style.background='#dbeafe'; this.style.borderColor='#3b82f6'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#eff6ff'; this.style.borderColor='#bfdbfe'; this.style.transform='none'">${btnText}</button>`;
             suggestions.push(btnHtml);
             return "";
@@ -510,8 +524,17 @@ document.addEventListener('DOMContentLoaded', function() {
             let defaultBg = "";
             let btnHtml = "";
             
-            // Distinguir estilos para categorías, productos o enlaces genéricos
-            if (url.includes('?type=') || url.includes('?features=') || url.includes('?tag=')) {
+            // Distinguir estilos para categorías, productos, whatsapp o enlaces genéricos
+            if (url.includes('wa.me') || url.includes('whatsapp.com')) {
+                // Botón premium de WhatsApp (Verde WhatsApp)
+                style = "display: inline-block; background: #22c55e; color: white !important; border: 1px solid #22c55e; border-radius: 20px; padding: 8px 16px; font-size: 13px; font-weight: 700; text-decoration: none; cursor: pointer; transition: all 0.2s; outline: none; line-height: 1.2; margin: 4px; box-shadow: 0 4px 10px rgba(34,197,94,0.25);";
+                defaultBg = "#22c55e";
+                hoverBg = "#16a34a";
+                
+                btnHtml = `<a href="${url}" target="_blank" style="${style}" onmouseover="this.style.background='${hoverBg}'; this.style.borderColor='${hoverBg}'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='${defaultBg}'; this.style.borderColor='${defaultBg}'; this.style.transform='none'"><i class="bi bi-whatsapp"></i> ${btnText}</a>`;
+                suggestions.push(btnHtml);
+                return "";
+            } else if (url.includes('?type=') || url.includes('?features=') || url.includes('?tag=')) {
                 // Estilo para chips de categoría de catálogo (subtil, profesional, bordes redondeados con borde Fenix)
                 style = "display: inline-block; background: #f8fafc; color: #0f172a; border: 1.5px solid #cbd5e1; border-radius: 16px; padding: 6px 14px; font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.2s; outline: none; line-height: 1.2; margin: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);";
                 defaultBg = "#f8fafc";
@@ -542,6 +565,209 @@ document.addEventListener('DOMContentLoaded', function() {
         // Limpiar espacios y normalizar saltos de línea
         cleanText = cleanText.trim().replace(/\r\n/g, "\n");
 
+        // Función interna para parsear agrupaciones de productos y listas genéricas
+        function parseProductsAndLists(text) {
+            // Eliminar saltos de línea en blanco que separan viñetas adyacentes para asegurar que se agrupen en un único bloque de lista
+            text = text.replace(/(^\s*[-*•]\s+[^\n]*)\n\s*\n(?=\s*[-*•]\s+)/gm, '$1\n');
+
+            const lines = text.split('\n');
+            const result = [];
+            let currentGroup = null;
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const bulletMatch = line.match(/^\s*[-*•]\s+(.*)$/);
+
+                if (bulletMatch) {
+                    const content = bulletMatch[1].trim();
+                    if (!currentGroup) {
+                        currentGroup = {
+                            type: 'list',
+                            items: []
+                        };
+                    }
+                    currentGroup.items.push(content);
+                } else {
+                    if (currentGroup) {
+                        result.push(currentGroup);
+                        currentGroup = null;
+                    }
+                    result.push({
+                        type: 'text',
+                        content: line
+                    });
+                }
+            }
+            if (currentGroup) {
+                result.push(currentGroup);
+            }
+
+            const processedSegments = result.map(segment => {
+                if (segment.type === 'text') {
+                    return segment.content;
+                }
+
+                const subGroups = [];
+                let currentProduct = null;
+
+                for (let item of segment.items) {
+                    const isBoldHeader = item.startsWith('**') && item.includes('**', 2);
+                    const hasLink = item.includes('Ver en catálogo') || item.includes('/product/') || item.includes('/detalle/');
+
+                    if (isBoldHeader && hasLink) {
+                        // Es un producto en UNA SOLA LÍNEA (ej: - **Fuet Nobleza**: Formato 200g. 🆕 Novedad. [Ver en catálogo](...))
+                        let title = "";
+                        const titleMatch = item.match(/^\*\*(.*?)\*\*/);
+                        if (titleMatch) {
+                            title = titleMatch[1].trim();
+                        }
+
+                        // Extraer el enlace (CTA)
+                        let cta = "";
+                        const linkMatch = item.match(/<a href="[^"]+"[^>]*>.*?<\/a>/i) || item.match(/\[.*?\]\(.*?\)/);
+                        if (linkMatch) {
+                            cta = linkMatch[0];
+                        }
+
+                        // El resto del texto es la descripción/detalles del producto
+                        let rest = item;
+                        if (titleMatch) rest = rest.replace(titleMatch[0], '');
+                        if (linkMatch) rest = rest.replace(linkMatch[0], '');
+                        
+                        // Limpiar dos puntos, guiones, viñetas y espacios sobrantes
+                        rest = rest.replace(/^[\s\:\-\•\.\,]+/g, '').replace(/[\s\:\-\•\.\,]+$/g, '').trim();
+
+                        let badge = '';
+                        // Extraer de forma inteligente emojis comerciales y texto promocional de la descripción
+                        const badgeMatch = rest.match(/(🆕\s*Novedad|⚡\s*Oferta\s*flash|⚡\s*Oferta|🆕|⚡|⭐|🔥)/i);
+                        if (badgeMatch) {
+                            badge = badgeMatch[1].trim();
+                            rest = rest.replace(badgeMatch[0], '').replace(/^[\s\:\-\•\.\,]+/g, '').replace(/[\s\:\-\•\.\,]+$/g, '').trim();
+                        }
+
+                        subGroups.push({
+                            title: title,
+                            details: rest ? [rest] : [],
+                            badge: badge,
+                            cta: cta
+                        });
+                    } else if (isBoldHeader) {
+                        // Comienzo de un producto en formato MULTILÍNEA
+                        if (currentProduct) {
+                            subGroups.push(currentProduct);
+                        }
+                        
+                        let title = item.replace(/\*\*/g, '').trim();
+                        let badge = '';
+                        
+                        const badgeMatch = title.match(/(🆕\s*Novedad|⚡\s*Oferta\s*flash|⚡\s*Oferta|🆕|⚡|⭐|🔥)\s*$/i) || title.match(/^\s*(🆕\s*Novedad|⚡\s*Oferta\s*flash|⚡\s*Oferta|🆕|⚡|⭐|🔥)/i);
+                        if (badgeMatch) {
+                            badge = badgeMatch[1].trim();
+                            title = title.replace(badgeMatch[1], '').trim();
+                        }
+
+                        currentProduct = {
+                            title: title,
+                            details: [],
+                            badge: badge,
+                            cta: ''
+                        };
+                    } else {
+                        if (currentProduct) {
+                            if (hasLink) {
+                                currentProduct.cta = item;
+                            } else if (item.toLowerCase().startsWith('formato:')) {
+                                currentProduct.details.push(item);
+                            } else if (item.includes('🆕') || item.includes('⚡') || item.toLowerCase().includes('novedad') || item.toLowerCase().includes('oferta') || item.toLowerCase().includes('estrella')) {
+                                if (!currentProduct.badge) {
+                                    currentProduct.badge = item;
+                                } else {
+                                    currentProduct.details.push(item);
+                                }
+                            } else {
+                                currentProduct.details.push(item);
+                            }
+                        } else {
+                            subGroups.push({
+                                type: 'general',
+                                content: item
+                            });
+                        }
+                    }
+                }
+                if (currentProduct) {
+                    subGroups.push(currentProduct);
+                }
+
+                return subGroups.map(sub => {
+                    if (sub.type === 'general') {
+                        return `<div style="display: flex; gap: 8px; margin-left: 8px; margin-bottom: 6px; align-items: flex-start;"><span style="color: #2563eb; font-weight: bold; flex-shrink: 0; line-height: 1.4;">•</span><span style="line-height: 1.6; color: #334155;">${sub.content}</span></div>`;
+                    }
+
+                    const hasProductDetails = sub.cta || sub.details.length > 0;
+                    if (hasProductDetails) {
+                        let badgeColorStyle = "background: #eff6ff; color: #2563eb; border-color: #bfdbfe;";
+                        if (sub.badge && (sub.badge.includes('⚡') || sub.badge.toLowerCase().includes('oferta'))) {
+                            badgeColorStyle = "background: #fffbeb; color: #b45309; border-color: #fde68a;";
+                        } else if (sub.badge && (sub.badge.toLowerCase().includes('estrella') || sub.badge.toLowerCase().includes('destacado') || sub.badge.includes('⭐'))) {
+                            badgeColorStyle = "background: #faf5ff; color: #6b21a8; border-color: #e9d5ff;";
+                        }
+                        const badgeHtml = sub.badge ? `<span style="font-size: 11px; ${badgeColorStyle} border-width: 1.5px; border-style: solid; padding: 2px 8px; border-radius: 6px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">${sub.badge}</span>` : '';
+                        
+                        const detailsHtml = sub.details.map(d => {
+                            let icon = "📋";
+                            const dLower = d.toLowerCase();
+                            if (dLower.includes('formato') || dLower.includes('unidad') || dLower.includes('g.')) icon = "📦";
+                            else if (dLower.includes('ingrediente') || dLower.includes('receta')) icon = "🍲";
+                            else if (dLower.includes('precio') || dLower.includes('€')) icon = "💰";
+                            else if (dLower.includes('picar') || dLower.includes('ideal') || dLower.includes('presentado')) icon = "💡";
+                            return `<div style="font-size: 13px; color: #475569; font-weight: 500; display: flex; align-items: center; gap: 6px;">${icon} ${d}</div>`;
+                        }).join('');
+                        
+                        let ctaHtml = '';
+                        if (sub.cta) {
+                            const linkMatch = sub.cta.match(/\[(.*?)\]\((.*?)\)/) || sub.cta.match(/href="(.*?)"[^>]*>(.*?)<\/a>/);
+                            if (linkMatch) {
+                                const btnText = linkMatch[2] || linkMatch[1];
+                                const url = linkMatch[1] || linkMatch[2];
+                                const style = "display: inline-block; background: #2563eb; color: white !important; border: 1px solid #2563eb; border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: 700; text-decoration: none; cursor: pointer; transition: all 0.2s; outline: none; line-height: 1.2; box-shadow: 0 2px 6px rgba(37,99,235,0.15); margin-top: 4px;";
+                                ctaHtml = `<a href="${url}" target="_blank" style="${style}" onmouseover="this.style.background='#1d4ed8'; this.style.borderColor='#1d4ed8'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#2563eb'; this.style.borderColor='#2563eb'; this.style.transform='none'">🔍 ${btnText.replace(/🔍/g, '').trim()}</a>`;
+                            } else {
+                                ctaHtml = `<span style="font-size: 13px; color: #64748b;">${sub.cta}</span>`;
+                            }
+                        }
+
+                        return `
+                        <div class="ai-product-recommendation-card" style="background: white; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 14px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(0,0,0,0.05)'; this.style.borderColor='#cbd5e1'" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.02)'; this.style.borderColor='#e2e8f0'">
+                            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-bottom: 2px;">
+                                <h5 style="margin: 0; font-size: 14px; font-weight: 800; color: #0f172a; line-height: 1.3;">${sub.title}</h5>
+                                ${badgeHtml}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 4px;">
+                                ${detailsHtml}
+                            </div>
+                            ${ctaHtml ? `<div style="display: flex; align-items: center; margin-top: 2px;">${ctaHtml}</div>` : ''}
+                        </div>`;
+                    } else {
+                        const detailsStr = sub.details.map(d => `<div style="margin-left: 12px; margin-top: 4px; font-size: 13px; color: #475569;">${d}</div>`).join('');
+                        return `
+                        <div style="margin-bottom: 8px;">
+                            <div style="display: flex; gap: 8px; align-items: flex-start;">
+                                <span style="color: #2563eb; font-weight: bold; flex-shrink: 0; line-height: 1.4;">•</span>
+                                <strong style="font-weight: 700; color: #0f172a; line-height: 1.4;">${sub.title}</strong>
+                            </div>
+                            ${detailsStr}
+                        </div>`;
+                    }
+                }).join('');
+            });
+
+            return processedSegments.join('\n');
+        }
+
+        // Aplicar el parser inteligente de productos y listas antes de realizar los reemplazos de markdown estándar
+        cleanText = parseProductsAndLists(cleanText);
+
         // 2. Renderizar Encabezados (###, ##, #) con estilos elegantes y margen inferior
         cleanText = cleanText.replace(/^### (.*?)$/gm, '<h5 style="font-weight: 800; font-size: 14px; color: #0f172a; margin-top: 14px; margin-bottom: 8px; letter-spacing: -0.01em; line-height: 1.4;">$1</h5>');
         cleanText = cleanText.replace(/^## (.*?)$/gm, '<h4 style="font-weight: 800; font-size: 15px; color: #0f172a; margin-top: 16px; margin-bottom: 10px; letter-spacing: -0.01em; line-height: 1.4;">$1</h4>');
@@ -549,9 +775,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 3. Renderizar Negritas (**texto**)
         cleanText = cleanText.replace(/\*\*(.*?)\*\*/g, '<strong style="font-weight: 700; color: #0f172a;">$1</strong>');
-
-        // 4. Renderizar Listas con viñetas reales estilizadas en azul Fenix
-        cleanText = cleanText.replace(/^\s*[-*•]\s+(.*?)$/gm, '<div style="display: flex; gap: 8px; margin-left: 8px; margin-bottom: 8px; align-items: flex-start;"><span style="color: #2563eb; font-weight: bold; flex-shrink: 0; line-height: 1.4;">•</span><span style="line-height: 1.6; color: #334155;">$1</span></div>');
 
         // 5. Organizar párrafos con márgenes cómodos para evitar bloques enormes sin respiración
         const blocks = cleanText.split(/\n{2,}/);

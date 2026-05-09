@@ -21,11 +21,24 @@
                 {% if featured_products %}
                     {% for promo in featured_products %}
                     <a href="{% url 'catalog:product_list' %}?q={{ promo.target_query|default:promo.display_title }}&type={{ promo.target_category|default:'todos' }}" 
-                       class="hero-product-link js-promo-card" 
+                       class="hero-product-link js-promo-card promo-card" 
                        data-promo-q="{{ promo.target_query|default:promo.display_title }}" 
                        data-promo-type="{{ promo.target_category|default:'todos' }}"
                        data-promo-name="{{ promo.display_title }}">
                         <article class="hero-product-card">
+                            <!-- Efecto de partículas/confeti en hover -->
+                            <div class="promo-card__sparkles">
+                                <span class="sparkle s-1"></span>
+                                <span class="sparkle s-2"></span>
+                                <span class="sparkle s-3"></span>
+                                <span class="sparkle s-4"></span>
+                                <span class="sparkle s-5"></span>
+                                <span class="sparkle s-6"></span>
+                                <span class="sparkle s-7"></span>
+                                <span class="sparkle s-8"></span>
+                                <span class="sparkle s-9"></span>
+                                <span class="sparkle s-10"></span>
+                            </div>
                             <div class="hero-product-card__badge-wrapper">
                                 {% if promo.promo_label %}
                                 <div class="hero-product-card__badge badge--{{ promo.promo_label }}">
@@ -49,37 +62,132 @@
                                     {% endif %}
                                 </p>
                             </div>
+                            <!-- Botón CTA adaptable -->
+                            <div class="hero-product-card__cta">
+                                {% if user.is_authenticated %}
+                                    {% trans "Añadir al carrito" %}
+                                {% else %}
+                                    {% trans "Ver producto" %}
+                                {% endif %}
+                            </div>
                         </article>
                     </a>
                     {% endfor %}
                 {% else %}
-                    <a href="{% url 'catalog:product_list' %}?type=salchichas" class="hero-product-link js-promo-card" data-promo-type="salchichas" data-promo-name="{% trans 'Frankfurt Salchichas' %}">
+                    <a href="{% url 'catalog:product_list' %}?type=salchichas" class="hero-product-link js-promo-card promo-card" data-promo-type="salchichas" data-promo-name="{% trans 'Frankfurt Salchichas' %}">
                         <article class="hero-product-card">
+                            <!-- Efecto de partículas/confeti en hover -->
+                            <div class="promo-card__sparkles">
+                                <span class="sparkle s-1"></span>
+                                <span class="sparkle s-2"></span>
+                                <span class="sparkle s-3"></span>
+                                <span class="sparkle s-4"></span>
+                                <span class="sparkle s-5"></span>
+                                <span class="sparkle s-6"></span>
+                                <span class="sparkle s-7"></span>
+                                <span class="sparkle s-8"></span>
+                                <span class="sparkle s-9"></span>
+                                <span class="sparkle s-10"></span>
+                            </div>
+                            <div class="hero-product-card__badge-wrapper">
+                                <div class="hero-product-card__badge badge--oferta_flash">
+                                    {% trans "Oferta" %}
+                                </div>
+                            </div>
                             <div class="hero-product-card__image">
                                 <img src="{% static 'img/Salchichas.png' %}" alt="{% trans 'Frankfurt Salchichas' %}" loading="lazy">
                             </div>
                             <div class="hero-product-card__info">
                                 <p class="hero-product-card__name">{% trans "Frankfurt Salchichas" %}</p>
+                                <p class="hero-product-card__price">
+                                    <strong>1.99 €</strong> <span class="text-muted" style="font-size: 0.8em;">/ {% trans "ud" %}</span>
+                                </p>
+                            </div>
+                            <!-- Botón CTA adaptable -->
+                            <div class="hero-product-card__cta">
+                                {% if user.is_authenticated %}
+                                    {% trans "Añadir al carrito" %}
+                                {% else %}
+                                    {% trans "Ver producto" %}
+                                {% endif %}
                             </div>
                         </article>
                     </a>
-                    <a href="{% url 'catalog:product_list' %}?type=jamon-curado" class="hero-product-link js-promo-card" data-promo-type="jamon-curado" data-promo-name="{% trans 'Jamón Curado' %}">
+                    <a href="{% url 'catalog:product_list' %}?type=jamon-curado" class="hero-product-link js-promo-card promo-card" data-promo-type="jamon-curado" data-promo-name="{% trans 'Jamón Curado' %}">
                         <article class="hero-product-card">
+                            <!-- Efecto de partículas/confeti en hover -->
+                            <div class="promo-card__sparkles">
+                                <span class="sparkle s-1"></span>
+                                <span class="sparkle s-2"></span>
+                                <span class="sparkle s-3"></span>
+                                <span class="sparkle s-4"></span>
+                                <span class="sparkle s-5"></span>
+                                <span class="sparkle s-6"></span>
+                                <span class="sparkle s-7"></span>
+                                <span class="sparkle s-8"></span>
+                                <span class="sparkle s-9"></span>
+                                <span class="sparkle s-10"></span>
+                            </div>
+                            <div class="hero-product-card__badge-wrapper">
+                                <div class="hero-product-card__badge badge--mas_vendido">
+                                    {% trans "Destacado" %}
+                                </div>
+                            </div>
                             <div class="hero-product-card__image">
                                 <img src="{% static 'img/Jamon Curado.png' %}" alt="{% trans 'Jamón Curado' %}" loading="lazy">
                             </div>
                             <div class="hero-product-card__info">
                                 <p class="hero-product-card__name">{% trans "Jamón Curado" %}</p>
+                                <p class="hero-product-card__price">
+                                    <strong>14.50 €</strong> <span class="text-muted" style="font-size: 0.8em;">/ {% trans "kg" %}</span>
+                                </p>
+                            </div>
+                            <!-- Botón CTA adaptable -->
+                            <div class="hero-product-card__cta">
+                                {% if user.is_authenticated %}
+                                    {% trans "Añadir al carrito" %}
+                                {% else %}
+                                    {% trans "Ver producto" %}
+                                {% endif %}
                             </div>
                         </article>
                     </a>
-                    <a href="{% url 'catalog:product_list' %}?type=jamon-cocido" class="hero-product-link js-promo-card" data-promo-type="jamon-cocido" data-promo-name="{% trans 'Jamón Cocido' %}">
+                    <a href="{% url 'catalog:product_list' %}?type=jamon-cocido" class="hero-product-link js-promo-card promo-card" data-promo-type="jamon-cocido" data-promo-name="{% trans 'Jamón Cocido' %}">
                         <article class="hero-product-card">
+                            <!-- Efecto de partículas/confeti en hover -->
+                            <div class="promo-card__sparkles">
+                                <span class="sparkle s-1"></span>
+                                <span class="sparkle s-2"></span>
+                                <span class="sparkle s-3"></span>
+                                <span class="sparkle s-4"></span>
+                                <span class="sparkle s-5"></span>
+                                <span class="sparkle s-6"></span>
+                                <span class="sparkle s-7"></span>
+                                <span class="sparkle s-8"></span>
+                                <span class="sparkle s-9"></span>
+                                <span class="sparkle s-10"></span>
+                            </div>
+                            <div class="hero-product-card__badge-wrapper">
+                                <div class="hero-product-card__badge badge--estrella">
+                                    {% trans "Estrella" %}
+                                </div>
+                            </div>
                             <div class="hero-product-card__image">
                                 <img src="{% static 'img/Jamon Cocido.png' %}" alt="{% trans 'Jamón Cocido' %}" loading="lazy">
                             </div>
                             <div class="hero-product-card__info">
                                 <p class="hero-product-card__name">{% trans "Jamón Cocido" %}</p>
+                                <p class="hero-product-card__price">
+                                    <strong>6.20 €</strong> <span class="text-muted" style="font-size: 0.8em;">/ {% trans "kg" %}</span>
+                                </p>
+                            </div>
+                            <!-- Botón CTA adaptable -->
+                            <div class="hero-product-card__cta">
+                                {% if user.is_authenticated %}
+                                    {% trans "Añadir al carrito" %}
+                                {% else %}
+                                    {% trans "Ver producto" %}
+                                {% endif %}
                             </div>
                         </article>
                     </a>

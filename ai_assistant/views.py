@@ -9,6 +9,8 @@ from django.conf import settings
 from django.utils import timezone
 from datetime import timedelta
 from core.crm_services import CRMService
+from crm.services import CRMLeadService
+from crm.models import CRMLead
 from .models import AILead
 from .services import AIService
 
@@ -49,18 +51,18 @@ def capture_lead(request):
 
         # --- TAREAS EN SEGUNDO PLANO PARA NO BLOQUEAR EL FRONTEND ---
         def background_tasks(name, email, phone_prefix, phone_number, otp):
-            # 3. Sincronizar con CRM (Google Sheets)
+            # 3. Sincronizar con CRM Unificado
             try:
-                CRMService.sync_lead({
-                    "source": "Fenix Assistant (OTP Request)",
-                    "name": name,
-                    "email": email,
-                    "phone_prefix": phone_prefix,
-                    "phone_number": phone_number,
-                    "message": "Solicitud de acceso al asistente"
-                })
+                CRMLeadService.log_lead(
+                    channel=CRMLead.CHANNEL_WEB_ASSISTANT,
+                    full_name=name,
+                    email=email,
+                    phone=f"{phone_prefix}{phone_number}",
+                    source="Fenix Assistant (OTP Request)",
+                    message="Solicitud de acceso al asistente"
+                )
             except Exception as e:
-                print(f"--- [AVISO CRM] Error al sincronizar: {e} ---")
+                print(f"--- [AVISO CRM] Error al registrar lead CRM: {e} ---")
 
             # 4. Enviar Email con el SMTP
             subject = 'Tu código de acceso - Fenix Assistant'
@@ -131,15 +133,20 @@ def verify_otp(request):
             lead.reset_at = timezone.now() + timedelta(days=1)
             lead.save()
             
-            # Sincronizar confirmación en CRM
-            CRMService.sync_lead({
-                "source": "Fenix Assistant (Verified)",
-                "name": lead.name,
-                "email": lead.email,
-                "phone_prefix": lead.phone_prefix,
-                "phone_number": lead.phone_number,
-                "message": "Email verificado correctamente"
-            })
+            # Sincronizar confirmación en CRM Unificado
+            try:
+                crm_lead = CRMLead.objects.filter(email=lead.email).first()
+                if crm_lead:
+                    CRMLeadService.log_message(
+                        lead=crm_lead,
+                        channel=CRMLead.CHANNEL_WEB_ASSISTANT,
+                        sender='system',
+                        message="Email verificado correctamente mediante OTP"
+                    )
+                    crm_lead.validation_status = CRMLead.VALIDATION_VALIDADO
+                    crm_lead.save(update_fields=['validation_status', 'updated_at'])
+            except Exception as e:
+                print(f"--- [AVISO CRM] Error actualizando verificación: {e} ---")
 
             return JsonResponse({'success': True, 'queries_remaining': 4})
         else:
@@ -226,6 +233,31 @@ def assistant_chat(request):
         # Incrementar contador (solo para control analítico, o cuota si es anónimo)
         lead.queries_used += 1
         lead.save()
+        
+        # Registrar conversación en el historial del CRM
+        try:
+            # Buscar el lead en el CRM por el email asociado a la sesión de chat
+            crm_lead = CRMLead.objects.filter(email=email).first()
+            if not crm_lead and not is_auth and lead:
+                crm_lead = CRMLead.objects.filter(phone=f"{lead.phone_prefix}{lead.phone_number}").first()
+            
+            if crm_lead:
+                # 1. Registrar mensaje del lead
+                CRMLeadService.log_message(
+                    lead=crm_lead,
+                    channel=CRMLead.CHANNEL_WEB_ASSISTANT,
+                    sender='lead',
+                    message=user_message
+                )
+                # 2. Registrar respuesta de la IA
+                CRMLeadService.log_message(
+                    lead=crm_lead,
+                    channel=CRMLead.CHANNEL_WEB_ASSISTANT,
+                    sender='ai',
+                    message=ai_response
+                )
+        except Exception as chat_err:
+            print(f"--- [AVISO CRM] Error registrando chat en el CRM: {chat_err} ---")
         
         return JsonResponse({
             'response': ai_response,
