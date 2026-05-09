@@ -13,10 +13,13 @@ class AuditLogMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
         
-        # Asegurar que el directorio de logs existe
+        # Asegurar que el directorio de logs existe si es escribible
         self.log_dir = os.path.join(settings.BASE_DIR, 'logs')
-        if not os.path.exists(self.log_dir):
-            os.makedirs(self.log_dir)
+        try:
+            if not os.path.exists(self.log_dir):
+                os.makedirs(self.log_dir)
+        except OSError:
+            pass
 
     def __call__(self, request):
         start_time = time.time()
@@ -33,9 +36,12 @@ class AuditLogMiddleware:
         # Log entry
         log_msg = f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {ip} - {user} - {request.method} {request.path} - {status_code} ({duration:.2f}s)"
         
-        # Escribir en archivo de auditoría
-        with open(os.path.join(self.log_dir, 'audit.log'), 'a') as f:
-            f.write(log_msg + "\n")
+        # Escribir en archivo de auditoría si es posible; si no (ej: App Engine), usar logger
+        try:
+            with open(os.path.join(self.log_dir, 'audit.log'), 'a') as f:
+                f.write(log_msg + "\n")
+        except OSError:
+            logger.info(log_msg)
             
         # Añadir cabecera de seguridad Synerg-IA
         response['X-SynergIA-Shield'] = 'Active-v1'
