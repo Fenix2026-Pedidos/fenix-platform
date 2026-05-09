@@ -117,3 +117,61 @@ def product_features(product):
             found.append(slug)
             
     return ','.join(found)
+
+
+@register.filter
+def product_brand(product):
+    """Intenta derivar la marca del producto a partir de su nombre."""
+    if product is None:
+        return ''
+    name = (getattr(product, 'name_es', '')).lower()
+    
+    brands = [
+        ('Oscar Mayer', ('oscar mayer', 'mayer')),
+        ('El Pozo', ('el pozo', 'elpozo')),
+        ('Campofrío', ('campofrio', 'campofrío')),
+        ('Revilla', ('revilla',)),
+        ('Argal', ('argal',)),
+        ('Navidul', ('navidul',)),
+        ('Casademont', ('casademont',)),
+        ('Palacios', ('palacios',)),
+        ('Fenix', ('fenix', 'fénix')),
+    ]
+    
+    for brand_name, keywords in brands:
+        if any(keyword in name for keyword in keywords):
+            return brand_name
+            
+    # Fallback: primera palabra
+    words = getattr(product, 'name_es', '').split()
+    if words:
+        return words[0]
+    return 'Fenix'
+
+
+@register.filter
+def product_type_display(product):
+    """Devuelve el nombre legible del tipo de producto para las migas de pan."""
+    if product is None:
+        return ''
+    slug = product_type(product)
+    
+    if slug == 'otros':
+        cat_slug = product_category(product)
+        if cat_slug == 'sandwich': return 'Sándwich'
+        if cat_slug == 'pizzas': return 'Pizzas'
+        return 'Charcutería'
+
+    types_map = {
+        'charcuteria': 'Charcutería',
+        'curados': 'Curados',
+        'ibericos': 'Ibéricos',
+        'jamon-cocido': 'Jamón Cocido y York',
+        'jamon-curado': 'Jamón Curado',
+        'pavo': 'Pavo y Pollo',
+        'platos-preparados': 'Platos Preparados',
+        'salchichas': 'Salchichas',
+        'sandwich': 'Sándwich',
+        'pizzas': 'Pizzas',
+    }
+    return types_map.get(slug, 'Charcutería')

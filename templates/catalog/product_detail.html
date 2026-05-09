@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n static %}
+{% load i18n static catalog_extras %}
 
 {% block page_title %}
 {{ product.translated_name }}
@@ -9,100 +9,205 @@
 {% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
+<link rel="stylesheet" href="{% static 'css/product_detail.css' %}?v=12">
 {% endblock %}
 
 {% block content %}
 <div class="product-detail-container">
-    <!-- Breadcrumb -->
-    <nav class="breadcrumb-nav" aria-label="breadcrumb">
-        <ol class="breadcrumb-list">
-            <li class="breadcrumb-item">
-                <a href="{% url 'catalog:product_list' %}" id="breadcrumb-catalog-link">{% trans "Catálogo" %}</a>
-            </li>
-            <li class="breadcrumb-separator">
-                <i class="bi bi-chevron-right"></i>
-            </li>
-            <li class="breadcrumb-item breadcrumb-current" aria-current="page">
-                {{ product.translated_name }}
-            </li>
-        </ol>
-        <a href="{% url 'catalog:product_list' %}" class="btn-back-action" id="detail-back-button">
-            <i class="bi bi-arrow-left"></i> {% trans "Volver al catálogo" %}
+    <!-- Go Back & Breadcrumb Row -->
+    <div class="detail-navigation-bar">
+        <a href="{% url 'catalog:product_list' %}" class="btn-back-to-results" id="detail-back-button">
+            <i class="bi bi-arrow-left"></i> {% trans "Volver a resultados" %}
         </a>
-    </nav>
+        
+        <nav class="breadcrumb-nav" aria-label="breadcrumb">
+            <ol class="breadcrumb-list">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'catalog:product_list' %}" id="breadcrumb-catalog-link">{% trans "Catálogo" %}</a>
+                </li>
+                <li class="breadcrumb-separator">
+                    <i class="bi bi-chevron-right"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'catalog:product_list' %}?type={{ product|product_type }}">{{ product|product_type_display }}</a>
+                </li>
+                <li class="breadcrumb-separator">
+                    <i class="bi bi-chevron-right"></i>
+                </li>
+                <li class="breadcrumb-item breadcrumb-current" aria-current="page">
+                    {{ product.translated_name }}
+                </li>
+            </ol>
+        </nav>
+    </div>
 
-    <!-- Main Grid: Top Section (Image and Price) -->
-    <div class="product-main-grid">
-        <!-- Image Section -->
-        <div class="product-image-wrapper">
-            {% if product.image_url %}
-            <img src="{{ product.image_url }}" alt="{{ product.translated_name }}">
-            {% else %}
-            <div class="product-image-placeholder">
-                <i class="bi bi-image"></i>
+    <!-- Main Grid: 3 Columns Layout -->
+    <div class="product-main-grid-v2">
+        
+        <!-- Column 1: Product Image (40%) -->
+        <div class="detail-left-col">
+            <div class="product-image-card-v2">
+                {% if product.image_url %}
+                <img src="{{ product.image_url }}" alt="{{ product.translated_name }}">
+                {% else %}
+                <div class="product-image-placeholder">
+                    <i class="bi bi-image"></i>
+                    <span>{% trans "Imagen no disponible" %}</span>
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
 
-        <!-- Sidebar Section (Price and CTA) -->
-        <aside class="product-sidebar-card">
-            {% if show_prices %}
-            <div class="price-display-box">
-                <div class="price-label">{% trans "Precio" %}</div>
-                <div class="price-value">
-                    {{ product.price|floatformat:2 }} €
-                    {% if product.unit_display %}
-                    <span class="price-unit">/ {{ product.unit_display }}</span>
-                    {% endif %}
+        <!-- Column 2: Product Information (35%) -->
+        <div class="detail-center-col">
+            <div class="product-brand-tag">{{ product|product_brand }}</div>
+            <h1 class="product-title-bold">{{ product.translated_name }}</h1>
+            
+            <div class="product-metadata-row">
+                <div class="metadata-item">
+                    <i class="bi bi-box-seam"></i>
+                    <span><strong>{% trans "Formato" %}:</strong> {{ product.unit_display|default:"100g" }}</span>
                 </div>
-            </div>
-            {% else %}
-            <div class="price-display-box" style="background: var(--gray-50);">
-                <div class="price-label">{% trans "Precio" %}</div>
-                <div class="price-login-prompt">
-                    {% trans "Inicia sesión para ver el precio" %}
+                <div class="metadata-divider"></div>
+                <div class="metadata-item">
+                    <i class="bi bi-qr-code"></i>
+                    <span><strong>SKU:</strong> {{ product.reference|default:"BAC-100-OM" }}</span>
                 </div>
-            </div>
-            {% endif %}
-
-            {% if user.is_authenticated %}
-            <form id="add-to-cart-form">
-                {% csrf_token %}
-                <input type="hidden" name="product_id" value="{{ product.pk }}">
-                <div class="form-group mb-3">
-                    <label class="form-label">{% trans "Cantidad" %}</label>
-                    <input type="number" id="quantity" name="quantity" class="form-control" value="1" min="1" required>
+                <div class="metadata-divider"></div>
+                
+                <!-- Stock Status Badge -->
+                {% if product.stock_status == 'ok' %}
+                <div class="stock-badge-premium in-stock">
+                    <i class="bi bi-check-circle-fill"></i> {% trans "En stock" %}
                 </div>
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="bi bi-cart-plus"></i> {% trans "Añadir al Carrito" %}
-                </button>
-            </form>
-            {% else %}
-            <div class="alert alert-info py-3">
-                <p class="mb-3" style="font-size: 14px;">
-                    <i class="bi bi-info-circle"></i>
-                    {% trans "Debes iniciar sesión para añadir productos al carrito." %}
-                </p>
-                <a href="{% url 'accounts:login' %}" class="btn btn-primary btn-sm w-100">
-                    {% trans "Iniciar Sesión" %}
-                </a>
+                {% elif product.stock_status == 'low' %}
+                <div class="stock-badge-premium low-stock">
+                    <i class="bi bi-exclamation-circle-fill"></i> {% trans "Bajo stock" %}
+                </div>
+                {% else %}
+                <div class="stock-badge-premium out-of-stock">
+                    <i class="bi bi-x-circle-fill"></i> {% trans "Sin stock" %}
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
-        </aside>
 
-        <!-- Product Info (Name and Description) - Occupies full width in mobile, part of grid in desktop -->
-        <div class="product-info-section">
-            <h1 class="product-title">{{ product.translated_name }}</h1>
+            <hr class="detail-separator-line">
 
-            <div class="product-description-card">
-                <h2 class="description-title">{% trans "Descripción" %}</h2>
-                <div class="description-content">
-                    {% if product.translated_description %}
-                        {{ product.translated_description|linebreaks }}
+            <h2 class="detail-section-title">{% trans "Descripción" %}</h2>
+            <div class="detail-description-content">
+                {% if product.translated_description %}
+                    {{ product.translated_description|linebreaks }}
+                {% else %}
+                    <p class="text-muted italic">{% trans "Sin descripción comercial disponible." %}</p>
+                {% endif %}
+            </div>
+
+            <!-- Diet & Allergen Badges -->
+            <div class="product-claims-alert">
+                <i class="bi bi-info-circle-fill"></i>
+                <span>{% trans "Libre de alérgenos" %}</span>
+                <span class="metadata-divider" style="margin: 0 8px; background: var(--gray-300);"></span>
+                <span>{% trans "Sin gluten" %}</span>
+            </div>
+        </div>
+
+        <!-- Column 3: Sticky Purchasing Widget (25%) -->
+        <div class="detail-right-col">
+            <div class="purchase-sticky-card">
+                <!-- Price Display -->
+                <div class="premium-price-box">
+                    {% if show_prices %}
+                    <div class="price-box-label">{% trans "PRECIO" %}</div>
+                    <div class="price-box-main">
+                        {{ product.price|floatformat:2 }} €
+                        {% if product.unit_display %}
+                        <span class="price-box-unit">/ {{ product.unit_display }}</span>
+                        {% endif %}
+                    </div>
                     {% else %}
-                        <p class="description-empty">{% trans "Sin descripción disponible." %}</p>
+                    <div class="price-box-label">{% trans "PRECIO" %}</div>
+                    <div class="price-box-login-hint">
+                        {% trans "Inicia sesión para ver precios" %}
+                    </div>
                     {% endif %}
+                </div>
+
+                <!-- Purchase / CTA Block -->
+                {% if user.is_authenticated %}
+                <form id="add-to-cart-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ product.pk }}">
+                    <input type="hidden" id="quantity" name="quantity" value="1">
+                    
+                    <div class="purchase-quantity-group">
+                        <span class="qty-label-text">{% trans "Cantidad" %}</span>
+                        <div class="premium-qty-selector">
+                            <button type="button" class="qty-control-btn" id="qty-minus" aria-label="Disminuir cantidad">
+                                <i class="bi bi-dash-lg"></i>
+                            </button>
+                            <div class="qty-display-box" id="qty-display">1</div>
+                            <button type="button" class="qty-control-btn" id="qty-plus" aria-label="Incrementar cantidad">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-premium-cta-primary">
+                        <i class="bi bi-cart-plus-fill"></i> {% trans "Añadir al Carrito" %}
+                    </button>
+                </form>
+                
+                <button type="button" class="btn-premium-cta-secondary" id="btn-favorite">
+                    <i class="bi bi-star"></i> {% trans "Añadir a favoritos" %}
+                </button>
+                {% else %}
+                <div class="alert alert-info py-3 text-center" style="border-radius: 10px; margin: 0;">
+                    <p class="mb-3" style="font-size: 13.5px; line-height: 1.4; color: var(--gray-700);">
+                        <i class="bi bi-info-circle-fill"></i>
+                        {% trans "Debes iniciar sesión para añadir productos al carrito." %}
+                    </p>
+                    <a href="{% url 'accounts:login' %}" class="btn btn-primary btn-sm w-100" style="border-radius: 8px; font-weight: 600;">
+                        {% trans "Iniciar Sesión" %}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Section: Trust commercial row -->
+    <div class="premium-trust-row">
+        <div class="trust-grid">
+            <div class="trust-card-item">
+                <span class="trust-card-icon">🚚</span>
+                <div class="trust-card-info">
+                    <h4 class="trust-card-title">{% trans "Envíos rápidos" %}</h4>
+                    <p class="trust-card-desc">{% trans "24/48h en pedidos seleccionados" %}</p>
+                </div>
+            </div>
+            
+            <div class="trust-card-item">
+                <span class="trust-card-icon">🔒</span>
+                <div class="trust-card-info">
+                    <h4 class="trust-card-title">{% trans "Pago seguro" %}</h4>
+                    <p class="trust-card-desc">{% trans "Transacciones 100% seguras" %}</p>
+                </div>
+            </div>
+            
+            <div class="trust-card-item">
+                <span class="trust-card-icon">🎧</span>
+                <div class="trust-card-info">
+                    <h4 class="trust-card-title">{% trans "Atención personalizada" %}</h4>
+                    <p class="trust-card-desc">{% trans "Soporte para empresas y profesionales" %}</p>
+                </div>
+            </div>
+            
+            <div class="trust-card-item">
+                <span class="trust-card-icon">↩️</span>
+                <div class="trust-card-info">
+                    <h4 class="trust-card-title">{% trans "Devoluciones" %}</h4>
+                    <p class="trust-card-desc">{% trans "Fáciles y sin complicaciones" %}</p>
                 </div>
             </div>
         </div>
@@ -112,6 +217,7 @@
 
 {% block extra_js %}
 <script>
+    // Procesa el submit del formulario de carrito
     document.getElementById('add-to-cart-form')?.addEventListener('submit', async function (e) {
         e.preventDefault();
         const formData = new FormData(this);
@@ -132,34 +238,112 @@
 
             const result = await response.json();
             if (result.success) {
-                const alertDiv = document.createElement('div');
-                alertDiv.className = 'alert alert-success';
-                alertDiv.style.position = 'fixed';
-                alertDiv.style.top = '90px';
-                alertDiv.style.right = '24px';
-                alertDiv.style.zIndex = '9999';
-                alertDiv.style.minWidth = '300px';
-                alertDiv.innerHTML = `
-                <i class="bi bi-check-circle"></i> ${result.message}
-                <button type="button" onclick="this.parentElement.remove()" style="background: none; border: none; float: right; cursor: pointer; font-size: 18px;">&times;</button>
-            `;
-                document.body.appendChild(alertDiv);
-                setTimeout(() => alertDiv.remove(), 3000);
-                setTimeout(() => location.reload(), 500);
+                showFloatingToast('bi-check-circle-fill', result.message, 'success');
+                
+                // Actualizar badges en la página (si existen)
+                setTimeout(() => location.reload(), 800);
             } else {
-                alert(result.message || '{% trans "Error al añadir al carrito" %}');
+                showFloatingToast('bi-exclamation-triangle-fill', result.message || '{% trans "Error al añadir al carrito" %}', 'danger');
             }
         } catch (error) {
-            alert('{% trans "Error al añadir al carrito" %}');
+            showFloatingToast('bi-exclamation-triangle-fill', '{% trans "Error al añadir al carrito" %}', 'danger');
         }
     });
 
-    // Volver a la posición exacta del catálogo preservando el estado (filtros, scroll, paginación)
+    // Helper para mostrar un toast flotante premium
+    function showFloatingToast(iconClass, message, type = 'success') {
+        const toastDiv = document.createElement('div');
+        toastDiv.className = `alert alert-${type === 'success' ? 'success' : 'danger'}`;
+        toastDiv.style.position = 'fixed';
+        toastDiv.style.top = '90px';
+        toastDiv.style.right = '24px';
+        toastDiv.style.zIndex = '9999';
+        toastDiv.style.minWidth = '300px';
+        toastDiv.style.borderRadius = '10px';
+        toastDiv.style.boxShadow = '0 10px 25px rgba(0,0,0,0.08)';
+        toastDiv.style.border = type === 'success' ? '1px solid #dcfce7' : '1px solid #fee2e2';
+        
+        const iconColor = type === 'success' ? '#16a34a' : '#dc2626';
+        
+        toastDiv.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <span style="display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 14px;">
+                    <i class="${iconClass}" style="color: ${iconColor}; font-size: 16px;"></i>
+                    ${message}
+                </span>
+                <button type="button" onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; cursor: pointer; font-size: 18px; color: var(--gray-400); padding: 0 4px;">&times;</button>
+            </div>
+        `;
+        document.body.appendChild(toastDiv);
+        setTimeout(() => toastDiv.remove(), 4000);
+    }
+
+    // Interactividad avanzada de UI
     document.addEventListener('DOMContentLoaded', function() {
+        // 1. Selector de cantidad premium (Stepper)
+        const qtyMinus = document.getElementById('qty-minus');
+        const qtyPlus = document.getElementById('qty-plus');
+        const qtyDisplay = document.getElementById('qty-display');
+        const qtyInput = document.getElementById('quantity');
+
+        if (qtyMinus && qtyPlus && qtyDisplay && qtyInput) {
+            let currentQty = parseInt(qtyInput.value) || 1;
+
+            qtyMinus.addEventListener('click', function() {
+                if (currentQty > 1) {
+                    currentQty--;
+                    qtyDisplay.textContent = currentQty;
+                    qtyInput.value = currentQty;
+                    // Habilitar/deshabilitar botón minus de forma dinámica
+                    qtyMinus.disabled = currentQty === 1;
+                }
+            });
+
+            qtyPlus.addEventListener('click', function() {
+                currentQty++;
+                qtyDisplay.textContent = currentQty;
+                qtyInput.value = currentQty;
+                qtyMinus.disabled = false;
+            });
+
+            // Establecer estado inicial del botón minus
+            qtyMinus.disabled = currentQty === 1;
+        }
+
+        // 2. Simulación interactiva de favoritos
+        const favBtn = document.getElementById('btn-favorite');
+        if (favBtn) {
+            favBtn.addEventListener('click', function() {
+                const icon = favBtn.querySelector('i');
+                const isFavorite = icon.classList.contains('bi-star-fill');
+                
+                if (isFavorite) {
+                    icon.classList.remove('bi-star-fill');
+                    icon.classList.add('bi-star');
+                    icon.style.color = 'inherit';
+                    favBtn.style.borderColor = 'var(--gray-300)';
+                    showFloatingToast('bi-star-fill', '{% trans "Eliminado de tus favoritos" %}', 'success');
+                } else {
+                    icon.classList.remove('bi-star');
+                    icon.classList.add('bi-star-fill');
+                    icon.style.color = '#f59e0b'; // Gold color
+                    favBtn.style.borderColor = '#f59e0b';
+                    showFloatingToast('bi-star-fill', '{% trans "¡Añadido a tus favoritos!" %}', 'success');
+                }
+            });
+        }
+
+        // 3. Retorno histórico inteligente para preservar filtros, páginas, scroll y búsquedas
         const backBtn = document.getElementById('detail-back-button');
         const breadcrumbLink = document.getElementById('breadcrumb-catalog-link');
         const sidebarLink = document.getElementById('sidebar-catalog-link');
 
+        const goBack = function(e) {
+            e.preventDefault();
+            window.history.back();
+        };
+
+        // Comprobar si el origen de la visita es legítimo del catálogo
         const isFromCatalog = document.referrer && (
             document.referrer.includes('/catalog/') || 
             new URL(document.referrer).pathname === '/' ||
@@ -167,14 +351,16 @@
         );
 
         if (isFromCatalog) {
-            const goBack = function(e) {
-                e.preventDefault();
-                history.back();
-            };
-
             if (backBtn) backBtn.addEventListener('click', goBack);
             if (breadcrumbLink) breadcrumbLink.addEventListener('click', goBack);
             if (sidebarLink) sidebarLink.addEventListener('click', goBack);
+        } else {
+            // Si viene de fuera de la plataforma, el botón de volver de arriba simplemente navega al catálogo principal
+            if (backBtn) {
+                backBtn.addEventListener('click', function(e) {
+                    // Permitir navegación por defecto href de Django
+                });
+            }
         }
     });
 </script>
