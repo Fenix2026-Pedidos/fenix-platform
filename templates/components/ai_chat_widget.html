@@ -503,7 +503,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return "";
         });
 
-        // 1b. Extraer enlaces markdown normales [Texto](url) y convertirlos en botones de acción reales
+        // 1b. Extraer enlaces markdown normales [Texto](url) y convertirlos en botones de acción reales o inline
         cleanText = cleanText.replace(/\[(.*?)\]\((?!suggestion:)(.*?)\)/g, (match, btnText, url) => {
             let style = "";
             let hoverBg = "";
@@ -518,13 +518,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 hoverBg = "#e2e8f0";
                 
                 btnHtml = `<a href="${url}" target="_blank" style="${style}" onmouseover="this.style.background='${hoverBg}'; this.style.borderColor='#94a3b8'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='${defaultBg}'; this.style.borderColor='#cbd5e1'; this.style.transform='none'">${btnText}</a>`;
+                suggestions.push(btnHtml);
+                return "";
             } else if (url.includes('/product/') || url.includes('/detalle/')) {
-                // Botón directo a ficha de producto (Solid Azul Fénix)
-                style = "display: inline-block; background: #2563eb; color: white; border: 1px solid #2563eb; border-radius: 12px; padding: 6px 12px; font-size: 12px; font-weight: 700; text-decoration: none; cursor: pointer; transition: all 0.2s; outline: none; line-height: 1.2; margin: 4px; box-shadow: 0 2px 5px rgba(37,99,235,0.12);";
+                // Botón directo a ficha de producto (Solid Azul Fénix) - ¡Rendéralo INLINE en vez de moverlo al contenedor de abajo!
+                style = "display: inline-block; background: #2563eb; color: white !important; border: 1px solid #2563eb; border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 700; text-decoration: none; cursor: pointer; transition: all 0.2s; outline: none; line-height: 1.2; margin-left: 6px; box-shadow: 0 1px 3px rgba(37,99,235,0.1); vertical-align: middle;";
                 defaultBg = "#2563eb";
                 hoverBg = "#1d4ed8";
                 
-                btnHtml = `<a href="${url}" target="_blank" style="${style}" onmouseover="this.style.background='${hoverBg}'; this.style.borderColor='${hoverBg}'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='${defaultBg}'; this.style.borderColor='${defaultBg}'; this.style.transform='none'">🔍 ${btnText}</a>`;
+                return `<a href="${url}" target="_blank" style="${style}" onmouseover="this.style.background='${hoverBg}'; this.style.borderColor='${hoverBg}'" onmouseout="this.style.background='${defaultBg}'; this.style.borderColor='${defaultBg}'">🔍 ${btnText}</a>`;
             } else {
                 // Botón genérico (Todos los productos o Catálogo raíz)
                 style = "display: inline-block; background: #0f172a; color: white; border: 1px solid #0f172a; border-radius: 20px; padding: 8px 16px; font-size: 13px; font-weight: 700; text-decoration: none; cursor: pointer; transition: all 0.2s; outline: none; line-height: 1.2; margin: 4px; box-shadow: 0 4px 8px rgba(15,23,42,0.15);";
@@ -532,10 +534,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 hoverBg = "#1e293b";
                 
                 btnHtml = `<a href="${url}" target="_blank" style="${style}" onmouseover="this.style.background='${hoverBg}'; this.style.borderColor='${hoverBg}'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='${defaultBg}'; this.style.borderColor='${defaultBg}'; this.style.transform='none'">${btnText}</a>`;
+                suggestions.push(btnHtml);
+                return "";
             }
-            
-            suggestions.push(btnHtml);
-            return "";
         });
 
         // Limpiar espacios y normalizar saltos de línea
