@@ -8,14 +8,16 @@ const CatalogFilters = {
     appliedFilters: {
         type: 'todos',
         features: [],
-        q: ''
+        q: '',
+        promo: ''
     },
 
     // Estado temporal (lo que el usuario marca en el panel pero no ha pulsado "Ver resultados")
     temporalFilters: {
         type: 'todos',
         features: [],
-        q: ''
+        q: '',
+        promo: ''
     },
 
     /**
@@ -43,6 +45,7 @@ const CatalogFilters = {
         
         this.appliedFilters.type = urlParams.get('type') || 'todos';
         this.appliedFilters.q = urlParams.get('q') || '';
+        this.appliedFilters.promo = urlParams.get('promo') || '';
         
         const featuresStr = urlParams.get('features') || '';
         this.appliedFilters.features = featuresStr ? featuresStr.split(',') : [];
@@ -55,17 +58,32 @@ const CatalogFilters = {
      * Sincroniza los controles visuales con un estado dado
      */
     syncUI: function (state) {
-        // 1. Tipos / Categorías
+        // 1. Tipos / Categorías / Promociones
         const type = state.type || 'todos';
+        const promo = state.promo || '';
         
         // Radio buttons de escritorio y móvil
-        document.querySelectorAll(`.filter-type-radio[data-type="${type}"], .filter-type-radio[value="${type}"]`).forEach(radio => {
-            radio.checked = true;
+        document.querySelectorAll('.filter-type-radio').forEach(radio => {
+            const val = radio.value;
+            if (promo && val === promo) {
+                radio.checked = true;
+            } else if (!promo && val === type) {
+                radio.checked = true;
+            }
         });
         
-        // Tabs de escritorio
+        // Tabs de escritorio de categorías
         document.querySelectorAll('[data-category-tab]').forEach(tab => {
-            if (tab.getAttribute('data-category-tab') === type) {
+            if (!promo && tab.getAttribute('data-category-tab') === type) {
+                tab.classList.add('is-active');
+            } else {
+                tab.classList.remove('is-active');
+            }
+        });
+
+        // Tabs de escritorio de promociones
+        document.querySelectorAll('[data-promo-tab]').forEach(tab => {
+            if (promo && tab.getAttribute('data-promo-tab') === promo) {
                 tab.classList.add('is-active');
             } else {
                 tab.classList.remove('is-active');
@@ -155,21 +173,39 @@ const CatalogFilters = {
      * Eventos de Tipos / Categorías
      */
     bindTypeEvents: function () {
-        // Tabs de escritorio (estos suelen ser directos)
+        // Tabs de escritorio de categorías (ej: sandwich)
         document.querySelectorAll('[data-category-tab]').forEach(tab => {
             tab.addEventListener('click', (e) => {
                 e.preventDefault();
                 const type = tab.getAttribute('data-category-tab') || 'todos';
-                // En escritorio los tabs aplican directamente (comportamiento esperado)
                 this.temporalFilters.type = type;
-                this.applyFilters();
+                this.temporalFilters.promo = ''; // Al cambiar de categoría limpiamos promoción
+                this.applyFilters(true); // AJAX en tiempo real
+            });
+        });
+
+        // Tabs de escritorio de promociones (ej: ofertas, novedades...)
+        document.querySelectorAll('[data-promo-tab]').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                const promo = tab.getAttribute('data-promo-tab') || '';
+                this.temporalFilters.promo = promo;
+                this.temporalFilters.type = 'todos'; // Al cambiar de promoción limpiamos la categoría activa
+                this.applyFilters(true); // AJAX en tiempo real
             });
         });
 
         // Radios de panel (móvil/desplegable)
         document.querySelectorAll('.filter-type-radio').forEach(radio => {
             radio.addEventListener('change', (e) => {
-                this.temporalFilters.type = e.target.value;
+                const val = e.target.value;
+                if (val === 'ofertas' || val === 'novedades' || val === 'mas_vendidos') {
+                    this.temporalFilters.promo = val;
+                    this.temporalFilters.type = 'todos';
+                } else {
+                    this.temporalFilters.promo = '';
+                    this.temporalFilters.type = val;
+                }
             });
         });
     },
@@ -287,6 +323,11 @@ const CatalogFilters = {
         // 1. Tipo
         if (this.temporalFilters.type && this.temporalFilters.type !== 'todos') {
             url.searchParams.set('type', this.temporalFilters.type);
+        }
+
+        // 1.5. Promociones
+        if (this.temporalFilters.promo && this.temporalFilters.promo !== '') {
+            url.searchParams.set('promo', this.temporalFilters.promo);
         }
 
         // 2. Características

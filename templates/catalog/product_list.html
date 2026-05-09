@@ -209,6 +209,75 @@
             display: none !important;
         }
     }
+
+    /* Pestaña especial de Ofertas (Estilo destacado en naranja/rojo) */
+    .category-chip--promo-ofertas {
+        background-color: #fee2e2 !important; /* Soft red/orange background */
+        color: #dc2626 !important; /* Premium brand-red/crimson text */
+        border-color: #fca5a5 !important;
+        font-weight: 600 !important;
+    }
+    .category-chip--promo-ofertas:hover {
+        background-color: #fecaca !important;
+        border-color: #ef4444 !important;
+        transform: translateY(-2px);
+    }
+    .category-chip--promo-ofertas.is-active {
+        background-color: #ef4444 !important; /* Deep crimson when active */
+        color: #ffffff !important;
+        border-color: #ef4444 !important;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25) !important;
+    }
+
+    /* Badges Premium sobre la imagen de las tarjetas de producto */
+    .product-promo-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        z-index: 5;
+        padding: 5px 12px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        border-radius: 20px;
+        color: #fff;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); /* Gold default */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        letter-spacing: 0.5px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .product-card:hover .product-promo-badge {
+        transform: scale(1.05) translateY(-1px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Variantes de color degradado según el slug de promoción */
+    .product-promo-badge.oferta_semana,
+    .product-promo-badge.oferta_flash,
+    .product-promo-badge.super_oferta {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); /* Crimson red */
+    }
+    
+    .product-promo-badge.mas_vendido,
+    .product-promo-badge.estrella {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); /* Gold/Amber */
+    }
+    
+    .product-promo-badge.novedad {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%); /* Emerald green */
+    }
+    
+    .product-promo-badge.pack {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); /* Indigo */
+    }
+    
+    .product-promo-badge.mejor_precio {
+        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); /* Cyan */
+    }
+    
+    .product-promo-badge.navidad {
+        background: linear-gradient(135deg, #047857 0%, #065f46 100%); /* Forest green */
+    }
 </style>
 {% endblock %}
 
@@ -261,62 +330,77 @@
                     <div class="filters-radio-list">
                         <label class="filter-radio">
                             <input type="radio" name="product-type" class="filter-type-radio" value="todos"
-                                data-type="todos" {% if active_type == 'todos' or not active_type %}checked{% endif %}>
+                                data-type="todos" {% if not active_promo %}{% if active_type == 'todos' or not active_type %}checked{% endif %}{% endif %}>
                             <span class="filter-label">{% trans "Todos" %}</span>
                         </label>
                         <label class="filter-radio">
+                            <input type="radio" name="product-type" class="filter-type-radio" value="ofertas"
+                                data-promo="ofertas" {% if active_promo == 'ofertas' %}checked{% endif %}>
+                            <span class="filter-label text-danger font-weight-bold">🔥 {% trans "Ofertas" %}</span>
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="product-type" class="filter-type-radio" value="novedades"
+                                data-promo="novedades" {% if active_promo == 'novedades' %}checked{% endif %}>
+                            <span class="filter-label">🆕 {% trans "Novedades" %}</span>
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="product-type" class="filter-type-radio" value="mas_vendidos"
+                                data-promo="mas_vendidos" {% if active_promo == 'mas_vendidos' %}checked{% endif %}>
+                            <span class="filter-label">⭐ {% trans "Más Vendidos" %}</span>
+                        </label>
+                        <label class="filter-radio">
                             <input type="radio" name="product-type" class="filter-type-radio" value="sandwich"
-                                data-type="sandwich" {% if active_type == 'sandwich' %}checked{% endif %}>
+                                data-type="sandwich" {% if not active_promo and active_type == 'sandwich' %}checked{% endif %}>
                             <span class="filter-label">{% trans "Sándwich" %}</span>
                         </label>
                         <label class="filter-radio">
                             <input type="radio" name="product-type" class="filter-type-radio" value="salchichas"
-                                data-type="salchichas" {% if active_type == 'salchichas' %}checked{% endif %}>
+                                data-type="salchichas" {% if not active_promo and active_type == 'salchichas' %}checked{% endif %}>
                             <span class="filter-label">{% trans "Salchichas" %}</span>
                         </label>
                         <label class="filter-radio">
                             <input type="radio" name="product-type" class="filter-type-radio" value="pizzas"
-                                data-type="pizzas" {% if active_type == 'pizzas' %}checked{% endif %}>
+                                data-type="pizzas" {% if not active_promo and active_type == 'pizzas' %}checked{% endif %}>
                             <span class="filter-label">{% trans "Pizzas" %}</span>
                         </label>
                         <label class="filter-radio">
                             <input type="radio" name="product-type" class="filter-type-radio" value="jamon-cocido"
-                                data-type="jamon-cocido" {% if active_type == 'jamon-cocido' %}checked{% endif %}>
+                                data-type="jamon-cocido" {% if not active_promo and active_type == 'jamon-cocido' %}checked{% endif %}>
                             <span class="filter-label">{% trans "Jamón Cocido y York" %}</span>
                         </label>
                         <label class="filter-radio">
                             <input type="radio" name="product-type" class="filter-type-radio" value="jamon-curado"
-                                data-type="jamon-curado" {% if active_type == 'jamon-curado' %}checked{% endif %}>
+                                data-type="jamon-curado" {% if not active_promo and active_type == 'jamon-curado' %}checked{% endif %}>
                             <span class="filter-label">{% trans "Jamón Curado" %}</span>
                         </label>
                         <label class="filter-radio">
                             <input type="radio" name="product-type" class="filter-type-radio" value="pavo"
-                                data-type="pavo" {% if active_type == 'pavo' %}checked{% endif %}>
+                                data-type="pavo" {% if not active_promo and active_type == 'pavo' %}checked{% endif %}>
                             <span class="filter-label">{% trans "Pavo" %}</span>
                         </label>
                         <label class="filter-radio">
                             <input type="radio" name="product-type" class="filter-type-radio" value="charcuteria"
-                                data-type="charcuteria" {% if active_type == 'charcuteria' %}checked{% endif %}>
+                                data-type="charcuteria" {% if not active_promo and active_type == 'charcuteria' %}checked{% endif %}>
                             <span class="filter-label">{% trans "Charcutería" %}</span>
                         </label>
                         <label class="filter-radio">
                             <input type="radio" name="product-type" class="filter-type-radio" value="curados"
-                                data-type="curados" {% if active_type == 'curados' %}checked{% endif %}>
+                                data-type="curados" {% if not active_promo and active_type == 'curados' %}checked{% endif %}>
                             <span class="filter-label">{% trans "Curados" %}</span>
                         </label>
                         <label class="filter-radio">
                             <input type="radio" name="product-type" class="filter-type-radio" value="ibericos"
-                                data-type="ibericos" {% if active_type == 'ibericos' %}checked{% endif %}>
+                                data-type="ibericos" {% if not active_promo and active_type == 'ibericos' %}checked{% endif %}>
                             <span class="filter-label">{% trans "Ibéricos" %}</span>
                         </label>
                         <label class="filter-radio">
                             <input type="radio" name="product-type" class="filter-type-radio" value="pollo"
-                                data-type="pollo" {% if active_type == 'pollo' %}checked{% endif %}>
+                                data-type="pollo" {% if not active_promo and active_type == 'pollo' %}checked{% endif %}>
                             <span class="filter-label">{% trans "Pollo" %}</span>
                         </label>
                         <label class="filter-radio">
                             <input type="radio" name="product-type" class="filter-type-radio" value="fuet"
-                                data-type="fuet" {% if active_type == 'fuet' %}checked{% endif %}>
+                                data-type="fuet" {% if not active_promo and active_type == 'fuet' %}checked{% endif %}>
                             <span class="filter-label">{% trans "Fuet" %}</span>
                         </label>
                     </div>
@@ -418,6 +502,12 @@
 
                     <!-- 2. Imagen protagonista (Centrada en bloque) -->
                     <div class="card-image-wrap">
+                        {% if product.promo_label_display %}
+                        <span class="product-promo-badge {{ product.promo_label_class }}">
+                            {{ product.promo_label_display }}
+                        </span>
+                        {% endif %}
+
                         {% if product.image_url %}
                         <img src="{{ product.image_url }}"
                             alt="{{ product.translated_name }}"
@@ -438,7 +528,7 @@
                         </div>
                     </div>
 
-                    <!-- 3. Fila de Precio + Badges (Secundaria) -->
+                    <!-- 3. Fila de Precio (Secundaria) -->
                     <div class="card-meta-row">
                         <div class="card-price-container">
                             {% if show_prices %}
@@ -454,16 +544,6 @@
                                 <span class="price-login-hint">{% trans "Consultar" %}</span>
                             </div>
                             {% endif %}
-                        </div>
-
-                        <div class="card-badges-container">
-                            {% with label_class=product.promo_label_class %}
-                                {% if label_class %}
-                                    <span class="badge badge--{{ label_class }}">
-                                        {{ product.promo_label_display }}
-                                    </span>
-                                {% endif %}
-                            {% endwith %}
                         </div>
                     </div>
 

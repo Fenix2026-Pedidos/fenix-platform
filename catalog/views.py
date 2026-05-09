@@ -71,10 +71,39 @@ def build_search_query(query_str):
     """
     Construye una consulta Q para búsqueda inteligente, case-insensitive y accent-insensitive,
     buscando por nombre, referencia (SKU), marca, descripción y categorías/sinónimos asociados.
+    También mapea semánticamente términos comerciales a etiquetas promocionales vigentes.
     """
     if not query_str:
         return Q()
 
+    from django.utils import timezone
+    today = timezone.now().date()
+
+    # Diccionario de equivalencias comerciales (mapeo semántico)
+    PROMO_TERM_MAPPINGS = {
+        'ofertas': ['oferta_semana', 'oferta_flash', 'super_oferta', 'mejor_precio'],
+        'oferta': ['oferta_semana', 'oferta_flash', 'super_oferta', 'mejor_precio'],
+        'promocion': ['oferta_semana', 'oferta_flash', 'super_oferta', 'mejor_precio', 'pack', 'mas_vendido', 'estrella', 'novedad', 'limitada', 'navidad', 'verano', 'barbacoa', 'recomendado', 'mejor_precio'],
+        'promociones': ['oferta_semana', 'oferta_flash', 'super_oferta', 'mejor_precio', 'pack', 'mas_vendido', 'estrella', 'novedad', 'limitada', 'navidad', 'verano', 'barbacoa', 'recomendado', 'mejor_precio'],
+        'descuento': ['oferta_semana', 'oferta_flash', 'super_oferta', 'mejor_precio'],
+        'descuentos': ['oferta_semana', 'oferta_flash', 'super_oferta', 'mejor_precio'],
+        'flash': ['oferta_flash'],
+        'mejor precio': ['mejor_precio'],
+        'mejor-precio': ['mejor_precio'],
+        'novedad': ['novedad'],
+        'novedades': ['novedad'],
+        'mas vendido': ['mas_vendido'],
+        'más vendido': ['mas_vendido'],
+        'mas vendidos': ['mas_vendido'],
+        'más vendidos': ['mas_vendido'],
+        'estrella': ['estrella'],
+        'recomendado': ['recomendado'],
+        'recomendados': ['recomendado'],
+        'pack': ['pack'],
+        'packs': ['pack']
+    }
+
+    # Mapeo de sinónimos de categorías y productos normales
     EXTRA_SEARCH_MAPPINGS = {
         'sandwich': ['sandwich', 'sandwitch', 'emparedado', 'maxi', 'sándwich', 'sandw'],
         'sandwiches': ['sandwich', 'sandwitch', 'emparedado', 'maxi', 'sándwich', 'sandw'],
@@ -106,6 +135,36 @@ def build_search_query(query_str):
 
     for token in tokens:
         token_q = Q()
+        normalized_token = normalize_text(token)
+
+        # 1. Verificar si coincide con algún término promocional del mapeo semántico
+        matched_promo_labels = None
+        for key, labels in PROMO_TERM_MAPPINGS.items():
+            if normalize_text(key) == normalized_token:
+                matched_promo_labels = labels
+                break
+
+        if matched_promo_labels:
+            promo_q = (
+                Q(promo_label__in=matched_promo_labels) |
+                (
+                    Q(promotions__promo_label__in=matched_promo_labels) &
+                    Q(promotions__is_active=True) &
+                    (Q(promotions__start_date__isnull=True) | Q(promotions__start_date__lte=today)) &
+                    (Q(promotions__end_date__isnull=True) | Q(promotions__end_date__gte=today))
+                )
+            )
+            # Agregar soporte para banderas legacy correspondientes
+            if any(lbl in matched_promo_labels for lbl in ['oferta_semana', 'oferta_flash', 'super_oferta', 'mejor_precio']):
+                promo_q |= Q(is_offer=True)
+            if 'novedad' in matched_promo_labels:
+                promo_q |= Q(is_new=True)
+            if 'mas_vendido' in matched_promo_labels:
+                promo_q |= Q(is_best_seller=True)
+
+            token_q |= promo_q
+
+        # 2. Búsqueda por texto normal (nombre, descripción, referencia...)
         variants = kw_variants(token)
         search_terms = set(variants)
         for var in variants:
@@ -231,9 +290,56 @@ def product_list(request):
                         )
                 products = products.filter(feat_q)
 
-    # ── 3b. FILTRADO POR ETIQUETAS PROMOCIONALES (TAGS) ──────────────────────
+    # ── 3b. FILTRADO POR PARÁMETRO PROMO (CHIPS DESTACADOS) ──────────────────
+    active_promo = request.GET.get('promo', '').strip().lower()
     active_tag = request.GET.get('tag', '').strip().lower()
-    if active_tag:
+    
+    if active_promo:
+        from django.utils import timezone
+        today = timezone.now().date()
+        
+        if active_promo == 'ofertas':
+            promo_labels = ['oferta_semana', 'oferta_flash', 'super_oferta', 'mejor_precio']
+            promo_q = (
+                Q(is_offer=True) |
+                Q(promo_label__in=promo_labels) |
+                (
+                    Q(promotions__promo_label__in=promo_labels) &
+                    Q(promotions__is_active=True) &
+                    (Q(promotions__start_date__isnull=True) | Q(promotions__start_date__lte=today)) &
+                    (Q(promotions__end_date__isnull=True) | Q(promotions__end_date__gte=today))
+                )
+            )
+            products = products.filter(promo_q).distinct()
+        elif active_promo in ['novedades', 'novedad']:
+            promo_labels = ['novedad']
+            promo_q = (
+                Q(is_new=True) |
+                Q(promo_label__in=promo_labels) |
+                (
+                    Q(promotions__promo_label__in=promo_labels) &
+                    Q(promotions__is_active=True) &
+                    (Q(promotions__start_date__isnull=True) | Q(promotions__start_date__lte=today)) &
+                    (Q(promotions__end_date__isnull=True) | Q(promotions__end_date__gte=today))
+                )
+            )
+            products = products.filter(promo_q).distinct()
+        elif active_promo in ['mas_vendidos', 'mas-vendidos', 'mas_vendido', 'mas-vendido', 'bestsellers', 'bestseller']:
+            promo_labels = ['mas_vendido']
+            promo_q = (
+                Q(is_best_seller=True) |
+                Q(promo_label__in=promo_labels) |
+                (
+                    Q(promotions__promo_label__in=promo_labels) &
+                    Q(promotions__is_active=True) &
+                    (Q(promotions__start_date__isnull=True) | Q(promotions__start_date__lte=today)) &
+                    (Q(promotions__end_date__isnull=True) | Q(promotions__end_date__gte=today))
+                )
+            )
+            products = products.filter(promo_q).distinct()
+            
+    elif active_tag:
+        # Mantener compatibilidad con el parámetro legacy ?tag=
         if active_tag in ['ofertas', 'oferta']:
             products = products.filter(
                 Q(is_offer=True) |
@@ -294,6 +400,7 @@ def product_list(request):
         'active_type': active_type,
         'active_features': feature_list,
         'active_tag': active_tag,
+        'active_promo': active_promo,
         'lang': lang,
         'cart': cart,
         'featured_products': featured_products,
