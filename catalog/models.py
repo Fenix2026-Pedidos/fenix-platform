@@ -143,12 +143,7 @@ class Product(models.Model):
         return ""
 
     def update_stock_status(self) -> None:
-        if self.stock_available <= 0:
-            self.stock_status = self.STOCK_OUT
-        elif self.stock_available <= self.stock_min_threshold:
-            self.stock_status = self.STOCK_LOW
-        else:
-            self.stock_status = self.STOCK_OK
+        self.stock_status = self.STOCK_OK
 
     @property
     def translated_name(self):
