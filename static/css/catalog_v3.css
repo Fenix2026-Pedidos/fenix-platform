@@ -489,6 +489,7 @@
     position: relative;
     overflow: hidden;
     gap: 0; /* Controlamos gaps por bloque */
+    cursor: pointer;
 }
 
 .product-card:hover {
