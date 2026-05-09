@@ -1,7 +1,20 @@
 import json
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, HttpResponseBadRequest
-from django.contrib.admin.views.decorators import staff_member_required
+from functools import wraps
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect
+from accounts.utils import is_manager_or_admin
+
+def crm_access_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('accounts:login')
+        if not is_manager_or_admin(request.user):
+            raise PermissionDenied("No tienes permisos para acceder al CRM de Fenix.")
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
 from django.contrib.auth import get_user_model
@@ -13,7 +26,7 @@ from .services import CRMLeadService
 
 User = get_user_model()
 
-@staff_member_required
+@crm_access_required
 def leads_list(request):
     """
     Vista del Dashboard del CRM. Muestra listado de leads con filtros premium,
@@ -90,7 +103,7 @@ def leads_list(request):
     return render(request, 'crm/leads_list.html', context)
 
 
-@staff_member_required
+@crm_access_required
 def lead_detail(request, lead_uuid):
     """
     Vista detallada de la Ficha Comercial del Lead.
@@ -115,7 +128,7 @@ def lead_detail(request, lead_uuid):
     return render(request, 'crm/lead_detail.html', context)
 
 
-@staff_member_required
+@crm_access_required
 @require_POST
 def update_lead(request, lead_uuid):
     """
@@ -228,7 +241,7 @@ def update_lead(request, lead_uuid):
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 
-@staff_member_required
+@crm_access_required
 @require_POST
 def add_lead_message(request, lead_uuid):
     """

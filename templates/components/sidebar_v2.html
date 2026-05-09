@@ -75,8 +75,8 @@
         </div>
         {% endif %}
 
-        {# CRM Omnicanal (solo para staff) #}
-        {% if user.is_staff %}
+        {# CRM Omnicanal (para staff y administradores) #}
+        {% if user.is_staff or user.role == 'admin' or user.role == 'super_admin' %}
         <div class="sidebar-menu-item">
             <a href="{% url 'crm:leads_list' %}"
                 class="sidebar-menu-link {% if 'crm' in request.path %}active{% endif %}">
