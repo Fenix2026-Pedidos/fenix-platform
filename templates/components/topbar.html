@@ -212,6 +212,7 @@
         };
 
         let debounceTimer = null;
+        let gridDebounceTimer = null;
         let activeController = null;
         let lastResults = [];
         let currentQuery = '';
@@ -232,6 +233,21 @@
             resultsPanel.hidden = false;
         };
 
+        const triggerGridFilter = (qValue) => {
+            if (typeof CatalogFilters !== 'undefined') {
+                const localInput = document.getElementById('searchInput');
+                if (localInput) {
+                    localInput.value = qValue;
+                }
+                CatalogFilters.temporalFilters.q = qValue;
+                
+                clearTimeout(gridDebounceTimer);
+                gridDebounceTimer = setTimeout(() => {
+                    CatalogFilters.applyFilters(true);
+                }, 300);
+            }
+        };
+
         const renderResults = (results, query) => {
             lastResults = [];
             const sections = [];
@@ -241,12 +257,22 @@
                 actions: labels.actions,
             };
 
+            let totalRendered = 0;
+
             ['orders', 'products', 'actions'].forEach((type) => {
-                const items = results?.[type] || [];
+                if (totalRendered >= 5) return;
+
+                let items = results?.[type] || [];
+                const maxAvailable = 5 - totalRendered;
+                if (items.length > maxAvailable) {
+                    items = items.slice(0, maxAvailable);
+                }
+
                 if (!items.length) {
                     return;
                 }
 
+                totalRendered += items.length;
                 lastResults = lastResults.concat(items);
 
                 const itemsMarkup = items.map((item) => `
@@ -316,6 +342,9 @@
             const value = event.target.value.trim();
             clearTimeout(debounceTimer);
 
+            // Filtrado del grid del catálogo en tiempo real (debounced)
+            triggerGridFilter(value);
+
             if (!value) {
                 currentQuery = '';
                 lastResults = [];
@@ -344,8 +373,21 @@
                 return;
             }
 
-            if (event.key === 'Enter' && lastResults.length) {
-                window.location.href = lastResults[0].url;
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const value = searchInput.value.trim();
+                
+                if (typeof CatalogFilters !== 'undefined') {
+                    // En el catálogo: simplemente ocultamos resultados y quitamos foco
+                    hideResults();
+                    searchInput.blur();
+                } else if (lastResults.length > 0) {
+                    // Fuera del catálogo: ir a la primera sugerencia si hay
+                    window.location.href = lastResults[0].url;
+                } else if (value) {
+                    // Fuera del catálogo sin sugerencias: redirigir a catálogo con query string activa
+                    window.location.href = `/catalogo/?q=${encodeURIComponent(value)}`;
+                }
             }
         });
 

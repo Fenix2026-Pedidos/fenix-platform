@@ -87,9 +87,127 @@
         border-radius: 20px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-5px); }
-        to { opacity: 1; transform: translateY(0); }
+    /* Estilos Premium para la cabecera del buscador y estado vacío */
+    .search-results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--gray-200);
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+        animation: fadeIn 0.3s ease;
+    }
+    .search-results-header__content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    .search-results-header__title {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: var(--gray-600);
+    }
+    .search-results-header__title .search-term {
+        color: var(--primary-600);
+        font-weight: 700;
+    }
+    .search-results-header__count {
+        font-size: 0.85rem;
+        color: var(--gray-500);
+    }
+    .search-results-header__count .count-value {
+        font-weight: 600;
+        color: var(--gray-800);
+    }
+    .btn-clear-search {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: #fff;
+        border: 1px solid var(--gray-300);
+        border-radius: 8px;
+        color: var(--gray-700);
+        font-weight: 500;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .btn-clear-search:hover {
+        background: var(--gray-50);
+        border-color: var(--gray-400);
+        color: var(--gray-900);
+        transform: translateY(-1px);
+    }
+    .btn-clear-search:active {
+        transform: translateY(0);
+    }
+    
+    .catalog-empty-state {
+        grid-column: 1 / -1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 4rem 2rem;
+        background: #fff;
+        border: 1px dashed var(--gray-300);
+        border-radius: 16px;
+        margin: 1.5rem 0;
+    }
+    .catalog-empty-state__icon {
+        font-size: 3.5rem;
+        color: var(--gray-300);
+        margin-bottom: 1rem;
+        animation: pulseIcon 2s infinite ease-in-out;
+    }
+    @keyframes pulseIcon {
+        0%, 100% { transform: scale(1); opacity: 0.8; }
+        50% { transform: scale(1.08); opacity: 1; }
+    }
+    .catalog-empty-state__title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--gray-800);
+        margin-bottom: 0.5rem;
+    }
+    .catalog-empty-state__subtitle {
+        font-size: 0.95rem;
+        color: var(--gray-500);
+        max-width: 480px;
+        margin-bottom: 1.5rem;
+        line-height: 1.5;
+    }
+    .btn-clear-empty-search {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        border-radius: 10px;
+        transition: all 0.2s ease;
+        background-color: var(--primary-600);
+        border-color: var(--primary-600);
+        color: #fff;
+        border: 1px solid var(--primary-600);
+    }
+    .btn-clear-empty-search:hover {
+        background-color: var(--primary-700);
+        border-color: var(--primary-700);
+        color: #fff;
+        transform: translateY(-1px);
+    }
+    
+    @media (min-width: 992px) {
+        /* Ocultar el buscador secundario solo si el usuario está autenticado y tiene buscador global */
+        .catalog-page[data-authenticated="true"] .category-search {
+            display: none !important;
+        }
     }
 </style>
 {% endblock %}
@@ -247,6 +365,21 @@
         <!-- Área principal con grid -->
         <div class="catalog-main-area">
 
+            <!-- Cabecera de resultados de búsqueda -->
+            <div id="search-results-header" class="search-results-header" {% if not search_query %}style="display: none;"{% endif %}>
+                <div class="search-results-header__content">
+                    <span class="search-results-header__title">
+                        <i class="bi bi-search"></i> {% trans "Resultados para:" %} <strong class="search-term" id="searchQueryText">"{{ search_query }}"</strong>
+                    </span>
+                    <span class="search-results-header__count">
+                        <strong class="count-value" id="searchResultsCount">{{ paginator.count }}</strong> {% trans "productos encontrados" %}
+                    </span>
+                </div>
+                <button type="button" class="btn-clear-search" id="clearSearchBtn">
+                    <i class="bi bi-x-circle"></i> {% trans "Limpiar búsqueda" %}
+                </button>
+            </div>
+
             <div class="products-grid" id="productsGrid">
                 {% if products %}
                 {% for product in products %}
@@ -365,15 +498,29 @@
                 </div>
                 {% endfor %}
                 {% else %}
-                <div class="empty-state">
-                    <i class="bi bi-inbox"></i>
-                    <p class="text-muted">
+                <div class="catalog-empty-state">
+                    <div class="catalog-empty-state__icon">
+                        <i class="bi bi-search"></i>
+                    </div>
+                    <h3 class="catalog-empty-state__title">
                         {% if search_query %}
-                        {% trans "No se encontraron productos que coincidan con tu búsqueda." %}
+                        {% blocktrans with query=search_query %}No se encontraron productos para "{{ query }}"{% endblocktrans %}
                         {% else %}
-                        {% trans "No hay productos disponibles en este momento." %}
+                        {% trans "No hay productos disponibles en este momento" %}
+                        {% endif %}
+                    </h3>
+                    <p class="catalog-empty-state__subtitle">
+                        {% if search_query %}
+                        {% trans "Revisa la ortografía o intenta buscar con otros términos generales como 'jamón', 'pavo' o 'pizza'." %}
+                        {% else %}
+                        {% trans "Pronto actualizaremos nuestro catálogo. Por favor, vuelve a consultarlo más tarde." %}
                         {% endif %}
                     </p>
+                    {% if search_query %}
+                    <button type="button" class="btn btn-clear-empty-search" id="clearSearchEmptyBtn">
+                        <i class="bi bi-arrow-left"></i> {% trans "Limpiar búsqueda" %}
+                    </button>
+                    {% endif %}
                 </div>
                 {% endif %}
             </div>
@@ -526,32 +673,30 @@
             }
         });
 
-        // Click en toda la tarjeta (Navegación al detalle)
-        const productsGrid = document.getElementById('productsGrid');
-        if (productsGrid) {
-            productsGrid.addEventListener('click', function(e) {
-                // Bloquear navegación si estamos en modo ordenación
-                const catalogPage = document.querySelector('.catalog-page');
-                if (catalogPage && catalogPage.classList.contains('ordering-mode')) {
-                    // Si permitimos el clic en el botón de "mover arriba", pero no la navegación
-                    if (!e.target.closest('.btn-move-top, .drag-handle')) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    }
-                    return;
-                }
+        // Click en toda la tarjeta (Navegación al detalle) con delegación global (resiste actualizaciones AJAX)
+        document.addEventListener('click', function(e) {
+            const card = e.target.closest('.product-card');
+            if (!card) return;
 
-                // Si el clic es en un elemento interactivo, no hacemos nada
-                if (e.target.closest('button, input, .quantity-stepper, .btn-primary, .btn-move-top, .drag-handle')) {
-                    return;
+            // Bloquear navegación si estamos en modo ordenación
+            const catalogPage = document.querySelector('.catalog-page');
+            if (catalogPage && catalogPage.classList.contains('ordering-mode')) {
+                if (!e.target.closest('.btn-move-top, .drag-handle')) {
+                    e.preventDefault();
+                    e.stopPropagation();
                 }
-                
-                const card = e.target.closest('.product-card');
-                if (card && card.dataset.productUrl) {
-                    window.location.href = card.dataset.productUrl;
-                }
-            });
-        }
+                return;
+            }
+
+            // Si el clic es en un elemento interactivo, no hacemos nada
+            if (e.target.closest('button, input, .quantity-stepper, .btn-primary, .btn-move-top, .drag-handle, .qty-plus, .qty-minus, .btn-add-product')) {
+                return;
+            }
+            
+            if (card.dataset.productUrl) {
+                window.location.href = card.dataset.productUrl;
+            }
+        });
 
 
         const authModalController = (function () {

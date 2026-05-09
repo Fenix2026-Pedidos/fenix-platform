@@ -67,6 +67,68 @@ def kw_variants(keyword):
     return variants
 
 
+def build_search_query(query_str):
+    """
+    Construye una consulta Q para búsqueda inteligente, case-insensitive y accent-insensitive,
+    buscando por nombre, referencia (SKU), marca, descripción y categorías/sinónimos asociados.
+    """
+    if not query_str:
+        return Q()
+
+    EXTRA_SEARCH_MAPPINGS = {
+        'sandwich': ['sandwich', 'sandwitch', 'emparedado', 'maxi', 'sándwich', 'sandw'],
+        'sandwiches': ['sandwich', 'sandwitch', 'emparedado', 'maxi', 'sándwich', 'sandw'],
+        'salchicha': ['salchicha', 'frankfurt', 'viena', 'hot dog', 'fuet', 'salchichón', 'salchichon', 'big classic', 'big pavo', 'big pollo', 'big queso', 'viena', 'bratwurst'],
+        'salchichas': ['salchicha', 'frankfurt', 'viena', 'hot dog', 'fuet', 'salchichón', 'salchichon', 'big classic', 'big pavo', 'big pollo', 'big queso', 'viena', 'bratwurst'],
+        'pizza': ['pizza', 'pizzas', 'masa'],
+        'pizzas': ['pizza', 'pizzas', 'masa'],
+        'jamon': ['jamon', 'jamón', 'serrano', 'cocido', 'york', 'bodega', 'iberico', 'chorizo', 'salchichon', 'lomo'],
+        'jamón': ['jamon', 'jamón', 'serrano', 'cocido', 'york', 'bodega', 'iberico', 'chorizo', 'salchichon', 'lomo'],
+        'jamones': ['jamon', 'jamón', 'serrano', 'cocido', 'york', 'bodega', 'iberico', 'chorizo', 'salchichon', 'lomo'],
+        'pavo': ['pavo', 'pechuga pavo', 'fiambre pavo'],
+        'pavos': ['pavo', 'pechuga pavo', 'fiambre pavo'],
+        'pollo': ['pollo', 'pechuga pollo', 'fiambre pollo'],
+        'pollos': ['pollo', 'pechuga pollo', 'fiambre pollo'],
+        'charcuteria': ['mortadela', 'chopped', 'choppep', 'chorizo', 'salami', 'cervelat', 'cabeza jabalí', 'bacon', 'lacón', 'lacon', 'panceta', 'taquito', 'tiras', 'sarta', 'embutido', 'charcutería', 'charcuteria'],
+        'charcutería': ['mortadela', 'chopped', 'choppep', 'chorizo', 'salami', 'cervelat', 'cabeza jabalí', 'bacon', 'lacón', 'lacon', 'panceta', 'taquito', 'tiras', 'sarta', 'embutido', 'charcutería', 'charcuteria'],
+        'curado': ['caña de lomo', 'caña lomo', 'caña', 'salchichón', 'salchichon', 'semicurado', 'fuet', 'fuetería', 'fueteria', 'chorizo curado', 'sarta'],
+        'curados': ['caña de lomo', 'caña lomo', 'caña', 'salchichón', 'salchichon', 'semicurado', 'fuet', 'fuetería', 'fueteria', 'chorizo curado', 'sarta'],
+        'iberico': ['ibérico', 'iberico', 'bellota', 'pata negra', 'cebo'],
+        'ibérico': ['ibérico', 'iberico', 'bellota', 'pata negra', 'cebo'],
+        'ibericos': ['ibérico', 'iberico', 'bellota', 'pata negra', 'cebo'],
+        'ibéricos': ['ibérico', 'iberico', 'bellota', 'pata negra', 'cebo'],
+        'fuet': ['fuet', 'fuetería', 'fueteria', 'espetec'],
+        'fuets': ['fuet', 'fuetería', 'fueteria', 'espetec'],
+    }
+
+    tokens = query_str.lower().split()
+    main_q = Q()
+
+    for token in tokens:
+        token_q = Q()
+        variants = kw_variants(token)
+        search_terms = set(variants)
+        for var in variants:
+            if var in EXTRA_SEARCH_MAPPINGS:
+                search_terms.update(EXTRA_SEARCH_MAPPINGS[var])
+
+        for term in search_terms:
+            token_q |= (
+                Q(name_es__icontains=term) |
+                Q(name_zh_hans__icontains=term) |
+                Q(reference__icontains=term) |
+                Q(description_es__icontains=term) |
+                Q(description_zh_hans__icontains=term)
+            )
+
+        if main_q:
+            main_q &= token_q
+        else:
+            main_q = token_q
+
+    return main_q
+
+
 def product_list(request):
     """Lista de productos del catálogo"""
     products = Product.objects.filter(is_active=True).prefetch_related('promotions')
@@ -75,21 +137,9 @@ def product_list(request):
     featured_products = PromotionalProduct.objects.filter(is_active=True).order_by('display_order', '-created_at')[:8]
     
     # ── 1. BÚSQUEDA INTELIGENTE ───────────────────────────────────────────────
-    # Normaliza el texto del usuario y extrae tokens.
-    # Para cada token genera variante con y sin tildes.
-    # Lógica AND entre tokens: el producto debe contener TODOS los tokens.
     search_query = request.GET.get('q', '').strip()
     if search_query:
-        tokens = search_query.lower().split()
-        for token in tokens:
-            token_q = Q()
-            for variant in kw_variants(token):
-                token_q |= (
-                    Q(name_es__icontains=variant) |
-                    Q(reference__icontains=variant) |
-                    Q(description_es__icontains=variant)
-                )
-            products = products.filter(token_q)
+        products = products.filter(build_search_query(search_query))
 
     # ── 2. FILTRADO POR TIPO DE PRODUCTO ─────────────────────────────────────
     # Mappings basados en los nombres reales de los productos en la BD.

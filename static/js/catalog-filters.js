@@ -27,6 +27,7 @@ const CatalogFilters = {
         this.bindFilterEvents();
         this.bindTypeEvents();
         this.bindSearchEvents();
+        this.bindClearSearchEvents();
         
         // Sincronizar UI con el estado aplicado inicial
         this.syncUI(this.appliedFilters);
@@ -216,18 +217,63 @@ const CatalogFilters = {
     bindSearchEvents: function () {
         const searchInput = document.getElementById('searchInput');
         const searchForm = document.getElementById('searchForm');
+        let searchDebounce = null;
 
         if (searchInput) {
             // Sincronizar temporalmente el query
             searchInput.addEventListener('input', (e) => {
-                this.temporalFilters.q = e.target.value;
+                const val = e.target.value;
+                this.temporalFilters.q = val;
+                
+                // Sincronizar con el buscador de la barra superior
+                const globalSearchInput = document.getElementById('globalSearchInput');
+                if (globalSearchInput) {
+                    globalSearchInput.value = val;
+                }
+
+                clearTimeout(searchDebounce);
+                searchDebounce = setTimeout(() => {
+                    this.applyFilters(true);
+                }, 300);
             });
         }
 
         if (searchForm) {
             searchForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                this.applyFilters();
+                this.applyFilters(true);
+            });
+        }
+    },
+
+    /**
+     * Acciones para limpiar los buscadores y restaurar la cuadrícula
+     */
+    bindClearSearchEvents: function() {
+        const clearBtn = document.getElementById('clearSearchBtn');
+        const clearEmptyBtn = document.getElementById('clearSearchEmptyBtn');
+        
+        const clearSearch = () => {
+            const globalSearchInput = document.getElementById('globalSearchInput');
+            const localSearchInput = document.getElementById('searchInput');
+            
+            if (globalSearchInput) globalSearchInput.value = '';
+            if (localSearchInput) localSearchInput.value = '';
+            
+            this.temporalFilters.q = '';
+            this.applyFilters(true);
+        };
+        
+        if (clearBtn) {
+            clearBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                clearSearch();
+            });
+        }
+        if (clearEmptyBtn) {
+            clearEmptyBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                clearSearch();
             });
         }
     },
@@ -341,6 +387,37 @@ const CatalogFilters = {
                 priceElement.innerHTML = `<span class="price-int">${intPart}</span><span class="price-dec">,${decPart}</span><span class="price-currency">€</span>`;
             }
         });
+
+        // Enlazar de nuevo los eventos de limpiar búsqueda en el nuevo DOM
+        this.bindClearSearchEvents();
+
+        // Re-inicializar eventos del carrito (imprescindible tras refresco de cuadrícula AJAX)
+        if (typeof CatalogCart !== 'undefined') {
+            console.log('[CatalogFilters] Re-inicializando CatalogCart tras refresco AJAX...');
+            CatalogCart.initialized = false;
+            CatalogCart.init();
+            
+            // Sincronizar cantidades visuales de las tarjetas con la cesta activa del servidor
+            try {
+                const initialCartDataElement = document.getElementById('initialCartData');
+                if (initialCartDataElement) {
+                    const cartDataText = initialCartDataElement.textContent.trim();
+                    if (cartDataText) {
+                        const cartData = JSON.parse(cartDataText);
+                        if (cartData && typeof cartData === 'object') {
+                            Object.keys(cartData).forEach(productId => {
+                                const quantity = parseInt(cartData[productId]) || 0;
+                                if (quantity > 0) {
+                                    CatalogCart.setQuantity(productId, quantity);
+                                }
+                            });
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn('Fenix UX: Error de sincronización de carrito tras AJAX', e);
+            }
+        }
     },
 
     scrollToCatalog: function () {

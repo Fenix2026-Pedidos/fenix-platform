@@ -13,6 +13,7 @@ from django.core.exceptions import ValidationError
 
 from accounts.models import User
 from catalog.models import Product
+from catalog.views import build_search_query
 from notifications.models import Notification
 from orders.models import Order
 from .models import ContactLead
@@ -84,10 +85,7 @@ def _search_orders(query: str, user: User) -> list[dict]:
 
 def _search_products(query: str) -> list[dict]:
     qs = Product.objects.filter(is_active=True).filter(
-        Q(name_es__icontains=query)
-        | Q(name_zh_hans__icontains=query)
-        | Q(description_es__icontains=query)
-        | Q(description_zh_hans__icontains=query)
+        build_search_query(query)
     )[:MAX_RESULTS]
 
     return [
