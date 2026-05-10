@@ -50,10 +50,13 @@ class Command(BaseCommand):
             Pedidos y Pagos: Fenix acepta pedidos directamente a través de la web, pero el pago se procesa posteriormente contra factura (condiciones a 30 o 60 días según cliente) mediante domiciliación bancaria.
             """,
             """
-            Envíos y Logística de Fenix:
+            Envíos y Logística de Fenix - Condiciones Económicas:
+            El pedido mínimo es de 50€. El coste de envío es gratuito para pedidos superiores a 150€. Para pedidos inferiores, el coste es de 15€.
+            """,
+            """
+            Envíos y Logística de Fenix - Cobertura y Tiempos de Entrega:
             Los envíos se realizan de forma urgente con logística especializada en frío para garantizar la cadena térmica de los alimentos.
             Los pedidos realizados antes de las 13:00 se entregan en 24/48 horas laborables en la península.
-            El pedido mínimo es de 50€. El coste de envío es gratuito para pedidos superiores a 150€. Para pedidos inferiores, el coste es de 15€.
             IMPORTANTE: La distribución directa y completa de todo el catálogo está disponible únicamente para Toledo y Ciudad Real. A nivel nacional se realizan exclusivamente para envíos de mercancía.
             """,
             """
