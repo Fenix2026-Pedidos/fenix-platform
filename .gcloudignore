@@ -8,7 +8,7 @@ db.sqlite3.backup
 *.pyc
 __pycache__/
 media/
-.env
+# .env
 .env.tmp
 accounts_dump.json
 catalog_dump.json

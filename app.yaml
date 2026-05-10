@@ -30,8 +30,7 @@ env_variables:
   WHATSAPP_WEBHOOK_VERIFY_TOKEN: "fenix_seguridad_webhook_2026"
   DEFAULT_ORDER_NOTIFICATION_EMAIL: "distribuciones722@gmail.com"
   ADMIN_APPROVAL_EMAIL: "distribuciones722@gmail.com"
-  GOOGLE_API_KEY: "AIzaSyAYiALEiGbrnmAKbEGvlK6kO3LZn_BCykc"
-  GOOGLE_SHEETS_WEBHOOK_URL: "https://script.google.com/macros/s/AKfycbxMEsFDu6E5H6CaGKfzieT9VV_j-eB7TiFRLkcrt6T0G1lSp__NRtgEIhUJzeMcDkAgGA/exec"
+
 
 handlers:
 - url: /static
