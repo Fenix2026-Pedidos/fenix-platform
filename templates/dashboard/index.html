@@ -8,342 +8,318 @@
 <!-- Hero Saludo Inteligente -->
 {% include 'components/hero_greeting.html' %}
 
-<!-- Dashboard Grid 2x2 -->
-<div class="dashboard-container">
-    <div class="dashboard-grid">
-        <!-- Card 1: Mis Pedidos -->
-        <div class="dash-card">
-            <div class="dash-card-header">
-                <span class="dash-icon dash-icon-blue"></span>
-                <div class="dash-header-text">
-                    <h3>{% trans "Mis Pedidos" %}</h3>
-                    <p>{% trans "Estado de tus pedidos actuales" %}</p>
-                </div>
+<!-- Dashboard Content -->
+<div class="dashboard-wrapper">
+    <!-- Top Metrics Row -->
+    <div class="metrics-grid mb-6">
+        <!-- Metric 1: Pedidos Mes -->
+        <div class="metric-card">
+            <div class="metric-icon icon-delivered">
+                <i class="bi bi-box-seam"></i>
             </div>
-            <div class="dash-card-body">
-                <div class="dash-stats">
-                    <div class="dash-stat-box">
-                        <span class="dash-stat-number">{{ delivered_this_month_count }}</span>
-                        <span class="dash-stat-label">{% trans "Pedidos en mes en curso" %}</span>
+            <div class="metric-info">
+                <span class="metric-label">{% trans "Pedidos del mes" %}</span>
+                <span class="metric-value">{{ delivered_this_month_count }}</span>
+            </div>
+            <div class="metric-trend d-none">
+                <i class="bi bi-arrow-up"></i> 12%
+            </div>
+        </div>
+
+        <!-- Metric 2: Pendientes -->
+        <div class="metric-card">
+            <div class="metric-icon icon-pending">
+                <i class="bi bi-clock-history"></i>
+            </div>
+            <div class="metric-info">
+                <span class="metric-label">{% trans "Pendientes" %}</span>
+                <span class="metric-value text-primary">{{ pending_orders_count }}</span>
+            </div>
+            <a href="{% url 'orders:order_list' %}" class="metric-link" title="{% trans 'Ver todos' %}">
+                <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        <!-- Metric 3: Acciones -->
+        <div class="metric-card">
+            <div class="metric-icon {% if pending_actions_count > 0 %}icon-alert{% else %}icon-check{% endif %}">
+                <i class="bi {% if pending_actions_count > 0 %}bi-exclamation-triangle{% else %}bi-check-all{% endif %}"></i>
+            </div>
+            <div class="metric-info">
+                <span class="metric-label">{% trans "Acciones" %}</span>
+                <span class="metric-value">{{ pending_actions_count }}</span>
+            </div>
+            {% if pending_actions_count > 0 %}
+                <span class="badge-mini badge-alert">{% trans "Requiere atención" %}</span>
+            {% else %}
+                <span class="badge-mini badge-success">{% trans "Al día" %}</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="dashboard-main-grid">
+        <!-- Left Column: Activity & Orders -->
+        <div class="grid-column">
+            <!-- Last Order Info -->
+            {% if last_order %}
+            <div class="card dash-card mb-6">
+                <div class="card-header">
+                    <h5 class="card-title">{% trans "Último Pedido" %}</h5>
+                    <a href="{% url 'orders:order_detail' last_order.id %}" class="card-link">{% trans "Ver detalle" %}</a>
+                </div>
+                <div class="card-body">
+                    <div class="last-order-box">
+                        <div class="order-id">#{{ last_order.id }}</div>
+                        <div class="order-meta">
+                            <span class="order-date">{{ last_order.created_at|date:"d/m/Y" }}</span>
+                            <span class="status-pill status-{{ last_order.status }}">{{ last_order.get_status_display }}</span>
+                        </div>
                     </div>
-                    <div class="dash-stat-box">
-                        <span class="dash-stat-number">{{ pending_orders_count }}</span>
-                        <span class="dash-stat-label">{% trans "Pendientes" %}</span>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Recent Activity -->
+            <div class="card dash-card">
+                <div class="card-header">
+                    <h5 class="card-title">{% trans "Actividad Reciente" %}</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_order %}
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p class="activity-text">
+                                {% trans "Pedido actualizado" %}: <strong>#{{ recent_order.id }}</strong>
+                            </p>
+                            <p class="activity-meta">
+                                <span>{{ recent_order.get_status_display }}</span>
+                                <span class="separator">•</span>
+                                <span>{{ recent_order.updated_at|timesince }} {% trans "atrás" %}</span>
+                            </p>
+                        </div>
                     </div>
+                    {% else %}
+                    <div class="empty-state-mini">
+                        <i class="bi bi-lightning-charge"></i>
+                        <p>{% trans "Sin actividad reciente" %}</p>
+                    </div>
+                    {% endif %}
                 </div>
-                {% if last_order %}
-                <p class="dash-info">{% trans "Último pedido" %}: #{{ last_order.id }} - {{ last_order.created_at|date:"d/m/Y" }}</p>
-                {% endif %}
-                <a href="{% url 'orders:order_list' %}" class="dash-btn">{% trans "Ver pedidos" %}</a>
             </div>
         </div>
 
-        <!-- Card 2: Oferta Especial -->
-        <div class="dash-card">
-            <div class="dash-card-header">
-                <span class="dash-icon dash-icon-yellow"></span>
-                <div class="dash-header-text">
-                    <h3>{% trans "Oferta especial" %}</h3>
-                    <p>{% trans "Oferta especial activa" %}</p>
+        <!-- Right Column: Promotions & Alerts -->
+        <div class="grid-column">
+            <!-- Promotions -->
+            <div class="card dash-card promo-card mb-6">
+                <div class="card-header">
+                    <h5 class="card-title">{% trans "Ofertas para ti" %}</h5>
+                </div>
+                <div class="card-body">
+                    {% if active_promotion %}
+                    <div class="promo-box">
+                        <div class="promo-badge">{% trans "PROMOCIÓN" %}</div>
+                        <p class="promo-text">{{ active_promotion.description }}</p>
+                    </div>
+                    {% else %}
+                    <div class="promo-empty">
+                        <i class="bi bi-stars"></i>
+                        <p>{% trans "Pronto tendremos nuevas ofertas" %}</p>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
-            <div class="dash-card-body">
-                {% if active_promotion %}
-                <div class="dash-promo">
-                    <p>{{ active_promotion.description }}</p>
-                </div>
-                {% else %}
-                <p class="dash-empty">{% trans "No hay promociones activas en este momento" %}</p>
-                {% endif %}
-            </div>
-        </div>
 
-        <!-- Card 3: Acciones Pendientes -->
-        <div class="dash-card">
-            <div class="dash-card-header">
-                <span class="dash-icon dash-icon-cyan"></span>
-                <div class="dash-header-text">
-                    <h3>{% trans "Acciones Pendientes" %}</h3>
-                    <p>{% trans "Tareas que requieren tu atención" %}</p>
+            <!-- Pending Actions Details -->
+            <div class="card dash-card">
+                <div class="card-header">
+                    <h5 class="card-title">{% trans "Estado de la Cuenta" %}</h5>
                 </div>
-            </div>
-            <div class="dash-card-body">
-                {% if pending_actions_count > 5 %}
-                <!-- 🔴 Estado Urgente -->
-                <div class="dash-alert dash-alert-danger">
-                    <span class="dash-alert-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                    </span>
-                    <span class="dash-alert-text">{% trans "Tienes acciones urgentes pendientes" %}</span>
+                <div class="card-body">
+                    {% if pending_actions_count > 0 %}
+                    <div class="alert-box alert-warning">
+                        <div class="alert-icon"><i class="bi bi-info-circle"></i></div>
+                        <div class="alert-content">
+                            <p>{% trans "Tienes tareas pendientes que requieren tu atención." %}</p>
+                            <a href="#" class="alert-link">{% trans "Revisar ahora" %}</a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="alert-box alert-success">
+                        <div class="alert-icon"><i class="bi bi-check-circle"></i></div>
+                        <div class="alert-content">
+                            <p>{% trans "Tu cuenta está al día. No hay acciones pendientes." %}</p>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
-                {% elif pending_actions_count > 0 %}
-                <!-- 🟡 Estado Atención -->
-                <div class="dash-alert dash-alert-warning">
-                    <span class="dash-alert-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                    </span>
-                    <span class="dash-alert-text">
-                        {% blocktrans count counter=pending_actions_count %}
-                            Tienes {{ counter }} acción pendiente
-                        {% plural %}
-                            Tienes {{ counter }} acciones pendientes
-                        {% endblocktrans %}
-                    </span>
-                </div>
-                {% else %}
-                <!-- 🟢 Estado OK -->
-                <div class="dash-alert dash-alert-success">
-                    <span class="dash-alert-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </span>
-                    <span class="dash-alert-text">{% trans "No tienes acciones pendientes" %}</span>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Card 4: Actividad Reciente -->
-        <div class="dash-card">
-            <div class="dash-card-header">
-                <span class="dash-icon dash-icon-green"></span>
-                <div class="dash-header-text">
-                    <h3>{% trans "Actividad Reciente" %}</h3>
-                    <p>{% trans "Tu última actividad en la plataforma" %}</p>
-                </div>
-            </div>
-            <div class="dash-card-body">
-                {% if recent_order %}
-                <p class="dash-activity-title">{% trans "Pedido actualizado" %}</p>
-                <p class="dash-activity-detail">#{{ recent_order.id }} - {{ recent_order.get_status_display }}</p>
-                <p class="dash-activity-time">{{ recent_order.updated_at|timesince }} {% trans "atrás" %}</p>
-                {% else %}
-                <p class="dash-empty">{% trans "No hay actividad reciente" %}</p>
-                {% endif %}
             </div>
         </div>
     </div>
 </div>
 
 <style>
-/* ===== DASHBOARD CONTAINER ===== */
-.dashboard-container {
-    padding: 1.5rem 2rem;
-    width: 100%;
-}
-
-/* ===== GRID 2x2 ===== */
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.25rem;
-}
-
-@media (max-width: 768px) {
-    .dashboard-container {
-        padding: 1rem;
+    /* ============================================================
+       DASHBOARD MODERN STYLES
+       ============================================================ */
+    
+    .dashboard-wrapper {
+        padding: 24px;
+        max-width: 1400px;
+        margin: 0 auto;
     }
-    .dashboard-grid {
-        grid-template-columns: 1fr;
+
+    .mb-6 { margin-bottom: 24px !important; }
+    .text-primary { color: var(--primary-600) !impo    /* Metrics Grid */
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
     }
-}
 
-/* ===== CARD BASE ===== */
-.dash-card {
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 1.5rem;
-    min-height: 220px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
+    .metric-card {
+        background: white;
+        padding: 20px;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: relative;
+        box-shadow: var(--shadow-sm);
+        transition: transform 0.2s;
+    }
+    .metric-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
 
-/* ===== CARD HEADER ===== */
-.dash-card-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-}
+    .metric-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+    .icon-delivered { background: #dcfce7; color: #166534; }
+    .icon-pending { background: #fee2e2; color: #991b1b; }
+    .icon-alert { background: #fef3c7; color: #92400e; }
+    .icon-check { background: #e0f2fe; color: #0369a1; }
 
-.dash-icon {
-    width: 24px;
-    height: 24px;
-    border-radius: 4px;
-    flex-shrink: 0;
-    margin-top: 2px;
-}
+    .metric-info { display: flex; flex-direction: column; }
+    .metric-label { font-size: 12px; color: #64748b; font-weight: 600; }
+    .metric-value { font-size: 20px; font-weight: 800; color: #0f172a; line-height: 1.2; }
 
-.dash-icon-blue { background: #4dabf7; }
-.dash-icon-yellow { background: #ffd43b; }
-.dash-icon-cyan { background: #22b8cf; }
-.dash-icon-green { background: #69db7c; }
+    .metric-link {
+        position: absolute; right: 16px; top: 50%;
+        transform: translateY(-50%); color: #cbd5e1;
+        font-size: 16px; transition: color 0.2s;
+    }
+    .metric-link:hover { color: var(--primary-600); }
 
-.dash-header-text h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #212529;
-    margin: 0 0 0.25rem 0;
-    line-height: 1.3;
-}
+    .badge-mini {
+        position: absolute; right: 16px; bottom: 12px;
+        font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 999px;
+    }
+    .badge-alert { background: #fffbeb; color: #b45309; }
+    .badge-success { background: #f0fdf4; color: #15803d; }
 
-.dash-header-text p {
-    font-size: 0.8125rem;
-    color: #868e96;
-    margin: 0;
-    line-height: 1.4;
-}
+    /* Main Grid */
+    .dashboard-main-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 20px;
+    }
 
-/* ===== CARD BODY ===== */
-.dash-card-body {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
+    .dash-card {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+    }
 
-/* ===== STATS ===== */
-.dash-stats {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
+    .card-header {
+        padding: 12px 16px;
+        border-bottom: 1px solid #f1f5f9;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #fcfcfc;
+    }
+    .card-title { font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; margin: 0; }
+    .card-link { font-size: 11px; color: var(--primary-600); font-weight: 700; text-decoration: none; }
 
-.dash-stat-box {
-    flex: 1;
-    background: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 6px;
-    padding: 1rem 0.75rem;
-    text-align: center;
-}
+    .card-body { padding: 16px; }
 
-.dash-stat-number {
-    display: block;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #228be6;
-    line-height: 1;
-    margin-bottom: 0.5rem;
-}
+    /* Last Order Box */
+    .last-order-box {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f8fafc;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px dashed #cbd5e1;
+    }
+    .order-id { font-size: 18px; font-weight: 800; color: #0f172a; }
+    .order-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+    .order-date { font-size: 11px; color: #64748b; }
+    .status-pill {
+        padding: 1px 8px; border-radius: 999px; font-size: 10px; font-weight: 700;
+        text-transform: uppercase;
+    }
+    .status-pill.status-delivered { background: #dcfce7; color: #166534; }
+    .status-pill.status-pending { background: #fef3c7; color: #92400e; }
 
-.dash-stat-label {
-    display: block;
-    font-size: 0.75rem;
-    color: #868e96;
-}
+    /* Activity timeline */
+    .activity-item { display: flex; gap: 12px; }
+    .activity-icon {
+        width: 28px; height: 28px; border-radius: 50%;
+        background: var(--primary-50); color: var(--primary-600);
+        display: flex; align-items: center; justify-content: center; font-size: 12px;
+    }
+    .activity-text { margin: 0; font-size: 13px; color: #0f172a; }
+    .activity-meta { margin: 2px 0 0 0; font-size: 11px; color: #64748b; display: flex; gap: 6px; }
 
-/* ===== INFO & BUTTON ===== */
-.dash-info {
-    font-size: 0.8125rem;
-    color: #495057;
-    margin: 0 0 1rem 0;
-}
+    /* Promo Box */
+    .promo-card { background: linear-gradient(135deg, #fff 0%, #fffbeb 100%); }
+    .promo-box {
+        padding: 12px; background: white; border-radius: 12px; border: 1px solid #fde68a;
+        box-shadow: 0 4px 6px -1px rgba(251, 191, 36, 0.1);
+    }
+    .promo-badge {
+        display: inline-block; font-size: 9px; font-weight: 800; background: #fef3c7;
+        color: #b45309; padding: 1px 6px; border-radius: 4px; margin-bottom: 6px;
+    }
+    .promo-text { margin: 0; font-size: 14px; font-weight: 600; color: #92400e; line-height: 1.4; }
 
-.dash-btn {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    background: #228be6;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    margin-top: auto;
-    align-self: flex-start;
-}
+    /* Alerts */
+    .alert-box { display: flex; gap: 10px; padding: 12px; border-radius: 12px; border: 1px solid transparent; }
+    .alert-warning { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+    .alert-success { background: #f0fdf4; border-color: #bbf7d0; color: #166534; }
+    .alert-icon { font-size: 16px; }
+    .alert-content p { margin: 0; font-size: 13px; }
+    .alert-link { font-size: 11px; font-weight: 700; color: inherit; text-decoration: underline; margin-top: 2px; display: inline-block; }
 
-.dash-btn:hover {
-    background: #1c7ed6;
-    color: #fff;
-}
+    /* Empty States */
+    .empty-state-mini, .promo-empty {
+        padding: 16px; text-align: center; color: #94a3b8; font-size: 12px;
+    }
+    .empty-state-mini i, .promo-empty i { font-size: 20px; margin-bottom: 6px; display: block; }
 
-/* ===== PROMO ===== */
-.dash-promo {
-    background: #f8f9fa;
-    border-left: 3px solid #40c057;
-    padding: 1rem;
-    border-radius: 4px;
-    margin: auto 0;
-}
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    }
 
-.dash-promo p {
-    margin: 0;
-    font-size: 0.9375rem;
-    color: #212529;
-}
-
-/* ===== EMPTY STATE ===== */
-.dash-empty {
-    color: #868e96;
-    font-size: 0.875rem;
-    text-align: center;
-    padding: 1.5rem 0;
-    margin: auto 0;
-}
-
-/* ===== ALERTS ===== */
-.dash-alert {
-    padding: 0.875rem 1rem;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    margin: auto 0;
-}
-
-.dash-alert-success {
-    background: #d3f9d8;
-    color: #2b8a3e;
-}
-
-.dash-alert-warning {
-    background: #fff3bf;
-    color: #e67700;
-}
-
-.dash-alert-danger {
-    background: #ffe3e3;
-    color: #c92a2a;
-}
-
-.dash-alert {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.dash-alert-icon {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-.dash-alert-icon svg {
-    display: block;
-}
-
-.dash-alert-text {
-    flex: 1;
-}
-
-/* ===== ACTIVITY ===== */
-.dash-activity-title {
-    font-weight: 600;
-    color: #212529;
-    margin: 0 0 0.25rem 0;
-    font-size: 0.875rem;
-}
-
-.dash-activity-detail {
-    color: #495057;
-    margin: 0 0 0.25rem 0;
-    font-size: 0.8125rem;
-}
-
-.dash-activity-time {
-    color: #868e96;
-    margin: 0;
-    font-size: 0.8125rem;
-}
+    @media (max-width: 640px) {
+        .metrics-grid { grid-template-columns: 1fr; }
+        .dashboard-wrapper { padding: 12px; }
+        .mb-6 { margin-bottom: 16px !important; }
+    }
 </style>
 {% endblock %}

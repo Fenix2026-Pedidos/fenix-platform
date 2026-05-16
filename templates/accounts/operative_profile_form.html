@@ -4,388 +4,304 @@
 {% block title %}{% trans "Perfil Operativo" %} - Fenix{% endblock %}
 
 {% block content %}
-<div class="w-full max-w-4xl mx-auto px-4 py-8">
-    
+<div class="operative-form-wrapper">
     <!-- Header -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">{% trans "Completar Perfil Operativo" %}</h1>
-        <p class="text-gray-600">{% trans "Estos datos son necesarios para poder realizar pedidos en la plataforma." %}</p>
+    <div class="form-header-modern mb-8">
+        <h1 class="page-title">{% trans "Perfil Operativo" %}</h1>
+        <p class="text-muted">{% trans "Completa los datos necesarios para empezar a realizar pedidos en la plataforma." %}</p>
     </div>
 
     <!-- ⚠️ BANNER DE PERFIL INCOMPLETO -->
     {% if not form.instance.profile_completed %}
-    <div class="mb-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-lg">
-        <div class="flex gap-3">
-            <div class="flex-shrink-0">
-                <i class="bi bi-exclamation-triangle-fill text-yellow-600 text-xl"></i>
-            </div>
-            <div class="flex-1">
-                <h3 class="font-semibold text-yellow-800 mb-2">
-                    {% trans "Tu perfil está incompleto" %}
-                </h3>
-                <p class="text-yellow-700 text-sm mb-3">
-                    {% trans "Debes completar los siguientes campos obligatorios para poder realizar pedidos:" %}
-                </p>
-                <ul class="text-yellow-700 text-sm space-y-1">
-                    {% for field_name in form.instance.missing_fields %}
-                    <li class="flex items-center gap-2">
-                        <i class="bi bi-dash"></i>
-                        {{ field_name }}
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
+    <div class="status-banner banner-warning mb-6">
+        <div class="banner-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+        <div class="banner-content">
+            <h3 class="banner-title">{% trans "Tu perfil está incompleto" %}</h3>
+            <p class="banner-text">{% trans "Debes completar los campos obligatorios para poder operar:" %}</p>
+            <ul class="banner-list mt-2">
+                {% for field_name in form.instance.missing_fields %}
+                <li><i class="bi bi-dot"></i> {{ field_name }}</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
     {% else %}
     <!-- ✅ PERFIL COMPLETADO -->
-    <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-400 rounded-lg">
-        <div class="flex gap-3">
-            <div class="flex-shrink-0">
-                <i class="bi bi-check-circle-fill text-green-600 text-xl"></i>
-            </div>
-            <div class="flex-1">
-                <h3 class="font-semibold text-green-800">
-                    {% trans "✓ Tu perfil está completo" %}
-                </h3>
-                <p class="text-green-700 text-sm mt-1">
-                    {% trans "Puedes realizar pedidos en la plataforma." %}
-                </p>
-            </div>
+    <div class="status-banner banner-success mb-6">
+        <div class="banner-icon">
+            <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <div class="banner-content">
+            <h3 class="banner-title">{% trans "Perfil Completado" %}</h3>
+            <p class="banner-text">{% trans "Ya puedes realizar pedidos con normalidad." %}</p>
         </div>
     </div>
     {% endif %}
 
     <!-- FORMULARIO -->
-    <form method="post" class="space-y-8">
-        {% csrf_token %}
+    <div class="form-card">
+        <form method="post" class="modern-form">
+            {% csrf_token %}
 
-        <!-- ========== BLOQUE 1: CONTACTO ========== -->
-        <fieldset class="border border-gray-200 rounded-lg p-6">
-            <legend class="text-lg font-semibold text-gray-900 px-2">
-                <i class="bi bi-telephone mr-2"></i>{% trans "1. Datos de Contacto" %}
-            </legend>
+            <!-- ========== BLOQUE 1: CONTACTO ========== -->
+            <fieldset class="form-section">
+                <legend class="section-legend">
+                    <i class="bi bi-telephone"></i>
+                    <span>{% trans "1. Datos de Contacto" %}</span>
+                </legend>
 
-            <div class="mt-4 space-y-4">
-                <!-- Teléfono Empresa -->
-                <div>
-                    <label for="{{ form.telefono_empresa.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                        {{ form.telefono_empresa.label }}
-                    </label>
-                    {{ form.telefono_empresa }}
-                    {% if form.telefono_empresa.errors %}
-                    <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
-                        <i class="bi bi-exclamation-circle"></i>
-                        {% for error in form.telefono_empresa.errors %}
-                            {{ error }}
-                        {% endfor %}
+                <div class="section-grid">
+                    <!-- Teléfono Empresa -->
+                    <div class="form-group">
+                        <label for="{{ form.telefono_empresa.id_for_label }}" class="form-label">
+                            {{ form.telefono_empresa.label }}
+                        </label>
+                        {{ form.telefono_empresa }}
+                        {% if form.telefono_empresa.errors %}
+                        <div class="field-error">
+                            {% for error in form.telefono_empresa.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
-                </div>
 
-                <!-- Teléfono Reparto (OBLIGATORIO) -->
-                <div>
-                    <label for="{{ form.telefono_reparto.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                        {{ form.telefono_reparto.label }}
-                    </label>
-                    {{ form.telefono_reparto }}
-                    {% if form.telefono_reparto.errors %}
-                    <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
-                        <i class="bi bi-exclamation-circle"></i>
-                        {% for error in form.telefono_reparto.errors %}
-                            {{ error }}
-                        {% endfor %}
+                    <!-- Teléfono Reparto -->
+                    <div class="form-group">
+                        <label for="{{ form.telefono_reparto.id_for_label }}" class="form-label">
+                            {{ form.telefono_reparto.label }}
+                        </label>
+                        {{ form.telefono_reparto }}
+                        {% if form.telefono_reparto.errors %}
+                        <div class="field-error">
+                            {% for error in form.telefono_reparto.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                        {% if form.telefono_reparto.help_text %}
+                        <p class="form-help">{{ form.telefono_reparto.help_text|safe }}</p>
+                        {% endif %}
                     </div>
-                    {% endif %}
-                    {% if form.telefono_reparto.help_text %}
-                    <p class="text-gray-500 text-xs mt-1">{{ form.telefono_reparto.help_text|safe }}</p>
-                    {% endif %}
                 </div>
+            </fieldset>
+
+            <!-- ========== BLOQUE 2: DIRECCIÓN FISCAL/LOCAL ========== -->
+            <fieldset class="form-section mt-8">
+                <legend class="section-legend">
+                    <i class="bi bi-building"></i>
+                    <span>{% trans "2. Dirección Local/Fiscal" %}</span>
+                </legend>
+
+                <div class="section-stack mt-4">
+                    <!-- Dirección -->
+                    <div class="form-group">
+                        <label for="{{ form.direccion_local.id_for_label }}" class="form-label">
+                            {{ form.direccion_local.label }}
+                        </label>
+                        {{ form.direccion_local }}
+                        {% if form.direccion_local.errors %}
+                        <div class="field-error">
+                            {% for error in form.direccion_local.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="section-grid">
+                        <div class="form-group">
+                            <label for="{{ form.ciudad.id_for_label }}" class="form-label">{{ form.ciudad.label }}</label>
+                            {{ form.ciudad }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.provincia.id_for_label }}" class="form-label">{{ form.provincia.label }}</label>
+                            {{ form.provincia }}
+                        </div>
+                    </div>
+
+                    <div class="section-grid">
+                        <div class="form-group">
+                            <label for="{{ form.codigo_postal.id_for_label }}" class="form-label">{{ form.codigo_postal.label }}</label>
+                            {{ form.codigo_postal }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.pais.id_for_label }}" class="form-label">{{ form.pais.label }}</label>
+                            {{ form.pais }}
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- ========== BLOQUE 3: DIRECCIÓN DE ENTREGA ========== -->
+            <fieldset class="form-section mt-8">
+                <legend class="section-legend">
+                    <i class="bi bi-truck"></i>
+                    <span>{% trans "3. Dirección de Entrega" %}</span>
+                </legend>
+
+                <div class="section-stack mt-4">
+                    <div class="form-group">
+                        <label for="{{ form.tipo_entrega.id_for_label }}" class="form-label">{{ form.tipo_entrega.label }}</label>
+                        {{ form.tipo_entrega }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.direccion_entrega.id_for_label }}" class="form-label">{{ form.direccion_entrega.label }}</label>
+                        {{ form.direccion_entrega }}
+                    </div>
+
+                    <div class="section-grid">
+                        <div class="form-group">
+                            <label for="{{ form.ciudad_entrega.id_for_label }}" class="form-label">{{ form.ciudad_entrega.label }}</label>
+                            {{ form.ciudad_entrega }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.provincia_entrega.id_for_label }}" class="form-label">{{ form.provincia_entrega.label }}</label>
+                            {{ form.provincia_entrega }}
+                        </div>
+                    </div>
+
+                    <div class="section-grid">
+                        <div class="form-group">
+                            <label for="{{ form.codigo_postal_entrega.id_for_label }}" class="form-label">{{ form.codigo_postal_entrega.label }}</label>
+                            {{ form.codigo_postal_entrega }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.ventana_entrega.id_for_label }}" class="form-label">{{ form.ventana_entrega.label }}</label>
+                            {{ form.ventana_entrega }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.observaciones_entrega.id_for_label }}" class="form-label">{{ form.observaciones_entrega.label }}</label>
+                        {{ form.observaciones_entrega }}
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- ERRORES NO-FIELD -->
+            {% if form.non_field_errors %}
+            <div class="non-field-errors mt-6">
+                {% for error in form.non_field_errors %}
+                <p><i class="bi bi-exclamation-circle"></i> {{ error }}</p>
+                {% endfor %}
             </div>
-        </fieldset>
+            {% endif %}
 
-        <!-- ========== BLOQUE 2: DIRECCIÓN FISCAL/LOCAL ========== -->
-        <fieldset class="border border-gray-200 rounded-lg p-6">
-            <legend class="text-lg font-semibold text-gray-900 px-2">
-                <i class="bi bi-building mr-2"></i>{% trans "2. Dirección Local/Fiscal" %}
-            </legend>
-
-            <div class="mt-4 space-y-4">
-                <!-- Dirección -->
-                <div>
-                    <label for="{{ form.direccion_local.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                        {{ form.direccion_local.label }}
-                    </label>
-                    {{ form.direccion_local }}
-                    {% if form.direccion_local.errors %}
-                    <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
-                        <i class="bi bi-exclamation-circle"></i>
-                        {% for error in form.direccion_local.errors %}
-                            {{ error }}
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-
-                <!-- Fila: Ciudad, Provincia -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Ciudad -->
-                    <div>
-                        <label for="{{ form.ciudad.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                            {{ form.ciudad.label }}
-                        </label>
-                        {{ form.ciudad }}
-                        {% if form.ciudad.errors %}
-                        <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
-                            <i class="bi bi-exclamation-circle"></i>
-                            {% for error in form.ciudad.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Provincia -->
-                    <div>
-                        <label for="{{ form.provincia.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                            {{ form.provincia.label }}
-                        </label>
-                        {{ form.provincia }}
-                        {% if form.provincia.errors %}
-                        <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
-                            <i class="bi bi-exclamation-circle"></i>
-                            {% for error in form.provincia.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Fila: Código Postal, País -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Código Postal -->
-                    <div>
-                        <label for="{{ form.codigo_postal.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                            {{ form.codigo_postal.label }}
-                        </label>
-                        {{ form.codigo_postal }}
-                        {% if form.codigo_postal.errors %}
-                        <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
-                            <i class="bi bi-exclamation-circle"></i>
-                            {% for error in form.codigo_postal.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <!-- País -->
-                    <div>
-                        <label for="{{ form.pais.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                            {{ form.pais.label }}
-                        </label>
-                        {{ form.pais }}
-                        {% if form.pais.errors %}
-                        <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
-                            <i class="bi bi-exclamation-circle"></i>
-                            {% for error in form.pais.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="form-actions mt-12">
+                <a href="{% url 'accounts:profile_view' %}" class="btn-cancel">
+                    {% trans "Descartar" %}
+                </a>
+                <button type="submit" class="btn-submit-modern">
+                    <i class="bi bi-check2-circle"></i>
+                    {% trans "Guardar Cambios" %}
+                </button>
             </div>
-        </fieldset>
-
-        <!-- ========== BLOQUE 3: DIRECCIÓN DE ENTREGA ========== -->
-        <fieldset class="border border-gray-200 rounded-lg p-6">
-            <legend class="text-lg font-semibold text-gray-900 px-2">
-                <i class="bi bi-truck mr-2"></i>{% trans "3. Dirección de Entrega" %}
-            </legend>
-
-            <div class="mt-4 space-y-4">
-                <!-- Tipo de Entrega -->
-                <div>
-                    <label for="{{ form.tipo_entrega.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                        {{ form.tipo_entrega.label }}
-                    </label>
-                    {{ form.tipo_entrega }}
-                    {% if form.tipo_entrega.errors %}
-                    <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
-                        <i class="bi bi-exclamation-circle"></i>
-                        {% for error in form.tipo_entrega.errors %}
-                            {{ error }}
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                    {% if form.tipo_entrega.help_text %}
-                    <p class="text-gray-500 text-xs mt-1">{{ form.tipo_entrega.help_text|safe }}</p>
-                    {% endif %}
-                </div>
-
-                <!-- Dirección de Entrega -->
-                <div>
-                    <label for="{{ form.direccion_entrega.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                        {{ form.direccion_entrega.label }}
-                    </label>
-                    {{ form.direccion_entrega }}
-                    {% if form.direccion_entrega.errors %}
-                    <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
-                        <i class="bi bi-exclamation-circle"></i>
-                        {% for error in form.direccion_entrega.errors %}
-                            {{ error }}
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-
-                <!-- Fila: Ciudad, Provincia Entrega -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Ciudad Entrega -->
-                    <div>
-                        <label for="{{ form.ciudad_entrega.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                            {{ form.ciudad_entrega.label }}
-                        </label>
-                        {{ form.ciudad_entrega }}
-                        {% if form.ciudad_entrega.errors %}
-                        <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
-                            <i class="bi bi-exclamation-circle"></i>
-                            {% for error in form.ciudad_entrega.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Provincia Entrega -->
-                    <div>
-                        <label for="{{ form.provincia_entrega.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                            {{ form.provincia_entrega.label }}
-                        </label>
-                        {{ form.provincia_entrega }}
-                        {% if form.provincia_entrega.errors %}
-                        <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
-                            <i class="bi bi-exclamation-circle"></i>
-                            {% for error in form.provincia_entrega.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Fila: Código Postal Entrega -->
-                <div>
-                    <label for="{{ form.codigo_postal_entrega.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                        {{ form.codigo_postal_entrega.label }}
-                    </label>
-                    {{ form.codigo_postal_entrega }}
-                    {% if form.codigo_postal_entrega.errors %}
-                    <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
-                        <i class="bi bi-exclamation-circle"></i>
-                        {% for error in form.codigo_postal_entrega.errors %}
-                            {{ error }}
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-
-                <!-- Ventana de Entrega (Opcional) -->
-                <div>
-                    <label for="{{ form.ventana_entrega.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                        {{ form.ventana_entrega.label }}
-                    </label>
-                    {{ form.ventana_entrega }}
-                    {% if form.ventana_entrega.help_text %}
-                    <p class="text-gray-500 text-xs mt-1">{{ form.ventana_entrega.help_text|safe }}</p>
-                    {% endif %}
-                </div>
-
-                <!-- Observaciones (Opcional) -->
-                <div>
-                    <label for="{{ form.observaciones_entrega.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                        {{ form.observaciones_entrega.label }}
-                    </label>
-                    {{ form.observaciones_entrega }}
-                </div>
-            </div>
-        </fieldset>
-
-        <!-- ERRORES NO-FIELD -->
-        {% if form.non_field_errors %}
-        <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
-            {% for error in form.non_field_errors %}
-            <div class="text-red-700 text-sm flex items-center gap-2 mb-2">
-                <i class="bi bi-exclamation-circle"></i>
-                {{ error }}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        <!-- BOTONES DE ACCIÓN -->
-        <div class="flex gap-3 justify-between">
-            <a href="{% url 'accounts:profile_view' %}" class="px-6 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
-                {% trans "Cancelar" %}
-            </a>
-            <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
-                <i class="bi bi-check-lg mr-2"></i>{% trans "Guardar Perfil" %}
-            </button>
-        </div>
-    </form>
+        </form>
+    </div>
 
     <!-- INFO ADICIONAL -->
-    <div class="mt-12 p-6 bg-gray-50 rounded-lg border border-gray-200">
-        <h3 class="font-semibold text-gray-900 mb-3">
-            <i class="bi bi-info-circle mr-2"></i>{% trans "¿Por qué solicitamos estos datos?" %}
+    <div class="form-info-footer mt-12">
+        <h3 class="info-title">
+            <i class="bi bi-shield-lock"></i>
+            {% trans "¿Para qué necesitamos estos datos?" %}
         </h3>
-        <ul class="text-gray-700 text-sm space-y-2">
-            <li class="flex gap-2">
-                <span class="text-blue-600 font-semibold">•</span>
-                {% trans "Para poder contactar contigo en caso de incidencias en el reparto" %}
-            </li>
-            <li class="flex gap-2">
-                <span class="text-blue-600 font-semibold">•</span>
-                {% trans "Para gestionar correctamente la entrega de tus pedidos" %}
-            </li>
-            <li class="flex gap-2">
-                <span class="text-blue-600 font-semibold">•</span>
-                {% trans "Para cumplir con normativas de facturación y logística" %}
-            </li>
-        </ul>
+        <p class="info-text">
+            {% trans "Tus datos se utilizan exclusivamente para la gestión logística y facturación de tus pedidos, garantizando la seguridad en el reparto y cumplimiento normativo." %}
+        </p>
     </div>
 </div>
 
 <style>
-    /* Mejorar appearance de inputs con TailwindCSS */
-    input[type="text"],
-    input[type="tel"],
-    input[type="email"],
-    select,
-    textarea {
-        transition: all 0.2s ease;
+    /* ============================================================
+       OPERATIVE PROFILE FORM MODERN STYLES
+       ============================================================ */
+    
+    .operative-form-wrapper {
+        padding: 32px 24px;
+        max-width: 900px;
+        margin: 0 auto;
     }
 
-    input[type="text"]:focus,
-    input[type="tel"]:focus,
-    input[type="email"]:focus,
-    select:focus,
-    textarea:focus {
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    .form-header-modern h1 { font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
+    .form-header-modern p { font-size: 16px; color: #64748b; }
+
+    /* Status Banners */
+    .status-banner {
+        display: flex; gap: 16px; padding: 20px; border-radius: 16px;
+        border: 1px solid transparent;
+    }
+    .banner-warning { background: #fffbeb; border-color: #fde68a; }
+    .banner-success { background: #f0fdf4; border-color: #bbf7d0; }
+    
+    .banner-icon { font-size: 24px; }
+    .banner-warning .banner-icon { color: #d97706; }
+    .banner-success .banner-icon { color: #16a34a; }
+    
+    .banner-title { font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
+    .banner-text { font-size: 14px; color: #475569; }
+    .banner-list { list-style: none; padding: 0; font-size: 13px; color: #b45309; font-weight: 600; }
+
+    /* Form Card */
+    .form-card {
+        background: white; border: 1px solid #e2e8f0; border-radius: 20px;
+        padding: 40px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
 
-    /* Marcar campos con error */
-    .errorlist {
-        display: none;
+    .form-section { border: none; padding: 0; margin: 0; }
+    .section-legend {
+        display: flex; align-items: center; gap: 10px; font-size: 18px;
+        font-weight: 800; color: #0f172a; margin-bottom: 24px;
+        padding-bottom: 12px; border-bottom: 2px solid #f1f5f9; width: 100%;
+    }
+    .section-legend i { color: var(--primary-600); }
+
+    .section-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .section-stack { display: flex; flex-direction: column; gap: 20px; }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-label { font-size: 13px; font-weight: 700; color: #64748b; }
+    
+    /* Input Styling */
+    .modern-form input, .modern-form select, .modern-form textarea {
+        padding: 12px 16px; border-radius: 12px; border: 1.5px solid #e2e8f0;
+        font-size: 15px; color: #1e293b; transition: all 0.2s; background: #fcfcfc;
+    }
+    .modern-form input:focus, .modern-form select:focus, .modern-form textarea:focus {
+        outline: none; border-color: var(--primary-600); background: white;
+        box-shadow: 0 0 0 4px rgba(122, 15, 15, 0.08);
     }
 
-    input.is-invalid,
-    select.is-invalid,
-    textarea.is-invalid {
-        border-color: #ef4444 !important;
-        background-color: #fef2f2;
+    .field-error { font-size: 12px; color: #dc2626; font-weight: 600; margin-top: 4px; }
+    .form-help { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+
+    .non-field-errors { padding: 16px; background: #fef2f2; border-radius: 12px; color: #dc2626; font-size: 14px; font-weight: 600; }
+
+    /* Actions */
+    .form-actions { display: flex; justify-content: flex-end; gap: 16px; align-items: center; }
+    
+    .btn-cancel {
+        font-size: 14px; font-weight: 700; color: #64748b; text-decoration: none;
+        padding: 12px 24px; border-radius: 12px; transition: all 0.2s;
+    }
+    .btn-cancel:hover { background: #f1f5f9; color: #0f172a; }
+
+    .btn-submit-modern {
+        background: var(--primary-600); color: white; border: none; padding: 14px 32px;
+        border-radius: 12px; font-weight: 800; font-size: 15px; cursor: pointer;
+        display: flex; align-items: center; gap: 8px; transition: all 0.2s;
+        box-shadow: 0 4px 12px rgba(122, 15, 15, 0.2);
+    }
+    .btn-submit-modern:hover { background: #5f0c0c; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(122, 15, 15, 0.3); }
+
+    .form-info-footer { text-align: center; background: #f8fafc; border-radius: 16px; padding: 24px; border: 1px solid #f1f5f9; }
+    .info-title { font-size: 14px; font-weight: 800; color: #475569; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .info-title i { color: var(--primary-600); }
+    .info-text { font-size: 13px; color: #94a3b8; max-width: 500px; margin: 0 auto; line-height: 1.5; }
+
+    @media (max-width: 640px) {
+        .section-grid { grid-template-columns: 1fr; }
+        .form-card { padding: 24px; }
+        .form-actions { flex-direction: column-reverse; }
+        .btn-submit-modern, .btn-cancel { width: 100%; justify-content: center; }
     }
 </style>
 {% endblock %}

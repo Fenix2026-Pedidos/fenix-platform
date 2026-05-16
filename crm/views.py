@@ -32,7 +32,7 @@ def leads_list(request):
     Vista del Dashboard del CRM. Muestra listado de leads con filtros premium,
     KPIs comerciales y paginación rápida.
     """
-    leads_queryset = CRMLead.objects.all().select_related('assigned_to')
+    leads_queryset = CRMLead.objects.all().select_related('assigned_to').order_by('-created_at')
 
     # 1. Aplicar Filtros Dinámicos
     query_search = request.GET.get('search', '').strip()
@@ -41,6 +41,11 @@ def leads_list(request):
     query_validation = request.GET.get('validation', '').strip()
     query_priority = request.GET.get('priority', '').strip()
     query_zone = request.GET.get('zone', '').strip()
+    query_agent = request.GET.get('agent', '').strip()
+    
+    # Filtros avanzados (fechas)
+    date_from = request.GET.get('date_from', '').strip()
+    date_to = request.GET.get('date_to', '').strip()
 
     if query_search:
         leads_queryset = leads_queryset.filter(
@@ -53,20 +58,23 @@ def leads_list(request):
 
     if query_channel:
         leads_queryset = leads_queryset.filter(channel=query_channel)
-
     if query_status:
         leads_queryset = leads_queryset.filter(lead_status=query_status)
-
     if query_validation:
         leads_queryset = leads_queryset.filter(validation_status=query_validation)
-
     if query_priority:
         leads_queryset = leads_queryset.filter(priority=query_priority)
-
     if query_zone:
         leads_queryset = leads_queryset.filter(geographic_zone__iexact=query_zone)
+    if query_agent:
+        leads_queryset = leads_queryset.filter(assigned_to_id=query_agent)
+    
+    if date_from:
+        leads_queryset = leads_queryset.filter(created_at__date__gte=date_from)
+    if date_to:
+        leads_queryset = leads_queryset.filter(created_at__date__lte=date_to)
 
-    # 2. Generar Métricas KPI de Ventas (Basadas en el queryset total actual)
+    # 2. Generar Métricas KPI de Ventas
     kpis = {
         'total': CRMLead.objects.count(),
         'nuevos': CRMLead.objects.filter(validation_status=CRMLead.VALIDATION_NUEVO).count(),
@@ -75,11 +83,13 @@ def leads_list(request):
         'convertidos': CRMLead.objects.filter(lead_status=CRMLead.STATUS_CONVERTIDO).count(),
     }
 
-    # 3. Obtener listado de Zonas Geográficas únicas para poblar el filtro dropdown
+    # 3. Datos para filtros
     distinct_zones = CRMLead.objects.exclude(geographic_zone__isnull=True).exclude(geographic_zone='').values_list('geographic_zone', flat=True).distinct()
+    staff_users = User.objects.filter(Q(is_staff=True) | Q(is_superuser=True)).order_by('email')
 
-    # 4. Paginación
-    paginator = Paginator(leads_queryset, 15)  # 15 leads por página
+    # 4. Paginación Pro
+    per_page = int(request.GET.get('per_page', 20))
+    paginator = Paginator(leads_queryset, per_page)
     page_number = request.GET.get('page', 1)
     leads_page = paginator.get_page(page_number)
 
@@ -87,10 +97,12 @@ def leads_list(request):
         'leads': leads_page,
         'kpis': kpis,
         'distinct_zones': sorted(list(distinct_zones)),
+        'staff_users': staff_users,
         'channels': CRMLead.CHANNEL_CHOICES,
         'statuses': CRMLead.STATUS_CHOICES,
         'validations': CRMLead.VALIDATION_CHOICES,
         'priorities': CRMLead.PRIORITY_CHOICES,
+        'per_page': per_page,
         'filters': {
             'search': query_search,
             'channel': query_channel,
@@ -98,9 +110,37 @@ def leads_list(request):
             'validation': query_validation,
             'priority': query_priority,
             'zone': query_zone,
+            'agent': query_agent,
+            'date_from': date_from,
+            'date_to': date_to,
         }
     }
     return render(request, 'crm/leads_list.html', context)
+
+
+@crm_access_required
+@require_POST
+def delete_lead(request, lead_uuid):
+    """Elimina un lead individual"""
+    lead = get_object_or_404(CRMLead, uuid=lead_uuid)
+    lead.delete()
+    return JsonResponse({'success': True, 'message': 'Lead eliminado correctamente.'})
+
+
+@crm_access_required
+@require_POST
+def bulk_delete_leads(request):
+    """Elimina múltiples leads a la vez"""
+    try:
+        data = json.loads(request.body)
+        lead_ids = data.get('ids', [])
+        if not lead_ids:
+            return JsonResponse({'success': False, 'error': 'No se seleccionaron leads.'}, status=400)
+        
+        CRMLead.objects.filter(uuid__in=lead_ids).delete()
+        return JsonResponse({'success': True, 'message': f'{len(lead_ids)} leads eliminados correctamente.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 
 @crm_access_required
@@ -110,20 +150,48 @@ def lead_detail(request, lead_uuid):
     Muestra la línea de tiempo, datos de contacto editables,
     asignación a comerciales y logging de interacciones.
     """
+    from orders.models import Order
+    from django.db.models import Sum, Avg, Max, Count
+    
     lead = get_object_or_404(CRMLead, uuid=lead_uuid)
-    messages = lead.messages.all().order_index = ['timestamp'] # Orden cronológico
-    messages = lead.messages.all().order_by('timestamp')
+    timeline_messages = lead.messages.all().order_by('-timestamp') # Invertimos para que lo más reciente esté arriba
+    
+    # 1. Intentar vincular con un Usuario real para historial comercial
+    linked_user = None
+    if lead.email:
+        linked_user = User.objects.filter(email=lead.email).first()
+    if not linked_user and lead.phone:
+        linked_user = User.objects.filter(phone=lead.phone).first()
+
+    commercial_history = None
+    if linked_user:
+        orders = Order.objects.filter(customer=linked_user)
+        stats = orders.aggregate(
+            total_spent=Sum('total_amount'),
+            avg_ticket=Avg('total_amount'),
+            last_order_date=Max('created_at'),
+            count=Count('id')
+        )
+        commercial_history = {
+            'user': linked_user,
+            'total_spent': stats['total_spent'] or 0,
+            'avg_ticket': stats['avg_ticket'] or 0,
+            'last_order_date': stats['last_order_date'],
+            'order_count': stats['count'] or 0,
+            'recent_orders': orders.order_by('-created_at')[:5]
+        }
     
     # Obtener usuarios internos/vendedores para asignación
     staff_users = User.objects.filter(Q(is_staff=True) | Q(is_superuser=True)).order_by('email')
 
     context = {
         'lead': lead,
-        'messages': messages,
+        'timeline_messages': timeline_messages,
         'staff_users': staff_users,
         'statuses': CRMLead.STATUS_CHOICES,
         'validations': CRMLead.VALIDATION_CHOICES,
         'priorities': CRMLead.PRIORITY_CHOICES,
+        'commercial_history': commercial_history,
     }
     return render(request, 'crm/lead_detail.html', context)
 

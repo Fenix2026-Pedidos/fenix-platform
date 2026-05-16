@@ -69,7 +69,11 @@ def user_company_context(request):
 
     return {
         'user_company': {
-            'job_title': request.user.job_title,
-            'company': {'name': request.user.company}
+            'job_title': getattr(request.user, 'job_title', ''),
+            'company': {
+                'name': getattr(request.user, 'company', ''),
+                'vat_number': getattr(request.user, 'company_tax_id', ''),
+                'tax_id': getattr(request.user, 'company_tax_id', '')
+            }
         }
     }

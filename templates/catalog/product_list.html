@@ -278,6 +278,23 @@
     .product-promo-badge.navidad {
         background: linear-gradient(135deg, #047857 0%, #065f46 100%); /* Forest green */
     }
+    /* Adaptación para scroll horizontal de categorías en móvil */
+    .category-tabs {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 8px 4px;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;  /* IE and Edge */
+        -webkit-overflow-scrolling: touch;
+    }
+    .category-tabs::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
+    .category-chip {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
 </style>
 {% endblock %}
 
@@ -296,7 +313,7 @@
                 <h2 id="catalogSectionTitle" class="catalog-shell__title">{% trans "Catálogo de Productos" %}</h2>
                 <p class="catalog-shell__eyebrow">{% trans "CATÁLOGO ACTUALIZADO" %}</p>
             </div>
-            <p class="catalog-shell__subtitle d-none d-md-block">
+            <p class="catalog-shell__subtitle">
                 {% if request.user.is_authenticated %}
                 {% trans "Selecciona cantidades y añade tus básicos al carrito inteligente." %}
                 {% else %}
@@ -702,6 +719,7 @@
     window.Fenix = window.Fenix || {};
     window.Fenix.isAuthenticated = ("{{ request.user.is_authenticated|yesno:'true,false' }}" === "true");
 </script>
+<script src="{% static 'js/catalog-filters.js' %}?v={% now 'U' %}"></script>
 <script src="{% static 'js/catalog.js' %}?v={% now 'U' %}"></script>
 <script>
     // Inicializar catálogo al cargar la página

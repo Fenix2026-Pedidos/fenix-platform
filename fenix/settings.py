@@ -93,6 +93,9 @@ MIDDLEWARE = [
     'core.middleware.AuditLogMiddleware',  # Auditoría Synerg-IA
 ]
 
+# Ensure session is exclusively for the Fenix project
+SESSION_COOKIE_NAME = 'fenix_sessionid'
+
 # Security settings for production
 if not DEBUG:
     SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'true').lower() in ('1', 'true', 'yes')

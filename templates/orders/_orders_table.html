@@ -3,8 +3,8 @@
 <!-- Title and Summary -->
 
 <div class="page-header flex items-center justify-between mb-6">
-    <div class="flex items-center">
-        <button type="button" onclick="window.history.back()" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 14px; border: 1px solid #d1d5db; color: #374151; background: white; border-radius: 6px; cursor: pointer; transition: background-color 0.2s;">
+    <div class="flex items-center gap-4">
+        <button type="button" onclick="window.history.back()" class="btn-back">
             <i class="bi bi-arrow-left"></i>
             {% trans "Volver" %}
         </button>
@@ -98,63 +98,102 @@
 
 
 
-<!-- Orders Table -->
+<!-- Orders View (Desktop Table / Mobile Cards) -->
 {% if page_obj.object_list %}
-<div class="card orders-card">
-    <div class="table-wrapper">
-        <table class="table orders-table">
-            <thead>
-                <tr>
-                    {% if is_admin_view %}
-                    <th class="col-cliente">{% trans "Cliente" %}</th>
-                    <th class="col-ciudad" style="text-align: center;">{% trans "Ciudad" %}</th>
-                    {% endif %}
-                    <th class="col-id" style="text-align: center;">{% trans "ID (Nº Pedido)" %}</th>
-                    <th class="col-fecha" style="text-align: center;">{% trans "Fecha" %}</th>
-                    <th class="col-estado" style="text-align: center;">{% trans "Estado" %}</th>
-                    <th class="col-total" style="text-align: center;">{% trans "Total" %}</th>
-                    <th class="col-acciones" style="text-align: right;">{% trans "Acciones" %}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for order in page_obj.object_list %}
-                <tr class="order-row">
-                    {% if is_admin_view %}
-                    <td class="col-cliente">
-                        <div class="cliente-info">
-                            <div class="cliente-empresa">{{ order.customer.company|default:order.customer.email }}</div>
-                            <div class="cliente-name">{{ order.customer.full_name|default:order.customer.email }}</div>
-                        </div>
-                    </td>
-                    <td class="col-ciudad">
-                        {{ order.customer.ciudad|default:"—" }}
-                    </td>
-                    {% endif %}
-                    <td class="col-id">
-                        <span class="order-id">#{{ order.id }}</span>
-                    </td>
-                    <td class="col-fecha">
-                        {{ order.created_at|date:"d/m/Y H:i" }}
-                    </td>
-                    <td class="col-estado">
+    <!-- Desktop Table -->
+    <div class="card orders-card d-none d-md-block">
+        <div class="table-wrapper">
+            <table class="table orders-table">
+                <thead>
+                    <tr>
+                        {% if is_admin_view %}
+                        <th class="col-cliente">{% trans "Cliente" %}</th>
+                        <th class="col-ciudad" style="text-align: center;">{% trans "Ciudad" %}</th>
+                        {% endif %}
+                        <th class="col-id" style="text-align: center;">{% trans "ID (Nº Pedido)" %}</th>
+                        <th class="col-fecha" style="text-align: center;">{% trans "Fecha" %}</th>
+                        <th class="col-estado" style="text-align: center;">{% trans "Estado" %}</th>
+                        <th class="col-total" style="text-align: center;">{% trans "Total" %}</th>
+                        <th class="col-acciones" style="text-align: right;">{% trans "Acciones" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in page_obj.object_list %}
+                    <tr class="order-row">
+                        {% if is_admin_view %}
+                        <td class="col-cliente">
+                            <div class="cliente-info">
+                                <div class="cliente-empresa">{{ order.customer.company|default:order.customer.email }}</div>
+                                <div class="cliente-name">{{ order.customer.full_name|default:order.customer.email }}</div>
+                            </div>
+                        </td>
+                        <td class="col-ciudad">
+                            {{ order.customer.ciudad|default:"—" }}
+                        </td>
+                        {% endif %}
+                        <td class="col-id">
+                            <span class="order-id">#{{ order.id }}</span>
+                        </td>
+                        <td class="col-fecha">
+                            {{ order.created_at|date:"d/m/Y H:i" }}
+                        </td>
+                        <td class="col-estado">
+                            <span class="status-badge {{ order.status|status_badge_class }}">
+                                {{ order.get_status_display }}
+                            </span>
+                        </td>
+                        <td class="col-total" style="text-align: center;">
+                            <span class="order-total">{{ order.total_amount|currency_format }}</span>
+                        </td>
+                        <td class="col-acciones" style="text-align: right;">
+                            <a href="{% url 'orders:order_detail' order.pk %}" class="btn btn-outline btn-sm" aria-label="{% trans 'Ver detalles del pedido' %} {{ order.id }}">
+                                <i class="bi bi-eye"></i> {% trans "Ver" %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Mobile Cards List -->
+    <div class="orders-mobile-list d-md-none">
+        {% for order in page_obj.object_list %}
+        <div class="order-mobile-card">
+            <div class="order-mobile-header">
+                <span class="order-mobile-id">#{{ order.id }}</span>
+                <span class="order-mobile-date">{{ order.created_at|date:"d/m/Y" }}</span>
+            </div>
+            
+            <div class="order-mobile-body">
+                {% if is_admin_view %}
+                <div class="order-mobile-customer">
+                    <span class="customer-empresa">{{ order.customer.company|default:order.customer.email }}</span>
+                    <span class="customer-name">{{ order.customer.full_name|default:order.customer.email }}</span>
+                </div>
+                {% endif %}
+                
+                <div class="order-mobile-stats">
+                    <div class="order-mobile-status">
                         <span class="status-badge {{ order.status|status_badge_class }}">
                             {{ order.get_status_display }}
                         </span>
-                    </td>
-                    <td class="col-total" style="text-align: center;">
-                        <span class="order-total">{{ order.total_amount|currency_format }}</span>
-                    </td>
-                    <td class="col-acciones" style="text-align: right;">
-                        <a href="{% url 'orders:order_detail' order.pk %}" class="btn btn-outline btn-sm" aria-label="{% trans 'Ver detalles del pedido' %} {{ order.id }}">
-                            <i class="bi bi-eye"></i> {% trans "Ver" %}
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                    </div>
+                    <div class="order-mobile-total">
+                        {{ order.total_amount|currency_format }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="order-mobile-footer">
+                <a href="{% url 'orders:order_detail' order.pk %}" class="btn-mobile-view">
+                    <i class="bi bi-eye"></i> {% trans "Ver Detalles" %}
+                </a>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-</div>
 
 <!-- Pagination -->
 {% if page_obj.has_other_pages %}
@@ -272,159 +311,79 @@
     /* ============================================================
        MODERN FILTER BAR (SaaS Style)
        ============================================================ */
-    
     .filter-bar {
         background: white;
         border: 1px solid var(--gray-200);
-        border-radius: 8px;
-        margin-bottom: 20px;
-        transition: all 0.3s ease;
-    }
-
-    .filter-form {
-        width: 100%;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow-sm);
     }
 
     .filter-bar-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        padding: 16px 20px;
-    }
-
-    .filter-bar-title {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 600;
-        font-size: 14px;
-        color: var(--gray-900);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        white-space: nowrap;
-    }
-
-    .filter-bar-title i {
-        font-size: 16px;
-        color: var(--primary-600);
+        padding: 20px;
     }
 
     .filter-controls {
         display: flex;
         align-items: center;
         gap: 12px;
-        flex-wrap: nowrap;
-        flex: 1;
-        overflow-x: auto;
     }
 
-    /* Filter Input (Select) */
     .filter-input {
-        padding: 8px 12px;
-        font-size: 13px;
+        padding: 10px 16px;
+        font-size: 14px;
         font-weight: 500;
-        border: 1px solid var(--gray-300);
-        border-radius: 6px;
-        background: white;
+        border: 1px solid var(--gray-200);
+        border-radius: 8px;
+        background: var(--gray-50);
         color: var(--gray-900);
         cursor: pointer;
         transition: all 0.2s ease;
         appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M1 4l5 4 5-4'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M1 4l5 4 5-4'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
-        background-position: right 8px center;
-        padding-right: 28px;
+        background-position: right 12px center;
+        padding-right: 36px;
     }
 
     .filter-input:hover {
-        border-color: var(--gray-400);
-        background-color: var(--gray-50);
-    }
-
-    .filter-input:focus {
-        outline: none;
-        border-color: var(--primary-500);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        border-color: var(--gray-300);
         background-color: white;
-    }
-
-    .filter-input option {
-        padding: 8px;
-        background: white;
-        color: var(--gray-900);
-    }
-
-    .per-page-select {
-        min-width: 120px;
-    }
-
-    /* Filter Action Buttons */
-    .filter-actions {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        margin-left: auto;
     }
 
     .btn-primary-filter {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        padding: 8px 16px;
-        background: #2563eb;
+        gap: 8px;
+        padding: 10px 20px;
+        background: var(--primary-600);
         color: white;
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 600;
         border: none;
-        border-radius: 6px;
+        border-radius: 8px;
         cursor: pointer;
         transition: all 0.2s ease;
-        white-space: nowrap;
     }
 
     .btn-primary-filter:hover {
-        background: #1d4ed8;
-        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
-    }
-
-    .btn-primary-filter:active {
-        transform: scale(0.98);
-    }
-
-    .btn-primary-filter i {
-        font-size: 14px;
+        background: var(--primary-700);
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
     }
 
     .btn-ghost-filter {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        padding: 8px 16px;
+        gap: 8px;
+        padding: 10px 20px;
         background: white;
-        color: var(--gray-700);
-        font-size: 13px;
+        color: var(--gray-600);
+        font-size: 14px;
         font-weight: 600;
-        border: 1px solid var(--gray-300);
-        border-radius: 6px;
-        cursor: pointer;
+        border: 1px solid var(--gray-200);
+        border-radius: 8px;
         text-decoration: none;
         transition: all 0.2s ease;
-        white-space: nowrap;
-    }
-
-    .btn-ghost-filter:hover {
-        background: var(--gray-50);
-        border-color: var(--gray-400);
-        color: var(--gray-900);
-    }
-
-    .btn-ghost-filter i {
-        font-size: 14px;
-    }
-
-    .btn-text {
-        display: inline;
     }
 
     /* Active Filters Chips */
@@ -435,34 +394,6 @@
         padding: 12px 20px;
         background: var(--gray-50);
         border-top: 1px solid var(--gray-200);
-        animation: slideDown 0.3s ease;
-    }
-
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .chips-label {
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--gray-600);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        white-space: nowrap;
-    }
-
-    .chips-container {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        align-items: center;
     }
 
     .chip {
@@ -471,95 +402,30 @@
         gap: 6px;
         padding: 4px 10px;
         background: white;
-        border: 1px solid var(--gray-300);
-        border-radius: 12px;
+        border: 1px solid var(--gray-200);
+        border-radius: 100px;
         font-size: 12px;
         color: var(--gray-700);
-        transition: all 0.2s ease;
-    }
-
-    .chip:hover {
-        background: var(--gray-100);
-        border-color: var(--gray-400);
-    }
-
-    .chip-label {
-        font-weight: 500;
     }
 
     .chip-remove {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 16px;
-        height: 16px;
-        color: var(--gray-500);
-        text-decoration: none;
-        border-radius: 50%;
-        transition: all 0.2s ease;
-        cursor: pointer;
-    }
-
-    .chip:hover .chip-remove {
-        color: #dc2626;
-        background: rgba(220, 38, 38, 0.1);
-    }
-
-    .chip-remove i {
-        font-size: 12px;
-    }
-
-    /* Summary Bar */
-    .summary-bar {
-        background: white;
-        border: 1px solid var(--gray-200);
-        border-top: none;
-        border-radius: 0 0 8px 8px;
-        padding: 12px 20px;
-        margin-bottom: 20px;
-    }
-
-    .summary-stats {
+        color: var(--gray-400);
         display: flex;
         align-items: center;
-        gap: 16px;
-        flex-wrap: wrap;
     }
 
-    .stat-item {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 13px;
-        color: var(--gray-600);
-    }
-
-    .stat-item i {
-        color: var(--primary-600);
-        font-size: 14px;
-    }
-
-    .stat-label {
-        font-weight: 500;
-        color: var(--gray-700);
-    }
-
-    .stat-value {
-        font-weight: 600;
-        color: var(--gray-900);
-    }
-
-    .stat-divider {
-        color: var(--gray-300);
+    .chip-remove:hover {
+        color: #ef4444;
     }
 
     /* ============================================================
-       ORDERS TABLE
+       ORDERS TABLE (Desktop)
        ============================================================ */
     .orders-card {
         border: 1px solid var(--gray-200);
-        border-radius: 8px;
+        border-radius: 12px;
         overflow: hidden;
+        box-shadow: var(--shadow-sm);
     }
 
     .orders-table {
@@ -573,371 +439,252 @@
     }
 
     .orders-table thead th {
-        padding: 12px 16px;
+        padding: 14px 20px;
         font-weight: 600;
         font-size: 13px;
-        color: var(--gray-700);
+        color: var(--gray-600);
         text-transform: uppercase;
-        letter-spacing: 0.5px;
-        border: none;
+        letter-spacing: 0.05em;
     }
 
     .orders-table tbody td {
-        padding: 12px 16px;
-        border-bottom: 1px solid var(--gray-200);
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--gray-100);
         vertical-align: middle;
-    }
-
-    .orders-table tbody tr:last-child td {
-        border-bottom: none;
     }
 
     .orders-table tbody tr:hover {
         background-color: var(--gray-50);
     }
 
-    .col-id {
-        min-width: 80px;
-        text-align: center;
-    }
-
-    .col-ciudad {
-        min-width: 120px;
-        text-align: center;
-    }
-
-    .col-fecha {
-        min-width: 150px;
-        text-align: center;
-    }
-
-    .col-estado {
-        min-width: 130px;
-        text-align: center;
-    }
-
-    .col-total {
-        min-width: 100px;
-        text-align: center;
-    }
-
-    .col-acciones {
-        min-width: 100px;
-        text-align: right;
-    }
-
-    .cliente-info {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-    }
-
-    .cliente-empresa {
-        font-weight: 600;
-        color: var(--gray-900);
-        font-size: 14px;
-    }
-
-    .cliente-name {
-        font-size: 12px;
-        color: var(--gray-600);
-    }
-
     .order-id {
-        font-weight: 600;
+        font-weight: 700;
         color: var(--primary-600);
-        font-size: 14px;
     }
 
     .order-total {
-        font-weight: 600;
+        font-weight: 700;
         color: var(--gray-900);
-        font-size: 14px;
     }
 
-    /* Status Badge Styles */
-    .status-badge {
-        display: inline-block;
-        padding: 4px 12px;
+    /* ============================================================
+       MOBILE CARDS LIST
+       ============================================================ */
+    .orders-mobile-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 30px;
+    }
+
+    .order-mobile-card {
+        background: white;
+        border: 1px solid var(--gray-200);
         border-radius: 12px;
+        padding: 20px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .order-mobile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--gray-100);
+    }
+
+    .order-mobile-id {
+        font-weight: 700;
+        color: var(--primary-600);
+        font-size: 16px;
+    }
+
+    .order-mobile-date {
         font-size: 13px;
-        font-weight: 600;
+        color: var(--gray-500);
+    }
+
+    .order-mobile-customer {
+        margin-bottom: 12px;
+    }
+
+    .customer-empresa {
+        display: block;
+        font-weight: 700;
+        color: var(--gray-900);
+        font-size: 15px;
+    }
+
+    .customer-name {
+        display: block;
+        font-size: 13px;
+        color: var(--gray-500);
+    }
+
+    .order-mobile-stats {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .order-mobile-total {
+        font-weight: 800;
+        font-size: 18px;
+        color: var(--gray-900);
+    }
+
+    .btn-mobile-view {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 14px;
+        background: var(--gray-50);
+        color: var(--gray-700);
+        text-decoration: none !important;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 14px;
+        border: 1px solid var(--gray-200);
+        transition: all 0.2s ease;
+    }
+
+    .btn-mobile-view:hover {
+        background: var(--gray-100);
+        color: var(--gray-900);
+    }
+
+    /* ============================================================
+       STATUS BADGES (Universal)
+       ============================================================ */
+    .status-badge {
+        padding: 6px 14px;
+        border-radius: 100px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
         white-space: nowrap;
     }
 
-    .status-badge.status-new {
-        background-color: #dbeafe;
-        color: #0c4a6e;
-    }
+    .status-badge.status-new { background: #eff6ff; color: #1e40af; }
+    .status-badge.status-confirmed { background: #f0fdf4; color: #166534; }
+    .status-badge.status-preparing { background: #fffbeb; color: #92400e; }
+    .status-badge.status-out_for_delivery { background: #faf5ff; color: #6b21a8; }
+    .status-badge.status-delivered { background: #ecfdf5; color: #065f46; }
+    .status-badge.status-cancelled { background: #fef2f2; color: #991b1b; }
 
-    .status-badge.status-confirmed {
-        background-color: #e0e7ff;
-        color: #312e81;
-    }
-
-    .status-badge.status-preparing {
-        background-color: #fef3c7;
-        color: #78350f;
-    }
-
-    .status-badge.status-out_for_delivery {
-        background-color: #fed7aa;
-        color: #7c2d12;
-    }
-
-    .status-badge.status-delivered {
-        background-color: #dcfce7;
-        color: #15803d;
-    }
-
-    .status-badge.status-cancelled {
-        background-color: #fee2e2;
-        color: #7f1d1d;
-    }
-
-    /* Pagination */
+    /* ============================================================
+       PAGINATION
+       ============================================================ */
     .pagination-nav {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-top: 24px;
-        padding: 16px 0;
-        border-top: 1px solid var(--gray-200);
-        flex-wrap: wrap;
-        gap: 16px;
+        margin-top: 32px;
+        gap: 20px;
     }
 
     .pagination-info {
-        font-size: 13px;
-        color: var(--gray-600);
-        white-space: nowrap;
+        font-size: 14px;
+        color: var(--gray-500);
     }
 
     .pagination {
         display: flex;
-        gap: 4px;
+        gap: 6px;
         list-style: none;
-        margin: 0;
         padding: 0;
-    }
-
-    .page-item {
-        display: flex;
+        margin: 0;
     }
 
     .page-link {
         display: flex;
         align-items: center;
         justify-content: center;
-        min-width: 36px;
-        height: 36px;
-        padding: 0 8px;
-        border: 1px solid var(--gray-300);
-        border-radius: 4px;
-        font-size: 13px;
-        font-weight: 500;
+        min-width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        border: 1px solid var(--gray-200);
+        background: white;
         color: var(--gray-700);
         text-decoration: none;
+        font-weight: 600;
         transition: all 0.2s ease;
-        cursor: pointer;
     }
 
     .page-link:hover {
-        border-color: var(--primary-500);
-        background-color: var(--primary-50);
-        color: var(--primary-600);
+        background: var(--gray-50);
+        border-color: var(--gray-300);
     }
 
     .page-item.active .page-link {
-        background-color: var(--primary-600);
+        background: var(--primary-600);
         border-color: var(--primary-600);
         color: white;
     }
 
     .page-item.disabled .page-link {
-        color: var(--gray-400);
-        cursor: not-allowed;
         opacity: 0.5;
+        cursor: not-allowed;
     }
 
-    /* Empty State */
-    .empty-state {
-        border: none;
-        background: var(--gray-50);
-    }
-
-    .empty-state-content {
-        text-align: center;
-        padding: 48px 32px;
-    }
-
-    .empty-state-content i {
-        font-size: 48px;
-        color: var(--gray-400);
-        margin-bottom: 16px;
-        display: block;
-    }
-
-    .empty-state-title {
-        font-size: 18px;
-        font-weight: 600;
-        color: var(--gray-900);
-        margin-bottom: 8px;
-    }
-
-    .empty-state-text {
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
         font-size: 14px;
-        color: var(--gray-600);
-        margin-bottom: 16px;
+        font-weight: 600;
+        border: 1px solid var(--gray-200);
+        color: var(--gray-700);
+        background: white;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
     }
 
-    /* Responsive */
+    .btn-back:hover {
+        background: var(--gray-50);
+        border-color: var(--gray-300);
+        color: var(--gray-900);
+    }
+
+    /* Utility Classes */
+    .d-none { display: none !important; }
+    @media (min-width: 768px) {
+        .d-md-block { display: block !important; }
+        .d-md-none { display: none !important; }
+        .d-md-flex { display: flex !important; }
+    }
+
     /* ============================================================
-       RESPONSIVE DESIGN
+       RESPONSIVE
        ============================================================ */
-    
-    @media (max-width: 1024px) {
-        .filter-bar-header {
-            flex-wrap: wrap;
-        }
-
-        .filter-controls {
-            width: 100%;
-            order: 2;
-        }
-
-        .filter-bar-title {
-            width: 100%;
-            order: 1;
-        }
-
-        .filter-actions {
-            margin-left: 0;
-            width: 100%;
-        }
-
-        .btn-primary-filter,
-        .btn-ghost-filter {
-            flex: 1;
-            justify-content: center;
-        }
-    }
-
     @media (max-width: 768px) {
         .filter-bar-header {
-            flex-direction: column;
-            gap: 12px;
-            padding: 12px 16px;
+            padding: 16px;
         }
-
         .filter-controls {
-            width: 100%;
             flex-direction: column;
-        }
-
-        .filter-bar-title {
+            align-items: stretch;
             width: 100%;
         }
-
         .filter-input {
+            width: 100% !important;
+        }
+        .btn-primary-filter, .btn-ghost-filter {
             width: 100%;
-        }
-
-        .per-page-select {
-            min-width: 100%;
-        }
-
-        .filter-actions {
-            width: 100%;
-            margin-left: 0;
-        }
-
-        .btn-primary-filter,
-        .btn-ghost-filter {
-            flex: 1;
             justify-content: center;
-            padding: 10px 12px;
-            font-size: 12px;
         }
-
-        .btn-text {
-            display: none;
-        }
-
-        .filter-chips {
-            flex-wrap: wrap;
-            padding: 10px 16px;
-            gap: 8px;
-        }
-
-        .chips-label {
-            width: 100%;
-        }
-
-        .summary-bar {
-            padding: 10px 16px;
-        }
-
-        .summary-stats {
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .col-cliente {
-            min-width: 150px;
-        }
-
-        .col-ciudad {
-            min-width: 100px;
-            font-size: 13px;
-        }
-
-        .col-id {
-            min-width: 60px;
-            font-size: 13px;
-        }
-
-        .col-fecha {
-            min-width: 120px;
-            font-size: 13px;
-        }
-
         .pagination-nav {
-            justify-content: center;
-        }
-
-        .pagination-info {
-            width: 100%;
+            flex-direction: column;
             text-align: center;
         }
-
-        .pagination {
-            justify-content: center;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .filter-input {
-            font-size: 12px;
-        }
-
-        .btn-primary-filter i,
-        .btn-ghost-filter i {
-            font-size: 12px;
-        }
-
-        .chip {
-            font-size: 11px;
-            padding: 3px 8px;
-        }
-
-        .chip-label {
-            max-width: 100px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-    }
     }
 </style>
 <script>

@@ -113,11 +113,20 @@ def login_view(request):
             if not user.is_active:
                 messages.error(request, _('Tu cuenta está desactivada por el sistema.'))
             else:
-                login(request, user)
-                next_url = request.GET.get('next')
-                if next_url:
-                    return redirect(next_url)
-                return redirect('accounts:dashboard')
+                # Comprobar si tiene 2FA habilitado
+                security = getattr(user, 'security', None)
+                if security and security.two_factor_enabled:
+                    request.session['pre_2fa_user_id'] = user.id
+                    next_url = request.GET.get('next')
+                    if next_url:
+                        request.session['next_url'] = next_url
+                    return redirect('accounts:verify_2fa_login')
+                else:
+                    login(request, user)
+                    next_url = request.GET.get('next')
+                    if next_url:
+                        return redirect(next_url)
+                    return redirect('accounts:dashboard')
     else:
         form = LoginForm(request)
     

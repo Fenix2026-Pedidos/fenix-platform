@@ -3,7 +3,7 @@
     <!-- Fila 1: Filtros de Categoría y Acciones -->
     <div class="catalog-controls-row catalog-controls-row--main">
         <div class="catalog-controls__categories">
-            <div class="category-tabs d-none d-md-flex" role="tablist">
+            <div class="category-tabs mobile-scroll-x" role="tablist">
                 <a href="?type=todos{% if search_query %}&q={{ search_query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if page_size %}&page_size={{ page_size }}{% endif %}#productsGrid" 
                    class="category-chip {% if not active_promo %}{% if active_type == 'todos' or not active_type %}is-active{% endif %}{% endif %}" 
                    role="tab" data-category-tab="todos" {% if not active_promo %}{% if active_type == 'todos' or not active_type %}aria-selected="true"{% endif %}{% endif %}>

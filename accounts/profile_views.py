@@ -273,30 +273,6 @@ def change_password(request):
     return render(request, 'accounts/profile/change_password.html', {'form': form})
 
 
-@login_required
-@require_POST
-def enable_2fa(request):
-    """Habilitar autenticación de dos factores"""
-    security = request.user.get_or_create_security()
-    
-    if not security.two_factor_enabled:
-        security.two_factor_enabled = True
-        security.two_factor_method = request.POST.get('method', 'totp')
-        security.two_factor_secret = secrets.token_urlsafe(32)
-        security.save()
-        
-        log_profile_action(
-            user=request.user,
-            action='enable_2fa',
-            field_changed='two_factor_method',
-            new_value=security.two_factor_method,
-            request=request
-        )
-        
-        messages.success(request, _('Autenticación de dos factores habilitada'))
-    
-    return redirect('accounts:profile_dashboard')
-
 
 @login_required
 @require_POST

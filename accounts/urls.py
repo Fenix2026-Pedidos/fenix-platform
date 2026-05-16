@@ -2,6 +2,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
 from . import profile_views
+from . import security_views
 
 app_name = 'accounts'
 
@@ -25,8 +26,9 @@ urlpatterns = [
     path('profile/preferences/edit/', profile_views.update_preferences, name='update_preferences'),
     path('profile/security/edit/', profile_views.update_security, name='update_security'),
     path('profile/password/change/', profile_views.change_password, name='change_password'),
-    path('profile/2fa/enable/', profile_views.enable_2fa, name='enable_2fa'),
+    path('profile/2fa/setup/', security_views.setup_2fa, name='setup_2fa'),
     path('profile/2fa/disable/', profile_views.disable_2fa, name='disable_2fa'),
+    path('login/verify-2fa/', security_views.verify_2fa_login, name='verify_2fa_login'),
     path('profile/sessions/', profile_views.active_sessions, name='active_sessions'),
     path('profile/sessions/<int:session_id>/revoke/', profile_views.revoke_session, name='revoke_session'),
     path('profile/sessions/revoke-all/', profile_views.revoke_all_sessions, name='revoke_all_sessions'),

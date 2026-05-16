@@ -35,7 +35,7 @@ def capture_lead(request):
         otp = str(random.randint(100000, 999999))
         expires_at = timezone.now() + timedelta(minutes=10)
 
-        # 2. Crear o actualizar lead (Bypass OTP activo: email_verified=True por defecto)
+        # 2. Crear o actualizar lead
         lead, created = AILead.objects.update_or_create(
             email=email,
             defaults={
@@ -45,7 +45,7 @@ def capture_lead(request):
                 'otp_code': otp,
                 'otp_expires_at': expires_at,
                 'otp_attempts': 0,
-                'email_verified': True
+                'email_verified': False  # Ahora sí requerimos verificación
             }
         )
 
@@ -97,9 +97,9 @@ El equipo de Fenix'''
         # para que puedas testear si Google sigue bloqueando el SMTP sin quedarte atascado.
         return JsonResponse({
             'success': True, 
-            'message': 'OTP procesando en segundo plano.',
+            'message': 'Código enviado. Por favor, verifica tu email.',
             'email': email,
-            'fallback_otp': otp  # Temporal para el entorno de desarrollo
+            'requires_otp': True
         })
 
     except Exception as e:

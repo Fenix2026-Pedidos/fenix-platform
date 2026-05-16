@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Configurar 2FA" %} - Fenix{% endblock %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 24px auto 0 auto;">
+    <div class="card">
+        <div class="card-body" style="padding: 24px;">
+            <div style="text-align: center; margin-bottom: 24px;">
+                <div style="width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: white; font-size: 24px;">
+                    <i class="bi bi-shield-lock"></i>
+                </div>
+                <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 8px;">{% trans "Configurar Autenticación de Dos Factores" %}</h2>
+                <p class="text-muted" style="font-size: 15px;">{% trans "Protege tu cuenta añadiendo un nivel extra de seguridad." %}</p>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 24px;">
+                <p>{% trans "1. Escanea este código QR con tu aplicación de autenticación (Google Authenticator, Authy, etc.)" %}</p>
+                <div style="display: inline-block; padding: 16px; background: white; border-radius: 8px; border: 1px solid var(--gray-200); margin: 16px 0;">
+                    <img src="data:image/png;base64,{{ qr_base64 }}" alt="QR Code" style="max-width: 200px;">
+                </div>
+                <p class="text-muted" style="font-size: 13px; margin-bottom: 0;">{% trans "O introduce esta clave manualmente:" %} <strong>{{ secret }}</strong></p>
+            </div>
+            
+            <form method="post" action="{% url 'accounts:setup_2fa' %}">
+                {% csrf_token %}
+                <div class="form-group" style="margin-bottom: 24px;">
+                    <label class="form-label">{% trans "2. Introduce el código de 6 dígitos generado por tu aplicación:" %}</label>
+                    <input type="text" name="code" class="form-control" placeholder="000000" maxlength="6" pattern="\d{6}" required style="text-align: center; font-size: 24px; letter-spacing: 8px; padding: 12px;">
+                </div>
+                
+                <div style="display: flex; gap: 12px;">
+                    <a href="{% url 'accounts:profile_dashboard' %}" class="btn btn-light" style="flex: 1;">{% trans "Cancelar" %}</a>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">{% trans "Verificar y Activar" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

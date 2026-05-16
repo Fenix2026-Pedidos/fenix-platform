@@ -1184,6 +1184,25 @@
     box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
 }
 
+.category-chip--promo-ofertas {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #dc2626;
+}
+
+.category-chip--promo-ofertas:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    color: #b91c1c;
+}
+
+.category-chip--promo-ofertas.is-active {
+    background: #dc2626;
+    border-color: #dc2626;
+    color: white;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+}
+
 /* Fila 1 - Derecha: Acciones (Buscador + Grupo Filtros/Orden) */
 .catalog-controls__actions {
     display: flex;
@@ -1615,12 +1634,18 @@
     /* Controles del catálogo en mobile: 2 filas */
     .catalog-controls-inner {
         flex-direction: column;
-        gap: 10px;
+        gap: 16px;
     }
 
-    /* Fila de categorías: oculta en mobile */
+    .catalog-controls-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+
+    /* Fila de categorías: habilitada en mobile */
     .catalog-controls__categories {
-        display: none;
+        display: block;
     }
 
     .catalog-controls__center {
@@ -1628,7 +1653,20 @@
     }
 
     .category-tabs {
-        display: none !important;
+        display: flex !important;
+        width: 100%;
+        overflow-x: auto;
+        padding: 4px 0 12px 0;
+        gap: 10px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .category-tabs::-webkit-scrollbar { display: none; }
+    
+    .category-chip {
+        padding: 6px 14px;
+        font-size: 13px;
+        flex-shrink: 0;
     }
 
     .catalog-controls__right {
@@ -1648,7 +1686,19 @@
     /* Fila 1: Buscador al 100% */
     .catalog-controls__actions .category-search {
         width: 100%;
-        min-width: unset;
+        min-width: 0;
+    }
+
+    .catalog-search-input {
+        height: 42px !important;
+    }
+    
+    .btn-search-icon {
+        height: 34px !important;
+        width: 34px !important;
+        right: 4px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
     }
 
     /* Fila 2: Filtros y Ordenar lado a lado */
@@ -1662,6 +1712,17 @@
         flex: 1;
         justify-content: center;
         width: auto !important;
+        height: 42px !important; /* Altura fija para alinear con select */
+        padding: 0 16px !important;
+    }
+    
+    .catalog-sort {
+        flex: 1;
+        height: 42px;
+    }
+    
+    .custom-sort-wrapper, .custom-sort-select {
+        height: 42px !important;
     }
 
     .catalog-sort {
@@ -1861,13 +1922,24 @@
     background: var(--gray-50);
 }
 
-.filter-type-radio {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
+/* Custom Radio/Checkbox for Filters */
+.filter-radio input[type="radio"],
+.filter-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
     accent-color: var(--primary-600);
-    flex-shrink: 0;
-    margin: 0;
+    cursor: pointer;
+}
+
+.filter-label {
+    font-size: 15px;
+    color: var(--gray-800);
+    font-weight: 500;
+}
+
+.filter-radio, .filter-checkbox {
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--gray-50);
 }
 
 /* Lista de checkboxes para características especiales - Compacta */
@@ -1912,7 +1984,7 @@
 }
 
 .filters-footer {
-    padding: 16px 20px;
+    padding: 20px;
     border-top: 1px solid var(--gray-100);
     background: white;
     position: sticky;
@@ -1920,24 +1992,33 @@
     z-index: 10;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03);
+    gap: 10px;
+    box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.05);
 }
 
 .btn-apply-mobile {
     width: 100%;
-    padding: 12px;
+    padding: 14px;
     font-weight: 700;
     font-size: 15px;
     border-radius: 12px;
+    background: var(--primary-600);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
 }
 
 .btn-clear-filters {
     width: 100%;
-    font-size: 13px;
-    padding: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px;
     color: var(--gray-500);
     text-decoration: none;
+    text-align: center;
+    background: var(--gray-100);
+    border-radius: 12px;
+    border: none;
 }
 
 /* Overlay para móvil */
@@ -2324,5 +2405,33 @@
     .products-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 8px;
+    }
+    .card-product-name {
+        font-size: 13px !important;
+        min-height: 2.4em !important;
+    }
+    .card-ref-row {
+        font-size: 10px !important;
+    }
+    .card-image-wrap {
+        height: 120px !important;
+        padding: 8px !important;
+        margin-bottom: 8px !important;
+    }
+    .card-price-main {
+        font-size: 16px !important;
+    }
+    .card-add-btn span {
+        display: none;
+    }
+    .card-add-btn i {
+        margin: 0 !important;
+        font-size: 18px;
+    }
+    .card-add-btn {
+        padding: 8px !important;
+    }
+    .card-qty-stepper {
+        gap: 4px !important;
     }
 }

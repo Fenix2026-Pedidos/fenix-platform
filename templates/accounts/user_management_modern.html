@@ -8,24 +8,24 @@
     <header class="page-header">
         <!-- Header -->
         <div class="management-header">
-            <h1>{% trans "Gestión de Usuarios" %}</h1>
-            <p>{% trans "Administra todos los usuarios de la plataforma" %}</p>
+            <h1 class="h1-mobile-sm">{% trans "Gestión de Usuarios" %}</h1>
+            <p class="text-mobile-xs">{% trans "Administra todos los usuarios de la plataforma" %}</p>
         </div>
 
         <!-- Tabs Navigation -->
         <div class="tabs-wrapper">
-            <div class="tabs-header">
+            <div class="tabs-header mobile-scroll-x">
                 <button class="tab-button {% if active_tab == 'registered' %}active{% endif %}" 
                     onclick="switchTab(event, 'registered')">
                     <i class="bi bi-check-circle"></i>
-                    {% trans "Usuarios Registrados" %}
-                    <span class="tab-count">({{ paginator_registered.count }})</span>
+                    <span>{% trans "Usuarios" %}</span>
+                    <span class="tab-count">{{ paginator_registered.count }}</span>
                 </button>
                 <button class="tab-button {% if active_tab == 'pending' %}active{% endif %}" 
                     onclick="switchTab(event, 'pending')">
                     <i class="bi bi-hourglass"></i>
-                    {% trans "Nuevos Usuarios" %}
-                    <span class="tab-count">({{ paginator_pending.count }})</span>
+                    <span>{% trans "Pendientes" %}</span>
+                    <span class="tab-count">{{ paginator_pending.count }}</span>
                 </button>
             </div>
         </div>
@@ -38,136 +38,190 @@
                 <div class="table-card">
                     <!-- Filtros y Opciones -->
                     <div class="table-toolbar">
-            <div class="controls-left">
-                <!-- Búsqueda -->
-                <div class="search-box">
-                    <i class="bi bi-search"></i>
-                    <form method="get" class="search-form">
-                        <input type="hidden" name="tab" value="registered">
-                        <input type="hidden" name="per_page" value="{{ per_page }}">
-                        <input 
-                            type="text" 
-                            name="search" 
-                            placeholder="{% trans 'Buscar por nombre, email o empresa...' %}"
-                            value="{{ search_query }}"
-                        >
-                        <button type="submit" class="btn-search">{% trans "Buscar" %}</button>
-                    </form>
-                </div>
-
-                <!-- Status Filter -->
-                <form method="get" class="filter-form">
-                    <input type="hidden" name="tab" value="registered">
-                    <input type="hidden" name="per_page" value="{{ per_page }}">
-                    <input type="hidden" name="search" value="{{ search_query }}">
-                    <select name="status" onchange="this.form.submit()">
-                        <option value="">{% trans "Todos los estados" %}</option>
-                        {% for status_value, status_label in status_choices %}
-                        <option value="{{ status_value }}" {% if status_filter == status_value %}selected{% endif %}>
-                            {{ status_label }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </form>
-            </div>
-
-            <div class="controls-right">
-                <!-- Per Page Selector -->
-                <form method="get" class="per-page-form">
-                    <input type="hidden" name="tab" value="registered">
-                    <input type="hidden" name="status" value="{{ status_filter }}">
-                    <input type="hidden" name="search" value="{{ search_query }}">
-                    <label for="per_page">{% trans "Usuarios por página:" %}</label>
-                    <select name="per_page" id="per_page" onchange="this.form.submit()">
-                        {% for choice in per_page_choices %}
-                        <option value="{{ choice }}" {% if per_page == choice %}selected{% endif %}>
-                            {{ choice }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </form>
-            </div>
-        </div>
-
-        <!-- Tabla Moderna -->
-        {% if page_registered.object_list %}
-        <div class="table-scroll-x">
-            <div class="table-scroll-y">
-                <table class="modern-table">
-                <thead>
-                    <tr>
-                        <th class="col-checkbox">
-                            <input type="checkbox" class="checkbox-all" onchange="toggleSelectAll(this)">
-                        </th>
-                        <th class="col-user" style="text-align: left;">{% trans "Usuario" %}</th>
-                        <th class="col-empresa" style="text-align: center;">{% trans "Empresa" %}</th>
-                        <th class="col-email" style="text-align: center;">{% trans "Correo electrónico" %}</th>
-                        <th class="col-fecha" style="text-align: center;">{% trans "Fecha de Solicitud" %}</th>
-                        <th class="col-estado" style="text-align: center;">{% trans "Estado" %}</th>
-                        <th class="col-procesado" style="text-align: center;">{% trans "Procesado por" %}</th>
-                        <th class="col-actions" style="text-align: right;">{% trans "Acciones" %}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in page_registered.object_list %}
-                    <tr class="table-row" data-user-id="{{ user.id }}">
-                        <td class="col-checkbox">
-                            <input type="checkbox" class="row-checkbox" value="{{ user.id }}">
-                        </td>
-                        <td class="col-user" style="text-align: left;">
-                            {% if user.first_name and user.last_name %}
-                                <strong>{{ user.first_name }} {{ user.last_name }}</strong>
-                            {% elif user.full_name %}
-                                <strong>{{ user.full_name }}</strong>
-                            {% else %}
-                                <span style="color: #9CA3AF; font-style: italic;">{% trans "Usuario sin nombre" %}</span>
-                            {% endif %}
-                        </td>
-                        <td class="col-empresa" style="text-align: center;">{{ user.company|default:"—" }}</td>
-                        <td class="col-email" style="text-align: center;">
-                            <span class="email-text" title="{{ user.email }}" style="font-size: 12px;">{{ user.email }}</span>
-                        </td>
-                        <td class="col-fecha" style="text-align: center;">
-                            <span class="fecha-badge">{{ user.date_joined|date:"d/m/Y H:i" }}</span>
-                        </td>
-                        <td class="col-estado" style="text-align: center;">
-                            {% if user.status == 'active' %}
-                                <span class="badge badge-success">{% trans "Activo" %}</span>
-                            {% elif user.status == 'disabled' %}
-                                <span class="badge badge-danger">{% trans "Deshabilitado" %}</span>
-                            {% elif user.status == 'pending' %}
-                                <span class="badge badge-warning">{% trans "Pendiente" %}</span>
-                            {% else %}
-                                <span class="badge badge-secondary">{{ user.get_status_display }}</span>
-                            {% endif %}
-                        </td>
-                        <td class="col-procesado" style="text-align: center;">
-                            {% if user.approved_by %}
-                                <span class="badge badge-secondary">{{ user.approved_by.get_role_display }}</span>
-                            {% else %}
-                                <span class="text-muted">—</span>
-                            {% endif %}
-                        </td>
-                        <td class="col-actions" style="text-align: right;">
-                            <div class="actions-menu">
-                                <button
-                                    class="btn-kebab"
-                                    data-menu="registered"
-                                    data-view-url="{% url 'accounts:admin_view_user' user.id %}"
-                                    data-edit-url="{% if user.is_super_admin %}{% else %}{% url 'accounts:admin_edit_user' user.id %}{% endif %}"
-                                    data-edit-disabled="{% if user.is_super_admin %}true{% else %}false{% endif %}"
-                                    data-delete-url="{% url 'accounts:user_delete' user.id %}"
-                                    data-delete-email="{{ user.email }}"
-                                    onclick="openActionMenu(event, this)"
-                                >
-                                    <i class="bi bi-three-dots-vertical"></i>
-                                </button>
+                        <div class="controls-left">
+                            <!-- Búsqueda -->
+                            <div class="search-box-wrapper">
+                                <form method="get" class="search-form-modern">
+                                    <input type="hidden" name="tab" value="registered">
+                                    <input type="hidden" name="per_page" value="{{ per_page }}">
+                                    <div class="input-with-icon">
+                                        <i class="bi bi-search"></i>
+                                        <input 
+                                            type="text" 
+                                            name="search" 
+                                            class="form-control-modern"
+                                            placeholder="{% trans 'Buscar por nombre, email o empresa...' %}"
+                                            value="{{ search_query }}"
+                                        >
+                                    </div>
+                                    <button type="submit" class="btn-primary-modern">
+                                        <i class="bi bi-search d-md-none"></i>
+                                        <span class="d-none d-md-inline">{% trans "Buscar" %}</span>
+                                    </button>
+                                </form>
                             </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
+
+                            <!-- Status Filter -->
+                            <form method="get" class="filter-form-modern">
+                                <input type="hidden" name="tab" value="registered">
+                                <input type="hidden" name="per_page" value="{{ per_page }}">
+                                <input type="hidden" name="search" value="{{ search_query }}">
+                                <select name="status" class="select-modern" onchange="this.form.submit()">
+                                    <option value="">{% trans "Todos los estados" %}</option>
+                                    {% for status_value, status_label in status_choices %}
+                                    <option value="{{ status_value }}" {% if status_filter == status_value %}selected{% endif %}>
+                                        {{ status_label }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                        </div>
+
+                        <div class="controls-right d-none d-md-flex">
+                            <!-- Per Page Selector -->
+                            <form method="get" class="per-page-form-modern">
+                                <input type="hidden" name="tab" value="registered">
+                                <input type="hidden" name="status" value="{{ status_filter }}">
+                                <input type="hidden" name="search" value="{{ search_query }}">
+                                <label for="per_page">{% trans "Ver:" %}</label>
+                                <select name="per_page" id="per_page" class="select-modern" onchange="this.form.submit()">
+                                    {% for choice in per_page_choices %}
+                                    <option value="{{ choice }}" {% if per_page == choice %}selected{% endif %}>
+                                        {{ choice }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                        </div>
+                    </div>
+
+        <!-- Lista de Usuarios (Desktop Table + Mobile Cards) -->
+        {% if page_registered.object_list %}
+        <div class="users-container">
+            <!-- Desktop Table -->
+            <div class="table-responsive d-none d-lg-block">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th class="col-checkbox">
+                                <input type="checkbox" class="checkbox-all" onchange="toggleSelectAll(this)">
+                            </th>
+                            <th>{% trans "Usuario" %}</th>
+                            <th>{% trans "Empresa" %}</th>
+                            <th>{% trans "Correo electrónico" %}</th>
+                            <th class="text-center">{% trans "Estado" %}</th>
+                            <th class="text-right">{% trans "Acciones" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in page_registered.object_list %}
+                        <tr class="table-row">
+                            <td class="col-checkbox">
+                                <input type="checkbox" class="row-checkbox" value="{{ user.id }}">
+                            </td>
+                            <td>
+                                <div class="user-cell">
+                                    <div class="user-avatar-mini">
+                                        {{ user.email|slice:":1"|upper }}
+                                    </div>
+                                    <div class="user-name-info">
+                                        <span class="user-fullname">
+                                            {% if user.first_name and user.last_name %}
+                                                {{ user.first_name }} {{ user.last_name }}
+                                            {% elif user.full_name %}
+                                                {{ user.full_name }}
+                                            {% else %}
+                                                <span class="text-muted italic">{% trans "Sin nombre" %}</span>
+                                            {% endif %}
+                                        </span>
+                                        <span class="user-role-label">{{ user.get_role_display }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ user.company|default:"—" }}</td>
+                            <td>
+                                <span class="email-link">{{ user.email }}</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="status-badge status-{{ user.status }}">
+                                    {{ user.get_status_display }}
+                                </span>
+                            </td>
+                            <td class="text-right">
+                                <div class="actions-wrapper">
+                                    <button class="btn-kebab" 
+                                            data-menu="registered"
+                                            data-view-url="{% url 'accounts:admin_view_user' user.id %}"
+                                            data-edit-url="{% if user.is_super_admin %}{% else %}{% url 'accounts:admin_edit_user' user.id %}{% endif %}"
+                                            data-edit-disabled="{% if user.is_super_admin %}true{% else %}false{% endif %}"
+                                            data-delete-url="{% url 'accounts:user_delete' user.id %}"
+                                            data-delete-email="{{ user.email }}"
+                                            onclick="openActionMenu(event, this)">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
                 </table>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="users-mobile-list d-lg-none">
+                {% for user in page_registered.object_list %}
+                <div class="user-mobile-card">
+                    <div class="card-mobile-header">
+                        <div class="user-cell">
+                            <div class="user-avatar-mini">
+                                {{ user.email|slice:":1"|upper }}
+                            </div>
+                            <div class="user-name-info">
+                                <span class="user-fullname">
+                                    {% if user.first_name and user.last_name %}
+                                        {{ user.first_name }} {{ user.last_name }}
+                                    {% elif user.full_name %}
+                                        {{ user.full_name }}
+                                    {% else %}
+                                        <span class="text-muted italic">{% trans "Sin nombre" %}</span>
+                                    {% endif %}
+                                </span>
+                                <span class="user-role-label">{{ user.get_role_display }}</span>
+                            </div>
+                        </div>
+                        <button class="btn-kebab" 
+                                data-menu="registered"
+                                data-view-url="{% url 'accounts:admin_view_user' user.id %}"
+                                data-edit-url="{% if user.is_super_admin %}{% else %}{% url 'accounts:admin_edit_user' user.id %}{% endif %}"
+                                data-edit-disabled="{% if user.is_super_admin %}true{% else %}false{% endif %}"
+                                data-delete-url="{% url 'accounts:user_delete' user.id %}"
+                                data-delete-email="{{ user.email }}"
+                                onclick="openActionMenu(event, this)">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                    </div>
+                    <div class="card-mobile-body">
+                        <div class="info-row">
+                            <span class="label">{% trans "Email" %}:</span>
+                            <span class="value text-ellipsis" title="{{ user.email }}">{{ user.email }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">{% trans "Empresa" %}:</span>
+                            <span class="value text-ellipsis">{{ user.company|default:"—" }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">{% trans "Estado" %}:</span>
+                            <span class="status-badge status-{{ user.status }}">
+                                {{ user.get_status_display }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-mobile-footer">
+                        <input type="checkbox" class="row-checkbox" value="{{ user.id }}">
+                        <span class="select-label">{% trans "Seleccionar" %}</span>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </div>
 
@@ -239,16 +293,19 @@
     <!-- TAB 2: NUEVOS USUARIOS PENDIENTES -->
     <div id="tab-pending" class="tab-panel {% if active_tab == 'pending' %}active{% endif %}">
         <div class="table-card">
-            <!-- Per Page Selector para Pendientes -->
+            <!-- Toolbar Pendientes -->
             <div class="table-toolbar">
                 <div class="controls-left">
-                    <p class="info-text">{% trans "Los usuarios se muestran solo tras verificar su email" %}</p>
+                    <p class="info-text">
+                        <i class="bi bi-info-circle"></i>
+                        {% trans "Los usuarios se muestran solo tras verificar su email" %}
+                    </p>
                 </div>
-                <div class="controls-right">
-                    <form method="get" class="per-page-form">
+                <div class="controls-right d-none d-md-flex">
+                    <form method="get" class="per-page-form-modern">
                         <input type="hidden" name="tab" value="pending">
-                        <label for="per_page_pending">{% trans "Usuarios por página:" %}</label>
-                        <select name="per_page" id="per_page_pending" onchange="this.form.submit()">
+                        <label for="per_page_pending">{% trans "Ver:" %}</label>
+                        <select name="per_page" id="per_page_pending" class="select-modern" onchange="this.form.submit()">
                             {% for choice in per_page_choices %}
                             <option value="{{ choice }}" {% if per_page == choice %}selected{% endif %}>
                                 {{ choice }}
@@ -259,74 +316,116 @@
                 </div>
             </div>
 
-            <!-- Tabla Pendientes -->
+            <!-- Lista Pendientes (Desktop Table + Mobile Cards) -->
             {% if page_pending.object_list %}
-            <div class="table-scroll-x">
-                <div class="table-scroll-y">
+            <div class="users-container">
+                <!-- Desktop Table -->
+                <div class="table-responsive d-none d-lg-block">
                     <table class="modern-table">
-                <thead>
-                    <tr>
-                        <th class="col-checkbox">
-                            <input type="checkbox" class="checkbox-all" onchange="toggleSelectAll(this)">
-                        </th>
-                        <th class="col-user" style="text-align: left;">{% trans "Usuario" %}</th>
-                        <th class="col-empresa" style="text-align: center;">{% trans "Empresa" %}</th>
-                        <th class="col-email" style="text-align: center;">{% trans "Correo electrónico" %}</th>
-                        <th class="col-fecha" style="text-align: center;">{% trans "Fecha de Solicitud" %}</th>
-                        <th class="col-estado" style="text-align: center;">{% trans "Estado" %}</th>
-                        <th class="col-actions" style="text-align: right;">{% trans "Acciones" %}</th>
-                    </tr>
-                </thead>
-                <tbody>
+                        <thead>
+                            <tr>
+                                <th class="col-checkbox">
+                                    <input type="checkbox" class="checkbox-all" onchange="toggleSelectAll(this)">
+                                </th>
+                                <th>{% trans "Usuario" %}</th>
+                                <th>{% trans "Empresa" %}</th>
+                                <th>{% trans "Correo electrónico" %}</th>
+                                <th class="text-center">{% trans "Estado" %}</th>
+                                <th class="text-right">{% trans "Acciones" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in page_pending.object_list %}
+                            <tr class="table-row">
+                                <td class="col-checkbox">
+                                    <input type="checkbox" class="row-checkbox" value="{{ user.id }}">
+                                </td>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="user-avatar-mini">
+                                            {{ user.email|slice:":1"|upper }}
+                                        </div>
+                                        <div class="user-name-info">
+                                            <span class="user-fullname">
+                                                {% if user.first_name and user.last_name %}
+                                                    {{ user.first_name }} {{ user.last_name }}
+                                                {% elif user.full_name %}
+                                                    {{ user.full_name }}
+                                                {% else %}
+                                                    <span class="text-muted italic">{% trans "Sin nombre" %}</span>
+                                                {% endif %}
+                                            </span>
+                                            <span class="user-role-label">{{ user.get_role_display }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ user.company|default:"—" }}</td>
+                                <td>
+                                    <span class="email-link">{{ user.email }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="status-stack">
+                                        <span class="status-badge status-{{ user.status }}">
+                                            {{ user.get_status_display }}
+                                        </span>
+                                        <span class="verification-label {% if user.email_verified %}verified{% endif %}">
+                                            {% if user.email_verified %}{% trans "Email verificado" %}{% else %}{% trans "Sin verificar" %}{% endif %}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <div class="actions-wrapper">
+                                        <form method="post" action="{% url 'accounts:approve_user' user.id %}" style="display: none;" id="approve-form-{{ user.id }}">
+                                            {% csrf_token %}
+                                        </form>
+                                        <form method="post" action="{% url 'accounts:reject_user' user.id %}" style="display: none;" id="reject-form-{{ user.id }}">
+                                            {% csrf_token %}
+                                        </form>
+                                        <button class="btn-kebab" 
+                                                data-menu="pending"
+                                                data-approve-form="approve-form-{{ user.id }}"
+                                                data-reject-form="reject-form-{{ user.id }}"
+                                                data-user-email="{{ user.email }}"
+                                                data-user-id="{{ user.id }}"
+                                                data-user-full-name="{{ user.full_name }}"
+                                                data-user-company="{{ user.company }}"
+                                                data-user-status="{{ user.status }}"
+                                                data-user-role="{{ user.role }}"
+                                                data-user-email-verified="{{ user.email_verified|yesno:'true,false' }}"
+                                                onclick="openActionMenu(event, this)">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mobile Cards -->
+                <div class="users-mobile-list d-lg-none">
                     {% for user in page_pending.object_list %}
-                    <tr class="table-row" data-user-id="{{ user.id }}">
-                        <td class="col-checkbox">
-                            <input type="checkbox" class="row-checkbox" value="{{ user.id }}">
-                        </td>
-                        <td class="col-user" style="text-align: left;">
-                            {% if user.first_name and user.last_name %}
-                                <strong>{{ user.first_name }} {{ user.last_name }}</strong>
-                            {% elif user.full_name %}
-                                <strong>{{ user.full_name }}</strong>
-                            {% else %}
-                                <span style="color: #9CA3AF; font-style: italic;">{% trans "Usuario sin nombre" %}</span>
-                            {% endif %}
-                        </td>
-                        <td class="col-empresa" style="text-align: center;">{{ user.company|default:"—" }}</td>
-                        <td class="col-email" style="text-align: center;">
-                            <span class="email-text" title="{{ user.email }}" style="font-size: 12px;">{{ user.email }}</span>
-                        </td>
-                        <td class="col-fecha" style="text-align: center;">
-                            <span class="fecha-badge">{{ user.date_joined|date:"d/m/Y H:i" }}</span>
-                        </td>
-                        <td class="col-estado" style="text-align: center;">
-                            {% if user.status == 'active' %}
-                                <span class="badge badge-success">{% trans "Activo" %}</span>
-                            {% elif user.status == 'rejected' %}
-                                <span class="badge badge-danger">{% trans "Rechazado" %}</span>
-                            {% elif user.status == 'disabled' %}
-                                <span class="badge badge-secondary">{% trans "Deshabilitado" %}</span>
-                            {% else %}
-                                <span class="badge badge-warning">{% trans "Pendiente" %}</span>
-                            {% endif %}
-                            <div class="text-muted text-small">
-                                {% if user.email_verified %}
-                                    {% trans "Email verificado" %}
-                                {% else %}
-                                    {% trans "Email sin verificar" %}
-                                {% endif %}
+                    <div class="user-mobile-card">
+                        <div class="card-mobile-header">
+                            <div class="user-cell">
+                                <div class="user-avatar-mini">
+                                    {{ user.email|slice:":1"|upper }}
+                                </div>
+                                <div class="user-name-info">
+                                    <span class="user-fullname">
+                                        {% if user.first_name and user.last_name %}
+                                            {{ user.first_name }} {{ user.last_name }}
+                                        {% elif user.full_name %}
+                                            {{ user.full_name }}
+                                        {% else %}
+                                            <span class="text-muted italic">{% trans "Sin nombre" %}</span>
+                                        {% endif %}
+                                    </span>
+                                    <span class="user-role-label">{{ user.get_role_display }}</span>
+                                </div>
                             </div>
-                        </td>
-                        <td class="col-actions">
-                            <div class="actions-menu">
-                                <form method="post" action="{% url 'accounts:approve_user' user.id %}" style="display: none;" id="approve-form-{{ user.id }}">
-                                    {% csrf_token %}
-                                </form>
-                                <form method="post" action="{% url 'accounts:reject_user' user.id %}" style="display: none;" id="reject-form-{{ user.id }}">
-                                    {% csrf_token %}
-                                </form>
-                                <button
-                                    class="btn-kebab"
+                            <button class="btn-kebab" 
                                     data-menu="pending"
                                     data-approve-form="approve-form-{{ user.id }}"
                                     data-reject-form="reject-form-{{ user.id }}"
@@ -337,16 +436,37 @@
                                     data-user-status="{{ user.status }}"
                                     data-user-role="{{ user.role }}"
                                     data-user-email-verified="{{ user.email_verified|yesno:'true,false' }}"
-                                    onclick="openActionMenu(event, this)"
-                                >
-                                    <i class="bi bi-three-dots-vertical"></i>
-                                </button>
+                                    onclick="openActionMenu(event, this)">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                        </div>
+                        <div class="card-mobile-body">
+                            <div class="info-row">
+                                <span class="label">{% trans "Email" %}:</span>
+                                <span class="value text-ellipsis" title="{{ user.email }}">{{ user.email }}</span>
                             </div>
-                        </td>
-                    </tr>
+                            <div class="info-row">
+                                <span class="label">{% trans "Empresa" %}:</span>
+                                <span class="value text-ellipsis">{{ user.company|default:"—" }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">{% trans "Estado" %}:</span>
+                                <div class="text-right">
+                                    <span class="status-badge status-{{ user.status }}">
+                                        {{ user.get_status_display }}
+                                    </span>
+                                    <div class="verification-label {% if user.email_verified %}verified{% endif %}" style="font-size: 10px; margin-top: 2px;">
+                                        {% if user.email_verified %}{% trans "Email verificado" %}{% else %}{% trans "Sin verificar" %}{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-mobile-footer">
+                            <input type="checkbox" class="row-checkbox" value="{{ user.id }}">
+                            <span class="select-label">{% trans "Seleccionar" %}</span>
+                        </div>
+                    </div>
                     {% endfor %}
-                </tbody>
-                    </table>
                 </div>
             </div>
 
@@ -489,705 +609,321 @@
 <style>
 /* ========== LAYOUT GENERAL ========== */
 :root {
-    --app-header-height: 64px;
-}
-
-.page {
-    height: calc(100vh - var(--app-header-height));
-    min-height: 0;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    padding: 1.5rem 1rem 1rem;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-}
-
-.page-header {
-    flex: 0 0 auto;
-}
-
-.page-body {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    overflow: hidden;
-}
-
-.page-body-inner {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-.management-header {
-    margin-bottom: 2rem;
-}
-
-.management-header h1 {
-    font-size: 1.875rem;
-    font-weight: 600;
-    color: #1e293b;
-    margin: 0 0 0.5rem 0;
-}
-
-.management-header p {
-    color: #64748b;
-    margin: 0;
-}
-
-/* ========== TABS ========== */
-.tabs-wrapper {
-    margin-bottom: 1.5rem;
-}
-
-.tabs-header {
-    display: flex;
-    gap: 1rem;
-    border-bottom: 2px solid #e2e8f0;
-}
-
-.tab-button {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 1rem 1.5rem;
-    background: none;
-    border: none;
-    border-bottom: 3px solid transparent;
-    color: #64748b;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: -3px;
-}
-
-.tab-button:hover {
-    color: #334155;
-}
-
-.tab-button.active {
-    color: #007bff;
-    border-bottom-color: #007bff;
-    font-weight: 600;
-}
-
-.tab-count {
-    background: #f1f5f9;
-    color: #475569;
-    padding: 0.25rem 0.625rem;
-    border-radius: 9999px;
-    font-size: 0.875rem;
-}
-
-.tab-panel {
-    display: none;
-    flex: 1;
-    min-height: 0;
-}
-
-.tab-panel.active {
-    display: flex;
-    flex-direction: column;
-}
-
-.table-card {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.5rem;
-    width: 100%;
-}
-
-/* ========== CONTROLES DE TABLA ========== */
-.table-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.25rem;
-    gap: 1rem;
-    flex-wrap: wrap;
-    border-bottom: 1px solid #e2e8f0;
-}
-
-.controls-left {
-    display: flex;
-    gap: 1rem;
-    flex: 1;
-    min-width: 300px;
-}
-
-.controls-right {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
-
-.search-box {
-    position: relative;
-    flex: 1;
-    min-width: 250px;
-}
-
-.search-box i {
-    position: absolute;
-    left: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #94a3b8;
-}
-
-.search-form {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.search-form input {
-    flex: 1;
-    padding: 0.625rem 1rem 0.625rem 2.5rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    transition: border-color 0.2s;
-}
-
-.search-form input:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-}
-
-.btn-search {
-    padding: 0.625rem 1rem;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    font-size: 0.875rem;
-    transition: background 0.2s;
-}
-
-.btn-search:hover {
-    background: #0056b3;
-}
-
-.filter-form select,
-.per-page-form select {
-    padding: 0.625rem 0.75rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.375rem;
-    background: white;
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: border-color 0.2s;
-}
-
-.filter-form select:focus,
-.per-page-form select:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-}
-
-.per-page-form {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.per-page-form label {
-    font-size: 0.875rem;
-    color: #475569;
-}
-
-.info-text {
-    color: #64748b;
-    font-size: 0.875rem;
-    margin: 0;
-}
-
-/* ========== TABLA ========== */
-.table-scroll-x {
-    overflow-x: auto;
-    min-height: 0;
-    flex: 1;
-    display: flex;
-}
-
-.table-scroll-y {
-    overflow-y: auto;
-    min-height: 0;
-    height: 100%;
-    max-height: 100%;
-    flex: 1;
-    width: 100%;
-}
-
-.modern-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-}
-
-.modern-table thead {
-    background: #f8fafc;
-    border-bottom: 2px solid #e2e8f0;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-}
-
-.modern-table th {
-    padding: 1rem 0.75rem;
-    text-align: left;
-    font-weight: 600;
-    color: #334155;
-    white-space: nowrap;
-}
-
-.modern-table td {
-    padding: 1rem 0.75rem;
-    border-bottom: 1px solid #f1f5f9;
-}
-
-.modern-table tbody tr:hover {
-    background: #f8fafc;
-}
-
-.modern-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-/* Columnas */
-.col-checkbox {
-    width: 40px;
-    text-align: center;
-}
-
-.col-checkbox input[type="checkbox"] {
-    cursor: pointer;
-    width: 18px;
-    height: 18px;
-}
-
-.col-user {
-    min-width: 180px;
-}
-
-.user-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.user-info strong {
-    color: #1e293b;
-}
-
-.user-role {
-    font-size: 0.75rem;
-    color: #94a3b8;
-    background: #f1f5f9;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    width: fit-content;
-}
-
-.col-empresa {
-    min-width: 120px;
-}
-
-.col-email {
-    min-width: 150px;
-}
-
-.email-text {
-    color: #0056b3;
-    text-decoration: none;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: block;
-}
-
-.col-fecha {
-    min-width: 130px;
-}
-
-.fecha-badge {
-    color: #64748b;
-    font-size: 0.8125rem;
-}
-
-.col-estado {
-    min-width: 100px;
-}
-
-.col-procesado {
-    min-width: 120px;
-}
-
-.col-actions {
-    width: 60px;
-    text-align: right;
-}
-
-/* Badges */
-.badge {
-    display: inline-block;
-    padding: 0.375rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 500;
-}
-
-.badge-success {
-    background: #dcfce7;
-    color: #166534;
-}
-
-.badge-danger {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-.badge-warning {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.badge-secondary {
-    background: #e2e8f0;
-    color: #475569;
-}
-
-/* ========== MENÚ ACCIONES (KEBAB) ========== */
-.actions-menu {
-    position: relative;
-}
-
-.btn-kebab {
-    background: none;
-    border: 1px solid #cbd5e1;
-    padding: 0.5rem;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    color: #64748b;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    width: 32px;
-    height: 32px;
-}
-
-.btn-kebab:hover {
-    background: #f8fafc;
-    border-color: #94a3b8;
-    color: #334155;
-}
-
-.action-dropdown {
-    position: fixed;
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.5rem;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-    min-width: 180px;
-    z-index: 9999;
-    display: none;
-    padding: 0.25rem 0;
-}
-
-.action-dropdown.show {
-    display: block;
-}
-
-.dropdown-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    border: none;
-    background: none;
-    width: 100%;
-    text-align: left;
-    cursor: pointer;
-    color: #475569;
-    font-size: 0.875rem;
-    transition: background 0.2s;
-}
-
-.dropdown-item:first-child {
-    border-radius: 0.375rem 0.375rem 0 0;
-}
-
-.dropdown-item:last-child {
-    border-radius: 0 0 0.375rem 0.375rem;
-}
-
-.dropdown-item:hover:not(.item-delete) {
-    background: #f8fafc;
-}
-
-.dropdown-item.item-delete {
-    color: #dc2626;
-}
-
-.dropdown-item.item-delete:hover {
-    background: #fee2e2;
-}
-
-.dropdown-item i {
-    font-size: 1rem;
-}
-
-/* ========== PAGINACIÓN ========== */
-.table-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.25rem;
-    border-top: 1px solid #e2e8f0;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-.pagination-info {
-    font-size: 0.875rem;
-    color: #64748b;
-}
-
-.pagination-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.btn-pagination {
-    padding: 0.5rem 0.75rem;
-    border: 1px solid #e2e8f0;
-    background: white;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    color: #334155;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-}
-
-.btn-pagination:hover:not(:disabled) {
-    background: #f8fafc;
-    border-color: #94a3b8;
-}
-
-.btn-pagination:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.pagination-page {
-    font-size: 0.875rem;
-    color: #475569;
-    padding: 0 0.75rem;
-}
-
-/* ========== ESTADO VACÍO ========== */
-.empty-state {
-    padding: 3rem 2rem;
-    text-align: center;
-    background: transparent;
-    border: none;
-    color: #94a3b8;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.empty-state i {
-    font-size: 3rem;
-    display: block;
-    margin-bottom: 1rem;
-}
-
-.empty-state p {
-    margin: 0;
-    font-size: 1rem;
-}
-
-.text-muted {
-    color: #94a3b8;
-}
-
-.text-small {
-    font-size: 0.75rem;
-}
-
-/* ========== MODAL ========== */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-}
-
-.modal-content {
-    background: white;
-    padding: 2rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    max-width: 400px;
-    width: 90%;
-}
-
-.modal-content h3 {
-    margin: 0 0 1rem 0;
-    color: #1e293b;
-}
-
-.modal-content p {
-    margin: 0 0 1.5rem 0;
-    color: #64748b;
-}
-
-.modal-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-}
-
-.btn {
-    padding: 0.625rem 1rem;
-    border: none;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    font-size: 0.875rem;
-    transition: all 0.2s;
-}
-
-.btn-secondary {
-    background: #e2e8f0;
-    color: #334155;
-}
-
-.btn-secondary:hover {
-    background: #cbd5e1;
-}
-
-.btn-danger {
-    background: #dc2626;
-    color: white;
-}
-
-.btn-danger:hover {
-    background: #b91c1c;
-}
-
-.btn-primary {
-    background: #2563eb;
-    color: white;
-}
-
-.btn-primary:hover {
-    background: #1d4ed8;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-}
-
-.form-group label {
-    font-size: 0.875rem;
-    color: #334155;
-}
-
-.form-select {
-    padding: 0.625rem 0.75rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.375rem;
-    background: white;
-    font-size: 0.875rem;
-}
-
-.form-select:focus {
-    outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-}
-
-.checkbox-group label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-/* ========== RESPONSIVE ========== */
-@media (max-width: 768px) {
-    .page {
-        padding: 1rem;
+    /* ============================================================
+       USER MANAGEMENT MODERN STYLES
+       ============================================================ */
+    
+    :root {
+        --primary-600: #7a0f0f; /* Fenix Burgundy */
+        --primary-50: #fdf2f2;
+        --gold-500: #d4a94f;
     }
 
+    /* Page Layout */
+    .page {
+        display: flex;
+        flex-direction: column;
+        padding: 24px;
+        background: #f8fafc;
+        min-height: 100vh;
+    }
+
+    .management-header { margin-bottom: 32px; }
     .management-header h1 {
-        font-size: 1.5rem;
+        font-size: 28px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0 0 8px 0;
+    }
+    .management-header p { color: #64748b; font-size: 16px; margin: 0; }
+
+    /* Tabs Modernization */
+    .tabs-header {
+        display: flex;
+        gap: 8px;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 24px;
+        padding-bottom: 0;
+    }
+
+    .tab-button {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 20px;
+        background: transparent;
+        border: none;
+        border-bottom: 3px solid transparent;
+        color: #64748b;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 14px;
+    }
+
+    .tab-button:hover { color: var(--primary-600); background: var(--primary-50); border-radius: 8px 8px 0 0; }
+    .tab-button.active {
+        color: var(--primary-600);
+        border-bottom-color: var(--primary-600);
+    }
+
+    .tab-count {
+        background: #f1f5f9;
+        color: #475569;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+    }
+
+    .tab-button.active .tab-count { background: var(--primary-600); color: white; }
+
+    /* Toolbar Modernization */
+    .table-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        overflow: hidden;
     }
 
     .table-toolbar {
-        flex-direction: column;
-    }
-
-    .controls-left {
-        width: 100%;
-        flex-direction: column;
-    }
-
-    .search-form {
-        flex-direction: column;
-    }
-
-    .controls-right {
-        width: 100%;
+        padding: 20px;
+        display: flex;
         justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        border-bottom: 1px solid #f1f5f9;
+        background: white;
     }
 
-    .modern-table {
-        font-size: 0.8125rem;
+    .controls-left { display: flex; gap: 12px; flex: 1; }
+    .search-box-wrapper { flex: 1; max-width: 450px; }
+    
+    .search-form-modern { display: flex; gap: 8px; }
+    .input-with-icon { position: relative; flex: 1; }
+    .input-with-icon i {
+        position: absolute; left: 12px; top: 50%;
+        transform: translateY(-50%); color: #94a3b8;
     }
 
-    .modern-table th,
-    .modern-table td {
-        padding: 0.75rem 0.5rem;
-    }
-
-    .col-user {
-        min-width: 120px;
-    }
-
-    .table-footer {
-        flex-direction: column;
-    }
-
-    .pagination-controls {
+    .form-control-modern {
         width: 100%;
-        justify-content: center;
+        padding: 10px 12px 10px 38px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 14px;
+        transition: all 0.2s;
     }
-}
+    .form-control-modern:focus {
+        outline: none; border-color: var(--primary-600);
+        box-shadow: 0 0 0 4px rgba(122, 15, 15, 0.1);
+    }
+
+    .btn-primary-modern {
+        padding: 10px 20px;
+        background: var(--primary-600);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+    .btn-primary-modern:hover { background: #5f0c0c; transform: translateY(-1px); }
+
+    .select-modern {
+        padding: 10px 16px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        background: white;
+        font-size: 14px;
+        color: #475569;
+        cursor: pointer;
+    }
+    .select-modern:focus { outline: none; border-color: var(--primary-600); }
+
+    /* Table Typography */
+    .modern-table { width: 100%; border-collapse: collapse; }
+    .modern-table thead th {
+        background: #f8fafc;
+        padding: 12px 20px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        text-align: left;
+    }
+
+    .table-row { transition: background 0.2s; }
+    .table-row:hover { background: #fdfdfd; }
+    .table-row td { padding: 16px 20px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+
+    /* User Cell */
+    .user-cell { display: flex; align-items: center; gap: 12px; }
+    .user-avatar-mini {
+        width: 36px; height: 36px; background: var(--primary-50);
+        color: var(--primary-600); border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 16px; border: 1px solid #fee2e2;
+    }
+    .user-name-info { display: flex; flex-direction: column; }
+    .user-fullname { font-weight: 700; color: #0f172a; font-size: 14px; }
+    .user-role-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.02em; }
+
+    .email-link { color: #475569; font-size: 13px; }
+
+    /* Status Badges */
+    .status-badge {
+        padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 700;
+    }
+    .status-active, .status-approved { background: #dcfce7; color: #166534; }
+    .status-disabled, .status-rejected { background: #fee2e2; color: #991b1b; }
+    .status-pending { background: #fef3c7; color: #92400e; }
+
+    /* Kebab Menu */
+    .btn-kebab {
+        width: 32px; height: 32px; border-radius: 8px; border: 1px solid #e2e8f0;
+        background: white; color: #64748b; cursor: pointer; transition: all 0.2s;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .btn-kebab:hover { background: #f1f5f9; color: var(--primary-600); border-color: #cbd5e1; }
+
+    /* Mobile Cards */
+    .users-mobile-list { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+    .user-mobile-card {
+        background: white; border: 1px solid #e2e8f0; border-radius: 16px;
+        padding: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .card-mobile-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+    .card-mobile-body { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .info-row { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; }
+    .info-row .label { color: #64748b; }
+    .info-row .value { font-weight: 600; color: #0f172a; text-align: right; }
+    
+    .card-mobile-footer {
+        padding-top: 12px; border-top: 1px dashed #e2e8f0;
+        display: flex; align-items: center; gap: 8px;
+    }
+    .select-label { font-size: 12px; color: #64748b; font-weight: 600; }
+
+    /* Footer & Pagination */
+    .table-footer { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: white; }
+    .pagination-info { font-size: 13px; color: #64748b; font-weight: 600; }
+    .pagination-controls { display: flex; gap: 6px; }
+    .btn-pagination {
+        width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+        border: 1px solid #e2e8f0; border-radius: 8px; background: white; color: #475569;
+        text-decoration: none; transition: all 0.2s;
+    }
+    .btn-pagination:hover { border-color: var(--primary-600); color: var(--primary-600); }
+
+    /* Dropdown Menus */
+    .action-dropdown {
+        position: fixed; background: white; border: 1px solid #e2e8f0;
+        border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        z-index: 1000; display: none; padding: 4px; min-width: 160px;
+    }
+    .action-dropdown.show { display: block; }
+    .dropdown-item {
+        display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+        font-size: 13px; font-weight: 600; color: #475569; text-decoration: none;
+        border-radius: 8px; cursor: pointer; transition: background 0.2s;
+        border: none; background: none; width: 100%; text-align: left;
+    }
+    .dropdown-item:hover { background: #f1f5f9; color: var(--primary-600); }
+    .dropdown-item.item-delete { color: #dc2626; }
+    .dropdown-item.item-delete:hover { background: #fee2e2; }
+
+    /* Modal Styling */
+    .modal-overlay {
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+        display: none; align-items: center; justify-content: center; z-index: 2000;
+        padding: 16px;
+    }
+    .modal-content {
+        background: white; border-radius: 16px; padding: 32px;
+        max-width: 440px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    }
+    .modal-content h3 { font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 12px; }
+    .modal-actions { display: flex; gap: 12px; margin-top: 24px; }
+    .btn { padding: 12px 24px; border-radius: 10px; font-weight: 700; cursor: pointer; border: none; font-size: 14px; flex: 1; }
+    .btn-secondary { background: #f1f5f9; color: #475569; }
+    .btn-danger { background: #dc2626; color: white; }
+
+    /* Responsive Queries */
+    @media (max-width: 768px) {
+        .page { padding: 12px; }
+        .management-header { margin-bottom: 20px; }
+        .management-header h1 { font-size: 20px; }
+        .management-header p { font-size: 13px; }
+        
+        .tabs-header { 
+            gap: 4px; 
+            margin-bottom: 16px;
+            padding-bottom: 2px;
+            border-bottom: none;
+        }
+        .tab-button {
+            padding: 8px 12px;
+            font-size: 13px;
+            border-bottom: 2px solid transparent;
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+        .tab-button.active {
+            background: var(--primary-50);
+            border-bottom-color: var(--primary-600);
+        }
+        .tab-count { padding: 1px 6px; }
+
+        .table-toolbar { 
+            padding: 12px; 
+            flex-direction: column; 
+            align-items: stretch;
+            gap: 12px;
+        }
+        .controls-left { 
+            flex-direction: column; 
+            gap: 8px;
+        }
+        .search-box-wrapper { max-width: none; }
+        .search-form-modern { gap: 6px; }
+        .btn-primary-modern { 
+            padding: 10px;
+            justify-content: center; 
+        }
+        .select-modern { 
+            width: 100%; 
+            padding: 8px 12px;
+        }
+
+        .info-row .value {
+            max-width: 180px;
+        }
+    }
+
+    /* Utility Display Classes */
+    .d-none { display: none !important; }
+    .d-md-none { display: block !important; }
+    .d-md-inline { display: inline !important; }
+    .d-md-flex { display: flex !important; }
+    .d-lg-block { display: block !important; }
+    .d-lg-none { display: none !important; }
+    
+    @media (min-width: 768px) {
+        .d-md-none { display: none !important; }
+    }
+    @media (max-width: 1024px) {
+        .d-lg-block { display: none !important; }
+        .d-lg-none { display: block !important; }
+    }
+    .text-right { text-align: right !important; }
+    .text-center { text-align: center !important; }
 </style>
 
 <script>

@@ -1,674 +1,925 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}Dashboard CRM Omnicanal - Fenix{% endblock %}
+{% block title %}CRM Leads - Fenix CRM{% endblock %}
 
 {% block content %}
-<div class="crm-container">
+<div class="crm-pro-wrapper">
     <!-- CABECERA -->
-    <div class="crm-header-section animate-fade-in">
-        <div class="crm-header-info">
-            <h1 class="crm-title">
-                <span class="gradient-text">CRM Omnicanal</span> Fenix
-            </h1>
-            <p class="crm-subtitle">Gestión unificada de clientes, chats de IA, WhatsApp y formularios de contacto.</p>
+    <div class="crm-pro-header animate-fade-in">
+        <div class="header-left">
+            <nav class="breadcrumb">
+                <a href="{% url 'accounts:dashboard' %}">Inicio</a> / <span>CRM</span> / <span>Leads</span>
+            </nav>
+            <h1 class="page-title">CRM Leads</h1>
         </div>
-        <div class="crm-header-actions">
-            <button class="crm-btn crm-btn-secondary" onclick="window.location.reload();">
-                <span class="icon">🔄</span> {% trans "Sincronizar" %}
+        <div class="header-right">
+            <button class="btn btn-secondary" onclick="window.location.reload()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                Actualizar datos
+            </button>
+            <button class="btn btn-primary" onclick="showNewLeadModal()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Nuevo Lead
             </button>
         </div>
     </div>
 
-    <!-- TARJETAS DE MÉTRICAS / KPIS -->
-    <div class="crm-kpis animate-fade-in delay-1">
-        <div class="crm-kpi-card card-nuevo">
-            <div class="kpi-icon">🎯</div>
-            <div class="kpi-data">
-                <span class="kpi-value">{{ kpis.total }}</span>
-                <span class="kpi-label">Leads Totales</span>
+    <!-- KPIs COMPACTOS -->
+    <div class="crm-kpi-bar animate-fade-in delay-1">
+        <div class="kpi-mini-card">
+            <div class="kpi-icon total">👥</div>
+            <div class="kpi-content">
+                <span class="v">{{ kpis.total }}</span>
+                <span class="l">Leads Totales</span>
             </div>
-            <div class="kpi-glow"></div>
         </div>
-        <div class="crm-kpi-card card-nuevo-unval">
-            <div class="kpi-icon">🆕</div>
-            <div class="kpi-data">
-                <span class="kpi-value">{{ kpis.nuevos }}</span>
-                <span class="kpi-label">Leads Nuevos</span>
+        <div class="kpi-mini-card">
+            <div class="kpi-icon nuevos">✨</div>
+            <div class="kpi-content">
+                <span class="v">{{ kpis.nuevos }}</span>
+                <span class="l">Nuevos</span>
             </div>
-            <div class="kpi-glow"></div>
         </div>
-        <div class="crm-kpi-card card-validado">
-            <div class="kpi-icon">✅</div>
-            <div class="kpi-data">
-                <span class="kpi-value">{{ kpis.validados }}</span>
-                <span class="kpi-label">Leads Validados</span>
+        <div class="kpi-mini-card">
+            <div class="kpi-icon validados">✅</div>
+            <div class="kpi-content">
+                <span class="v">{{ kpis.validados }}</span>
+                <span class="l">Validados</span>
             </div>
-            <div class="kpi-glow"></div>
         </div>
-        <div class="crm-kpi-card card-atendido">
-            <div class="kpi-icon">💬</div>
-            <div class="kpi-data">
-                <span class="kpi-value">{{ kpis.atendidos }}</span>
-                <span class="kpi-label">Leads Atendidos</span>
+        <div class="kpi-mini-card">
+            <div class="kpi-icon atendidos">💬</div>
+            <div class="kpi-content">
+                <span class="v">{{ kpis.atendidos }}</span>
+                <span class="l">Atendidos</span>
             </div>
-            <div class="kpi-glow"></div>
         </div>
-        <div class="crm-kpi-card card-convertido">
-            <div class="kpi-icon">🏆</div>
-            <div class="kpi-data">
-                <span class="kpi-value">{{ kpis.convertidos }}</span>
-                <span class="kpi-label">Leads Convertidos</span>
+        <div class="kpi-mini-card">
+            <div class="kpi-icon convertidos">🏆</div>
+            <div class="kpi-content">
+                <span class="v">{{ kpis.convertidos }}</span>
+                <span class="l">Convertidos</span>
             </div>
-            <div class="kpi-glow"></div>
         </div>
     </div>
 
-    <!-- PANEL DE FILTROS -->
-    <div class="crm-filters-panel animate-fade-in delay-2">
-        <form method="GET" class="crm-filters-form">
-            <div class="filter-group filter-search">
-                <label for="search">{% trans "Buscar lead" %}</label>
-                <div class="input-with-icon">
-                    <span class="input-icon">🔍</span>
-                    <input type="text" id="search" name="search" placeholder="Nombre, email, teléfono, empresa..." value="{{ filters.search }}">
-                </div>
-            </div>
+    <!-- KPI BAR ... (existing) -->
 
-            <div class="filter-group">
-                <label for="channel">{% trans "Canal" %}</label>
-                <select id="channel" name="channel">
-                    <option value="">-- {% trans "Todos" %} --</option>
+    <!-- CHIPS DE ESTADO (Estilo Catálogo) -->
+    <div class="crm-status-bar animate-fade-in delay-2">
+        <div class="status-chips-container">
+            <a href="?{% for key, value in request.GET.items %}{% if key != 'status' and key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}" 
+               class="status-chip {% if not filters.status %}is-active{% endif %}">
+                {% trans "Todos" %}
+            </a>
+            {% for val, label in statuses %}
+            <a href="?status={{ val }}{% for key, value in request.GET.items %}{% if key != 'status' and key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+               class="status-chip s-{{ val }} {% if filters.status == val %}is-active{% endif %}">
+                {{ label }}
+            </a>
+            {% endfor %}
+        </div>
+        
+        <!-- BOTÓN FILTROS MÓVIL (Solicitado) -->
+        <button type="button" class="btn-m-filters" onclick="toggleMobileFilters()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+            Filtros
+        </button>
+    </div>
+
+    <!-- FILTROS AVANZADOS -->
+    <div class="crm-filters-pro animate-fade-in delay-2" id="crm-filters-panel">
+        <form method="GET" id="filters-form-pro">
+            <div class="filters-main">
+                <div class="search-box">
+                    <span class="icon">🔍</span>
+                    <input type="text" name="search" placeholder="Buscar por nombre, email, teléfono..." value="{{ filters.search }}">
+                </div>
+                
+                <select name="channel" class="filter-select">
+                    <option value="">Canal: Todos</option>
                     {% for val, label in channels %}
                     <option value="{{ val }}" {% if filters.channel == val %}selected{% endif %}>{{ label }}</option>
                     {% endfor %}
                 </select>
-            </div>
 
-            <div class="filter-group">
-                <label for="status">{% trans "Estado Comercial" %}</label>
-                <select id="status" name="status">
-                    <option value="">-- {% trans "Todos" %} --</option>
+                <select name="status" class="filter-select">
+                    <option value="">Estado: Todos</option>
                     {% for val, label in statuses %}
                     <option value="{{ val }}" {% if filters.status == val %}selected{% endif %}>{{ label }}</option>
                     {% endfor %}
                 </select>
-            </div>
 
-            <div class="filter-group">
-                <label for="validation">{% trans "Validación" %}</label>
-                <select id="validation" name="validation">
-                    <option value="">-- {% trans "Todos" %} --</option>
+                <select name="validation" class="filter-select">
+                    <option value="">Validación: Todas</option>
                     {% for val, label in validations %}
                     <option value="{{ val }}" {% if filters.validation == val %}selected{% endif %}>{{ label }}</option>
                     {% endfor %}
                 </select>
+
+                <button type="button" class="btn-more-filters" onclick="toggleAdvancedFilters()">
+                    Más filtros ▾
+                </button>
+
+                <div class="actions">
+                    <button type="reset" class="btn btn-link" onclick="window.location.href='{% url 'crm:leads_list' %}'">Limpiar</button>
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </div>
             </div>
 
-            <div class="filter-group">
-                <label for="priority">{% trans "Prioridad" %}</label>
-                <select id="priority" name="priority">
-                    <option value="">-- {% trans "Todos" %} --</option>
-                    {% for val, label in priorities %}
-                    <option value="{{ val }}" {% if filters.priority == val %}selected{% endif %}>{{ label }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="zone">{% trans "Zona Geográfica" %}</label>
-                <select id="zone" name="zone">
-                    <option value="">-- {% trans "Todas" %} --</option>
-                    {% for zone in distinct_zones %}
-                    <option value="{{ zone }}" {% if filters.zone == zone %}selected{% endif %}>{{ zone }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="filter-actions">
-                <button type="submit" class="crm-btn crm-btn-primary">{% trans "Filtrar" %}</button>
-                <a href="{% url 'crm:leads_list' %}" class="crm-btn crm-btn-link">{% trans "Limpiar" %}</a>
+            <!-- FILTROS EXTRA (OCULTOS POR DEFECTO) -->
+            <div class="filters-extra" id="advanced-filters" style="display: none;">
+                <div class="extra-row">
+                    <div class="f-group">
+                        <label>Prioridad</label>
+                        <select name="priority">
+                            <option value="">Todas</option>
+                            {% for val, label in priorities %}
+                            <option value="{{ val }}" {% if filters.priority == val %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="f-group">
+                        <label>Zona Geográfica</label>
+                        <select name="zone">
+                            <option value="">Todas las zonas</option>
+                            {% for zone in distinct_zones %}
+                            <option value="{{ zone }}" {% if filters.zone == zone %}selected{% endif %}>{{ zone }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="f-group">
+                        <label>Comercial Asignado</label>
+                        <select name="agent">
+                            <option value="">Cualquiera</option>
+                            {% for user in staff_users %}
+                            <option value="{{ user.id }}" {% if filters.agent == user.id|stringformat:"i" %}selected{% endif %}>{{ user.full_name|default:user.email }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="f-group">
+                        <label>Desde fecha</label>
+                        <input type="date" name="date_from" value="{{ filters.date_from }}">
+                    </div>
+                    <div class="f-group">
+                        <label>Hasta fecha</label>
+                        <input type="date" name="date_to" value="{{ filters.date_to }}">
+                    </div>
+                </div>
             </div>
         </form>
     </div>
 
-    <!-- TABLA DE LEADS -->
+    <!-- TABLA PROFESIONAL -->
     <div class="crm-table-container animate-fade-in delay-3">
-        <table class="crm-table">
-            <thead>
-                <tr>
-                    <th class="col-num"># ID</th>
-                    <th>{% trans "Nombre / Empresa" %}</th>
-                    <th>{% trans "Canal" %}</th>
-                    <th>{% trans "Zona" %}</th>
-                    <th>{% trans "Estado Comercial" %}</th>
-                    <th>{% trans "Validación" %}</th>
-                    <th>{% trans "Prioridad" %}</th>
-                    <th>{% trans "Último Contacto" %}</th>
-                    <th class="col-action">{% trans "Acciones" %}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if leads %}
+        
+        <!-- BARRA DE ACCIONES MASIVAS (Contextual) -->
+        <div class="bulk-actions-bar" id="bulk-actions-bar" style="display: none;">
+            <div class="bulk-info">
+                <span id="selected-count">0</span> seleccionados
+            </div>
+            <div class="bulk-buttons">
+                <button class="btn btn-bulk btn-danger" onclick="confirmBulkDelete()">
+                    🗑 Eliminar seleccionados
+                </button>
+                <button class="btn btn-bulk">📥 Exportar CSV</button>
+                <button class="btn btn-bulk">👤 Asignar Comercial</button>
+                <button class="btn btn-bulk">🏷 Cambiar Estado</button>
+                <div class="bulk-dropdown">
+                    <button class="btn btn-bulk">•••</button>
+                </div>
+            </div>
+            <button class="btn-close-bulk" onclick="deselectAll()">✕</button>
+        </div>
+
+        <!-- ACCIONES DE TABLA (EXPORT / COLUMNAS) -->
+        <div class="table-tools">
+            <div class="tools-left"></div>
+            <div class="tools-right">
+                <div class="dropdown">
+                    <button class="btn btn-secondary btn-sm">
+                        📥 Exportar ▾
+                    </button>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-secondary btn-sm">
+                        ⚙️ Columnas ▾
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="crm-table">
+                <thead>
+                    <tr>
+                        <th class="col-check">
+                            <input type="checkbox" id="check-all" onclick="toggleAllCheckboxes(this)">
+                        </th>
+                        <th class="col-id">ID</th>
+                        <th class="col-lead">LEAD / EMPRESA</th>
+                        <th class="col-channel">CANAL</th>
+                        <th class="col-zone">ZONA</th>
+                        <th class="col-status">ESTADO</th>
+                        <th class="col-val">VALIDACIÓN</th>
+                        <th class="col-prio">PRIORIDAD</th>
+                        <th class="col-contact">ÚLT. CONTACTO</th>
+                        <th class="col-actions">ACCIONES</th>
+                    </tr>
+                </thead>
+                <tbody>
                     {% for lead in leads %}
-                    <tr class="crm-tr clickable-row" onclick="window.location.href='{% url 'crm:lead_detail' lead.uuid %}';">
-                        <td class="col-num font-mono highlight-num">{{ lead.serial_id }}</td>
-                        <td>
-                            <div class="lead-identity">
-                                <span class="lead-name">{{ lead.full_name }}</span>
+                    <tr class="lead-row" data-id="{{ lead.uuid }}">
+                        <td class="col-check">
+                            <input type="checkbox" class="lead-checkbox" value="{{ lead.uuid }}" onclick="updateBulkBar()">
+                        </td>
+                        <td class="col-id"><span class="id-tag">{{ lead.serial_id }}</span></td>
+                        <td class="col-lead">
+                            <div class="lead-info-cell">
+                                <span class="name">{{ lead.full_name }}</span>
+                                <span class="email">{{ lead.email|default:"-" }}</span>
                                 {% if lead.company_name %}
-                                <span class="lead-company">{{ lead.company_name }}</span>
-                                {% else %}
-                                <span class="lead-company text-muted">-</span>
+                                <span class="company">{{ lead.company_name }}</span>
                                 {% endif %}
                             </div>
                         </td>
-                        <td>
-                            <span class="channel-badge channel-{{ lead.channel }}">
-                                {% if lead.channel == 'whatsapp' %}
-                                <span class="badge-icon">💬</span> WhatsApp
-                                {% elif lead.channel == 'web_assistant' %}
-                                <span class="badge-icon">🤖</span> Asistente Web
-                                {% elif lead.channel == 'contact_form' %}
-                                <span class="badge-icon">✉️</span> Contacto Web
-                                {% else %}
-                                <span class="badge-icon">👤</span> Manual
-                                {% endif %}
-                            </span>
+                        <td class="col-channel">
+                            <span class="channel-pill">{{ lead.get_channel_display }}</span>
                         </td>
-                        <td>
-                            {% if lead.geographic_zone %}
-                            <span class="zone-text"><span class="zone-pin">📍</span> {{ lead.geographic_zone }}</span>
-                            {% else %}
-                            <span class="zone-text text-muted">No especificada</span>
-                            {% endif %}
+                        <td class="col-zone">{{ lead.geographic_zone|default:"-" }}</td>
+                        <td class="col-status">
+                            <span class="status-badge s-{{ lead.lead_status }}">{{ lead.get_lead_status_display }}</span>
                         </td>
-                        <td>
-                            <span class="status-badge {{ lead.get_status_badge_class }}">{{ lead.get_lead_status_display }}</span>
+                        <td class="col-val">
+                            <span class="val-badge v-{{ lead.validation_status }}">{{ lead.get_validation_status_display }}</span>
                         </td>
-                        <td>
-                            <span class="status-badge {{ lead.get_validation_badge_class }}">{{ lead.get_validation_status_display }}</span>
+                        <td class="col-prio">
+                            <span class="prio-dot p-{{ lead.priority }}"></span>
+                            {{ lead.get_priority_display }}
                         </td>
-                        <td>
-                            <span class="status-badge {{ lead.get_priority_badge_class }}">{{ lead.get_priority_display }}</span>
+                        <td class="col-contact">
+                            <span class="date-text">{{ lead.last_contact_at|date:"d M, H:i" }}</span>
                         </td>
-                        <td>
-                            <span class="date-text">{{ lead.last_contact_at|date:"d M Y, H:i" }}</span>
+                        <td class="col-actions">
+                            <div class="actions-group">
+                                <a href="{% url 'crm:lead_detail' lead.uuid %}" class="action-btn" title="Ver detalle">👁</a>
+                                <button class="action-btn" title="Editar" onclick="showEditModal('{{ lead.uuid }}')">✏️</button>
+                                <button class="action-btn" title="Duplicar">📋</button>
+                                <button class="action-btn text-danger" title="Eliminar" onclick="confirmDelete('{{ lead.uuid }}')">🗑</button>
+                                <button class="action-btn" title="Más opciones">⋮</button>
+                            </div>
                         </td>
-                        <td class="col-action" onclick="event.stopPropagation();">
-                            <a href="{% url 'crm:lead_detail' lead.uuid %}" class="crm-action-btn" title="{% trans 'Ver Ficha' %}">
-                                🔍 {% trans "Ver Ficha" %}
-                            </a>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="10" class="empty-state">
+                            <div class="empty-content">
+                                <div class="empty-icon">📂</div>
+                                <h3>No se encontraron leads</h3>
+                                <p>Prueba a ajustar los filtros o crea un nuevo lead manualmente.</p>
+                                <button class="btn btn-primary" onclick="showNewLeadModal()">+ Crear primer lead</button>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
-                {% else %}
-                    <tr>
-                        <td colspan="9" class="crm-empty">
-                            <div class="empty-state">
-                                <span class="empty-icon">📁</span>
-                                <p>{% trans "No se encontraron leads con los criterios seleccionados." %}</p>
-                                <a href="{% url 'crm:leads_list' %}" class="crm-btn crm-btn-secondary">{% trans "Ver Todos los Leads" %}</a>
-                            </div>
-                        </td>
-                    </tr>
-                {% endif %}
-            </tbody>
-        </table>
-    </div>
-
-    <!-- PAGINACIÓN -->
-    {% if leads.has_other_pages %}
-    <div class="crm-pagination animate-fade-in">
-        <div class="pagination-info">
-            Mostrando página {{ leads.number }} de {{ leads.paginator.num_pages }} ({{ leads.paginator.count }} registros en total)
+                </tbody>
+            </table>
         </div>
-        <div class="pagination-controls">
-            {% if leads.has_previous %}
-            <a href="?page=1{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}" class="pag-btn">« Primera</a>
-            <a href="?page={{ leads.previous_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}" class="pag-btn">Anterior</a>
-            {% endif %}
 
-            <span class="pag-current">{{ leads.number }}</span>
+        <!-- PAGINACIÓN Y FOOTER -->
+        <div class="table-footer">
+            <div class="footer-left">
+                Mostrando {{ leads.start_index }}–{{ leads.end_index }} de {{ leads.paginator.count }} leads
+            </div>
+            
+            <div class="footer-center">
+                <nav class="pagination">
+                    {% if leads.has_previous %}
+                    <a href="?page={{ leads.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">« Anterior</a>
+                    {% endif %}
 
-            {% if leads.has_next %}
-            <a href="?page={{ leads.next_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}" class="pag-btn">Siguiente</a>
-            <a href="?page={{ leads.paginator.num_pages }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}" class="pag-btn">Última »</a>
-            {% endif %}
+                    {% for n in leads.paginator.page_range %}
+                        {% if n == leads.number %}
+                        <span class="page-link active">{{ n }}</span>
+                        {% elif n > leads.number|add:'-3' and n < leads.number|add:'3' %}
+                        <a href="?page={{ n }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">{{ n }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if leads.has_next %}
+                    <a href="?page={{ leads.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">Siguiente »</a>
+                    {% endif %}
+                </nav>
+            </div>
+
+            <div class="footer-right">
+                <label>Mostrar:</label>
+                <select onchange="changePerPage(this.value)">
+                    <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+                    <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+                    <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
+                </select>
+            </div>
         </div>
     </div>
-    {% endif %}
 </div>
 
-<!-- ESTILOS EXCLUSIVOS DEL CRM -->
+<!-- MODAL DE CONFIRMACIÓN DE ELIMINACIÓN -->
+<div id="delete-modal" class="crm-modal" style="display: none;">
+    <div class="modal-content">
+        <h2 id="modal-title">¿Eliminar Lead?</h2>
+        <p id="modal-body">Esta acción no se puede deshacer.</p>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+            <button id="confirm-delete-btn" class="btn btn-danger">Eliminar</button>
+        </div>
+    </div>
+</div>
+
 <style>
+/* PROFESSIONAL CRM LIST DESIGN */
 :root {
-    --crm-bg: #0d0f12;
-    --crm-card-bg: rgba(22, 28, 36, 0.7);
-    --crm-border: rgba(255, 255, 255, 0.08);
-    --crm-text: #f3f4f6;
-    --crm-text-muted: #9ca3af;
-    --crm-primary: #8b5e3c;
-    --crm-primary-hover: #a1704c;
-    --crm-accent: #f59e0b;
+    --crm-bg: #F8FAFC;
+    --crm-card: #FFFFFF;
+    --crm-border: #E5E7EB;
+    --crm-text: #1F2937;
+    --crm-muted: #6B7280;
+    --crm-gold: #C89B3C;
+    --crm-gold-dark: #A67C2D;
+    --crm-danger: #EF4444;
 }
 
-.crm-container {
-    max-width: 1400px;
-    margin: 40px auto;
-    padding: 0 24px;
-    color: var(--crm-text);
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+.crm-pro-wrapper {
+    background: var(--crm-bg);
+    min-height: 100vh;
+    padding: 30px;
 }
 
-/* Header */
-.crm-header-section {
+/* HEADER */
+.crm-pro-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 32px;
-    border-bottom: 1px solid var(--crm-border);
-    padding-bottom: 24px;
-}
-.crm-title {
-    font-size: 2.5rem;
-    font-weight: 800;
-    margin: 0 0 8px 0;
-    letter-spacing: -0.5px;
-}
-.crm-subtitle {
-    color: var(--crm-text-muted);
-    font-size: 1.1rem;
-    margin: 0;
-}
-.gradient-text {
-    background: linear-gradient(135deg, #f59e0b 0%, #8b5e3c 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    margin-bottom: 30px;
 }
 
-/* KPIs */
-.crm-kpis {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+.breadcrumb { font-size: 13px; color: var(--crm-muted); margin-bottom: 5px; }
+.page-title { font-size: 32px; font-weight: 800; color: var(--crm-text); margin: 0; }
+
+/* KPI BAR */
+.crm-kpi-bar {
+    display: flex;
     gap: 20px;
-    margin-bottom: 35px;
+    margin-bottom: 30px;
 }
-.crm-kpi-card {
-    background: var(--crm-card-bg);
+
+.kpi-mini-card {
+    background: var(--crm-card);
     border: 1px solid var(--crm-border);
-    border-radius: 16px;
-    padding: 24px;
+    border-radius: 12px;
+    padding: 16px 20px;
     display: flex;
     align-items: center;
-    gap: 20px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 15px;
+    flex: 1;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
-.crm-kpi-card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(245, 158, 11, 0.3);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
-}
+
 .kpi-icon {
-    font-size: 2.2rem;
-    background: rgba(255, 255, 255, 0.05);
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-.kpi-data {
-    display: flex;
-    flex-direction: column;
-}
-.kpi-value {
-    font-size: 2rem;
-    font-weight: 800;
-    line-height: 1.1;
-    color: #ffffff;
-}
-.kpi-label {
-    font-size: 0.85rem;
-    color: var(--crm-text-muted);
-    font-weight: 500;
-    margin-top: 4px;
-}
-.kpi-glow {
-    position: absolute;
-    bottom: -50px;
-    right: -50px;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background: var(--crm-primary);
-    filter: blur(50px);
-    opacity: 0.15;
-    pointer-events: none;
+    font-size: 20px;
 }
 
-/* Filtros */
-.crm-filters-panel {
-    background: var(--crm-card-bg);
+.kpi-icon.total { background: #EEF2FF; }
+.kpi-icon.nuevos { background: #FEF3C7; }
+.kpi-icon.validados { background: #ECFDF5; }
+.kpi-icon.atendidos { background: #F5F3FF; }
+.kpi-icon.convertidos { background: #FFF7ED; }
+
+.kpi-content .v { display: block; font-size: 22px; font-weight: 800; color: var(--crm-text); }
+.kpi-content .l { font-size: 13px; font-weight: 600; color: var(--crm-muted); }
+
+/* FILTERS */
+.crm-filters-pro {
+    background: var(--crm-card);
     border: 1px solid var(--crm-border);
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
-.crm-filters-form {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 20px;
-    align-items: flex-end;
-}
-.crm-filters-form .filter-search {
-    grid-column: span 2;
-}
-@media (max-width: 900px) {
-    .crm-filters-form .filter-search {
-        grid-column: span 1;
-    }
-}
-.filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-.filter-group label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--crm-text-muted);
-}
-.filter-group select, .filter-group input {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--crm-border);
-    border-radius: 8px;
-    padding: 10px 14px;
-    color: #ffffff;
-    font-size: 0.9rem;
-    outline: none;
-    transition: all 0.2s;
-}
-.filter-group select:focus, .filter-group input:focus {
-    border-color: var(--crm-primary);
-    box-shadow: 0 0 0 2px rgba(139, 94, 60, 0.2);
-}
-.input-with-icon {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-.input-icon {
-    position: absolute;
-    left: 12px;
-    color: var(--crm-text-muted);
-}
-.input-with-icon input {
-    padding-left: 38px;
-    width: 100%;
-}
-.filter-actions {
+
+.filters-main {
     display: flex;
     gap: 12px;
     align-items: center;
 }
 
-/* Botones */
-.crm-btn {
-    padding: 11px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    border: none;
-    transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-.crm-btn-primary {
-    background: var(--crm-primary);
-    color: white;
-}
-.crm-btn-primary:hover {
-    background: var(--crm-primary-hover);
-    transform: translateY(-1px);
-}
-.crm-btn-secondary {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--crm-border);
-    color: var(--crm-text);
-}
-.crm-btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-.crm-btn-link {
-    background: transparent;
-    color: var(--crm-text-muted);
-    text-decoration: none;
-}
-.crm-btn-link:hover {
-    color: white;
+.search-box {
+    position: relative;
+    flex-grow: 1;
 }
 
-/* Tabla de Leads */
-.crm-table-container {
-    background: var(--crm-card-bg);
-    border: 1px solid var(--crm-border);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+.search-box .icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--crm-muted);
 }
+
+.search-box input {
+    width: 100%;
+    padding: 11px 11px 11px 40px;
+    border: 1px solid var(--crm-border);
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
+
+.filter-select {
+    padding: 11px 30px 11px 14px;
+    border: 1px solid var(--crm-border);
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    appearance: none;
+    cursor: pointer;
+}
+
+.btn-more-filters {
+    background: none;
+    border: none;
+    color: var(--crm-gold);
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.filters-extra {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--crm-border);
+}
+
+.extra-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+}
+
+.f-group label { display: block; font-size: 12px; font-weight: 700; color: var(--crm-muted); margin-bottom: 6px; }
+.f-group input, .f-group select { width: 100%; padding: 8px; border: 1px solid var(--crm-border); border-radius: 6px; font-size: 13px; }
+
+/* TABLE CONTAINER */
+.crm-table-container {
+    background: var(--crm-card);
+    border: 1px solid var(--crm-border);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* BULK BAR */
+.bulk-actions-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 56px;
+    background: #111827;
+    color: white;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    justify-content: space-between;
+}
+
+.bulk-info #selected-count { font-weight: 800; color: var(--crm-gold); }
+.bulk-buttons { display: flex; gap: 10px; }
+.btn-bulk { background: rgba(255,255,255,0.1); border: none; color: white; padding: 6px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; transition: 0.2s; }
+.btn-bulk:hover { background: rgba(255,255,255,0.2); }
+.btn-bulk.btn-danger { color: #fecaca; }
+
+.btn-close-bulk { background: none; border: none; color: var(--crm-muted); font-size: 18px; cursor: pointer; }
+
+/* TABLE TOOLS */
+.table-tools {
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--crm-border);
+    display: flex;
+    justify-content: space-between;
+}
+
 .crm-table {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
-    font-size: 0.95rem;
 }
+
 .crm-table th {
-    background: rgba(0, 0, 0, 0.25);
-    padding: 16px 20px;
-    font-weight: 600;
-    color: var(--crm-text-muted);
-    border-bottom: 1px solid var(--crm-border);
-    font-size: 0.85rem;
+    background: #F9FAFB;
+    padding: 14px 24px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--crm-muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-}
-.crm-tr {
     border-bottom: 1px solid var(--crm-border);
-    transition: background-color 0.2s;
-    cursor: pointer;
 }
-.crm-tr:hover {
-    background-color: rgba(255, 255, 255, 0.02);
-}
+
 .crm-table td {
-    padding: 18px 20px;
-    vertical-align: middle;
-}
-.col-num {
-    width: 100px;
-    font-weight: bold;
-}
-.highlight-num {
-    color: var(--crm-accent);
-}
-.col-action {
-    width: 140px;
-    text-align: right;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--crm-border);
+    font-size: 14px;
+    color: var(--crm-text);
 }
 
-/* Identidad del Lead */
-.lead-identity {
-    display: flex;
-    flex-direction: column;
-}
-.lead-name {
-    font-weight: 700;
-    color: #ffffff;
-    font-size: 1rem;
-}
-.lead-company {
-    font-size: 0.8rem;
-    color: var(--crm-text-muted);
-    margin-top: 2px;
-}
+.lead-row { transition: background 0.1s; }
+.lead-row:hover { background: #F8FAFC; }
 
-/* Canal Badges */
-.channel-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 10px;
-    border-radius: 30px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-.channel-whatsapp {
-    background: rgba(37, 211, 102, 0.1);
-    color: #25d366;
-    border-color: rgba(37, 211, 102, 0.2);
-}
-.channel-web_assistant {
-    background: rgba(59, 130, 246, 0.1);
-    color: #3b82f6;
-    border-color: rgba(59, 130, 246, 0.2);
-}
-.channel-contact_form {
-    background: rgba(139, 92, 246, 0.1);
-    color: #8b5cf6;
-    border-color: rgba(139, 92, 246, 0.2);
-}
+.col-check { width: 40px; padding-right: 0 !important; }
+.id-tag { font-family: monospace; font-weight: 700; color: var(--crm-gold); }
 
-/* Estado y prioridad badges */
-.status-badge {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    text-align: center;
-    min-width: 90px;
-}
+.lead-info-cell { display: flex; flex-direction: column; }
+.lead-info-cell .name { font-weight: 700; color: var(--crm-text); }
+.lead-info-cell .email { font-size: 12px; color: var(--crm-muted); }
+.lead-info-cell .company { font-size: 12px; font-weight: 600; color: #374151; margin-top: 2px; }
 
-/* Zonas y textos secundarios */
-.zone-text {
-    font-size: 0.9rem;
-    color: #ffffff;
-    font-weight: 500;
-}
-.zone-pin {
-    opacity: 0.7;
-}
-.date-text {
-    font-size: 0.85rem;
-    color: var(--crm-text-muted);
-}
+.channel-pill { font-size: 12px; color: var(--crm-muted); background: #F1F5F9; padding: 2px 8px; border-radius: 4px; }
 
-.crm-action-btn {
-    background: rgba(139, 94, 60, 0.1);
-    color: #d97706;
-    border: 1px solid rgba(139, 94, 60, 0.3);
-    padding: 6px 12px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 0.8rem;
-    font-weight: 600;
-    transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-.crm-action-btn:hover {
-    background: var(--crm-primary);
-    color: #ffffff;
-    border-color: var(--crm-primary);
-}
+/* BADGES */
+.status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; }
+.s-nuevo { background: #EFF6FF; color: #1E40AF; }
+.s-convertido { background: #ECFDF5; color: #065F46; }
 
-/* Empty State */
-.crm-empty {
-    text-align: center;
-    padding: 60px 20px !important;
-}
-.empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-}
-.empty-icon {
-    font-size: 3rem;
-    opacity: 0.5;
-}
-.empty-state p {
-    color: var(--crm-text-muted);
-    font-size: 1.1rem;
-    margin: 0 0 10px 0;
-}
+.val-badge { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+.v-validado { background: #D1FAE5; color: #065F46; }
 
-/* Paginación */
-.crm-pagination {
+.prio-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+.p-alta { background: #EF4444; }
+.p-media { background: #F59E0B; }
+.p-baja { background: #10B981; }
+
+.actions-group { display: flex; gap: 8px; }
+.action-btn { 
+    background: none; border: none; padding: 6px; border-radius: 4px; cursor: pointer; color: var(--crm-muted); transition: 0.2s; 
+    text-decoration: none; font-size: 16px; display: flex; align-items: center; justify-content: center;
+}
+.action-btn:hover { background: #F1F5F9; color: var(--crm-text); }
+.action-btn.text-danger:hover { background: #FEE2E2; color: var(--crm-danger); }
+
+/* FOOTER & PAGINATION */
+.table-footer {
+    padding: 20px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 24px;
-    color: var(--crm-text-muted);
-    font-size: 0.9rem;
-}
-.pagination-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.pag-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--crm-border);
-    color: var(--crm-text);
-    padding: 8px 14px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.2s;
-}
-.pag-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-}
-.pag-current {
-    background: var(--crm-primary);
-    color: white;
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-weight: 700;
+    background: #F9FAFB;
 }
 
-/* Animaciones */
-.animate-fade-in {
-    animation: fadeIn 0.5s ease-out forwards;
+.footer-left { font-size: 13px; color: var(--crm-muted); }
+
+.pagination { display: flex; gap: 5px; }
+.page-link {
+    padding: 6px 12px;
+    border: 1px solid var(--crm-border);
+    border-radius: 6px;
+    background: white;
+    color: var(--crm-text);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
 }
+.page-link.active { background: var(--crm-gold); border-color: var(--crm-gold); color: white; }
+.page-link:hover:not(.active) { background: #F1F5F9; }
+
+.footer-right { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--crm-muted); }
+.footer-right select { padding: 4px 8px; border: 1px solid var(--crm-border); border-radius: 4px; }
+
+/* MODAL */
+.crm-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+.modal-actions { display: flex; gap: 10px; justify-content: center; margin-top: 24px; }
+
+/* BUTTONS */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.btn-primary { background: var(--crm-gold); color: white; }
+.btn-primary:hover { background: var(--crm-gold-dark); transform: translateY(-1px); }
+
+.btn-secondary { background: white; border-color: var(--crm-border); color: var(--crm-text); }
+.btn-secondary:hover { background: #F9FAFB; }
+
+.btn-danger { background: var(--crm-danger); color: white; }
+
+.btn-link { background: none; border: none; color: var(--crm-muted); font-weight: 600; }
+
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+
+/* ANIMATIONS */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
 .delay-1 { animation-delay: 0.1s; }
 .delay-2 { animation-delay: 0.2s; }
 .delay-3 { animation-delay: 0.3s; }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
+/* EMPTY STATE */
+.empty-state { padding: 80px 0 !important; }
+.empty-content { text-align: center; }
+.empty-icon { font-size: 64px; margin-bottom: 20px; opacity: 0.3; }
+.empty-content h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+.empty-content p { color: var(--crm-muted); margin-bottom: 24px; }
+
+/* CHIPS ESTILO CATÁLOGO */
+.crm-status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.status-chips-container {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex: 1;
+}
+
+.status-chips-container::-webkit-scrollbar { display: none; }
+
+.status-chip {
+    padding: 8px 16px;
+    background: white;
+    border: 1px solid var(--crm-border);
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--crm-muted);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+
+.status-chip:hover {
+    border-color: var(--crm-gold);
+    color: var(--crm-gold);
+}
+
+.status-chip.is-active {
+    background: var(--crm-gold);
+    border-color: var(--crm-gold);
+    color: white;
+    box-shadow: 0 4px 12px rgba(200, 155, 60, 0.2);
+}
+
+.btn-m-filters {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: white;
+    border: 1px solid var(--crm-border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--crm-text);
+    cursor: pointer;
+}
+
+/* RESPONSIVE CRM */
+@media (max-width: 1024px) {
+    .crm-kpi-bar { flex-wrap: wrap; }
+    .kpi-mini-card { flex: 1 1 200px; }
+    .filters-main { flex-wrap: wrap; }
+    .search-box { width: 100%; }
+    .filter-select { flex: 1; }
+}
+
+@media (max-width: 768px) {
+    .crm-pro-wrapper { padding: 15px; }
+    .crm-pro-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+    .header-right { width: 100%; display: flex; gap: 10px; }
+    .header-right .btn { flex: 1; justify-content: center; padding: 12px; }
+    
+    .btn-m-filters { display: flex; }
+    
+    .crm-filters-pro {
+        display: none; /* Oculto por defecto en móvil */
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1000;
+        border-radius: 0;
+        margin: 0;
+        overflow-y: auto;
+        padding: 30px 20px;
+        background: white;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    
+    .crm-filters-pro.is-open {
+        display: block;
+        animation: slideUp 0.3s ease-out;
     }
+
+    .filters-main { flex-direction: column; align-items: stretch; }
+    
+    .crm-table-container { padding: 0; background: none; border: none; box-shadow: none; }
+    .table-tools { padding: 10px 0; }
+    
+    .col-id, .col-zone, .col-val, .col-prio, .col-contact { display: none; }
+    
+    .lead-row {
+        display: block;
+        background: white;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        border: 1px solid var(--crm-border);
+        padding: 15px;
+        position: relative;
+    }
+    
+    .lead-row td { display: block; padding: 0; border: none; margin-bottom: 8px; }
+    .col-check { position: absolute; top: 15px; right: 15px; }
+    .col-lead .name { font-size: 16px; }
+    .col-actions { border-top: 1px solid #f0f0f0 !important; padding-top: 12px !important; margin-top: 10px; margin-bottom: 0; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
 }
 </style>
+
+<script>
+// UI LOGIC
+function toggleAdvancedFilters() {
+    const el = document.getElementById('advanced-filters');
+    el.style.display = (el.style.display === 'none') ? 'block' : 'none';
+}
+
+function toggleMobileFilters() {
+    const panel = document.getElementById('crm-filters-panel');
+    panel.classList.toggle('is-open');
+    if (panel.classList.contains('is-open')) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+}
+
+function changePerPage(val) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('per_page', val);
+    url.searchParams.set('page', 1);
+    window.location.href = url.href;
+}
+
+// SELECTION LOGIC
+function toggleAllCheckboxes(source) {
+    const checkboxes = document.querySelectorAll('.lead-checkbox');
+    checkboxes.forEach(cb => cb.checked = source.checked);
+    updateBulkBar();
+}
+
+function updateBulkBar() {
+    const selected = document.querySelectorAll('.lead-checkbox:checked');
+    const bar = document.getElementById('bulk-actions-bar');
+    const countLabel = document.getElementById('selected-count');
+    
+    if (selected.length > 0) {
+        bar.style.display = 'flex';
+        countLabel.innerText = selected.length;
+    } else {
+        bar.style.display = 'none';
+        document.getElementById('check-all').checked = false;
+    }
+}
+
+function deselectAll() {
+    document.getElementById('check-all').checked = false;
+    toggleAllCheckboxes({checked: false});
+}
+
+// DELETE LOGIC
+let leadToDelete = null;
+let isBulkDelete = false;
+
+function confirmDelete(uuid) {
+    leadToDelete = uuid;
+    isBulkDelete = false;
+    document.getElementById('modal-title').innerText = "¿Eliminar Lead?";
+    document.getElementById('modal-body').innerText = "Esta acción eliminará permanentemente la ficha de este lead y todo su historial de mensajes.";
+    document.getElementById('delete-modal').style.display = 'flex';
+}
+
+function confirmBulkDelete() {
+    isBulkDelete = true;
+    const count = document.querySelectorAll('.lead-checkbox:checked').length;
+    document.getElementById('modal-title').innerText = `¿Eliminar ${count} Leads?`;
+    document.getElementById('modal-body').innerText = "Se eliminarán todos los leads seleccionados de forma permanente.";
+    document.getElementById('delete-modal').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('delete-modal').style.display = 'none';
+}
+
+document.getElementById('confirm-delete-btn').onclick = function() {
+    if (isBulkDelete) {
+        const selected = Array.from(document.querySelectorAll('.lead-checkbox:checked')).map(cb => cb.value);
+        fetch("{% url 'crm:bulk_delete_leads' %}", {
+            method: "POST",
+            body: JSON.stringify({ids: selected}),
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) window.location.reload();
+            else alert(data.error);
+        });
+    } else {
+        fetch(`/crm/leads/${leadToDelete}/delete/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) window.location.reload();
+            else alert(data.error);
+        });
+    }
+};
+
+function showNewLeadModal() {
+    alert("Función para crear nuevo lead próximamente.");
+}
+
+function showEditModal(uuid) {
+    window.location.href = `/crm/leads/${uuid}/`;
+}
+
+// Sincronización (Placeholder)
+function syncData() {
+    const btn = document.getElementById('btn-sync');
+    btn.classList.add('loading');
+    btn.disabled = true;
+    btn.querySelector('.text').innerText = "Sincronizando...";
+    
+    setTimeout(() => {
+        window.location.reload();
+    }, 1500);
+}
+</script>
 {% endblock %}

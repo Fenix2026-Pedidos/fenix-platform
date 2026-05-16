@@ -7,75 +7,67 @@
 
 {% block content %}
 <!-- Breadcrumb + Print Button -->
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-    <nav>
-        <ol style="display: flex; list-style: none; padding: 0; gap: 8px; align-items: center;">
-            <li><a href="{% url 'orders:order_list' %}" style="color: var(--primary-600); text-decoration: none;">{% trans "Mis Pedidos" %}</a></li>
-            <li><i class="bi bi-chevron-right" style="color: var(--gray-400);"></i></li>
-            <li style="color: var(--gray-600);">{% trans "Pedido" %} #{{ order.id }}</li>
+<div class="detail-header-actions mb-6">
+    <nav class="breadcrumb-nav">
+        <ol class="breadcrumb">
+            <li><a href="{% url 'orders:order_list' %}" class="breadcrumb-link">{% trans "Mis Pedidos" %}</a></li>
+            <li class="breadcrumb-separator"><i class="bi bi-chevron-right"></i></li>
+            <li class="breadcrumb-current">{% trans "Pedido" %} #{{ order.id }}</li>
         </ol>
     </nav>
     
-    <div style="display: flex; gap: 12px; align-items: center;">
+    <div class="action-buttons">
         {% if can_cancel_user %}
-        <button type="button" class="btn btn-danger" style="display: flex; align-items: center; gap: 8px;" onclick="openCancelModal();">
+        <button type="button" class="btn btn-danger-outline" onclick="openCancelModal();">
             <i class="bi bi-x-circle"></i>
-            <span>{% trans "Cancelar Pedido" %}</span>
+            <span>{% trans "Cancelar" %}</span>
         </button>
         {% elif cancel_disabled_reason %}
-        <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
-            <button disabled class="btn" style="display: flex; align-items: center; gap: 8px; opacity: 0.5; cursor: not-allowed;" title="{{ cancel_disabled_reason }}">
+        <div class="disabled-reason-wrapper">
+            <button disabled class="btn btn-disabled" title="{{ cancel_disabled_reason }}">
                 <i class="bi bi-x-circle"></i>
-                <span>{% trans "Cancelar Pedido" %}</span>
+                <span>{% trans "Cancelar" %}</span>
             </button>
-            <span style="font-size: 12px; color: var(--gray-500); text-align: right;">
-                {{ cancel_disabled_reason }}
-            </span>
+            <span class="reason-tooltip">{{ cancel_disabled_reason }}</span>
         </div>
         {% endif %}
 
-        <button onclick="window.print()" class="btn btn-primary" style="display: flex; align-items: center; gap: 8px;">
+        <button onclick="window.print()" class="btn btn-primary-outline">
             <i class="bi bi-printer"></i>
             <span>{% trans "Imprimir" %}</span>
         </button>
     </div>
 </div>
 
-<!-- Header: Order Number + Status -->
-<div class="card" style="margin-bottom: 24px;">
-    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; padding: 24px;">
-        <div>
-            <h2 style="margin: 0; font-size: 28px; color: var(--gray-900);">
-                {% trans "Pedido" %} #{{ order.id }}
-            </h2>
-            <p style="margin: 8px 0 0 0; color: var(--gray-500);">
-                {% trans "Fecha de creación:" %} {{ order.created_at|date:"d/m/Y H:i" }}
-            </p>
+<!-- Order Summary Header -->
+<div class="card order-summary-header mb-6">
+    <div class="summary-content">
+        <div class="summary-info">
+            <h1 class="summary-id">{% trans "Pedido" %} #{{ order.id }}</h1>
+            <p class="summary-date">{% trans "Creado el" %} {{ order.created_at|date:"d/m/Y H:i" }}</p>
         </div>
-        <span class="status-badge status-{{ order.status }}" style="font-size: 16px; padding: 8px 16px;">
-            {{ order.get_status_display }}
-        </span>
+        <div class="summary-status">
+            <span class="status-badge status-{{ order.status }}">
+                {{ order.get_status_display }}
+            </span>
+        </div>
     </div>
 </div>
 
-<!-- CARD: Información del Pedido (Cliente + Entrega + Datos Pedido) -->
-<div class="card" style="margin-bottom: 24px;">
+<!-- Information Grid -->
+<div class="card order-info-card mb-6">
     <div class="card-header">
-        <h5 class="card-title" style="margin: 0;">{% trans "Información del Pedido" %}</h5>
+        <h5 class="card-title">{% trans "Información del Pedido" %}</h5>
     </div>
-    <div class="card-body" style="padding: 24px;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px;">
-            <!-- COLUMNA 1: Información del Cliente -->
-            <div>
-                <h6 style="font-size: 12px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; font-weight: 600;">
-                    {% trans "INFORMACIÓN DEL CLIENTE" %}
-                </h6>
-                <dl style="display: grid; gap: 12px; margin: 0;">
-                    <div>
-                        <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                            {% trans "Cliente" %}
-                        </dt>
-                        <dd style="font-weight: 600; margin: 0;">
+    <div class="card-body p-6">
+        <div class="info-grid">
+            <!-- Client Info -->
+            <div class="info-column">
+                <h6 class="column-title">{% trans "INFORMACIÓN DEL CLIENTE" %}</h6>
+                <div class="info-content">
+                    <div class="info-item">
+                        <label>{% trans "Cliente" %}</label>
+                        <p class="font-bold">
                             {% if customer.full_name %}
                                 {{ customer.full_name }}
                             {% elif customer.first_name or customer.last_name %}
@@ -83,181 +75,119 @@
                             {% else %}
                                 {{ customer.email }}
                             {% endif %}
-                        </dd>
+                        </p>
                     </div>
-                    
                     {% if customer.company %}
-                    <div>
-                        <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                            {% trans "Empresa" %}
-                        </dt>
-                        <dd style="margin: 0;">{{ customer.company }}</dd>
+                    <div class="info-item">
+                        <label>{% trans "Empresa" %}</label>
+                        <p>{{ customer.company }}</p>
                     </div>
                     {% endif %}
-                    
-                    <div>
-                        <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                            {% trans "Email" %}
-                        </dt>
-                        <dd style="margin: 0;">{{ customer.email }}</dd>
+                    <div class="info-item">
+                        <label>{% trans "Email" %}</label>
+                        <p>{{ customer.email }}</p>
                     </div>
-                    
-                    {% if customer.telefono_empresa %}
-                    <div>
-                        <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                            {% trans "Teléfono Empresa" %}
-                        </dt>
-                        <dd style="margin: 0;">{{ customer.telefono_empresa }}</dd>
-                    </div>
-                    {% endif %}
-                    
                     {% if customer.telefono_reparto %}
-                    <div>
-                        <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                            {% trans "Teléfono Reparto/Incidencias" %}
-                        </dt>
-                        <dd style="margin: 0; font-weight: 600; color: var(--primary-600);">
-                            {{ customer.telefono_reparto }}
-                        </dd>
+                    <div class="info-item">
+                        <label>{% trans "Teléfono Reparto" %}</label>
+                        <p class="font-bold text-primary">{{ customer.telefono_reparto }}</p>
                     </div>
                     {% endif %}
-                </dl>
+                </div>
             </div>
 
-            <!-- COLUMNA 2: Datos del Pedido -->
-            <div>
-                <h6 style="font-size: 12px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; font-weight: 600;">
-                    {% trans "DATOS DEL PEDIDO" %}
-                </h6>
-                <dl style="display: grid; gap: 12px; margin: 0;">
-                    <div>
-                        <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                            {% trans "Nº Pedido / ID" %}
-                        </dt>
-                        <dd style="font-weight: 600; color: var(--primary-600); font-size: 18px; margin: 0;">
-                            #{{ order.id }}
-                        </dd>
+            <!-- Order Data -->
+            <div class="info-column">
+                <h6 class="column-title">{% trans "DATOS DEL PEDIDO" %}</h6>
+                <div class="info-content">
+                    <div class="info-item">
+                        <label>{% trans "ID" %}</label>
+                        <p class="font-bold text-primary text-lg">#{{ order.id }}</p>
                     </div>
-                    
-                    <div>
-                        <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                            {% trans "Fecha de Creación" %}
-                        </dt>
-                        <dd style="margin: 0;">{{ order.created_at|date:"d/m/Y H:i" }}</dd>
+                    <div class="info-item">
+                        <label>{% trans "Fecha de Creación" %}</label>
+                        <p>{{ order.created_at|date:"d/m/Y H:i" }}</p>
                     </div>
-                    
-                    <div>
-                        <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                            {% trans "Fecha de Entrega" %}
-                        </dt>
-                        <dd style="margin: 0;">
+                    <div class="info-item">
+                        <label>{% trans "Fecha de Entrega" %}</label>
+                        <p>
                             {% if order.delivered_at %}
                                 {{ order.delivered_at|date:"d/m/Y H:i" }}
                             {% else %}
-                                <span style="color: var(--gray-400);">—</span>
+                                <span class="text-muted">{% trans "Pendiente" %}</span>
                             {% endif %}
-                        </dd>
+                        </p>
                     </div>
-                    
-                    <div>
-                        <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                            {% trans "Estado" %}
-                        </dt>
-                        <dd style="margin: 0;">
-                            <span class="status-badge status-{{ order.status }}">
-                                {{ order.get_status_display }}
-                            </span>
-                        </dd>
-                    </div>
-                </dl>
+                </div>
             </div>
 
-            <!-- COLUMNA 3: Dirección de Entrega -->
-            <div>
-                <h6 style="font-size: 12px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; font-weight: 600;">
-                    {% trans "DIRECCIÓN DE ENTREGA" %}
-                </h6>
-                <dl style="display: grid; gap: 12px; margin: 0;">
+            <!-- Delivery Info -->
+            <div class="info-column">
+                <h6 class="column-title">{% trans "DIRECCIÓN DE ENTREGA" %}</h6>
+                <div class="info-content">
                     {% if customer.ciudad %}
-                    <div>
-                        <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                            {% trans "Ciudad" %}
-                        </dt>
-                        <dd style="margin: 0;">{{ customer.ciudad }}</dd>
+                    <div class="info-item">
+                        <label>{% trans "Ciudad" %}</label>
+                        <p>{{ customer.ciudad }}</p>
                     </div>
                     {% endif %}
-                    
-                    {% if customer.direccion_entrega %}
-                    <div>
-                        <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                            {% trans "Dirección" %}
-                        </dt>
-                        <dd style="margin: 0;">{{ customer.direccion_entrega }}</dd>
+                    <div class="info-item">
+                        <label>{% trans "Dirección" %}</label>
+                        <p>{{ customer.direccion_entrega|default:customer.direccion_local|default:"—" }}</p>
                     </div>
-                    {% elif customer.direccion_local %}
-                    <div>
-                        <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                            {% trans "Dirección" %}
-                        </dt>
-                        <dd style="margin: 0;">{{ customer.direccion_local }}</dd>
-                    </div>
-                    {% endif %}
-                    
                     {% if order.eta_start and order.eta_end %}
-                    <div>
-                        <dt style="font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                            {% trans "Ventana de Entrega" %}
-                        </dt>
-                        <dd style="margin: 0;">
-                            {{ order.eta_start|date:"d/m/Y H:i" }} - {{ order.eta_end|date:"H:i" }}
-                        </dd>
+                    <div class="info-item">
+                        <label>{% trans "Ventana de Entrega" %}</label>
+                        <p>{{ order.eta_start|date:"d/m/Y H:i" }} - {{ order.eta_end|date:"H:i" }}</p>
                     </div>
                     {% endif %}
-                </dl>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- CARD: Detalles del Pedido (Tabla de Líneas) -->
-<div class="card" style="margin-bottom: 24px;">
+<!-- Order Items -->
+<div class="card order-items-card mb-6">
     <div class="card-header">
-        <h5 class="card-title" style="margin: 0;">{% trans "Detalles del Pedido" %}</h5>
+        <h5 class="card-title">{% trans "Detalles del Pedido" %}</h5>
     </div>
-    <div class="table-wrapper">
+    
+    <!-- Desktop Table -->
+    <div class="table-wrapper d-none d-md-block">
         <table class="table">
             <thead>
                 <tr>
-                    <th style="text-align: center;">{% trans "ID Pedido" %}</th>
                     <th>{% trans "Producto" %}</th>
-                    <th style="text-align: center;">{% trans "Cantidad" %}</th>
-                    <th style="text-align: right;">{% trans "Precio Unitario" %}</th>
-                    <th style="text-align: right;">{% trans "Total Línea" %}</th>
+                    <th class="text-center">{% trans "Cantidad" %}</th>
+                    <th class="text-right">{% trans "Precio Unitario" %}</th>
+                    <th class="text-right">{% trans "Total Línea" %}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in items %}
                 <tr>
-                    <td style="text-align: center; color: var(--gray-500); font-size: 13px;">
-                        #{{ order.id }}
+                    <td class="item-name">
+                        <div class="item-info">
+                            <span class="product-name">
+                                {% if item.product %}
+                                    {{ item.product.translated_name }}
+                                {% else %}
+                                    {{ item.product_name_es }}
+                                {% endif %}
+                            </span>
+                            {% if item.product.sku %}
+                            <span class="product-sku">SKU: {{ item.product.sku }}</span>
+                            {% endif %}
+                        </div>
                     </td>
-                    <td style="font-weight: 500;">
-                        {% if item.product %}
-                            {{ item.product.translated_name }}
-                        {% else %}
-                            {{ item.product_name_es }}
-                        {% endif %}
-                        {% if item.product.sku %}
-                            <br><span style="font-size: 12px; color: var(--gray-500);">SKU: {{ item.product.sku }}</span>
-                        {% endif %}
-                    </td>
-                    <td style="text-align: center;">{{ item.quantity }}</td>
-                    <td style="text-align: right;">{{ item.unit_price|currency_format }}</td>
-                    <td style="text-align: right; font-weight: 600;">{{ item.line_total|currency_format }}</td>
+                    <td class="text-center font-medium">{{ item.quantity }}</td>
+                    <td class="text-right">{{ item.unit_price|currency_format }}</td>
+                    <td class="text-right font-bold">{{ item.line_total|currency_format }}</td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" style="text-align: center; padding: 40px; color: var(--gray-500);">
+                    <td colspan="4" class="empty-row">
                         {% trans "No hay productos en este pedido" %}
                     </td>
                 </tr>
@@ -265,296 +195,423 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Mobile Items List -->
+    <div class="items-mobile-list d-md-none">
+        {% for item in items %}
+        <div class="item-mobile-card">
+            <div class="item-mobile-header">
+                <span class="product-name">
+                    {% if item.product %}
+                        {{ item.product.translated_name }}
+                    {% else %}
+                        {{ item.product_name_es }}
+                    {% endif %}
+                </span>
+                {% if item.product.sku %}
+                <span class="product-sku">SKU: {{ item.product.sku }}</span>
+                {% endif %}
+            </div>
+            <div class="item-mobile-details">
+                <div class="detail-row">
+                    <label>{% trans "Precio" %}:</label>
+                    <span>{{ item.unit_price|currency_format }}</span>
+                </div>
+                <div class="detail-row">
+                    <label>{% trans "Cantidad" %}:</label>
+                    <span class="font-bold">x{{ item.quantity }}</span>
+                </div>
+                <div class="detail-row total-row">
+                    <label>{% trans "Subtotal" %}:</label>
+                    <span class="font-bold text-primary">{{ item.line_total|currency_format }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
     
     <!-- Totales -->
-    <div style="background-color: var(--gray-50); padding: 24px; border-top: 1px solid var(--gray-200);">
-        <div style="max-width: 400px; margin-left: auto;">
-            <dl style="display: grid; gap: 12px; margin: 0;">
-                <div style="display: flex; justify-content: space-between;">
-                    <dt style="color: var(--gray-600);">{% trans "Subtotal:" %}</dt>
-                    <dd style="font-weight: 600; margin: 0;">{{ subtotal|currency_format }}</dd>
-                </div>
-                
-                {% if shipping_cost > 0 %}
-                <div style="display: flex; justify-content: space-between;">
-                    <dt style="color: var(--gray-600);">{% trans "Gastos de Envío:" %}</dt>
-                    <dd style="font-weight: 600; margin: 0;">{{ shipping_cost|currency_format }}</dd>
-                </div>
-                {% endif %}
-                
-                <div style="display: flex; justify-content: space-between; padding-top: 12px; border-top: 2px solid var(--gray-300);">
-                    <dt style="font-size: 18px; font-weight: 600; color: var(--gray-900);">{% trans "Total:" %}</dt>
-                    <dd style="font-size: 24px; font-weight: 700; color: var(--primary-600); margin: 0;">
-                        {{ order.total_amount|currency_format }}
-                    </dd>
-                </div>
-            </dl>
+    <div class="totals-section">
+        <div class="totals-container">
+            <div class="total-line">
+                <span class="label">{% trans "Subtotal" %}:</span>
+                <span class="value">{{ subtotal|currency_format }}</span>
+            </div>
+            
+            {% if shipping_cost > 0 %}
+            <div class="total-line">
+                <span class="label">{% trans "Gastos de Envío" %}:</span>
+                <span class="value">{{ shipping_cost|currency_format }}</span>
+            </div>
+            {% endif %}
+            
+            <div class="total-line main-total">
+                <span class="label">{% trans "Total" %}:</span>
+                <span class="value">{{ order.total_amount|currency_format }}</span>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Historial del Pedido (solo si hay eventos) -->
+<!-- Order History Timeline -->
 {% if events %}
-<div class="card no-print">
+<div class="card order-history-card no-print">
     <div class="card-header">
-        <h5 class="card-title" style="margin: 0;">{% trans "Historial del Pedido" %}</h5>
+        <h5 class="card-title">{% trans "Historial del Pedido" %}</h5>
     </div>
     <div class="card-body">
-        <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="timeline">
             {% for event in events %}
-            <div style="display: flex; gap: 16px;">
-                <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%); display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0;">
-                    <i class="bi bi-check"></i>
+            <div class="timeline-item">
+                <div class="timeline-marker">
+                    <i class="bi bi-check-lg"></i>
                 </div>
-                <div style="flex: 1;">
-                    <div style="font-weight: 600; margin-bottom: 4px;">{{ event.get_status_display }}</div>
-                    <div style="font-size: 12px; color: var(--gray-500);">
-                        {{ event.created_at|date:"d/m/Y H:i" }}
-                        {% if event.note %}
-                            <br>{{ event.note }}
-                        {% endif %}
+                <div class="timeline-content">
+                    <div class="timeline-header">
+                        <span class="timeline-status">{{ event.get_status_display }}</span>
+                        <span class="timeline-date">{{ event.created_at|date:"d/m/Y H:i" }}</span>
                     </div>
+                    {% if event.note %}
+                    <p class="timeline-note">{{ event.note }}</p>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
 </div>
-{% endif %}
+{% <style>
+    /* ============================================================
+       ORDER DETAIL MODERN STYLES
+       ============================================================ */
+    
+    .mb-6 { margin-bottom: 24px !important; }
+    .p-6 { padding: 24px !important; }
+    .text-right { text-align: right !important; }
+    .text-center { text-align: center !important; }
+    .font-bold { font-weight: 700 !important; }
+    .font-medium { font-weight: 500 !important; }
+    .text-primary { color: var(--primary-600) !important; }
+    .text-muted { color: var(--gray-400) !important; }
+    .text-lg { font-size: 1.125rem !important; }
 
-<!-- Estilos para Impresión -->
-<style>
-    @media print {
-        /* Ocultar elementos que no deben imprimirse */
-        .no-print,
-        .topbar,
-        .topbar-left,
-        .topbar-right,
-        .topbar-actions,
-        .global-search-wrapper,
-        .language-selector-form,
-        .topbar-cart-btn,
-        nav,
-        .btn,
-        button,
-        .sidebar,
-        .navbar,
-        header,
-        footer {
-            display: none !important;
-        }
-        
-        /* Ajustar márgenes de página */
-        @page {
-            margin: 0.8cm;
-        }
-        
-        body {
-            background: white !important;
-        }
-
-        .main-content,
-        .content-wrapper {
-            padding: 0 !important;
-            margin: 0 !important;
-            max-width: 100% !important;
-        }
-        
-        /* Asegurar que las cards no tengan sombra */
-        .card {
-            box-shadow: none !important;
-            border: 1px solid #ddd !important;
-            page-break-inside: avoid;
-            margin-bottom: 12px !important;
-        }
-
-        .card-header,
-        .card-body {
-            padding: 12px !important;
-        }
-        
-        /* Ajustar tamaños de fuente para impresión */
-        .card-header h5 {
-            font-size: 12px !important;
-        }
-
-        h2 {
-            font-size: 20px !important;
-        }
-
-        p {
-            margin-top: 4px !important;
-        }
-
-        .status-badge {
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            font-size: 12px !important;
-            padding: 4px 8px !important;
-        }
-
-        .card-body > div {
-            gap: 16px !important;
-        }
-
-        dl {
-            gap: 6px !important;
-        }
-
-        .table th,
-        .table td {
-            padding: 6px 8px !important;
-            font-size: 11px !important;
-        }
-
-        .table {
-            margin: 0 !important;
-        }
-
-        .table-wrapper {
-            padding: 0 !important;
-        }
-
-        .card > div[style*="background-color"] {
-            padding: 12px !important;
-        }
-        
-        table {
-            page-break-inside: auto;
-        }
-        
-        tr {
-            page-break-inside: avoid;
-            page-break-after: auto;
-        }
-        
-        /* Asegurar que los colores de los badges se vean */
-    }
-
-    /* Modal de cancelacion - Estilos personalizados */
-    .cancel-modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        display: none;
+    /* Buttons Modernization */
+    .btn-primary-outline {
+        display: inline-flex;
         align-items: center;
-        justify-content: center;
-        z-index: 1000;
-        padding: 16px;
-    }
-
-    .cancel-modal-overlay.active {
-        display: flex;
-    }
-
-    .cancel-modal-content {
+        gap: 8px;
+        padding: 10px 20px;
         background: white;
-        border-radius: 12px;
-        padding: 32px 24px;
-        max-width: 450px;
-        width: 100%;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-        animation: slideUp 0.3s ease-out;
-    }
-
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .cancel-modal-icon {
-        width: 60px;
-        height: 60px;
-        background: #fee2e2;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 20px;
-        font-size: 32px;
-        color: #dc2626;
-    }
-
-    .cancel-modal-title {
-        font-size: 20px;
+        color: var(--primary-600);
+        border: 1px solid var(--primary-600);
+        border-radius: 8px;
         font-weight: 600;
-        color: var(--gray-900);
-        text-align: center;
-        margin-bottom: 12px;
-    }
-
-    .cancel-modal-text {
         font-size: 14px;
-        color: var(--gray-600);
-        text-align: center;
-        margin-bottom: 32px;
-        line-height: 1.5;
+        transition: all 0.2s ease;
+    }
+    .btn-primary-outline:hover {
+        background: var(--primary-50);
+        box-shadow: 0 2px 8px rgba(122, 15, 15, 0.1);
     }
 
-    .cancel-modal-actions {
+    .btn-danger-outline {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: white;
+        color: #dc2626;
+        border: 1px solid #dc2626;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.2s ease;
+    }
+    .btn-danger-outline:hover {
+        background: #fef2f2;
+        box-shadow: 0 2px 8px rgba(220, 38, 38, 0.1);
+    }
+
+    .btn-disabled {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: var(--gray-50);
+        color: var(--gray-400);
+        border: 1px solid var(--gray-200);
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: not-allowed;
+    }
+
+    .disabled-reason-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+    .reason-tooltip {
+        display: none;
+        position: absolute;
+        bottom: 110%;
+        right: 0;
+        background: var(--gray-800);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        width: 200px;
+        text-align: right;
+        z-index: 10;
+    }
+    .disabled-reason-wrapper:hover .reason-tooltip { display: block; }
+
+    /* Utility Display Classes */
+    .d-none { display: none !important; }
+    @media (min-width: 768px) {
+        .d-md-block { display: block !important; }
+        .d-md-none { display: none !important; }
+    }
+
+    /* Header & Breadcrumbs */
+    .detail-header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .breadcrumb-nav .breadcrumb {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .breadcrumb-link {
+        color: var(--primary-600);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .breadcrumb-separator { color: var(--gray-400); font-size: 12px; }
+    .breadcrumb-current { color: var(--gray-600); font-size: 14px; }
+
+    .action-buttons {
         display: flex;
         gap: 12px;
-        justify-content: center;
+        align-items: center;
     }
 
-    .cancel-modal-btn {
-        padding: 10px 24px;
+    /* Summary Header */
+    .order-summary-header {
         border: none;
-        border-radius: 6px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        flex: 1;
-        max-width: 180px;
+        background: white;
+        box-shadow: var(--shadow-sm);
+        border-radius: 12px;
     }
 
-    .cancel-modal-btn-cancel {
-        background: var(--gray-200);
+    .summary-content {
+        padding: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .summary-id {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 800;
         color: var(--gray-900);
     }
 
-    .cancel-modal-btn-cancel:hover {
-        background: var(--gray-300);
+    .summary-date {
+        margin: 4px 0 0 0;
+        color: var(--gray-500);
+        font-size: 14px;
     }
 
-    .cancel-modal-btn-confirm {
-        background: #dc2626;
+    /* Info Grid */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
+    }
+
+    .column-title {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--gray-500);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        border-bottom: 1px solid var(--gray-100);
+        padding-bottom: 8px;
+    }
+
+    .info-content {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .info-item label {
+        display: block;
+        font-size: 11px;
+        color: var(--gray-400);
+        text-transform: uppercase;
+        margin-bottom: 2px;
+        letter-spacing: 0.02em;
+    }
+
+    .info-item p {
+        margin: 0;
+        font-size: 14px;
+        color: var(--gray-900);
+    }
+
+    /* Items Table & Cards */
+    .order-items-card { border-radius: 12px; overflow: hidden; }
+    
+    .table thead th {
+        background: var(--gray-50);
+        padding: 12px 20px;
+        font-size: 12px;
+        color: var(--gray-500);
+    }
+
+    .product-name { display: block; font-weight: 700; color: var(--gray-900); }
+    .product-sku { font-size: 11px; color: var(--gray-400); }
+
+    .items-mobile-list { display: flex; flex-direction: column; border-top: 1px solid var(--gray-100); }
+    .item-mobile-card {
+        padding: 16px;
+        border-bottom: 1px solid var(--gray-100);
+    }
+
+    .item-mobile-header { margin-bottom: 12px; }
+    .item-mobile-details { display: flex; flex-direction: column; gap: 6px; }
+    .detail-row { display: flex; justify-content: space-between; font-size: 14px; }
+    .detail-row label { color: var(--gray-500); }
+    .total-row { padding-top: 8px; border-top: 1px dashed var(--gray-200); margin-top: 4px; }
+
+    /* Totals */
+    .totals-section {
+        background-color: var(--gray-50);
+        padding: 24px;
+        border-top: 1px solid var(--gray-200);
+    }
+
+    .totals-container {
+        max-width: 320px;
+        margin-left: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .total-line { display: flex; justify-content: space-between; align-items: center; }
+    .total-line .label { color: var(--gray-500); font-size: 14px; }
+    .total-line .value { font-weight: 600; color: var(--gray-900); }
+    .main-total {
+        margin-top: 8px;
+        padding-top: 12px;
+        border-top: 2px solid var(--gray-200);
+    }
+    .main-total .label { font-size: 18px; font-weight: 700; color: var(--gray-900); }
+    .main-total .value { font-size: 24px; font-weight: 800; color: var(--primary-600); }
+
+    /* Timeline */
+    .timeline { display: flex; flex-direction: column; gap: 0; position: relative; padding-left: 20px; }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 28px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--gray-100);
+    }
+
+    .timeline-item {
+        position: relative;
+        padding-left: 40px;
+        padding-bottom: 24px;
+    }
+
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-item:last-child::before { display: none; }
+
+    .timeline-marker {
+        position: absolute;
+        left: 19px;
+        top: 0;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--primary-600);
         color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        z-index: 1;
+        box-shadow: 0 0 0 4px white;
     }
 
-    .cancel-modal-btn-confirm:hover {
-        background: #b91c1c;
+    .timeline-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+    .timeline-status { font-weight: 700; color: var(--gray-900); font-size: 14px; }
+    .timeline-date { font-size: 12px; color: var(--gray-400); }
+    .timeline-note { margin: 0; font-size: 13px; color: var(--gray-500); }
+
+    /* Modal Styles */
+    .cancel-modal-overlay {
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+        display: none; align-items: center; justify-content: center;
+        z-index: 2000; padding: 16px;
+    }
+    .cancel-modal-overlay.active { display: flex; }
+    .cancel-modal-content {
+        background: white; border-radius: 16px; padding: 32px;
+        max-width: 440px; width: 100%; box-shadow: var(--shadow-xl);
+        text-align: center;
+    }
+    .cancel-modal-icon {
+        width: 64px; height: 64px; background: #fee2e2; color: #dc2626;
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        font-size: 32px; margin: 0 auto 20px;
+    }
+    .cancel-modal-title { font-size: 20px; font-weight: 700; color: var(--gray-900); margin-bottom: 8px; }
+    .cancel-modal-text { color: var(--gray-500); margin-bottom: 24px; line-height: 1.5; }
+    .cancel-modal-actions { display: flex; gap: 12px; }
+    .btn-modal { flex: 1; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; border: none; }
+    .btn-modal-cancel { background: var(--gray-100); color: var(--gray-700); }
+    .btn-modal-confirm { background: #dc2626; color: white; }
+
+    /* Responsive Overrides */
+    @media (max-width: 768px) {
+        .info-grid { grid-template-columns: 1fr; gap: 24px; }
+        .summary-content { flex-direction: column; align-items: flex-start; }
+        .detail-header-actions { flex-direction: column-reverse; align-items: stretch; }
+        .action-buttons { width: 100%; }
+        .action-buttons .btn { flex: 1; justify-content: center; }
+        .totals-container { max-width: none; }
     }
 
-    @media (max-width: 480px) {
-        .cancel-modal-content {
-            padding: 24px 16px;
-        }
-
-        .cancel-modal-title {
-            font-size: 18px;
-        }
-
-        .cancel-modal-text {
-            font-size: 13px;
-            margin-bottom: 24px;
-        }
-
-        .cancel-modal-btn {
-            max-width: none;
-            padding: 12px 16px;
-            font-size: 13px;
-        }
+    @media print {
+        .no-print { display: none !important; }
+        body { background: white !important; }
+        .card { box-shadow: none !important; border: 1px solid #eee !important; margin-bottom: 12px !important; }
+        .main-content { padding: 0 !important; }
+        .breadcrumb-nav, .action-buttons { display: none !important; }
     }
 </style>
 
@@ -562,7 +619,7 @@
 <div class="cancel-modal-overlay" id="cancelModal">
     <div class="cancel-modal-content">
         <div class="cancel-modal-icon">
-            <i class="bi bi-exclamation-circle"></i>
+            <i class="bi bi-exclamation-triangle"></i>
         </div>
         <h3 class="cancel-modal-title">{% trans "¿Cancelar pedido?" %}</h3>
         <p class="cancel-modal-text">
@@ -570,12 +627,12 @@
             {% trans "Esta acción no se puede deshacer." %}
         </p>
         <div class="cancel-modal-actions">
-            <button type="button" class="cancel-modal-btn cancel-modal-btn-cancel" onclick="closeCancelModal();">
+            <button type="button" class="btn-modal btn-modal-cancel" onclick="closeCancelModal();">
                 {% trans "No, mantener" %}
             </button>
-            <form method="post" action="{% url 'orders:order_cancel' order.id %}" style="flex: 1; max-width: 180px;">
+            <form method="post" action="{% url 'orders:order_cancel' order.id %}" style="flex: 1;">
                 {% csrf_token %}
-                <button type="submit" class="cancel-modal-btn cancel-modal-btn-confirm" style="width: 100%;">
+                <button type="submit" class="btn-modal btn-modal-confirm" style="width: 100%;">
                     {% trans "Sí, cancelar" %}
                 </button>
             </form>
