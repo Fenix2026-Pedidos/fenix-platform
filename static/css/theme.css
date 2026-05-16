@@ -559,23 +559,63 @@ body {
 }
 
 @media (max-width: 768px) {
-    .global-search-wrapper {
-        max-width: 100%;
-        transition: all var(--transition-slow);
-        flex: 1;
+    .topbar {
+        padding: 0 12px;
+        height: 56px;
     }
 
     .topbar-left {
         gap: 8px;
     }
 
+    .global-search-wrapper {
+        max-width: 40px; /* Compacto por defecto */
+        transition: all 0.3s ease;
+    }
+
+    .global-search-input {
+        padding: 0;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        background-color: rgba(255, 255, 255, 0.15);
+        color: white;
+    }
+
+    .global-search-input::placeholder {
+        color: transparent;
+    }
+
+    .global-search-wrapper .search-icon {
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #f5e6c8;
+    }
+
     /* Expandir buscador al enfocar en mobile */
     .global-search-wrapper:focus-within {
         position: absolute;
-        left: 12px;
-        right: 12px;
+        left: 8px;
+        right: 8px;
         z-index: 1000;
         max-width: none;
+    }
+
+    .global-search-wrapper:focus-within .global-search-input {
+        width: 100%;
+        padding: 0 16px 0 40px;
+        background-color: white;
+        color: var(--gray-800);
+    }
+
+    .global-search-wrapper:focus-within .global-search-input::placeholder {
+        color: var(--gray-400);
+    }
+
+    .global-search-wrapper:focus-within .search-icon {
+        left: 14px;
+        transform: translateY(-50%);
+        color: var(--gray-500);
     }
 
     .global-search-wrapper:focus-within ~ .topbar-right {
@@ -583,29 +623,28 @@ body {
         pointer-events: none;
     }
 
-    .global-search-input {
-        font-size: 14px;
-        height: 44px;
+    .topbar-actions {
+        gap: 12px;
     }
 
-    .global-search-input::placeholder {
-        font-size: 14px;
+    .topbar-user-profile-btn {
+        padding: 4px;
+        border: none !important;
+        height: 40px;
+    }
+
+    .topbar-user-profile-btn .bi-chevron-down {
+        display: none;
     }
 }
 
 @media (max-width: 576px) {
-    .global-search-wrapper .search-icon {
-        font-size: 16px;
-        left: 14px;
+    .topbar-actions {
+        gap: 8px;
     }
-
-    .global-search-input {
-        padding-left: 42px;
-        font-size: 14px;
-    }
-
-    .global-search-input::placeholder {
-        font-size: 14px;
+    
+    .lang-selector-btn {
+        padding: 4px !important;
     }
 }
 
