@@ -702,18 +702,40 @@
     gap: 12px;
 }
 
-/* AVATAR FIX */
-#ai-chat-button-container {
-    bottom: 20px !important;
-    right: 20px !important;
-    z-index: 1000 !important;
-}
+/* RESPONSIVE CRM DETAIL */
+@media (max-width: 768px) {
+    .crm-detail-wrapper { padding-bottom: 40px; }
+    .crm-breadcrumb { padding: 12px 16px; }
+    
+    .crm-lead-header { 
+        padding: 16px; 
+        flex-direction: column; 
+        align-items: flex-start; 
+        gap: 16px; 
+    }
+    .lead-name { font-size: 22px; }
+    .header-badges { justify-content: flex-start; flex-wrap: wrap; }
+    .header-actions { width: 100%; gap: 8px; }
+    .header-actions .btn { flex: 1; justify-content: center; padding: 12px 8px; }
+    
+    .crm-detail-grid { 
+        grid-template-columns: 1fr; 
+        padding: 0 12px; 
+        gap: 16px;
+    }
+    
+    .quick-actions-bar {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 4px 0 12px 0;
+        scrollbar-width: none;
+    }
+    .quick-actions-bar::-webkit-scrollbar { display: none; }
+    .q-btn { padding: 10px 14px; font-size: 12px; }
 
-@media (max-width: 1000px) {
-    .crm-detail-grid { grid-template-columns: 1fr; }
-    .crm-lead-header { flex-direction: column; align-items: flex-start; gap: 20px; }
-    .header-right { width: 100%; }
-    .header-badges, .header-actions { justify-content: flex-start; }
+    .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .stat-value { font-size: 16px; }
 }
 </style>
 

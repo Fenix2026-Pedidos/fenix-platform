@@ -733,15 +733,22 @@
 
 /* RESPONSIVE CRM */
 @media (max-width: 1024px) {
-    .crm-kpi-bar { flex-wrap: wrap; }
-    .kpi-mini-card { flex: 1 1 200px; }
+    .crm-kpi-bar { flex-wrap: wrap; gap: 12px; }
+    .kpi-mini-card { flex: 1 1 calc(50% - 12px); min-width: 150px; }
     .filters-main { flex-wrap: wrap; }
     .search-box { width: 100%; }
     .filter-select { flex: 1; }
 }
 
 @media (max-width: 768px) {
-    .crm-pro-wrapper { padding: 15px; }
+    .crm-pro-wrapper { padding: 12px; }
+    .page-title { font-size: 24px; }
+    
+    .crm-kpi-bar { gap: 8px; }
+    .kpi-mini-card { padding: 12px; gap: 10px; }
+    .kpi-icon { width: 32px; height: 32px; font-size: 16px; }
+    .kpi-content .v { font-size: 18px; }
+    
     .crm-pro-header { flex-direction: column; align-items: flex-start; gap: 15px; }
     .header-right { width: 100%; display: flex; gap: 10px; }
     .header-right .btn { flex: 1; justify-content: center; padding: 12px; }
@@ -770,25 +777,65 @@
 
     .filters-main { flex-direction: column; align-items: stretch; }
     
+    .status-chips-container {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 4px 0 12px 0;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        -webkit-overflow-scrolling: touch;
+    }
+    .status-chips-container::-webkit-scrollbar { display: none; }
+    
+    .status-chip { 
+        padding: 8px 16px; 
+        font-size: 13px; 
+        border-radius: 99px;
+        white-space: nowrap;
+        background: white;
+    }
+
     .crm-table-container { padding: 0; background: none; border: none; box-shadow: none; }
-    .table-tools { padding: 10px 0; }
+    .table-tools { padding: 10px 0; display: flex; justify-content: flex-end; }
     
     .col-id, .col-zone, .col-val, .col-prio, .col-contact { display: none; }
     
     .lead-row {
         display: block;
         background: white;
-        border-radius: 12px;
-        margin-bottom: 12px;
+        border-radius: 16px;
+        margin-bottom: 16px;
         border: 1px solid var(--crm-border);
-        padding: 15px;
+        padding: 16px;
         position: relative;
+        box-shadow: var(--shadow-sm);
     }
     
-    .lead-row td { display: block; padding: 0; border: none; margin-bottom: 8px; }
-    .col-check { position: absolute; top: 15px; right: 15px; }
-    .col-lead .name { font-size: 16px; }
-    .col-actions { border-top: 1px solid #f0f0f0 !important; padding-top: 12px !important; margin-top: 10px; margin-bottom: 0; }
+    .lead-row td { display: block; padding: 0; border: none; margin-bottom: 10px; }
+    .col-check { position: absolute; top: 16px; right: 16px; }
+    .col-lead .name { font-size: 16px; font-weight: 800; color: var(--crm-text); }
+    .col-lead .email { font-size: 13px; color: var(--crm-muted); }
+    .col-lead .company { font-size: 12px; font-weight: 700; color: var(--crm-gold); }
+
+    .col-actions { 
+        border-top: 1px solid #f1f5f9 !important; 
+        padding-top: 12px !important; 
+        margin-top: 4px; 
+        margin-bottom: 0; 
+    }
+    .actions-group { justify-content: space-between; width: 100%; }
+    
+    /* Paginación Mobile */
+    .table-footer { 
+        flex-direction: column; 
+        gap: 16px; 
+        padding: 20px; 
+        background: white; 
+        border-radius: 16px;
+    }
+    .footer-center { order: -1; }
+    .pagination { flex-wrap: wrap; justify-content: center; gap: 4px; }
 }
 
 @keyframes slideUp {
