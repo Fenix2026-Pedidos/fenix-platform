@@ -16,7 +16,7 @@
     position: fixed;
     bottom: 24px;
     right: 24px;
-    z-index: 2147483647;
+    z-index: 9999999;
     display: block !important;
 }
 
@@ -29,12 +29,13 @@
 
 @media (max-width: 768px) {
     #ai-assistant-container {
-        bottom: 20px !important;
-        right: 20px !important;
+        bottom: 16px !important;
+        right: 16px !important;
     }
     #ai-chat-window {
-        width: calc(100vw - 40px) !important;
-        height: calc(100vh - 120px) !important;
-        bottom: 75px !important;
+        width: calc(100vw - 32px) !important;
+        height: calc(100vh - 100px) !important;
+        bottom: 80px !important;
+        right: 0 !important;
     }
 }
