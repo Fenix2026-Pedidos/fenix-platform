@@ -390,6 +390,27 @@ def product_list(request):
     if not cart or not isinstance(cart, dict):
         cart = {}
 
+    # ── 6. LÓGICA DE RECOMPRA (B2B) ───────────────────────────────────────────
+    frequent_products = []
+    if request.user.is_authenticated:
+        from django.db.models import Count
+        from orders.models import OrderItem
+        
+        # Obtener los IDs de los productos más comprados por el usuario
+        frequent_product_ids = OrderItem.objects.filter(
+            order__customer=request.user,
+            product__is_active=True
+        ).values('product_id').annotate(
+            times_bought=Count('order_id', distinct=True)
+        ).order_by('-times_bought')[:10]
+        
+        # Recuperar los objetos Product completos
+        if frequent_product_ids:
+            p_ids = [item['product_id'] for item in frequent_product_ids]
+            # Mantenemos el orden de frecuencia
+            freq_qs = Product.objects.filter(id__in=p_ids)
+            frequent_products = sorted(freq_qs, key=lambda x: p_ids.index(x.id))
+
     context = {
         'products': page_obj,
         'page_obj': page_obj,
@@ -404,6 +425,7 @@ def product_list(request):
         'lang': lang,
         'cart': cart,
         'featured_products': featured_products,
+        'frequent_products': frequent_products,
     }
     return render(request, 'catalog/product_list.html', context)
 

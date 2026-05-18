@@ -33,10 +33,20 @@
         <!-- Link simple a Catálogo (sin accordion) -->
         <div class="sidebar-menu-item">
             <a href="{% url 'catalog:product_list' %}"
-                class="sidebar-menu-link {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}"
+                class="sidebar-menu-link {% if request.resolver_match.url_name == 'product_list' and not request.GET.promo %}active{% endif %}"
                 id="sidebar-catalog-link">
                 <i class="bi bi-grid sidebar-menu-icon"></i>
                 <span class="sidebar-menu-text">{% trans "Catálogo" %}</span>
+            </a>
+        </div>
+        
+        <!-- Nuevo link a Ofertas B2B -->
+        <div class="sidebar-menu-item">
+            <a href="{% url 'catalog:product_list' %}?promo=ofertas"
+                class="sidebar-menu-link {% if request.GET.promo == 'ofertas' %}active{% endif %}">
+                <i class="bi bi-tags sidebar-menu-icon" style="color: #ef4444;"></i>
+                <span class="sidebar-menu-text">{% trans "Ofertas" %}</span>
+                <span class="badge rounded-pill ms-auto" style="background-color: #ef4444; font-size: 0.7rem;">%</span>
             </a>
         </div>
 

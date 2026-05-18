@@ -5,7 +5,8 @@
 {% block title %}{% trans "Catálogo de Productos" %} - Fenix{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/catalog_v3.css' %}">
+<link rel="stylesheet" href="{% static 'css/catalog_v3.css' %}?v={% now 'U' %}">
+<link rel="stylesheet" href="{% static 'css/catalog_b2b.css' %}?v={% now 'U' %}">
 <style>
     /* Estilos para el modo de ordenación */
     .catalog-page.ordering-mode .product-card {
@@ -307,23 +308,72 @@
     {% include 'components/hero_public.html' with featured_products=featured_products|slice:":4" %}
     {% endif %}
 
-    <section class="catalog-shell" id="catalogo-productos" aria-labelledby="catalogSectionTitle">
+    <section class="catalog-shell b2b-header-mode" id="catalogo-productos" aria-labelledby="catalogSectionTitle">
+        <!-- 1. HEADER B2B -->
         <div class="catalog-shell__header">
             <div class="catalog-shell__title-group">
                 <h2 id="catalogSectionTitle" class="catalog-shell__title">{% trans "Catálogo de Productos" %}</h2>
-                <p class="catalog-shell__eyebrow">{% trans "CATÁLOGO ACTUALIZADO" %}</p>
+                <p class="catalog-shell__subtitle">{% trans "Encuentra más de 120 productos de la mejor calidad para tu negocio" %}</p>
             </div>
-            <p class="catalog-shell__subtitle">
-                {% if request.user.is_authenticated %}
-                {% trans "Selecciona cantidades y añade tus básicos al carrito inteligente." %}
-                {% else %}
-                {% trans "Explora el surtido completo y crea tu cuenta para comprar." %}
-                {% endif %}
-            </p>
+            
+            <!-- KPI Cards Horizontales -->
+            <div class="b2b-kpi-row">
+                <div class="b2b-kpi-card">
+                    <div class="b2b-kpi-icon"><i class="bi bi-box-seam"></i></div>
+                    <div class="b2b-kpi-text"><strong>{{ paginator.count }}</strong> {% trans "disponibles" %}</div>
+                </div>
+                <div class="b2b-kpi-card">
+                    <div class="b2b-kpi-icon"><i class="bi bi-tags"></i></div>
+                    <div class="b2b-kpi-text"><strong>8</strong> {% trans "ofertas activas" %}</div>
+                </div>
+                <div class="b2b-kpi-card">
+                    <div class="b2b-kpi-icon"><i class="bi bi-stars"></i></div>
+                    <div class="b2b-kpi-text"><strong>12</strong> {% trans "novedades" %}</div>
+                </div>
+                <div class="b2b-kpi-card">
+                    <div class="b2b-kpi-icon"><i class="bi bi-truck"></i></div>
+                    <div class="b2b-kpi-text">{% trans "Entrega 24-48h" %}</div>
+                </div>
+            </div>
         </div>
 
-        <div class="catalog-controls-bar">
-            {% include 'components/category_tabs.html' with search_query=search_query count=paginator.count page_start=page_obj.start_index page_end=page_obj.end_index sort=sort page_size=page_size active_type=active_type %}
+        <!-- 2. & 3. CATEGORÍAS Y QUICK FILTERS -->
+        <div class="catalog-controls-bar b2b-controls-bar">
+            <!-- Fila 1: Categorías (Mantenemos funcionalidad de tabs pero como chips) -->
+            <div class="category-tabs-container">
+                <div class="category-tabs">
+                    <a href="?type=todos{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}" class="category-chip {% if active_type == 'todos' and not active_promo %}is-active{% endif %}">
+                        {% trans "Todos" %}
+                    </a>
+                    <a href="?promo=ofertas{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}" class="category-chip category-chip--promo-ofertas {% if active_promo == 'ofertas' %}is-active{% endif %}">
+                        🔥 {% trans "Ofertas" %}
+                    </a>
+                    <a href="?promo=novedades{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}" class="category-chip {% if active_promo == 'novedades' %}is-active{% endif %}">
+                        🆕 {% trans "Novedades" %}
+                    </a>
+                    <a href="?promo=mas_vendidos{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}" class="category-chip {% if active_promo == 'mas_vendidos' %}is-active{% endif %}">
+                        ⭐ {% trans "Más vendidos" %}
+                    </a>
+                    <a href="?type=jamon-cocido{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="category-chip {% if active_type == 'jamon-cocido' %}is-active{% endif %}">{% trans "Jamón cocido" %}</a>
+                    <a href="?type=jamon-curado{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="category-chip {% if active_type == 'jamon-curado' %}is-active{% endif %}">{% trans "Jamón curado" %}</a>
+                    <a href="?type=pavo{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="category-chip {% if active_type == 'pavo' %}is-active{% endif %}">{% trans "Pavo" %}</a>
+                    <a href="?type=pollo{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="category-chip {% if active_type == 'pollo' %}is-active{% endif %}">{% trans "Pollo" %}</a>
+                    <a href="?type=sandwich{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="category-chip {% if active_type == 'sandwich' %}is-active{% endif %}">{% trans "Sandwich" %}</a>
+                    <a href="?type=salchichas{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="category-chip {% if active_type == 'salchichas' %}is-active{% endif %}">{% trans "Salchichas" %}</a>
+                </div>
+            </div>
+
+            <!-- Fila 2: Quick Filters Visuales -->
+            <div class="quick-filters-row">
+                <span class="qf-chip qf-green"><i class="bi bi-lightning-charge-fill"></i> {% trans "Entrega rápida" %}</span>
+                <span class="qf-chip qf-red"><i class="bi bi-tags-fill"></i> {% trans "Promoción" %}</span>
+                <span class="qf-chip qf-gold"><i class="bi bi-star-fill"></i> {% trans "Top ventas" %}</span>
+                <span class="qf-chip qf-blue"><i class="bi bi-box-fill"></i> {% trans "Stock inmediato" %}</span>
+                <span class="qf-chip qf-purple"><i class="bi bi-sparkles"></i> {% trans "Nuevos" %}</span>
+            </div>
+            
+            <!-- Barra de ordenación y vista -->
+            <!-- Se eliminó la antigua toolbar -->
         </div>
     </section>
 
@@ -340,86 +390,101 @@
             </div>
 
             <div class="filters-content">
-                <!-- Sección 0: Categorías (Móvil) -->
-
-                <div class="filters-section">
-                    <h4 class="filters-section-title">{% trans "TIPOS DE PRODUCTO" %}</h4>
-                    <div class="filters-radio-list">
+                <!-- B2B Accordion Filters (Visual mockup) -->
+                
+                <!-- Categorías (Desktop/Mobile fallback) -->
+                <div class="filters-section accordion-block">
+                    <h4 class="filters-section-title accordion-title">{% trans "Categoría" %} <i class="bi bi-chevron-down"></i></h4>
+                    <div class="filters-radio-list accordion-body">
                         <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="todos"
-                                data-type="todos" {% if not active_promo %}{% if active_type == 'todos' or not active_type %}checked{% endif %}{% endif %}>
+                            <input type="radio" name="product-type" class="filter-type-radio" value="todos" data-type="todos" {% if not active_promo %}{% if active_type == 'todos' or not active_type %}checked{% endif %}{% endif %}>
                             <span class="filter-label">{% trans "Todos" %}</span>
                         </label>
                         <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="ofertas"
-                                data-promo="ofertas" {% if active_promo == 'ofertas' %}checked{% endif %}>
-                            <span class="filter-label text-danger font-weight-bold">🔥 {% trans "Ofertas" %}</span>
-                        </label>
-                        <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="novedades"
-                                data-promo="novedades" {% if active_promo == 'novedades' %}checked{% endif %}>
-                            <span class="filter-label">🆕 {% trans "Novedades" %}</span>
-                        </label>
-                        <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="mas_vendidos"
-                                data-promo="mas_vendidos" {% if active_promo == 'mas_vendidos' %}checked{% endif %}>
-                            <span class="filter-label">⭐ {% trans "Más Vendidos" %}</span>
-                        </label>
-                        <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="sandwich"
-                                data-type="sandwich" {% if not active_promo and active_type == 'sandwich' %}checked{% endif %}>
-                            <span class="filter-label">{% trans "Sándwich" %}</span>
-                        </label>
-                        <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="salchichas"
-                                data-type="salchichas" {% if not active_promo and active_type == 'salchichas' %}checked{% endif %}>
-                            <span class="filter-label">{% trans "Salchichas" %}</span>
-                        </label>
-                        <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="pizzas"
-                                data-type="pizzas" {% if not active_promo and active_type == 'pizzas' %}checked{% endif %}>
-                            <span class="filter-label">{% trans "Pizzas" %}</span>
-                        </label>
-                        <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="jamon-cocido"
-                                data-type="jamon-cocido" {% if not active_promo and active_type == 'jamon-cocido' %}checked{% endif %}>
+                            <input type="radio" name="product-type" class="filter-type-radio" value="jamon-cocido" data-type="jamon-cocido" {% if active_type == 'jamon-cocido' %}checked{% endif %}>
                             <span class="filter-label">{% trans "Jamón Cocido y York" %}</span>
                         </label>
                         <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="jamon-curado"
-                                data-type="jamon-curado" {% if not active_promo and active_type == 'jamon-curado' %}checked{% endif %}>
+                            <input type="radio" name="product-type" class="filter-type-radio" value="jamon-curado" data-type="jamon-curado" {% if active_type == 'jamon-curado' %}checked{% endif %}>
                             <span class="filter-label">{% trans "Jamón Curado" %}</span>
                         </label>
                         <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="pavo"
-                                data-type="pavo" {% if not active_promo and active_type == 'pavo' %}checked{% endif %}>
+                            <input type="radio" name="product-type" class="filter-type-radio" value="pavo" data-type="pavo" {% if active_type == 'pavo' %}checked{% endif %}>
                             <span class="filter-label">{% trans "Pavo" %}</span>
                         </label>
                         <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="charcuteria"
-                                data-type="charcuteria" {% if not active_promo and active_type == 'charcuteria' %}checked{% endif %}>
-                            <span class="filter-label">{% trans "Charcutería" %}</span>
-                        </label>
-                        <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="curados"
-                                data-type="curados" {% if not active_promo and active_type == 'curados' %}checked{% endif %}>
-                            <span class="filter-label">{% trans "Curados" %}</span>
-                        </label>
-                        <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="ibericos"
-                                data-type="ibericos" {% if not active_promo and active_type == 'ibericos' %}checked{% endif %}>
-                            <span class="filter-label">{% trans "Ibéricos" %}</span>
-                        </label>
-                        <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="pollo"
-                                data-type="pollo" {% if not active_promo and active_type == 'pollo' %}checked{% endif %}>
+                            <input type="radio" name="product-type" class="filter-type-radio" value="pollo" data-type="pollo" {% if active_type == 'pollo' %}checked{% endif %}>
                             <span class="filter-label">{% trans "Pollo" %}</span>
                         </label>
                         <label class="filter-radio">
-                            <input type="radio" name="product-type" class="filter-type-radio" value="fuet"
-                                data-type="fuet" {% if not active_promo and active_type == 'fuet' %}checked{% endif %}>
-                            <span class="filter-label">{% trans "Fuet" %}</span>
+                            <input type="radio" name="product-type" class="filter-type-radio" value="sandwich" data-type="sandwich" {% if active_type == 'sandwich' %}checked{% endif %}>
+                            <span class="filter-label">{% trans "Sándwich" %}</span>
                         </label>
+                    </div>
+                </div>
+
+                <hr class="filters-separator">
+
+                <!-- Precio -->
+                <div class="filters-section accordion-block">
+                    <h4 class="filters-section-title accordion-title">{% trans "Precio" %} <i class="bi bi-chevron-down"></i></h4>
+                    <div class="filters-price-range accordion-body">
+                        <div class="d-flex gap-2 align-items-center">
+                            <input type="number" class="form-control form-control-sm" placeholder="Mín">
+                            <span>-</span>
+                            <input type="number" class="form-control form-control-sm" placeholder="Máx">
+                            <button class="btn btn-sm btn-outline-secondary">{% trans "Ir" %}</button>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="filters-separator">
+
+                <!-- Marca -->
+                <div class="filters-section accordion-block">
+                    <h4 class="filters-section-title accordion-title">{% trans "Marca" %} <i class="bi bi-chevron-down"></i></h4>
+                    <div class="filters-list accordion-body">
+                        <label class="filter-checkbox"><input type="checkbox"> <span class="filter-label">Fenix Premium</span></label>
+                        <label class="filter-checkbox"><input type="checkbox"> <span class="filter-label">El Pozo</span></label>
+                        <label class="filter-checkbox"><input type="checkbox"> <span class="filter-label">Campofrío</span></label>
+                        <label class="filter-checkbox"><input type="checkbox"> <span class="filter-label">Navidul</span></label>
+                        <label class="filter-checkbox"><input type="checkbox"> <span class="filter-label">Argal</span></label>
+                    </div>
+                </div>
+
+                <hr class="filters-separator">
+
+                <!-- Formato -->
+                <div class="filters-section accordion-block">
+                    <h4 class="filters-section-title accordion-title">{% trans "Formato" %} <i class="bi bi-chevron-down"></i></h4>
+                    <div class="filters-list accordion-body">
+                        <label class="filter-checkbox"><input type="checkbox"> <span class="filter-label">Bandeja Loncheada</span></label>
+                        <label class="filter-checkbox"><input type="checkbox"> <span class="filter-label">Caja Mayorista</span></label>
+                        <label class="filter-checkbox"><input type="checkbox"> <span class="filter-label">Pieza Entera</span></label>
+                        <label class="filter-checkbox"><input type="checkbox"> <span class="filter-label">Medio Centro</span></label>
+                    </div>
+                </div>
+
+                <hr class="filters-separator">
+
+                <!-- Disponibilidad -->
+                <div class="filters-section accordion-block">
+                    <h4 class="filters-section-title accordion-title">{% trans "Disponibilidad" %} <i class="bi bi-chevron-down"></i></h4>
+                    <div class="filters-list accordion-body">
+                        <label class="filter-checkbox"><input type="checkbox"> <span class="filter-label">Stock Inmediato</span></label>
+                        <label class="filter-checkbox"><input type="checkbox"> <span class="filter-label">Bajo Pedido (48h)</span></label>
+                    </div>
+                </div>
+
+                <hr class="filters-separator">
+
+                <!-- Temperatura -->
+                <div class="filters-section accordion-block">
+                    <h4 class="filters-section-title accordion-title">{% trans "Temperatura" %} <i class="bi bi-chevron-down"></i></h4>
+                    <div class="filters-list accordion-body">
+                        <label class="filter-checkbox"><input type="checkbox"> <span class="filter-label">Refrigerado (0-4ºC)</span></label>
+                        <label class="filter-checkbox"><input type="checkbox"> <span class="filter-label">Congelado (-18ºC)</span></label>
+                        <label class="filter-checkbox"><input type="checkbox"> <span class="filter-label">Ambiente</span></label>
                     </div>
                 </div>
 
@@ -466,22 +531,64 @@
         <!-- Área principal con grid -->
         <div class="catalog-main-area">
 
-            <!-- Cabecera de resultados de búsqueda -->
-            <div id="search-results-header" class="search-results-header" {% if not search_query %}style="display: none;"{% endif %}>
-                <div class="search-results-header__content">
-                    <span class="search-results-header__title">
-                        <i class="bi bi-search"></i> {% trans "Resultados para:" %} <strong class="search-term" id="searchQueryText">"{{ search_query }}"</strong>
+            <!-- Nueva Barra Superior B2B Unificada -->
+            <div class="b2b-list-topbar">
+                <div class="topbar-left">
+                    {% if search_query %}
+                    <span class="search-results-text">
+                        <i class="bi bi-search"></i> {% trans "Resultados para:" %} <strong class="search-term">"{{ search_query }}"</strong>
+                        <button type="button" class="btn-clear-search-inline" id="clearSearchBtn" title="Limpiar"><i class="bi bi-x-circle-fill"></i></button>
                     </span>
-                    <span class="search-results-header__count">
-                        <strong class="count-value" id="searchResultsCount">{{ paginator.count }}</strong> {% trans "productos encontrados" %}
+                    <span class="topbar-divider">|</span>
+                    {% endif %}
+                    <span class="topbar-count">
+                        {% trans "Mostrando" %} 
+                        <strong>{{ page_obj.start_index|default:"0" }}-{{ page_obj.end_index|default:"0" }}</strong> 
+                        {% trans "de" %} <strong>{{ paginator.count }}</strong> {% trans "productos" %}
                     </span>
                 </div>
-                <button type="button" class="btn-clear-search" id="clearSearchBtn">
-                    <i class="bi bi-x-circle"></i> {% trans "Limpiar búsqueda" %}
-                </button>
+                
+                <div class="topbar-center">
+                    <label for="b2bSortSelect" class="sort-label">{% trans "Ordenar por:" %}</label>
+                    <select id="b2bSortSelect" class="form-select form-select-sm sort-select-modern" onchange="window.location.href=this.value;">
+                        <option value="?sort=relevance&type={{ active_type }}&promo={{ active_promo }}" {% if sort == 'relevance' %}selected{% endif %}>{% trans "Relevancia" %}</option>
+                        <option value="?sort=mas_vendidos&type={{ active_type }}&promo={{ active_promo }}" {% if sort == 'mas_vendidos' %}selected{% endif %}>{% trans "Más vendidos" %}</option>
+                        <option value="?sort=price_asc&type={{ active_type }}&promo={{ active_promo }}" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Precio menor a mayor" %}</option>
+                        <option value="?sort=price_desc&type={{ active_type }}&promo={{ active_promo }}" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Precio mayor a menor" %}</option>
+                        <option value="?sort=novedades&type={{ active_type }}&promo={{ active_promo }}" {% if sort == 'novedades' %}selected{% endif %}>{% trans "Novedades" %}</option>
+                    </select>
+                </div>
+                
+                <div class="topbar-right">
+                    <div class="view-toggles-modern">
+                        <button type="button" class="btn-view-toggle active" id="btnViewGrid" title="{% trans 'Vista Cuadrícula' %}"><i class="bi bi-grid"></i></button>
+                        <button type="button" class="btn-view-toggle" id="btnViewList" title="{% trans 'Vista Lista' %}"><i class="bi bi-list-task"></i></button>
+                    </div>
+                    
+                    <form method="get" class="pagesize-form">
+                        {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
+                        {% if sort %}<input type="hidden" name="sort" value="{{ sort }}">{% endif %}
+                        {% if active_type %}<input type="hidden" name="type" value="{{ active_type }}">{% endif %}
+                        <label for="pageSizeSelectTop" class="sort-label">{% trans "Mostrar:" %}</label>
+                        <select id="pageSizeSelectTop" name="page_size" class="form-select form-select-sm pagesize-select" onchange="this.form.submit()">
+                            <option value="20" {% if page_size == 20 %}selected{% endif %}>20</option>
+                            <option value="50" {% if page_size == 50 %}selected{% endif %}>50</option>
+                            <option value="100" {% if page_size == 100 %}selected{% endif %}>100</option>
+                        </select>
+                    </form>
+                </div>
             </div>
 
             <div class="products-grid" id="productsGrid">
+                <div class="list-view-header d-none">
+                    <div class="lvh-col lvh-product">{% trans "Producto" %}</div>
+                    <div class="lvh-col lvh-format">{% trans "Formato" %}</div>
+                    <div class="lvh-col lvh-stock">{% trans "Disponibilidad" %}</div>
+                    <div class="lvh-col lvh-tags">{% trans "Etiquetas" %}</div>
+                    <div class="lvh-col lvh-price">{% trans "Precio" %}</div>
+                    <div class="lvh-col lvh-qty">{% trans "Cantidad" %}</div>
+                    <div class="lvh-col lvh-actions">{% trans "Acciones" %}</div>
+                </div>
                 {% if products %}
                 {% for product in products %}
                 <div class="product-card" data-product-id="{{ product.pk }}"
@@ -502,6 +609,9 @@
                         <i class="bi bi-arrow-up-circle-fill"></i>
                     </button>
                     {% endif %}
+
+                    <!-- Wrapper para Vista Cuadrícula (Existente) -->
+                    <div class="grid-view-content">
 
                     <!-- 1. Nombre del producto protagoniza la card -->
                     <div class="card-title-group">
@@ -566,12 +676,17 @@
 
                     <!-- 4. Bloque inferior: Info Login + Stepper + Botón -->
                     <div class="card-actions-block">
-                        {% if not show_prices %}
+                        <!-- Info Login -->
+                        {% if not request.user.is_authenticated %}
                         <div class="card-login-promo">
-                            <span class="price-login-hint">{% trans "Inicia sesión para ver precios" %}</span>
+                            <span class="price-login-hint">{% trans "Regístrate para comprar" %}</span>
                         </div>
-                        {% endif %}
-
+                        <button type="button" class="card-add-btn btn-public-auth" onclick="window.Fenix.publicModals.requireAuth.open()">
+                            <i class="bi bi-lock"></i>
+                            <span>{% if show_prices %}{% trans "Solicitar acceso" %}{% else %}{% trans "Ver precios" %}{% endif %}</span>
+                        </button>
+                        {% else %}
+                        
                         <div class="card-qty-row">
                             <div class="card-qty-stepper product-quantity-selector">
                                 <button type="button" class="qty-btn qty-minus disabled" data-product-id="{{ product.pk }}"
@@ -591,7 +706,107 @@
                             <i class="bi bi-cart-plus"></i>
                             <span>{% trans "Añadir al carrito" %}</span>
                         </button>
+                        {% endif %}
                     </div>
+                    </div> <!-- Fin .grid-view-content -->
+
+                    <!-- Wrapper para Vista Lista (Tabla B2B) -->
+                    <div class="list-view-content d-none">
+                        <!-- Columna: Producto -->
+                        <div class="lvc-col lvc-product">
+                            <div class="lvc-product-img-box">
+                                {% if product.image_url %}
+                                <img src="{{ product.image_url }}" alt="{{ product.translated_name }}" class="lvc-img" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="lvc-img-empty" style="display: none;"><i class="bi bi-image"></i></div>
+                                {% else %}
+                                <div class="lvc-img-empty"><i class="bi bi-image"></i></div>
+                                {% endif %}
+                            </div>
+                            <div class="lvc-product-info">
+                                <a href="{% url 'catalog:product_detail' product.pk %}" class="lvc-name">{{ product.translated_name }}</a>
+                                <span class="lvc-brand">{% trans "Fenix" %}</span> <!-- Fijo por ahora, ya que no hay brand en modelo -->
+                                <span class="lvc-sku">{% trans "REF" %}: {% if product.reference %}{{ product.reference }}{% else %}P{{ product.pk|stringformat:"05d" }}{% endif %}</span>
+                            </div>
+                        </div>
+
+                        <!-- Columna: Formato -->
+                        <div class="lvc-col lvc-format">
+                            {% if product.unit_display %}
+                            <span class="lvc-format-main">{% trans "Unidad" %}</span>
+                            <span class="lvc-format-sub">{{ product.unit_display }}</span>
+                            {% else %}
+                            <span class="lvc-format-main">{% trans "Unidad" %}</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Columna: Disponibilidad -->
+                        <div class="lvc-col lvc-stock">
+                            {% if product.stock_status == 'ok' %}
+                                <div class="lvc-stock-status text-green"><span class="dot dot-green"></span> {% trans "Stock inmediato" %}</div>
+                            {% elif product.stock_status == 'low' %}
+                                <div class="lvc-stock-status text-orange"><span class="dot dot-orange"></span> {% trans "Stock bajo" %}</div>
+                            {% else %}
+                                <div class="lvc-stock-status text-red"><span class="dot dot-red"></span> {% trans "Sin stock" %}</div>
+                            {% endif %}
+                            <div class="lvc-stock-qty">
+                                {% if product.stock_available > 0 %}+{{ product.stock_available }} uds{% elif product.stock_status == 'low' %}{% trans "Últimas uds" %}{% else %}{% trans "Bajo pedido" %}{% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Columna: Etiquetas -->
+                        <div class="lvc-col lvc-tags">
+                            <div class="lvc-tags-container">
+                                {% if product.promo_label_display %}
+                                <span class="lvc-badge lvc-badge-promo">{{ product.promo_label_display }}</span>
+                                {% endif %}
+                                <span class="lvc-badge lvc-badge-cart d-none" data-product-id="{{ product.pk }}">
+                                    <i class="bi bi-check-circle-fill"></i> {% trans "En carrito" %} (<span class="cart-badge-quantity">0</span>)
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Columna: Precio -->
+                        <div class="lvc-col lvc-price">
+                            {% if show_prices %}
+                                <div class="lvc-price-main">{{ product.price|floatformat:2 }} €{% if product.unit_display %}<span class="lvc-price-unit">/ud</span>{% endif %}</div>
+                                <div class="lvc-price-sub">{{ product.price|floatformat:2 }} € {% trans "sin IVA" %}</div>
+                            {% else %}
+                                <span class="lvc-login-hint">{% trans "Consultar" %}</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Columna: Cantidad -->
+                        <div class="lvc-col lvc-qty">
+                            {% if request.user.is_authenticated %}
+                            <div class="list-qty-stepper product-quantity-selector">
+                                <button type="button" class="qty-btn qty-minus disabled" data-product-id="{{ product.pk }}" aria-label="{% trans 'Reducir cantidad' %}" disabled><i class="bi bi-dash"></i></button>
+                                <input type="number" class="qty-input" data-product-id="{{ product.pk }}" value="0" min="0" readonly>
+                                <button type="button" class="qty-btn qty-plus" data-product-id="{{ product.pk }}" aria-label="{% trans 'Aumentar cantidad' %}"><i class="bi bi-plus"></i></button>
+                            </div>
+                            {% else %}
+                            <div class="lvc-qty-locked" title="{% trans 'Inicia sesión para comprar' %}">
+                                <i class="bi bi-lock"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Columna: Acciones -->
+                        <div class="lvc-col lvc-actions">
+                            {% if request.user.is_authenticated %}
+                            <button type="button" class="list-add-btn btn-add-product" data-product-id="{{ product.pk }}">
+                                <i class="bi bi-cart-plus"></i> {% trans "Añadir" %}
+                            </button>
+                            <!-- El botón de eliminar se muestra cuando hay cantidad > 0. Se maneja por JS pero aquí dejamos la estructura -->
+                            <button type="button" class="list-remove-btn btn-remove-item d-none" data-product-id="{{ product.pk }}" title="{% trans 'Eliminar del carrito' %}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                            {% else %}
+                            <button type="button" class="list-add-btn btn-public-auth" onclick="window.Fenix.publicModals.requireAuth.open()">
+                                <i class="bi bi-lock"></i> {% if show_prices %}{% trans "Solicitar acceso" %}{% else %}{% trans "Ver precios" %}{% endif %}
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div> <!-- Fin .list-view-content -->
                 </div>
                 {% endfor %}
                 {% else %}
@@ -622,17 +837,44 @@
                 {% endif %}
             </div>
 
-            <!-- Bloque de Paginación Definitivo -->
-            <div class="catalog-pagination-wrapper">
-                <!-- Bloque informativo superior -->
-                <div class="pagination-info-block">
-                    <div class="catalog-results-count">
-                        {% if paginator.count > 0 %}
-                        {% blocktrans with start=page_obj.start_index end=page_obj.end_index total=paginator.count %}
-                        Mostrando <span class="count-numbers">{{ start }}–{{ end }}</span> de <span class="count-numbers">{{ total }}</span> productos
-                        {% endblocktrans %}
-                        {% endif %}
+            {% if request.user.is_authenticated and frequent_products %}
+            <!-- Bloque B2B de Recompra -->
+            <div class="b2b-reorder-block">
+                <div class="b2b-reorder-header">
+                    <div>
+                        <h3 class="b2b-reorder-title">{% trans "Compra de nuevo tus productos" %}</h3>
+                        <p class="b2b-reorder-subtitle">{% trans "Añade rápidamente productos que compras habitualmente" %}</p>
                     </div>
+                    <a href="{% url 'orders:order_list' %}" class="b2b-reorder-link">{% trans "Ver más productos frecuentes" %} <i class="bi bi-arrow-right"></i></a>
+                </div>
+                <div class="b2b-reorder-carousel">
+                    {% for freq_product in frequent_products %}
+                    <div class="b2b-reorder-item">
+                        <div class="b2b-reorder-img-wrap">
+                            {% if freq_product.image_url %}
+                            <img src="{{ freq_product.image_url }}" alt="{{ freq_product.translated_name }}">
+                            {% else %}
+                            <div class="card-image-empty"><i class="bi bi-image"></i></div>
+                            {% endif %}
+                        </div>
+                        <div class="b2b-reorder-info">
+                            <h4 class="b2b-reorder-name">{{ freq_product.translated_name|truncatechars:40 }}</h4>
+                            {% if freq_product.brand %}
+                            <span class="b2b-reorder-brand">{{ freq_product.brand }}</span>
+                            {% endif %}
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary b2b-reorder-add" onclick="window.location.href='{% url 'catalog:product_detail' freq_product.pk %}'">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Bloque de Paginación Definitivo -->
+            <div class="catalog-pagination-wrapper b2b-pagination">
+                <div class="pagination-info-block">
                     <form method="get" id="pageSizeForm" class="page-size-form">
                         {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
                         {% if sort %}<input type="hidden" name="sort" value="{{ sort }}">{% endif %}
@@ -641,12 +883,11 @@
                         <select id="pageSizeSelect" name="page_size" class="form-select-sm pagination-select" onchange="this.form.submit()">
                             <option value="20" {% if page_size == 20 %}selected{% endif %}>20</option>
                             <option value="40" {% if page_size == 40 %}selected{% endif %}>40</option>
-                            <option value="60" {% if page_size == 60 %}selected{% endif %}>60</option>
+                            <option value="60" {% if page_size == 60 %}selected{% endif %}>100</option>
                         </select>
                     </form>
                 </div>
 
-                <!-- Bloque de navegación centrado e independiente -->
                 <nav class="pagination-nav-block" aria-label="{% trans 'Paginación del catálogo' %}">
                     <div class="pagination-container">
                         {% if page_obj.has_previous %}
@@ -693,12 +934,22 @@
                     </div>
                 </nav>
             </div>
-            </div>
         </div>
     </div>
-</div>
 
 {% if not request.user.is_authenticated %}
+<!-- CTA Final Público -->
+<section class="public-catalog-cta">
+    <div class="public-cta-content">
+        <h3>{% trans "¿Quieres acceder a precios exclusivos para profesionales?" %}</h3>
+        <p>{% trans "Descubre nuestro surtido completo con tarifas B2B, stock en tiempo real y envío 24/48h." %}</p>
+        <div class="public-cta-actions">
+            <button class="btn btn-primary btn-lg" onclick="window.Fenix.publicModals.requireAuth.open()">{% trans "Crear cuenta / Solicitar acceso" %}</button>
+            <a href="{% url 'public_contact' %}" class="btn btn-outline-light btn-lg">{% trans "Hablar con un asesor" %}</a>
+        </div>
+    </div>
+</section>
+
 {% include 'components/trust_bar.html' %}
 {% endif %}
 
@@ -962,5 +1213,54 @@
         });
     })();
     {% endif %}
+    // B2B UI Interactions
+    document.addEventListener('DOMContentLoaded', function() {
+        // Grid / List View Toggle
+        const btnViewGrid = document.getElementById('btnViewGrid');
+        const btnViewList = document.getElementById('btnViewList');
+        const productsGrid = document.getElementById('productsGrid');
+
+        if (btnViewGrid && btnViewList && productsGrid) {
+            // Restore saved view preference
+            const savedView = localStorage.getItem('catalogViewPreference') || 'grid';
+            if (savedView === 'list') {
+                productsGrid.classList.add('list-view');
+                btnViewList.classList.add('active');
+                btnViewGrid.classList.remove('active');
+            }
+
+            btnViewGrid.addEventListener('click', () => {
+                productsGrid.classList.remove('list-view');
+                btnViewGrid.classList.add('active');
+                btnViewList.classList.remove('active');
+                localStorage.setItem('catalogViewPreference', 'grid');
+            });
+
+            btnViewList.addEventListener('click', () => {
+                productsGrid.classList.add('list-view');
+                btnViewList.classList.add('active');
+                btnViewGrid.classList.remove('active');
+                localStorage.setItem('catalogViewPreference', 'list');
+            });
+        }
+
+        // Accordion functionality for Sidebar
+        const accordionTitles = document.querySelectorAll('.accordion-title');
+        accordionTitles.forEach(title => {
+            title.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                const body = this.nextElementSibling;
+                if (body && body.classList.contains('accordion-body')) {
+                    if (body.style.display === 'none') {
+                        body.style.display = 'block';
+                        icon.classList.replace('bi-chevron-right', 'bi-chevron-down');
+                    } else {
+                        body.style.display = 'none';
+                        icon.classList.replace('bi-chevron-down', 'bi-chevron-right');
+                    }
+                }
+            });
+        });
+    });
 </script>
 {% endblock %}
