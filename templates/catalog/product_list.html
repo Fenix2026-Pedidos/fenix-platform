@@ -528,24 +528,24 @@
             <!-- Fila 1: Categorías (Mantenemos funcionalidad de tabs pero como chips) -->
             <div class="category-tabs-container">
                 <div class="category-tabs">
-                    <a href="?type=todos{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}" class="category-chip {% if active_type == 'todos' and not active_promo %}is-active{% endif %}">
+                    <a href="?type=todos{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}#catalogo-productos" class="category-chip {% if active_type == 'todos' and not active_promo %}is-active{% endif %}">
                         {% trans "Todos" %}
                     </a>
-                    <a href="?promo=ofertas{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}" class="category-chip category-chip--promo-ofertas {% if active_promo == 'ofertas' %}is-active{% endif %}">
+                    <a href="?promo=ofertas{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}#catalogo-productos" class="category-chip category-chip--promo-ofertas {% if active_promo == 'ofertas' %}is-active{% endif %}">
                         🔥 {% trans "Ofertas" %}
                     </a>
-                    <a href="?promo=novedades{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}" class="category-chip {% if active_promo == 'novedades' %}is-active{% endif %}">
+                    <a href="?promo=novedades{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}#catalogo-productos" class="category-chip {% if active_promo == 'novedades' %}is-active{% endif %}">
                         🆕 {% trans "Novedades" %}
                     </a>
-                    <a href="?promo=mas_vendidos{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}" class="category-chip {% if active_promo == 'mas_vendidos' %}is-active{% endif %}">
+                    <a href="?promo=mas_vendidos{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}#catalogo-productos" class="category-chip {% if active_promo == 'mas_vendidos' %}is-active{% endif %}">
                         ⭐ {% trans "Más vendidos" %}
                     </a>
-                    <a href="?type=jamon-cocido{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="category-chip {% if active_type == 'jamon-cocido' %}is-active{% endif %}">{% trans "Jamón cocido" %}</a>
-                    <a href="?type=jamon-curado{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="category-chip {% if active_type == 'jamon-curado' %}is-active{% endif %}">{% trans "Jamón curado" %}</a>
-                    <a href="?type=pavo{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="category-chip {% if active_type == 'pavo' %}is-active{% endif %}">{% trans "Pavo" %}</a>
-                    <a href="?type=pollo{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="category-chip {% if active_type == 'pollo' %}is-active{% endif %}">{% trans "Pollo" %}</a>
-                    <a href="?type=sandwich{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="category-chip {% if active_type == 'sandwich' %}is-active{% endif %}">{% trans "Sandwich" %}</a>
-                    <a href="?type=salchichas{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="category-chip {% if active_type == 'salchichas' %}is-active{% endif %}">{% trans "Salchichas" %}</a>
+                    <a href="?type=jamon-cocido{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}#catalogo-productos" class="category-chip {% if active_type == 'jamon-cocido' %}is-active{% endif %}">{% trans "Jamón cocido" %}</a>
+                    <a href="?type=jamon-curado{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}#catalogo-productos" class="category-chip {% if active_type == 'jamon-curado' %}is-active{% endif %}">{% trans "Jamón curado" %}</a>
+                    <a href="?type=pavo{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}#catalogo-productos" class="category-chip {% if active_type == 'pavo' %}is-active{% endif %}">{% trans "Pavo" %}</a>
+                    <a href="?type=pollo{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}#catalogo-productos" class="category-chip {% if active_type == 'pollo' %}is-active{% endif %}">{% trans "Pollo" %}</a>
+                    <a href="?type=sandwich{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}#catalogo-productos" class="category-chip {% if active_type == 'sandwich' %}is-active{% endif %}">{% trans "Sandwich" %}</a>
+                    <a href="?type=salchichas{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}#catalogo-productos" class="category-chip {% if active_type == 'salchichas' %}is-active{% endif %}">{% trans "Salchichas" %}</a>
                 </div>
             </div>
 
@@ -734,7 +734,7 @@
                 <div class="topbar-right-unified">
                     {% if not request.user.is_authenticated %}
                     <!-- Buscador (Solo público) -->
-                    <form method="get" class="public-search-form-unified" id="searchForm">
+                    <form method="get" class="public-search-form-unified" id="searchForm" action="#catalogo-productos">
                         <div class="public-search-input-wrapper-unified">
                             <i class="bi bi-search public-search-icon-unified"></i>
                             <input type="text" name="q" id="searchInput" class="public-search-input-unified" placeholder="{% trans '¿Qué producto buscas?' %}" value="{{ search_query|default:'' }}">
@@ -753,11 +753,11 @@
                     <!-- Ordenar -->
                     <div class="sort-select-wrapper-unified">
                         <select id="b2bSortSelect" class="form-select form-select-sm sort-select-modern-unified" onchange="window.location.href=this.value;">
-                            <option value="?sort=relevance&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'relevance' %}selected{% endif %}>{% trans "Relevancia" %}</option>
-                            <option value="?sort=mas_vendidos&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'mas_vendidos' %}selected{% endif %}>{% trans "Más vendidos" %}</option>
-                            <option value="?sort=price_asc&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Precio menor a mayor" %}</option>
-                            <option value="?sort=price_desc&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Precio mayor a menor" %}</option>
-                            <option value="?sort=novedades&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'novedades' %}selected{% endif %}>{% trans "Novedades" %}</option>
+                            <option value="?sort=relevance&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}#catalogo-productos" {% if sort == 'relevance' %}selected{% endif %}>{% trans "Relevancia" %}</option>
+                            <option value="?sort=mas_vendidos&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}#catalogo-productos" {% if sort == 'mas_vendidos' %}selected{% endif %}>{% trans "Más vendidos" %}</option>
+                            <option value="?sort=price_asc&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}#catalogo-productos" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Precio menor a mayor" %}</option>
+                            <option value="?sort=price_desc&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}#catalogo-productos" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Precio mayor a menor" %}</option>
+                            <option value="?sort=novedades&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}#catalogo-productos" {% if sort == 'novedades' %}selected{% endif %}>{% trans "Novedades" %}</option>
                         </select>
                     </div>
 
@@ -768,7 +768,7 @@
                     </div>
 
                     <!-- Mostrar -->
-                    <form method="get" class="pagesize-form-unified">
+                    <form method="get" class="pagesize-form-unified" action="#catalogo-productos">
                         {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
                         {% if sort %}<input type="hidden" name="sort" value="{{ sort }}">{% endif %}
                         {% if active_type %}<input type="hidden" name="type" value="{{ active_type }}">{% endif %}
