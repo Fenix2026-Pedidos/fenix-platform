@@ -170,12 +170,12 @@ const CatalogCart = {
             return;
         }
         
-        // Deshabilitar botón mientras se procesa
-        const btn = document.querySelector(`.btn-add-product[data-product-id="${productId}"]`);
-        if (btn) {
+        // Deshabilitar botones mientras se procesa
+        const btns = document.querySelectorAll(`.btn-add-product[data-product-id="${productId}"]`);
+        btns.forEach(btn => {
             btn.disabled = true;
             btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Añadiendo...';
-        }
+        });
         
         // Llamar al servidor para SUMAR la cantidad a la cesta
         fetch('/orders/cart/add/', {
@@ -223,12 +223,16 @@ const CatalogCart = {
             this.showToast('Error de conexión', 'error');
         })
         .finally(() => {
-            // Restaurar botón
-            if (btn) {
+            // Restaurar botones
+            btns.forEach(btn => {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="bi bi-cart-plus"></i> Añadir al carrito';
-                this.updateAddButtonState(productId);
-            }
+                if (btn.classList.contains('list-add-btn')) {
+                    btn.innerHTML = '<i class="bi bi-cart-plus"></i> Añadir';
+                } else {
+                    btn.innerHTML = '<i class="bi bi-cart-plus"></i> Añadir al carrito';
+                }
+            });
+            this.updateAddButtonState(productId);
         });
     },
     
@@ -236,25 +240,27 @@ const CatalogCart = {
      * Actualiza la UI de una tarjeta (solo visual, NO toca la cesta)
      */
     updateCardUI: function(productId) {
-        const card = document.querySelector(`.product-card[data-product-id="${productId}"]`);
-        if (!card) return;
+        const cards = document.querySelectorAll(`.product-card[data-product-id="${productId}"]`);
+        if (cards.length === 0) return;
         
         const localQty = this.qtyLocal[productId] || 0;
         
-        // Actualizar input de cantidad
-        const input = card.querySelector('.qty-input');
-        if (input) {
-            input.value = localQty;
-        }
+        cards.forEach(card => {
+            // Actualizar input de cantidad
+            const inputs = card.querySelectorAll('.qty-input');
+            inputs.forEach(input => {
+                input.value = localQty;
+            });
+            
+            // Actualizar estado del botón -
+            const minusBtns = card.querySelectorAll('.qty-minus');
+            minusBtns.forEach(minusBtn => {
+                minusBtn.disabled = localQty === 0;
+                minusBtn.classList.toggle('disabled', localQty === 0);
+            });
+        });
         
-        // Actualizar estado del botón -
-        const minusBtn = card.querySelector('.qty-minus');
-        if (minusBtn) {
-            minusBtn.disabled = localQty === 0;
-            minusBtn.classList.toggle('disabled', localQty === 0);
-        }
-        
-        // Actualizar estado del botón "Añadir"
+        // Actualizar estado de los botones "Añadir"
         this.updateAddButtonState(productId);
     },
     
@@ -264,24 +270,30 @@ const CatalogCart = {
      * - qty>0: azul enabled con texto "Añadir (N)"
      */
     updateAddButtonState: function(productId) {
-        const btn = document.querySelector(`.btn-add-product[data-product-id="${productId}"]`);
-        if (!btn) return;
+        const btns = document.querySelectorAll(`.btn-add-product[data-product-id="${productId}"]`);
+        if (btns.length === 0) return;
         
         const localQty = this.qtyLocal[productId] || 0;
         
-        if (localQty === 0) {
-            // Estado: qty=0 -> gris disabled
-            btn.disabled = true;
-            btn.classList.add('disabled');
-            btn.classList.remove('active');
-            btn.innerHTML = '<i class="bi bi-cart-plus"></i> Añadir al carrito';
-        } else {
-            // Estado: qty>0 -> azul enabled
-            btn.disabled = false;
-            btn.classList.remove('disabled');
-            btn.classList.add('active');
-            btn.innerHTML = `<i class="bi bi-cart-plus"></i> Añadir (${localQty})`;
-        }
+        btns.forEach(btn => {
+            if (localQty === 0) {
+                // Estado: qty=0 -> gris disabled
+                btn.disabled = true;
+                btn.classList.add('disabled');
+                btn.classList.remove('active');
+                if (btn.classList.contains('list-add-btn')) {
+                    btn.innerHTML = '<i class="bi bi-cart-plus"></i> Añadir';
+                } else {
+                    btn.innerHTML = '<i class="bi bi-cart-plus"></i> Añadir al carrito';
+                }
+            } else {
+                // Estado: qty>0 -> azul enabled
+                btn.disabled = false;
+                btn.classList.remove('disabled');
+                btn.classList.add('active');
+                btn.innerHTML = `<i class="bi bi-cart-plus"></i> Añadir (${localQty})`;
+            }
+        });
     },
     
     /**
@@ -289,24 +301,42 @@ const CatalogCart = {
      * Muestra la cantidad REAL en cesta (no la selección local)
      */
     updateCartBadgeOverlay: function(productId) {
-        const card = document.querySelector(`.product-card[data-product-id="${productId}"]`);
-        if (!card) return;
-        
-        const badgeOverlay = card.querySelector('.product-cart-badge-overlay');
-        const badgeQuantity = card.querySelector('.cart-badge-quantity');
-        
+        const cards = document.querySelectorAll(`.product-card[data-product-id="${productId}"]`);
         const cartQty = this.cart[productId] || 0;
         
-        if (badgeOverlay && badgeQuantity) {
-            if (cartQty > 0) {
-                badgeQuantity.textContent = cartQty;
-                badgeOverlay.classList.add('visible');
-                badgeOverlay.style.display = 'flex';
-            } else {
-                badgeOverlay.classList.remove('visible');
-                badgeOverlay.style.display = 'none';
+        cards.forEach(card => {
+            // 1. Actualizar overlay de cuadrícula (Grid view)
+            const badgeOverlay = card.querySelector('.product-cart-badge-overlay');
+            if (badgeOverlay) {
+                const badgeQuantity = badgeOverlay.querySelector('.cart-badge-quantity');
+                if (badgeQuantity) {
+                    badgeQuantity.textContent = cartQty;
+                }
+                if (cartQty > 0) {
+                    badgeOverlay.classList.add('visible');
+                    badgeOverlay.style.display = 'flex';
+                } else {
+                    badgeOverlay.classList.remove('visible');
+                    badgeOverlay.style.display = 'none';
+                }
             }
-        }
+            
+            // 2. Actualizar badge de lista (List view)
+            const listBadge = card.querySelector('.lvc-badge-cart');
+            if (listBadge) {
+                const listQuantity = listBadge.querySelector('.cart-badge-quantity');
+                if (listQuantity) {
+                    listQuantity.textContent = cartQty;
+                }
+                if (cartQty > 0) {
+                    listBadge.classList.remove('d-none');
+                    listBadge.style.display = 'inline-flex';
+                } else {
+                    listBadge.classList.add('d-none');
+                    listBadge.style.display = 'none';
+                }
+            }
+        });
     },
     
     /**
