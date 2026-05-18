@@ -31,6 +31,16 @@ def capture_lead(request):
         if not all([name, email, phone_number, privacy_accepted]):
             return JsonResponse({'error': 'Faltan campos obligatorios.'}, status=400)
 
+        # --- VALIDACIÓN DEL TELÉFONO EN EL SERVIDOR ---
+        import re
+        clean_phone = re.sub(r'[\s\-()]+', '', phone_number)
+        if phone_prefix == "+34":
+            if not re.match(r'^[6789]\d{8}$', clean_phone):
+                return JsonResponse({'error': 'El teléfono de España debe tener 9 dígitos y empezar por 6, 7, 8 o 9.'}, status=400)
+        else:
+            if not re.match(r'^\d{7,15}$', clean_phone):
+                return JsonResponse({'error': 'El número de teléfono debe tener entre 7 y 15 dígitos.'}, status=400)
+
         # 1. Generar OTP de 6 dígitos
         otp = str(random.randint(100000, 999999))
         expires_at = timezone.now() + timedelta(minutes=10)
@@ -41,11 +51,11 @@ def capture_lead(request):
             defaults={
                 'name': name,
                 'phone_prefix': phone_prefix,
-                'phone_number': phone_number,
+                'phone_number': clean_phone,
                 'otp_code': otp,
                 'otp_expires_at': expires_at,
                 'otp_attempts': 0,
-                'email_verified': False  # Ahora sí requerimos verificación
+                'email_verified': False  # Requerimos verificación
             }
         )
 
@@ -64,37 +74,59 @@ def capture_lead(request):
             except Exception as e:
                 print(f"--- [AVISO CRM] Error al registrar lead CRM: {e} ---")
 
-            # 4. Enviar Email con el SMTP
+            # 4. Enviar Email Premium HTML
             subject = 'Tu código de acceso - Fenix Assistant'
-            message = f'''¡Hola {name}!
             
-Tu código de verificación de 6 dígitos es: {otp}
-
-Este código es válido durante 10 minutos.
-
-Si no has solicitado este código, puedes ignorar este mensaje.
-
-Un saludo,
-El equipo de Fenix'''
+            html_message = f"""
+            <html>
+            <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 0; -webkit-font-smoothing: antialiased;">
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(15,23,42,0.05); border: 1px solid #f1f5f9;">
+                    <tr>
+                        <td style="background-color: #0b4629; padding: 40px 30px; text-align: center;">
+                            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.03em; font-family: 'Outfit', sans-serif;">Plataforma Fénix</h1>
+                            <p style="color: #a7f3d0; margin: 8px 0 0 0; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em;">Smart Assistant</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 40px 35px; text-align: center;">
+                            <h2 style="color: #0f172a; margin-top: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.02em;">Verifica tu correo electrónico</h2>
+                            <p style="color: #475569; font-size: 15px; line-height: 1.6; margin: 16px 0 32px 0;">Hola <strong>{name}</strong>,<br>Usa el siguiente código de verificación de 6 dígitos para acceder al asistente virtual comercial de Fénix.</p>
+                            
+                            <div style="background-color: #f8fafc; border: 2px dashed #e2e8f0; border-radius: 16px; padding: 24px 40px; display: inline-block; margin-bottom: 32px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);">
+                                <span style="font-size: 36px; font-weight: 800; letter-spacing: 0.2em; color: #0b4629; font-family: 'Courier New', Courier, monospace; display: block; margin-left: 0.1em;">{otp}</span>
+                            </div>
+                            
+                            <p style="color: #64748b; font-size: 13px; line-height: 1.5; margin: 0 0 12px 0;">Este código de un solo uso es válido durante <strong>10 minutos</strong>.</p>
+                            <p style="color: #94a3b8; font-size: 12px; line-height: 1.5; margin: 0;">Si no has solicitado este código, puedes ignorar este mensaje con total seguridad.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #fafafa; padding: 24px 30px; text-align: center; border-top: 1px solid #f1f5f9;">
+                            <p style="color: #94a3b8; font-size: 11px; margin: 0; font-weight: 500;">© 2026 Plataforma Fénix. Todos los derechos reservados.</p>
+                        </td>
+                    </tr>
+                </table>
+            </body>
+            </html>
+            """
             
             try:
                 send_mail(
                     subject=subject,
-                    message=message,
+                    message=f"Tu código de verificación de 6 dígitos es: {otp}",
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=[email],
                     fail_silently=False,
+                    html_message=html_message
                 )
-                print(f"--- [ÉXITO SMTP] Email enviado a {email} ---")
+                print(f"--- [ÉXITO SMTP] Email HTML enviado a {email} ---")
             except Exception as email_err:
                 print(f"--- [AVISO SMTP] Error al enviar email: {email_err} ---")
                 print(f"--- [OTP RESPALDO] Código para {email}: {otp} ---")
 
         # Iniciar el hilo en segundo plano
-        threading.Thread(target=background_tasks, args=(name, email, phone_prefix, phone_number, otp)).start()
+        threading.Thread(target=background_tasks, args=(name, email, phone_prefix, clean_phone, otp)).start()
         
-        # Como el email va en segundo plano, enviamos el fallback_otp siempre temporalmente 
-        # para que puedas testear si Google sigue bloqueando el SMTP sin quedarte atascado.
         return JsonResponse({
             'success': True, 
             'message': 'Código enviado. Por favor, verifica tu email.',
@@ -135,16 +167,26 @@ def verify_otp(request):
             
             # Sincronizar confirmación en CRM Unificado
             try:
+                # 1. Buscar lead primero por email
                 crm_lead = CRMLead.objects.filter(email=lead.email).first()
+                # 2. Si no se encuentra por email, buscar por teléfono para unificar
+                if not crm_lead:
+                    crm_lead = CRMLead.objects.filter(phone=f"{lead.phone_prefix}{lead.phone_number}").first()
+                
                 if crm_lead:
+                    # Registrar mensaje de validación en el CRM
                     CRMLeadService.log_message(
                         lead=crm_lead,
                         channel=CRMLead.CHANNEL_WEB_ASSISTANT,
                         sender='system',
-                        message="Email verificado correctamente mediante OTP"
+                        message=f"Email verificado correctamente mediante OTP ({lead.email})"
                     )
+                    # Sincronizar el email validado con el CRM lead
+                    if not crm_lead.email or crm_lead.email != lead.email:
+                        crm_lead.email = lead.email
+
                     crm_lead.validation_status = CRMLead.VALIDATION_VALIDADO
-                    crm_lead.save(update_fields=['validation_status', 'updated_at'])
+                    crm_lead.save(update_fields=['validation_status', 'email', 'updated_at'])
             except Exception as e:
                 print(f"--- [AVISO CRM] Error actualizando verificación: {e} ---")
 
