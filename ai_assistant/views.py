@@ -127,12 +127,16 @@ def capture_lead(request):
         # Iniciar el hilo en segundo plano
         threading.Thread(target=background_tasks, args=(name, email, phone_prefix, clean_phone, otp)).start()
         
-        return JsonResponse({
+        response_data = {
             'success': True, 
             'message': 'Código enviado. Por favor, verifica tu email.',
             'email': email,
             'requires_otp': True
-        })
+        }
+        if settings.DEBUG:
+            response_data['fallback_otp'] = otp
+
+        return JsonResponse(response_data)
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)

@@ -356,12 +356,19 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 currentLead = data.email;
                 
+                // Imprimir el OTP de respaldo en la consola de desarrollo para pruebas ágiles
+                if (data.fallback_otp) {
+                    console.log("%c🔑 [FENIX DEV] Código OTP:", "color: #10b981; font-weight: bold; font-size: 13px;", data.fallback_otp);
+                    otpInput.value = data.fallback_otp;
+                } else {
+                    otpInput.value = '';
+                }
+                
                 // Mostrar paso de OTP
                 stepLead.classList.add('hidden');
                 stepOtp.classList.remove('hidden');
                 
-                // Limpiar OTP input y errores previos
-                otpInput.value = '';
+                // Limpiar errores previos
                 document.getElementById('otp-error').classList.add('hidden');
             } else {
                 // Mostrar error del backend en el formulario
