@@ -297,130 +297,191 @@
         white-space: nowrap;
     }
 
-    /* Estilos Premium para la Fila Secundaria del Catálogo Público */
-    .public-controls-secondary-row {
+    /* Estilos Premium para la Barra de Resultados Unificada */
+    .b2b-list-topbar {
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
         align-items: center;
-        margin-top: 1rem;
-        margin-bottom: 0.5rem;
-        padding: 0 4px;
-        width: 100%;
-        animation: fadeIn 0.3s ease;
-    }
-    .public-controls-right-group {
-        display: flex;
-        align-items: center;
-        gap: 12px;
         flex-wrap: wrap;
-        width: auto;
+        gap: 16px;
+        background: #ffffff;
+        border: 1px solid var(--gray-200);
+        border-radius: 16px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
     }
-    .public-search-form {
+    .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .topbar-right-unified {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+    .public-search-form-unified {
         margin: 0;
         padding: 0;
     }
-    .public-search-input-wrapper {
+    .public-search-input-wrapper-unified {
         position: relative;
-        width: 300px;
+        width: 280px;
+        transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .public-search-icon {
+    .public-search-icon-unified {
         position: absolute;
         left: 14px;
         top: 50%;
         transform: translateY(-50%);
         color: #9CA3AF;
-        font-size: 15px;
+        font-size: 14px;
         pointer-events: none;
     }
-    .public-search-input {
+    .public-search-input-unified {
         width: 100%;
-        height: 42px;
-        padding: 10px 16px 10px 40px;
+        height: 38px;
+        padding: 8px 16px 8px 38px;
         background-color: #ffffff;
         border: 1px solid #E5E7EB;
         border-radius: 999px;
-        font-size: 14px;
+        font-size: 13px;
         color: #1F2937;
         outline: none;
-        transition: border-color 0.2s, box-shadow 0.2s;
+        transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
     }
-    .public-search-input:focus {
-        border-color: #0b4629; /* Fénix Primary Green */
-        box-shadow: 0 0 0 3px rgba(11, 70, 41, 0.1);
+    .public-search-input-unified:focus {
+        border-color: #0b4629; /* Verde Corporativo Fénix */
+        box-shadow: 0 0 0 3px rgba(11, 70, 41, 0.08);
+        background-color: #ffffff;
     }
-    .btn-public-filters-toggle {
+    @media (min-width: 992px) {
+        .public-search-input-wrapper-unified:focus-within {
+            width: 320px; /* Micro-animación de expansión */
+        }
+    }
+    .btn-filters-unified {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
-        height: 42px;
-        padding: 0 20px;
+        height: 38px;
+        padding: 0 18px;
         background-color: #ffffff;
         border: 1px solid #E5E7EB;
         border-radius: 999px;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 500;
         color: #374151;
         cursor: pointer;
-        transition: all 0.2s;
+        transition: all 0.2s ease;
     }
-    .btn-public-filters-toggle:hover {
+    .btn-filters-unified:hover {
         background-color: #F9FAFB;
         border-color: #D1D5DB;
         color: #111827;
+        transform: translateY(-1px);
     }
-    .public-sort-wrapper {
-        position: relative;
+    .btn-filters-unified:active {
+        transform: translateY(0);
     }
-    .public-sort-select {
-        height: 42px;
-        padding: 0 36px 0 16px;
-        background-color: #ffffff;
-        border: 1px solid #E5E7EB;
-        border-radius: 999px;
-        font-size: 14px;
-        font-weight: 500;
-        color: #374151;
+    .sort-select-wrapper-unified, .pagesize-form-unified {
+        margin: 0;
+        padding: 0;
+    }
+    .sort-select-modern-unified {
+        height: 38px !important;
+        padding: 0 32px 0 14px !important;
+        background-color: #ffffff !important;
+        border: 1px solid #E5E7EB !important;
+        border-radius: 999px !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        color: #374151 !important;
         cursor: pointer;
-        transition: all 0.2s;
-        appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234B5563' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 12px center;
-        background-size: 16px;
+        transition: all 0.2s ease;
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234B5563' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 12px center !important;
+        background-size: 14px !important;
     }
-    .public-sort-select:hover {
-        background-color: #F9FAFB;
-        border-color: #D1D5DB;
+    .sort-select-modern-unified:hover {
+        background-color: #F9FAFB !important;
+        border-color: #D1D5DB !important;
     }
-    
-    @media (max-width: 768px) {
-        .public-controls-secondary-row {
-            justify-content: stretch;
-            margin-top: 0.5rem;
+    .pagesize-select-unified {
+        height: 38px !important;
+        padding: 0 28px 0 12px !important;
+        background-color: #ffffff !important;
+        border: 1px solid #E5E7EB !important;
+        border-radius: 999px !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        color: #374151 !important;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234B5563' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 10px center !important;
+        background-size: 12px !important;
+    }
+    .pagesize-select-unified:hover {
+        background-color: #F9FAFB !important;
+        border-color: #D1D5DB !important;
+    }
+
+    @media (max-width: 991px) {
+        .b2b-list-topbar {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+            padding: 1rem;
         }
-        .public-controls-right-group {
+        .topbar-right-unified {
             width: 100%;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
         }
-        .public-search-form {
+        .public-search-form-unified {
             grid-column: span 2;
             width: 100%;
         }
-        .public-search-input-wrapper {
+        .public-search-input-wrapper-unified {
             width: 100%;
         }
-        .btn-public-filters-toggle {
+        .public-search-input-wrapper-unified:focus-within {
             width: 100%;
         }
-        .public-sort-select {
+        .btn-filters-unified {
             width: 100%;
+        }
+        .sort-select-modern-unified {
+            width: 100% !important;
+        }
+        .view-toggles-modern {
+            grid-column: span 1;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        .pagesize-form-unified {
+            grid-column: span 1;
+            width: 100%;
+        }
+        .pagesize-select-unified {
+            width: 100% !important;
         }
     }
+
 </style>
 {% endblock %}
 
@@ -488,42 +549,7 @@
                 </div>
             </div>
 
-            {% if not request.user.is_authenticated %}
-            <!-- Fila 2: Buscador + Filtros + Ordenación (Solo Público) -->
-            <div class="public-controls-secondary-row">
-                <div class="public-controls-right-group">
-                    <!-- Buscador -->
-                    <form method="get" class="public-search-form" id="searchForm">
-                        <div class="public-search-input-wrapper">
-                            <i class="bi bi-search public-search-icon"></i>
-                            <input type="text" name="q" id="searchInput" class="public-search-input" placeholder="{% trans '¿Qué producto buscas?' %}" value="{{ search_query|default:'' }}">
-                        </div>
-                        {% if sort %}<input type="hidden" name="sort" value="{{ sort }}">{% endif %}
-                        {% if page_size %}<input type="hidden" name="page_size" value="{{ page_size }}">{% endif %}
-                        {% if active_type %}<input type="hidden" name="type" value="{{ active_type }}">{% endif %}
-                    </form>
-
-                    <!-- Botón Filtros -->
-                    <button type="button" id="filtersToggle" class="btn-public-filters-toggle">
-                        <i class="bi bi-funnel"></i>
-                        <span>{% trans "Filtros" %}</span>
-                    </button>
-
-                    <!-- Ordenar -->
-                    <div class="public-sort-wrapper">
-                        <select id="publicSortSelect" class="public-sort-select" onchange="window.location.href=this.value;">
-                            <option value="?sort=relevance&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'relevance' %}selected{% endif %}>{% trans "Relevancia" %}</option>
-                            <option value="?sort=mas_vendidos&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'mas_vendidos' %}selected{% endif %}>{% trans "Más vendidos" %}</option>
-                            <option value="?sort=novedades&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'novedades' %}selected{% endif %}>{% trans "Novedades" %}</option>
-                            <option value="?sort=price_asc&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Precio menor a mayor" %}</option>
-                            <option value="?sort=price_desc&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Precio mayor a menor" %}</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- Fila 3: Quick Filters Visuales -->
+            <!-- Fila 2: Quick Filters Visuales -->
             <div class="quick-filters-row">
                 <span class="qf-chip qf-green"><i class="bi bi-lightning-charge-fill"></i> {% trans "Entrega rápida" %}</span>
                 <span class="qf-chip qf-red"><i class="bi bi-tags-fill"></i> {% trans "Promoción" %}</span>
@@ -705,32 +731,48 @@
                     </span>
                 </div>
                 
-                <div class="topbar-center">
-                    <button type="button" id="filtersToggle" class="btn btn-sm btn-outline-secondary me-3 d-inline-flex align-items-center gap-1">
-                        <i class="bi bi-funnel"></i> {% trans "Filtros" %}
+                <div class="topbar-right-unified">
+                    {% if not request.user.is_authenticated %}
+                    <!-- Buscador (Solo público) -->
+                    <form method="get" class="public-search-form-unified" id="searchForm">
+                        <div class="public-search-input-wrapper-unified">
+                            <i class="bi bi-search public-search-icon-unified"></i>
+                            <input type="text" name="q" id="searchInput" class="public-search-input-unified" placeholder="{% trans '¿Qué producto buscas?' %}" value="{{ search_query|default:'' }}">
+                        </div>
+                        {% if sort %}<input type="hidden" name="sort" value="{{ sort }}">{% endif %}
+                        {% if page_size %}<input type="hidden" name="page_size" value="{{ page_size }}">{% endif %}
+                        {% if active_type %}<input type="hidden" name="type" value="{{ active_type }}">{% endif %}
+                    </form>
+                    {% endif %}
+
+                    <!-- Botón Filtros -->
+                    <button type="button" id="filtersToggle" class="btn btn-sm btn-outline-secondary btn-filters-unified">
+                        <i class="bi bi-funnel"></i> <span>{% trans "Filtros" %}</span>
                     </button>
-                    <label for="b2bSortSelect" class="sort-label">{% trans "Ordenar por:" %}</label>
-                    <select id="b2bSortSelect" class="form-select form-select-sm sort-select-modern" onchange="window.location.href=this.value;">
-                        <option value="?sort=relevance&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'relevance' %}selected{% endif %}>{% trans "Relevancia" %}</option>
-                        <option value="?sort=mas_vendidos&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'mas_vendidos' %}selected{% endif %}>{% trans "Más vendidos" %}</option>
-                        <option value="?sort=price_asc&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Precio menor a mayor" %}</option>
-                        <option value="?sort=price_desc&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Precio mayor a menor" %}</option>
-                        <option value="?sort=novedades&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'novedades' %}selected{% endif %}>{% trans "Novedades" %}</option>
-                    </select>
-                </div>
-                
-                <div class="topbar-right">
+
+                    <!-- Ordenar -->
+                    <div class="sort-select-wrapper-unified">
+                        <select id="b2bSortSelect" class="form-select form-select-sm sort-select-modern-unified" onchange="window.location.href=this.value;">
+                            <option value="?sort=relevance&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'relevance' %}selected{% endif %}>{% trans "Relevancia" %}</option>
+                            <option value="?sort=mas_vendidos&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'mas_vendidos' %}selected{% endif %}>{% trans "Más vendidos" %}</option>
+                            <option value="?sort=price_asc&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Precio menor a mayor" %}</option>
+                            <option value="?sort=price_desc&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Precio mayor a menor" %}</option>
+                            <option value="?sort=novedades&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'novedades' %}selected{% endif %}>{% trans "Novedades" %}</option>
+                        </select>
+                    </div>
+
+                    <!-- Grid / List -->
                     <div class="view-toggles-modern">
                         <button type="button" class="btn-view-toggle active" id="btnViewGrid" title="{% trans 'Vista Cuadrícula' %}"><i class="bi bi-grid"></i></button>
                         <button type="button" class="btn-view-toggle" id="btnViewList" title="{% trans 'Vista Lista' %}"><i class="bi bi-list-task"></i></button>
                     </div>
-                    
-                    <form method="get" class="pagesize-form">
+
+                    <!-- Mostrar -->
+                    <form method="get" class="pagesize-form-unified">
                         {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
                         {% if sort %}<input type="hidden" name="sort" value="{{ sort }}">{% endif %}
                         {% if active_type %}<input type="hidden" name="type" value="{{ active_type }}">{% endif %}
-                        <label for="pageSizeSelectTop" class="sort-label">{% trans "Mostrar:" %}</label>
-                        <select id="pageSizeSelectTop" name="page_size" class="form-select form-select-sm pagesize-select" onchange="this.form.submit()">
+                        <select id="pageSizeSelectTop" name="page_size" class="form-select form-select-sm pagesize-select-unified" onchange="this.form.submit()">
                             <option value="20" {% if page_size == 20 %}selected{% endif %}>20</option>
                             <option value="50" {% if page_size == 50 %}selected{% endif %}>50</option>
                             <option value="100" {% if page_size == 100 %}selected{% endif %}>100</option>
