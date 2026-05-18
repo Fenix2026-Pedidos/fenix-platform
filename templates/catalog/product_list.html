@@ -296,6 +296,131 @@
         flex-shrink: 0;
         white-space: nowrap;
     }
+
+    /* Estilos Premium para la Fila Secundaria del Catálogo Público */
+    .public-controls-secondary-row {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        padding: 0 4px;
+        width: 100%;
+        animation: fadeIn 0.3s ease;
+    }
+    .public-controls-right-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        width: auto;
+    }
+    .public-search-form {
+        margin: 0;
+        padding: 0;
+    }
+    .public-search-input-wrapper {
+        position: relative;
+        width: 300px;
+    }
+    .public-search-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9CA3AF;
+        font-size: 15px;
+        pointer-events: none;
+    }
+    .public-search-input {
+        width: 100%;
+        height: 42px;
+        padding: 10px 16px 10px 40px;
+        background-color: #ffffff;
+        border: 1px solid #E5E7EB;
+        border-radius: 999px;
+        font-size: 14px;
+        color: #1F2937;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .public-search-input:focus {
+        border-color: #0b4629; /* Fénix Primary Green */
+        box-shadow: 0 0 0 3px rgba(11, 70, 41, 0.1);
+    }
+    .btn-public-filters-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        height: 42px;
+        padding: 0 20px;
+        background-color: #ffffff;
+        border: 1px solid #E5E7EB;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #374151;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .btn-public-filters-toggle:hover {
+        background-color: #F9FAFB;
+        border-color: #D1D5DB;
+        color: #111827;
+    }
+    .public-sort-wrapper {
+        position: relative;
+    }
+    .public-sort-select {
+        height: 42px;
+        padding: 0 36px 0 16px;
+        background-color: #ffffff;
+        border: 1px solid #E5E7EB;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #374151;
+        cursor: pointer;
+        transition: all 0.2s;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234B5563' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px;
+    }
+    .public-sort-select:hover {
+        background-color: #F9FAFB;
+        border-color: #D1D5DB;
+    }
+    
+    @media (max-width: 768px) {
+        .public-controls-secondary-row {
+            justify-content: stretch;
+            margin-top: 0.5rem;
+        }
+        .public-controls-right-group {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .public-search-form {
+            grid-column: span 2;
+            width: 100%;
+        }
+        .public-search-input-wrapper {
+            width: 100%;
+        }
+        .btn-public-filters-toggle {
+            width: 100%;
+        }
+        .public-sort-select {
+            width: 100%;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -363,7 +488,42 @@
                 </div>
             </div>
 
-            <!-- Fila 2: Quick Filters Visuales -->
+            {% if not request.user.is_authenticated %}
+            <!-- Fila 2: Buscador + Filtros + Ordenación (Solo Público) -->
+            <div class="public-controls-secondary-row">
+                <div class="public-controls-right-group">
+                    <!-- Buscador -->
+                    <form method="get" class="public-search-form" id="searchForm">
+                        <div class="public-search-input-wrapper">
+                            <i class="bi bi-search public-search-icon"></i>
+                            <input type="text" name="q" id="searchInput" class="public-search-input" placeholder="{% trans '¿Qué producto buscas?' %}" value="{{ search_query|default:'' }}">
+                        </div>
+                        {% if sort %}<input type="hidden" name="sort" value="{{ sort }}">{% endif %}
+                        {% if page_size %}<input type="hidden" name="page_size" value="{{ page_size }}">{% endif %}
+                        {% if active_type %}<input type="hidden" name="type" value="{{ active_type }}">{% endif %}
+                    </form>
+
+                    <!-- Botón Filtros -->
+                    <button type="button" id="filtersToggle" class="btn-public-filters-toggle">
+                        <i class="bi bi-funnel"></i>
+                        <span>{% trans "Filtros" %}</span>
+                    </button>
+
+                    <!-- Ordenar -->
+                    <div class="public-sort-wrapper">
+                        <select id="publicSortSelect" class="public-sort-select" onchange="window.location.href=this.value;">
+                            <option value="?sort=relevance&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'relevance' %}selected{% endif %}>{% trans "Relevancia" %}</option>
+                            <option value="?sort=mas_vendidos&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'mas_vendidos' %}selected{% endif %}>{% trans "Más vendidos" %}</option>
+                            <option value="?sort=novedades&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'novedades' %}selected{% endif %}>{% trans "Novedades" %}</option>
+                            <option value="?sort=price_asc&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Precio menor a mayor" %}</option>
+                            <option value="?sort=price_desc&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Precio mayor a menor" %}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Fila 3: Quick Filters Visuales -->
             <div class="quick-filters-row">
                 <span class="qf-chip qf-green"><i class="bi bi-lightning-charge-fill"></i> {% trans "Entrega rápida" %}</span>
                 <span class="qf-chip qf-red"><i class="bi bi-tags-fill"></i> {% trans "Promoción" %}</span>
@@ -371,9 +531,6 @@
                 <span class="qf-chip qf-blue"><i class="bi bi-box-fill"></i> {% trans "Stock inmediato" %}</span>
                 <span class="qf-chip qf-purple"><i class="bi bi-sparkles"></i> {% trans "Nuevos" %}</span>
             </div>
-            
-            <!-- Barra de ordenación y vista -->
-            <!-- Se eliminó la antigua toolbar -->
         </div>
     </section>
 
@@ -549,13 +706,16 @@
                 </div>
                 
                 <div class="topbar-center">
+                    <button type="button" id="filtersToggle" class="btn btn-sm btn-outline-secondary me-3 d-inline-flex align-items-center gap-1">
+                        <i class="bi bi-funnel"></i> {% trans "Filtros" %}
+                    </button>
                     <label for="b2bSortSelect" class="sort-label">{% trans "Ordenar por:" %}</label>
                     <select id="b2bSortSelect" class="form-select form-select-sm sort-select-modern" onchange="window.location.href=this.value;">
-                        <option value="?sort=relevance&type={{ active_type }}&promo={{ active_promo }}" {% if sort == 'relevance' %}selected{% endif %}>{% trans "Relevancia" %}</option>
-                        <option value="?sort=mas_vendidos&type={{ active_type }}&promo={{ active_promo }}" {% if sort == 'mas_vendidos' %}selected{% endif %}>{% trans "Más vendidos" %}</option>
-                        <option value="?sort=price_asc&type={{ active_type }}&promo={{ active_promo }}" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Precio menor a mayor" %}</option>
-                        <option value="?sort=price_desc&type={{ active_type }}&promo={{ active_promo }}" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Precio mayor a menor" %}</option>
-                        <option value="?sort=novedades&type={{ active_type }}&promo={{ active_promo }}" {% if sort == 'novedades' %}selected{% endif %}>{% trans "Novedades" %}</option>
+                        <option value="?sort=relevance&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'relevance' %}selected{% endif %}>{% trans "Relevancia" %}</option>
+                        <option value="?sort=mas_vendidos&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'mas_vendidos' %}selected{% endif %}>{% trans "Más vendidos" %}</option>
+                        <option value="?sort=price_asc&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Precio menor a mayor" %}</option>
+                        <option value="?sort=price_desc&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Precio mayor a menor" %}</option>
+                        <option value="?sort=novedades&type={{ active_type }}&promo={{ active_promo }}{% if search_query %}&q={{ search_query }}{% endif %}" {% if sort == 'novedades' %}selected{% endif %}>{% trans "Novedades" %}</option>
                     </select>
                 </div>
                 
