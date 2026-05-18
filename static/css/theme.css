@@ -100,6 +100,18 @@ body {
     display: none !important;
 }
 
+@media (min-width: 768px) {
+    .d-md-none {
+        display: none !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .d-lg-none {
+        display: none !important;
+    }
+}
+
 /* ============================================
    Layout Components
    ============================================ */
