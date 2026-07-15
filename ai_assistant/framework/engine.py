@@ -1,71 +1,60 @@
 import logging
-import google.generativeai as genai
-from django.conf import settings
+
+from google import genai
+from google.genai import types
+
 from .governance import SynergIAGovernance
 
 logger = logging.getLogger(__name__)
 
-class SynergIAEngine:
-    """
-    AI Framework Synerg-IA: Engine
-    Gestiona la conectividad con LLMs y el sistema de resiliencia (Failover).
-    """
-    
-    def __init__(self, api_key):
-        self.api_key = api_key
-        # Configuración de modelos (v1beta para soporte de system_instruction nativo)
-        self.primary_model_name = "gemini-2.5-pro"
-        self.fallback_model_name = "gemini-2.5-flash"
-        
-        if api_key:
-            genai.configure(api_key=api_key)
-        else:
-            logger.error("[Framework] GOOGLE_API_KEY no detectada.")
 
-        # Configuramos los Guardrails de Seguridad a nivel de API
+class SynergIAEngine:
+    """Motor Gemini basado en el SDK oficial Google Gen AI."""
+
+    def __init__(self, api_key):
+        self.primary_model_name = 'gemini-2.5-pro'
+        self.fallback_model_name = 'gemini-2.5-flash'
+        self.client = genai.Client(api_key=api_key) if api_key else None
         self.safety_settings = [
-            {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-            {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-            {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-            {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+            types.SafetySetting(category='HARM_CATEGORY_HARASSMENT', threshold='BLOCK_MEDIUM_AND_ABOVE'),
+            types.SafetySetting(category='HARM_CATEGORY_HATE_SPEECH', threshold='BLOCK_MEDIUM_AND_ABOVE'),
+            types.SafetySetting(category='HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold='BLOCK_MEDIUM_AND_ABOVE'),
+            types.SafetySetting(category='HARM_CATEGORY_DANGEROUS_CONTENT', threshold='BLOCK_MEDIUM_AND_ABOVE'),
         ]
 
+    @staticmethod
+    def _history_contents(history):
+        contents = []
+        for item in history or []:
+            role = 'model' if item.get('role') in {'assistant', 'model'} else 'user'
+            value = item.get('parts', item.get('content', ''))
+            if isinstance(value, list):
+                value = ' '.join(str(part.get('text', part) if isinstance(part, dict) else part) for part in value)
+            if value:
+                contents.append(types.Content(role=role, parts=[types.Part.from_text(text=str(value)[:4000])]))
+        return contents[-20:]
+
     def _get_response(self, model_name, message, history, system_instruction):
-        """
-        Intento de obtención de respuesta para un modelo específico.
-        """
-        logger.info(f"[Framework] Intentando con: {model_name}...")
-        
-        model = genai.GenerativeModel(
-            model_name=model_name,
-            safety_settings=self.safety_settings,
-            system_instruction=system_instruction
+        if not self.client:
+            raise RuntimeError('GOOGLE_API_KEY no configurada')
+        contents = self._history_contents(history)
+        contents.append(types.Content(role='user', parts=[types.Part.from_text(text=message)]))
+        response = self.client.models.generate_content(
+            model=model_name,
+            contents=contents,
+            config=types.GenerateContentConfig(
+                system_instruction=system_instruction,
+                safety_settings=self.safety_settings,
+            ),
         )
-        
-        chat = model.start_chat(history=history)
-        response = chat.send_message(message)
         return response.text
 
-    def ask(self, message, history=None, knowledge_base="", is_authenticated=False):
-        """
-        Método principal con lógica de Failover.
-        """
-        # 1. Preparar instrucciones del sistema (Gobernanza)
-        system_instruction = SynergIAGovernance.get_system_prompt(knowledge_base, is_authenticated=is_authenticated)
-        
-        # 2. Limpiar historia: Google exige que el primer mensaje sea siempre del 'user'
-        sanitized_history = history or []
-        while sanitized_history and sanitized_history[0].get('role') != 'user':
-            sanitized_history.pop(0)
-
+    def ask(self, message, history=None, knowledge_base='', is_authenticated=False):
+        system_instruction = SynergIAGovernance.get_system_prompt(
+            knowledge_base, is_authenticated=is_authenticated
+        )
         try:
-            # Intento primario (Máxima Calidad)
-            return self._get_response(self.primary_model_name, message, sanitized_history, system_instruction)
-        except Exception as e:
-            logger.warning(f"[Framework] Error en modelo primario ({self.primary_model_name}): {e}. Activando Failover...")
-            try:
-                # Intento de respaldo (Máxima Disponibilidad)
-                return self._get_response(self.fallback_model_name, message, sanitized_history, system_instruction)
-            except Exception as e2:
-                logger.error(f"[Framework] Fallo crítico en ambos modelos: {e2}")
-                raise e2
+            return self._get_response(self.primary_model_name, message, history, system_instruction)
+        except Exception:
+            logger.exception('Error en modelo primario; se usa el fallback')
+            return self._get_response(self.fallback_model_name, message, history, system_instruction)

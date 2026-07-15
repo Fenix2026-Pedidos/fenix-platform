@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.db.models import Q
 from django.http import JsonResponse
+from django.utils.http import url_has_allowed_host_and_scheme
+from core.rate_limit import rate_limited
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 from .models import User, EmailVerificationToken
@@ -85,7 +87,14 @@ def login_view(request):
         return redirect('accounts:dashboard')
     
     if request.method == 'POST':
-        form = LoginForm(request, data=request.POST)
+        post_data = request.POST.copy()
+        if not post_data.get('username') and post_data.get('email'):
+            post_data['username'] = post_data['email']
+        identity = post_data.get('username') or ''
+        if rate_limited(request, 'login-ip', 15, 15 * 60) or rate_limited(request, 'login-identity', 10, 15 * 60, identity):
+            messages.error(request, _('Demasiados intentos. Inténtalo de nuevo más tarde.'))
+            return render(request, 'accounts/login.html', {'form': LoginForm(request, data=post_data)}, status=429)
+        form = LoginForm(request, data=post_data)
         if form.is_valid():
             user = form.get_user()
             
@@ -118,13 +127,13 @@ def login_view(request):
                 if security and security.two_factor_enabled:
                     request.session['pre_2fa_user_id'] = user.id
                     next_url = request.GET.get('next')
-                    if next_url:
+                    if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
                         request.session['next_url'] = next_url
                     return redirect('accounts:verify_2fa_login')
                 else:
                     login(request, user)
                     next_url = request.GET.get('next')
-                    if next_url:
+                    if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
                         return redirect(next_url)
                     return redirect('accounts:dashboard')
     else:

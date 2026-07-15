@@ -1097,6 +1097,16 @@
                 </div>
             </div>
             
+            {% if not edit_mode %}
+            <div class="profile-section">
+                <div class="profile-section-header"><h2 class="profile-section-title">Privacidad y tus datos</h2></div>
+                <div class="profile-section-body" style="display:flex;gap:.75rem;flex-wrap:wrap;">
+                    <a href="{% url 'accounts:export_personal_data' %}" class="btn btn-outline-secondary btn-sm">Descargar mis datos</a>
+                    <button type="submit" formaction="{% url 'accounts:request_erasure' %}" formmethod="post" class="btn btn-outline-danger btn-sm" onclick="return confirm('¿Quieres registrar una solicitud de supresión?')">Solicitar supresión</button>
+                </div>
+            </div>
+            {% endif %}
+
             <!-- Form Actions (modo edición) -->
             {% if edit_mode %}
             <div class="profile-actions">

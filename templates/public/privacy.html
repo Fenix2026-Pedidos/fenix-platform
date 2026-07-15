@@ -1,16 +1,39 @@
 {% extends 'base.html' %}
-{% load i18n %}
 
-{% block title %}Fenix - {% trans "Política de privacidad" %}{% endblock %}
+{% block title %}Fenix - Política de privacidad{% endblock %}
 
 {% block content %}
 <section class="public-static-page">
-    <h1>{% trans "Política de privacidad" %}</h1>
-    <p>{% trans "Protegemos tus datos siguiendo la normativa vigente. Solo utilizamos la información para procesar pedidos y comunicaciones comerciales consentidas." %}</p>
-    <p>{% trans "Puedes solicitar acceso, rectificación o eliminación contactando con nuestro equipo." %}</p>
-    <div class="public-static-page__card">
-        <p><strong>{% trans "Email" %}:</strong> info@fenixdelamancha.es</p>
-        <p><strong>{% trans "Teléfono" %}:</strong> +34 624 14 92 50</p>
-    </div>
+  <h1>Política de privacidad</h1>
+  <p><strong>Versión:</strong> 15 de julio de 2026</p>
+
+  <h2>Responsable del tratamiento</h2>
+  <p>{{ contact_info.company_name }}{% if contact_info.tax_id %}, NIF/CIF {{ contact_info.tax_id }}{% endif %}.</p>
+  {% if contact_info.address %}<p>Domicilio: {{ contact_info.address }}.</p>{% endif %}
+  <p>Contacto: <a href="mailto:{{ contact_info.email }}">{{ contact_info.email }}</a>.</p>
+
+  <h2>Datos, finalidades y bases jurídicas</h2>
+  <ul>
+    <li><strong>Cuentas y pedidos:</strong> identificación, contacto, empresa, entrega y pedidos para ejecutar la relación contractual y cumplir obligaciones legales.</li>
+    <li><strong>Contacto, CRM y WhatsApp:</strong> atender solicitudes y realizar el seguimiento solicitado; la base es el consentimiento o la aplicación de medidas precontractuales.</li>
+    <li><strong>Asistente inteligente:</strong> responder consultas tras verificar el email. La base es el consentimiento y las conversaciones pueden incorporarse al historial comercial.</li>
+    <li><strong>Comunicaciones comerciales:</strong> sólo con autorización expresa, revocable en cualquier momento.</li>
+    <li><strong>Seguridad:</strong> IP, dispositivo y registros de acceso para prevenir fraude y proteger el servicio, sobre la base del interés legítimo.</li>
+  </ul>
+
+  <h2>Destinatarios y proveedores</h2>
+  <p>Los datos pueden ser tratados por proveedores necesarios para prestar el servicio: Google Cloud y servicios de IA de Google, alojamiento de base de datos, Meta/WhatsApp y proveedores de correo. Se formalizarán contratos de encargo y, cuando proceda, garantías para transferencias internacionales. No vendemos datos personales.</p>
+
+  <h2>Conservación</h2>
+  <p>Los datos contractuales se conservarán durante la relación y los plazos legales aplicables. Los contactos y leads inactivos se revisarán, con carácter general, a los dos años; los registros de seguridad al año y los registros de auditoría a los dos años, salvo bloqueo legal o investigación de un incidente.</p>
+
+  <h2>Decisiones automatizadas</h2>
+  <p>El asistente genera respuestas automáticas, pero no adopta decisiones con efectos jurídicos o equivalentes sobre las personas.</p>
+
+  <h2>Derechos</h2>
+  <p>Puedes solicitar acceso, rectificación, supresión, oposición, limitación o portabilidad, y retirar tu consentimiento, escribiendo a <a href="mailto:{{ contact_info.email }}">{{ contact_info.email }}</a>. También puedes reclamar ante la <a href="https://www.aepd.es" target="_blank" rel="noopener">Agencia Española de Protección de Datos</a>.</p>
+
+  <h2>Seguridad y cambios</h2>
+  <p>Aplicamos controles técnicos y organizativos proporcionales al riesgo. Publicaremos aquí cualquier cambio relevante.</p>
 </section>
 {% endblock %}

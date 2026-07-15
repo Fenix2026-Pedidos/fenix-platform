@@ -139,17 +139,17 @@ class SecuritySettingsAdmin(admin.ModelAdmin):
     list_filter = ['two_factor_enabled', 'two_factor_method']
     search_fields = ['user__email']
     raw_id_fields = ['user']
-    readonly_fields = ['api_token_created_at', 'api_token_last_used', 'password_changed_at', 'created_at', 'updated_at']
+    readonly_fields = ['api_token_created_at', 'api_token_last_used', 'password_changed_at', 'created_at', 'updated_at', 'two_factor_secret', 'api_token']
     
     fieldsets = (
         ('Usuario', {
             'fields': ('user',)
         }),
         ('Autenticación de Dos Factores', {
-            'fields': ('two_factor_enabled', 'two_factor_method', 'two_factor_secret')
+            'fields': ('two_factor_enabled', 'two_factor_method')
         }),
         ('API Token', {
-            'fields': ('api_token', 'api_token_created_at', 'api_token_last_used'),
+            'fields': ('api_token_created_at', 'api_token_last_used'),
             'classes': ('collapse',)
         }),
         ('Sesiones', {

@@ -10,6 +10,8 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET, require_POST
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.conf import settings
+from core.rate_limit import client_ip, rate_limited
 
 from accounts.models import User
 from catalog.models import Product
@@ -20,9 +22,10 @@ from .models import ContactLead
 
 MAX_RESULTS = 5
 PUBLIC_CONTACT_INFO = {
-    'company_name': 'Fenix Distribuciones S.L.',
-    'tax_id': 'CIF pendiente',
-    'email': 'info@fenixdelamancha.es',
+    'company_name': settings.LEGAL_COMPANY_NAME,
+    'tax_id': settings.LEGAL_TAX_ID,
+    'address': settings.LEGAL_ADDRESS,
+    'email': settings.PRIVACY_EMAIL,
     'phone': '+34 624 14 92 50',
 }
 
@@ -163,18 +166,20 @@ def public_contact(request):
 def api_contact_submit(request):
     """Endpoint para procesar el formulario de contacto vía AJAX"""
     try:
+        if rate_limited(request, 'public-contact', 5, 15 * 60):
+            return JsonResponse({'success': False, 'message': _('Demasiadas solicitudes. Inténtalo más tarde.')}, status=429)
         # 1. Honeypot check (anti-spam)
         # Un campo oculto que los bots suelen rellenar
         if request.POST.get('website'):
             return JsonResponse({'success': False, 'message': _('Detección de actividad sospechosa.')}, status=400)
 
         # 2. Get and validate data
-        nombre = request.POST.get('nombre_completo', '').strip()
-        email = request.POST.get('email', '').strip()
-        empresa = request.POST.get('empresa', '').strip()
-        telefono = request.POST.get('telefono', '').strip()
-        asunto = request.POST.get('asunto', '').strip()
-        mensaje = request.POST.get('mensaje', '').strip()
+        nombre = request.POST.get('nombre_completo', '').strip()[:255]
+        email = request.POST.get('email', '').strip().lower()[:254]
+        empresa = request.POST.get('empresa', '').strip()[:255]
+        telefono = request.POST.get('telefono', '').strip()[:50]
+        asunto = request.POST.get('asunto', '').strip()[:255]
+        mensaje = request.POST.get('mensaje', '').strip()[:5000]
         acepta_privacidad = request.POST.get('acepta_privacidad') == 'on' or request.POST.get('acepta_privacidad') == 'true'
 
         errors = {}
@@ -199,6 +204,8 @@ def api_contact_submit(request):
             return JsonResponse({'success': False, 'errors': errors}, status=400)
 
         # 3. Create Lead
+        marketing_accepted = request.POST.get('acepta_comunicaciones') in ('on', 'true')
+        now = timezone.now()
         lead = ContactLead.objects.create(
             nombre_completo=nombre,
             email=email,
@@ -207,8 +214,11 @@ def api_contact_submit(request):
             asunto=asunto,
             mensaje=mensaje,
             acepta_privacidad=acepta_privacidad,
-            acepta_comunicaciones=request.POST.get('acepta_comunicaciones') == 'on' or request.POST.get('acepta_comunicaciones') == 'true',
-            ip=request.META.get('REMOTE_ADDR'),
+            acepta_comunicaciones=marketing_accepted,
+            privacy_accepted_at=now,
+            privacy_policy_version=settings.PRIVACY_POLICY_VERSION,
+            marketing_consent_at=now if marketing_accepted else None,
+            ip=client_ip(request),
             user_agent=request.META.get('HTTP_USER_AGENT'),
             origen='formulario_contacto_web'
         )

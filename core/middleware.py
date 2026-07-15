@@ -2,8 +2,31 @@ import logging
 import time
 import os
 from django.conf import settings
+from core.rate_limit import client_ip
 
 logger = logging.getLogger('audit')
+
+
+class SecurityHeadersMiddleware:
+    """Cabeceras defensivas compatibles con la interfaz actual."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        response.setdefault('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+        response.setdefault('X-Permitted-Cross-Domain-Policies', 'none')
+        # Report-Only permite medir antes de retirar los scripts inline.
+        response.setdefault(
+            'Content-Security-Policy-Report-Only',
+            "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; "
+            "form-action 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+            "img-src 'self' data: https://flagcdn.com https://storage.googleapis.com; "
+            "connect-src 'self'; font-src 'self' data: https://cdn.jsdelivr.net",
+        )
+        return response
 
 class AuditLogMiddleware:
     """
@@ -26,7 +49,7 @@ class AuditLogMiddleware:
         
         # Información de la petición
         ip = self.get_client_ip(request)
-        user = request.user if request.user.is_authenticated else "Anonymous"
+        user = f'user:{request.user.pk}' if request.user.is_authenticated else "anonymous"
         
         response = self.get_response(request)
         
@@ -37,10 +60,13 @@ class AuditLogMiddleware:
         log_msg = f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {ip} - {user} - {request.method} {request.path} - {status_code} ({duration:.2f}s)"
         
         # Escribir en archivo de auditoría si es posible; si no (ej: App Engine), usar logger
-        try:
-            with open(os.path.join(self.log_dir, 'audit.log'), 'a') as f:
-                f.write(log_msg + "\n")
-        except OSError:
+        if settings.DEBUG:
+            try:
+                with open(os.path.join(self.log_dir, 'audit.log'), 'a', encoding='utf-8') as f:
+                    f.write(log_msg + "\n")
+            except OSError:
+                logger.info(log_msg)
+        else:
             logger.info(log_msg)
             
         # Añadir cabecera de seguridad Synerg-IA
@@ -49,9 +75,4 @@ class AuditLogMiddleware:
         return response
 
     def get_client_ip(self, request):
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-        if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0]
-        else:
-            ip = request.META.get('REMOTE_ADDR')
-        return ip
+        return client_ip(request)

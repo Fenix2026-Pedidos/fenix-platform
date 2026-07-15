@@ -1,7 +1,8 @@
 import logging
 from .models_bridge import get_knowledge_base_model, get_cosine_distance
 from django.conf import settings
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 logger = logging.getLogger(__name__)
 
@@ -16,17 +17,18 @@ class SynergIARAG:
         self.threshold = 0.65  # Umbral mínimo de relevancia
         self.top_k = 6         # Mejores fragmentos (ampliado para dar opciones en stock)
         
-        if api_key:
-            genai.configure(api_key=api_key)
+        self.client = genai.Client(api_key=api_key) if api_key else None
 
     def get_embedding(self, text):
         try:
-            result = genai.embed_content(
-                model="models/gemini-embedding-001",
-                content=text,
-                task_type="retrieval_query"
+            if not self.client:
+                return None
+            result = self.client.models.embed_content(
+                model="gemini-embedding-001",
+                contents=text,
+                config=types.EmbedContentConfig(task_type="RETRIEVAL_QUERY"),
             )
-            return result['embedding']
+            return result.embeddings[0].values
         except Exception as e:
             logger.error(f"[RAG] Error al obtener embedding: {e}")
             return None

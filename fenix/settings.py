@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 import sys
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
 
 # Configurar codificación UTF-8 en Windows
 if sys.platform == 'win32':
@@ -33,6 +34,9 @@ try:
 except ImportError:
     pass
 
+from fenix.secrets import load_project_secrets
+load_project_secrets()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,12 +45,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-3v^@+j7ha%j%)+b(6ad%s@@!eh#30=0z^()nhgjj^dvx-0q8+w')
+SECRET_KEY = os.getenv('SECRET_KEY', '')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'true').lower() in ('1', 'true', 'yes')
+DEBUG = os.getenv('DEBUG', 'false').lower() in ('1', 'true', 'yes')
 
-_allowed_hosts = os.getenv('ALLOWED_HOSTS', 'fenix-platform.onrender.com,127.0.0.1,localhost,fenixdelamancha.es,www.fenixdelamancha.es,project-8ec7876a-62b7-4e0b-82d.appspot.com,project-8ec7876a-62b7-4e0b-82d.ew.r.appspot.com').split(',')
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = 'django-insecure-local-development-only-change-me'
+    else:
+        raise ImproperlyConfigured('SECRET_KEY es obligatoria cuando DEBUG=False.')
+
+_allowed_hosts = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 ALLOWED_HOSTS = [h.strip() for h in _allowed_hosts if h.strip()]
 
 
@@ -76,9 +86,27 @@ INSTALLED_APPS = [
 # AI Assistant Settings
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY', '')
 GOOGLE_SHEETS_WEBHOOK_URL = os.getenv('GOOGLE_SHEETS_WEBHOOK_URL', '')  # Webhook para CRM Fenix
+PRIVACY_POLICY_VERSION = os.getenv('PRIVACY_POLICY_VERSION', '2026-07-15')
+LEGAL_COMPANY_NAME = os.getenv('LEGAL_COMPANY_NAME', 'Fenix Distribuciones S.L.')
+LEGAL_TAX_ID = os.getenv('LEGAL_TAX_ID', '')
+LEGAL_ADDRESS = os.getenv('LEGAL_ADDRESS', '')
+PRIVACY_EMAIL = os.getenv('PRIVACY_EMAIL', 'info@fenixdelamancha.es')
+DATA_RETENTION_CONTACT_DAYS = int(os.getenv('DATA_RETENTION_CONTACT_DAYS', '730'))
+DATA_RETENTION_SECURITY_DAYS = int(os.getenv('DATA_RETENTION_SECURITY_DAYS', '365'))
+DATA_RETENTION_AUDIT_DAYS = int(os.getenv('DATA_RETENTION_AUDIT_DAYS', '730'))
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'fenix-security-controls',
+        'TIMEOUT': 15 * 60,
+        'OPTIONS': {'MAX_ENTRIES': 10000},
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'core.middleware.SecurityHeadersMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -95,6 +123,13 @@ MIDDLEWARE = [
 
 # Ensure session is exclusively for the Fenix project
 SESSION_COOKIE_NAME = 'fenix_sessionid'
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_AGE = 60 * 60
+SESSION_SAVE_EVERY_REQUEST = True
+CSRF_COOKIE_SAMESITE = 'Lax'
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin'
 
 # Security settings for production
 if not DEBUG:
@@ -273,7 +308,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.User'
 
 # Configuración de Almacenamiento (Local en dev, GCS en prod)
-GS_BUCKET_NAME = os.getenv('GS_BUCKET_NAME', 'project-8ec7876a-62b7-4e0b-82d.appspot.com')
+_gcp_project = os.getenv('GOOGLE_CLOUD_PROJECT', 'project-8ec7876a-62b7-4e0b-82d')
+GS_BUCKET_NAME = os.getenv('GS_BUCKET_NAME', f'{_gcp_project}.appspot.com')
+GS_PRIVATE_BUCKET_NAME = os.getenv('GS_PRIVATE_BUCKET_NAME', f'{_gcp_project}-fenix-private')
 
 if not DEBUG:
     GS_DEFAULT_ACL = None  # Evita errores 500 si el bucket tiene 'Public Access Prevention' activo
@@ -312,4 +349,3 @@ LOGGING = {
         'level': 'WARNING',
     },
 }
-

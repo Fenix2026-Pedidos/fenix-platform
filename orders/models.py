@@ -1,4 +1,6 @@
 from django.db import models
+from core.storage import private_order_storage
+from core.validators import validate_private_document
 from django.utils.translation import gettext_lazy as _
 
 from accounts.models import User
@@ -154,6 +156,8 @@ class OrderDocument(models.Model):
     )
     file = models.FileField(
         upload_to='order_documents/%Y/%m/',
+        storage=private_order_storage,
+        validators=[validate_private_document],
         verbose_name=_('Archivo')
     )
     uploaded_by = models.ForeignKey(
@@ -174,4 +178,3 @@ class OrderDocument(models.Model):
     
     def __str__(self):
         return f'{self.title} - Order #{self.order.id}'
-

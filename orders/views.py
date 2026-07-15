@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.db.models import Count, Sum, Q
 from django.db.models.functions import TruncMonth
 from django.core.paginator import Paginator, Page
+from django.core.exceptions import PermissionDenied
 from decimal import Decimal
 import json
 from datetime import datetime, date, timedelta
@@ -766,6 +767,25 @@ def order_document_upload(request, pk):
 
 
 @login_required
+def order_document_download(request, pk, doc_id):
+    """Descarga autenticada; nunca expone una URL pública del bucket."""
+    from pathlib import Path
+    from django.http import FileResponse
+    order = get_object_or_404(Order, pk=pk)
+    if not is_manager_or_admin(request.user) and order.customer_id != request.user.id:
+        raise PermissionDenied
+    document = get_object_or_404(OrderDocument, pk=doc_id, order=order)
+    response = FileResponse(
+        document.file.open('rb'),
+        as_attachment=True,
+        filename=Path(document.file.name).name,
+    )
+    response['Cache-Control'] = 'private, no-store'
+    response['X-Content-Type-Options'] = 'nosniff'
+    return response
+
+
+@login_required
 def order_document_delete(request, pk, doc_id):
     """Eliminar un documento de un pedido (Manager/Super Admin)"""
     if not is_manager_or_admin(request.user):
@@ -786,5 +806,3 @@ def order_document_delete(request, pk, doc_id):
         'document': document,
     }
     return render(request, 'orders/order_document_confirm_delete.html', context)
-
-

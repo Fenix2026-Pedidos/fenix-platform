@@ -7,6 +7,7 @@ from . import security_views
 app_name = 'accounts'
 
 urlpatterns = [
+    path('avatar/<int:user_id>/', profile_views.avatar_download, name='avatar_download'),
     # Dashboard/Inicio
     path('inicio/', views.dashboard_view, name='dashboard'),
     path('dashboard/', views.dashboard_view, name='dashboard_alt'),  # Alias
@@ -38,6 +39,8 @@ urlpatterns = [
     path('profile/audit-log/', profile_views.audit_log, name='audit_log'),
     path('profile/api-token/generate/', profile_views.generate_api_token, name='generate_api_token'),
     path('profile/api-token/revoke/', profile_views.revoke_api_token, name='revoke_api_token'),
+    path('profile/privacy/export/', profile_views.export_personal_data, name='export_personal_data'),
+    path('profile/privacy/erasure/', profile_views.request_erasure, name='request_erasure'),
     
     # Administración de perfiles de otros usuarios (Solo ADMIN/SUPER_ADMIN)
     path('profile/<int:user_id>/', profile_views.admin_view_user_profile, name='admin_view_user'),

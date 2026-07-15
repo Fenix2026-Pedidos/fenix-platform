@@ -38,9 +38,15 @@ class AILead(models.Model):
     phone_prefix = models.CharField(max_length=10, default="+34")
     phone_number = models.CharField(max_length=20)
     
-    otp_code = models.CharField(max_length=6, null=True, blank=True)
+    # Contiene un hash de contraseña Django, nunca el OTP en claro.
+    otp_code = models.CharField(max_length=128, null=True, blank=True)
     otp_expires_at = models.DateTimeField(null=True, blank=True)
     otp_attempts = models.IntegerField(default=0)
+    otp_last_sent_at = models.DateTimeField(null=True, blank=True)
+
+    privacy_accepted_at = models.DateTimeField(null=True, blank=True)
+    privacy_policy_version = models.CharField(max_length=32, blank=True)
+    consent_source_ip = models.GenericIPAddressField(null=True, blank=True)
     
     email_verified = models.BooleanField(default=False)
     queries_used = models.IntegerField(default=0)

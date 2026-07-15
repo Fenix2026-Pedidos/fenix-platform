@@ -9,8 +9,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_http_methods, require_POST
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from .models import User
+from core.crypto import decrypt_secret, encrypt_secret
+from core.rate_limit import rate_limited
 
 @login_required
 @require_http_methods(['GET', 'POST'])
@@ -36,7 +39,7 @@ def setup_2fa(request):
             # Guardar el secreto y activar 2FA
             security.two_factor_enabled = True
             security.two_factor_method = 'totp'
-            security.two_factor_secret = secret
+            security.two_factor_secret = encrypt_secret(secret)
             security.save()
             
             # Limpiar sesión
@@ -87,18 +90,22 @@ def verify_2fa_login(request):
         return redirect('accounts:login')
         
     if request.method == 'POST':
+        if rate_limited(request, '2fa-login', 5, 15 * 60, str(user_id)):
+            request.session.pop('pre_2fa_user_id', None)
+            messages.error(request, _('Demasiados intentos. Inicia sesión de nuevo más tarde.'))
+            return redirect('accounts:login')
         code = request.POST.get('code')
         security = user.get_or_create_security()
         
         if security.two_factor_enabled and security.two_factor_method == 'totp':
-            totp = pyotp.TOTP(security.two_factor_secret)
-            if totp.verify(code):
+            totp = pyotp.TOTP(decrypt_secret(security.two_factor_secret))
+            if totp.verify(code, valid_window=1):
                 # Código válido, proceder al login
                 login(request, user)
                 del request.session['pre_2fa_user_id']
                 
                 next_url = request.GET.get('next') or request.session.get('next_url')
-                if next_url:
+                if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
                     if 'next_url' in request.session:
                         del request.session['next_url']
                     return redirect(next_url)

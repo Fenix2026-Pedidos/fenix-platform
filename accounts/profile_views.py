@@ -1,10 +1,14 @@
 import secrets
+from pathlib import Path
+
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import FileResponse, Http404, JsonResponse
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -16,16 +20,14 @@ from .profile_forms import (
     SecurityForm, PasswordChangeForm, AvatarUploadForm, OperativeProfileForm
 )
 from core.audit import log_action
+from accounts.permissions import can_manage_users
+from core.models import PrivacyRequest
 
 
 def get_client_ip(request):
     """Obtener IP del cliente"""
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
+    from core.rate_limit import client_ip
+    return client_ip(request)
 
 
 def log_profile_action(user, action, field_changed=None, old_value=None, new_value=None, request=None):
@@ -94,6 +96,70 @@ def profile_dashboard(request):
     }
     
     return render(request, 'accounts/profile/profile_dashboard_new.html', context)
+
+
+@login_required
+def avatar_download(request, user_id):
+    target = get_object_or_404(User, pk=user_id)
+    if request.user.pk != target.pk and not can_manage_users(request.user):
+        raise PermissionDenied
+    if not target.avatar:
+        raise Http404
+    response = FileResponse(
+        target.avatar.open('rb'),
+        filename=Path(target.avatar.name).name,
+        as_attachment=False,
+    )
+    response['Cache-Control'] = 'private, no-store'
+    response['X-Content-Type-Options'] = 'nosniff'
+    return response
+
+
+@login_required
+def export_personal_data(request):
+    """Exportación autocontenida de los principales datos del interesado."""
+    from crm.models import CRMLead
+    from orders.models import Order
+    from recurring.models import RecurringOrder
+
+    user = request.user
+    safe_user_fields = [
+        'email', 'first_name', 'last_name', 'full_name', 'phone', 'company',
+        'job_title', 'vat_number', 'direccion_local', 'ciudad', 'provincia',
+        'codigo_postal', 'pais', 'direccion_entrega', 'ciudad_entrega',
+        'provincia_entrega', 'codigo_postal_entrega', 'created_at', 'last_login_at',
+    ]
+    payload = {
+        'generated_at': timezone.now(),
+        'profile': {field: getattr(user, field, None) for field in safe_user_fields},
+        'orders': list(Order.objects.filter(customer=user).values()),
+        'recurring_orders': list(RecurringOrder.objects.filter(customer=user).values()),
+        'crm': list(CRMLead.objects.filter(Q(email=user.email) | Q(phone=user.phone)).values()),
+        'login_history': list(LoginHistory.objects.filter(user=user).values()),
+        'profile_audit': list(ProfileAuditLog.objects.filter(user=user).values()),
+    }
+    response = JsonResponse(payload)
+    response['Content-Disposition'] = 'attachment; filename="fenix-datos-personales.json"'
+    response['Cache-Control'] = 'private, no-store'
+    return response
+
+
+@login_required
+@require_POST
+def request_erasure(request):
+    existing = PrivacyRequest.objects.filter(
+        user=request.user,
+        request_type=PrivacyRequest.TYPE_ERASURE,
+        status=PrivacyRequest.STATUS_PENDING,
+    ).exists()
+    if not existing:
+        PrivacyRequest.objects.create(
+            user=request.user,
+            email=request.user.email,
+            request_type=PrivacyRequest.TYPE_ERASURE,
+        )
+    messages.success(request, _('Tu solicitud de supresión ha quedado registrada para revisión.'))
+    return redirect('accounts:profile_dashboard')
 
 
 @login_required
@@ -462,11 +528,12 @@ def generate_api_token(request):
     security = request.user.get_or_create_security()
     
     # Generar nuevo token
-    security.api_token = secrets.token_urlsafe(32)
+    raw_token = secrets.token_urlsafe(32)
+    security.api_token = make_password(raw_token)
     security.api_token_created_at = timezone.now()
     security.save()
     
-    messages.success(request, _('Token de API generado correctamente'))
+    messages.success(request, _('Copia este token ahora; no volverá a mostrarse: %(token)s') % {'token': raw_token})
     return redirect('accounts:profile_dashboard')
 
 

@@ -1,5 +1,13 @@
 from django.contrib import admin
-from .models import PlatformSettings, AuditLog, ContactLead
+from .models import PlatformSettings, AuditLog, ContactLead, PrivacyRequest
+
+
+@admin.register(PrivacyRequest)
+class PrivacyRequestAdmin(admin.ModelAdmin):
+    list_display = ['created_at', 'email', 'request_type', 'status', 'completed_at']
+    list_filter = ['request_type', 'status', 'created_at']
+    search_fields = ['email']
+    readonly_fields = ['user', 'email', 'request_type', 'created_at']
 
 
 @admin.register(PlatformSettings)
@@ -46,7 +54,7 @@ class ContactLeadAdmin(admin.ModelAdmin):
     list_display = ['nombre_completo', 'email', 'empresa', 'estado', 'created_at']
     list_filter = ['estado', 'acepta_privacidad', 'created_at']
     search_fields = ['nombre_completo', 'email', 'empresa', 'mensaje']
-    readonly_fields = ['created_at', 'updated_at', 'ip', 'user_agent']
+    readonly_fields = ['created_at', 'updated_at', 'ip', 'user_agent', 'privacy_accepted_at', 'privacy_policy_version', 'marketing_consent_at']
     date_hierarchy = 'created_at'
     ordering = ['-created_at']
     
@@ -55,7 +63,7 @@ class ContactLeadAdmin(admin.ModelAdmin):
             'fields': ('nombre_completo', 'email', 'telefono', 'empresa', 'asunto', 'mensaje')
         }),
         ('Estado y Consentimiento', {
-            'fields': ('estado', 'acepta_privacidad', 'acepta_comunicaciones', 'origen')
+            'fields': ('estado', 'acepta_privacidad', 'privacy_accepted_at', 'privacy_policy_version', 'acepta_comunicaciones', 'marketing_consent_at', 'origen')
         }),
         ('Rastreo y Metadatos', {
             'fields': ('ip', 'user_agent', 'metadata', 'created_at', 'updated_at'),

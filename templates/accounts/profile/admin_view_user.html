@@ -35,7 +35,7 @@
             <!-- Avatar -->
             <div style="flex-shrink: 0;">
                 {% if target_user.avatar %}
-                    <img src="{{ target_user.avatar.url }}" alt="{{ target_user.get_full_name }}" 
+                    <img src="{% url 'accounts:avatar_download' target_user.id %}" alt="{{ target_user.get_full_name }}"
                          style="width: 96px; height: 96px; border-radius: 50%; object-fit: cover; border: 3px solid #e5e7eb;">
                 {% else %}
                     <div style="width: 96px; height: 96px; border-radius: 50%; background: #e5e7eb; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 600; color: #6b7280;">

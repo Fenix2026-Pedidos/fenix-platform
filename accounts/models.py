@@ -1,6 +1,7 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
+from core.storage import private_media_storage
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from datetime import timedelta
@@ -69,7 +70,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=100, blank=True, verbose_name=_('Nombre'))
     last_name = models.CharField(max_length=100, blank=True, verbose_name=_('Apellidos'))
     phone = models.CharField(max_length=20, blank=True, verbose_name=_('Teléfono'))
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars/', storage=private_media_storage, null=True, blank=True)
     
     # EMPRESA (legacy - mantener)
     company = models.CharField(max_length=200, blank=True, default='')
@@ -469,10 +470,11 @@ class SecuritySettings(models.Model):
     # 2FA
     two_factor_enabled = models.BooleanField(default=False)
     two_factor_method = models.CharField(max_length=20, blank=True)  # 'totp', 'sms', 'email'
-    two_factor_secret = models.CharField(max_length=100, blank=True)
+    two_factor_secret = models.CharField(max_length=255, blank=True)
     
     # API
-    api_token = models.CharField(max_length=100, blank=True, null=True, unique=True, default=None)
+    # Hash del token; el valor en claro sólo se muestra una vez al generarlo.
+    api_token = models.CharField(max_length=128, blank=True, null=True, unique=True, default=None)
     api_token_created_at = models.DateTimeField(null=True, blank=True)
     api_token_last_used = models.DateTimeField(null=True, blank=True)
     
@@ -601,4 +603,3 @@ class ProfileAuditLog(models.Model):
     
     def __str__(self):
         return f"{self.user.email} - {self.get_action_display()} - {self.created_at}"
-

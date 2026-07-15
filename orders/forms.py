@@ -58,8 +58,8 @@ class OrderETAForm(forms.ModelForm):
 
 
 class OrderDocumentForm(forms.ModelForm):
-    """Formulario para subir documentos a un pedido"""
-    
+    """Formulario para subir documentos a un pedido."""
+
     class Meta:
         model = OrderDocument
         fields = ['document_type', 'title', 'description', 'file']
@@ -67,7 +67,10 @@ class OrderDocumentForm(forms.ModelForm):
             'document_type': forms.Select(attrs={'class': 'form-select'}),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'file': forms.FileInput(attrs={'class': 'form-control'}),
+            'file': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': '.pdf,.png,.jpg,.jpeg,.docx,.xlsx',
+            }),
         }
         labels = {
             'document_type': _('Tipo de documento'),
@@ -76,3 +79,8 @@ class OrderDocumentForm(forms.ModelForm):
             'file': _('Archivo'),
         }
 
+    def clean_file(self):
+        upload = self.cleaned_data['file']
+        from core.validators import validate_private_document
+        validate_private_document(upload)
+        return upload

@@ -2,7 +2,8 @@ import os
 import logging
 import mimetypes
 import requests
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from django.conf import settings
 from catalog.utils import translate_text
 
@@ -86,10 +87,9 @@ class DescriptionGenerator:
             return "Descripción no disponible actualmente."
 
         # Configurar la API de Gemini
-        genai.configure(api_key=api_key)
+        client = genai.Client(api_key=api_key)
         
         # Usamos gemini-2.5-flash por su velocidad y excelente visión/OCR
-        model = genai.GenerativeModel("gemini-2.5-flash")
 
         # Intentar obtener la imagen del producto
         image_bytes, mime_type = cls.fetch_product_image_bytes(product)
@@ -120,14 +120,13 @@ class DescriptionGenerator:
                 f"5. Longitud: Entre 200 y 400 caracteres máximo. No utilices listas ni encabezados markdown. Redacta un párrafo continuo, fluido y pulido.\n"
             )
             
-            image_data = {
-                'mime_type': mime_type,
-                'data': image_bytes
-            }
+            image_data = types.Part.from_bytes(data=image_bytes, mime_type=mime_type)
             
             try:
                 logger.info(f"[DescriptionGenerator] Enviando solicitud multimodal de visión para '{product.name_es}'...")
-                response = model.generate_content([prompt, image_data])
+                response = client.models.generate_content(
+                    model='gemini-2.5-flash', contents=[prompt, image_data]
+                )
                 text = response.text.strip()
                 # Limpiar posibles bloques de código markdown que Gemini pudiera meter
                 if text.startswith("```"):
@@ -147,7 +146,9 @@ class DescriptionGenerator:
 
         try:
             logger.info(f"[DescriptionGenerator] Generando descripción textual de fallback para '{product.name_es}'...")
-            response = model.generate_content(fallback_prompt)
+            response = client.models.generate_content(
+                model='gemini-2.5-flash', contents=fallback_prompt
+            )
             text = response.text.strip()
             if text.startswith("```"):
                 text = text.replace("```", "").strip()

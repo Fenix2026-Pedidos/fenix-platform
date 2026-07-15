@@ -98,6 +98,11 @@ class ContactLead(models.Model):
     ip = models.GenericIPAddressField(blank=True, null=True, verbose_name=_('Dirección IP'))
     user_agent = models.TextField(blank=True, null=True, verbose_name=_('User Agent'))
     metadata = models.JSONField(blank=True, null=True, verbose_name=_('Metadatos adicionales'))
+
+    # Evidencia de consentimiento: fecha y texto/política aceptada.
+    privacy_accepted_at = models.DateTimeField(blank=True, null=True)
+    privacy_policy_version = models.CharField(max_length=32, blank=True)
+    marketing_consent_at = models.DateTimeField(blank=True, null=True)
     
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Fecha de creación'))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Última actualización'))
@@ -116,5 +121,51 @@ class ContactLead(models.Model):
         return f"{self.nombre_completo} ({self.email}) - {self.created_at.strftime('%Y-%m-%d %H:%M')}"
 
 
-# AuditLog model is now imported from audit.py
-__all__ = ['PlatformSettings', 'AuditLog', 'ContactLead']
+class RateLimitBucket(models.Model):
+    """Contador global de abuso, compartido por todas las instancias."""
+    key = models.CharField(max_length=160, unique=True)
+    count = models.PositiveIntegerField(default=0)
+    expires_at = models.DateTimeField(db_index=True)
+
+    class Meta:
+        verbose_name = 'Rate limit bucket'
+
+
+class PrivacyRequest(models.Model):
+    TYPE_ACCESS = 'access'
+    TYPE_ERASURE = 'erasure'
+    TYPE_RECTIFICATION = 'rectification'
+    TYPE_CHOICES = [
+        (TYPE_ACCESS, 'Acceso/portabilidad'),
+        (TYPE_ERASURE, 'Supresión'),
+        (TYPE_RECTIFICATION, 'Rectificación'),
+    ]
+    STATUS_PENDING = 'pending'
+    STATUS_COMPLETED = 'completed'
+    STATUS_REJECTED = 'rejected'
+    STATUS_CHOICES = [
+        (STATUS_PENDING, 'Pendiente'),
+        (STATUS_COMPLETED, 'Completada'),
+        (STATUS_REJECTED, 'Rechazada motivadamente'),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
+    email = models.EmailField(db_index=True)
+    request_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+
+# AuditLog model is imported from audit.py to avoid duplication.
+__all__ = [
+    'PlatformSettings',
+    'AuditLog',
+    'ContactLead',
+    'RateLimitBucket',
+    'PrivacyRequest',
+]

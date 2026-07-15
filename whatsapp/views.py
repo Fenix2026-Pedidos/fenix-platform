@@ -1,223 +1,142 @@
-"""
-Vistas para la integración de WhatsApp
-"""
+"""Endpoints de WhatsApp con autenticación, minimización y control de abuso."""
+
+import hashlib
+import hmac
 import json
 import logging
 import os
 from urllib.parse import quote
-from django.http import JsonResponse, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
+
+from django.http import HttpResponse, JsonResponse
 from django.utils.decorators import method_decorator
 from django.views import View
-from .services import send_whatsapp_message
+from django.views.decorators.csrf import csrf_exempt
+
+from core.rate_limit import rate_limited
 from .models import WhatsAppLead
+from .services import send_whatsapp_message
 
 logger = logging.getLogger(__name__)
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class SendWhatsAppMessageView(View):
-    """
-    Endpoint para enviar mensajes de WhatsApp desde el frontend público.
-    """
-    
-    def post(self, request):
-        """
-        Recibe un POST con:
-        {
-            "name": "Nombre del usuario",
-            "message": "Mensaje del usuario",
-            "page_url": "URL de la página desde donde se envió"
-        }
-        """
-        try:
-            # Parsear JSON del body
-            try:
-                data = json.loads(request.body)
-            except json.JSONDecodeError:
-                return JsonResponse({
-                    'success': False,
-                    'error': 'JSON inválido'
-                }, status=400)
-            
-            # Validar campos requeridos
-            name = data.get('name', '').strip()
-            message = data.get('message', '').strip()
-            page_url = data.get('page_url', '').strip()
-            
-            if not name:
-                return JsonResponse({
-                    'success': False,
-                    'error': 'El nombre es requerido'
-                }, status=400)
-            
-            if not message:
-                return JsonResponse({
-                    'success': False,
-                    'error': 'El mensaje es requerido'
-                }, status=400)
-            
-            # 1. Crear el registro del Lead (vía persistencia)
-            lead = WhatsAppLead.objects.create(
-                name=name,
-                message=message,
-                page_url=page_url
-            )
-            
-            # Sincronizar con el CRM Omnicanal Unificado
-            try:
-                from crm.services import CRMLeadService
-                from crm.models import CRMLead
-                CRMLeadService.log_lead(
-                    channel=CRMLead.CHANNEL_WHATSAPP,
-                    full_name=name,
-                    message=message,
-                    source=f"Formulario de WhatsApp Web ({page_url or 'Sin URL'})"
-                )
-            except Exception as crm_err:
-                logger.warning(f"[CRM] Error registrando lead desde SendWhatsAppMessageView: {crm_err}")
-            
-            # 2. Construir mensaje final para WhatsApp
-            whatsapp_text = f"Nuevo contacto Fenix:\n\nNombre: {name}\nPágina: {page_url if page_url else 'No especificada'}\n\nMensaje:\n{message}"
-            
-            # 3. Enviar mensaje a través del servicio
-            result = send_whatsapp_message(whatsapp_text)
-            
-            # 4. Determinar URL según dispositivo (Web vs Móvil/Tablet)
-            user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
-            is_mobile = any(dev in user_agent for dev in ['iphone', 'android', 'ipad', 'mobile', 'tablet'])
-            whatsapp_phone = os.getenv('DEFAULT_WHATSAPP_TARGET', '')
-            
-            if is_mobile:
-                # wa.me es universal y abre la app en móviles/tablets
-                whatsapp_url = f"https://wa.me/{whatsapp_phone}?text={quote(whatsapp_text)}"
-            else:
-                # Forzar WhatsApp Web en Desktop según requerimiento
-                whatsapp_url = f"https://web.whatsapp.com/send?phone={whatsapp_phone}&text={quote(whatsapp_text)}"
+    """Envío desde páginas propias; conserva protección CSRF."""
 
-            # 5. Actualizar el Lead con la respuesta
-            lead.sent_successfully = result['success']
-            lead.api_response = result.get('whatsapp_response')
-            if not result['success']:
-                # Guardar el error en api_response para debugging si falla
-                lead.api_response = {'error': result.get('error'), 'details': result.get('details')}
-            lead.save()
-            
-            if result['success']:
-                logger.info(f"Mensaje WhatsApp enviado y guardado (Lead ID: {lead.id})")
-                return JsonResponse({
-                    'success': True,
-                    'message': 'Mensaje enviado correctamente',
-                    'whatsapp_url': whatsapp_url
-                })
-            else:
-                logger.error(f"Error al enviar mensaje WhatsApp: {result.get('error', 'Error desconocido')}")
-                return JsonResponse({
-                    'success': False,
-                    'error': result.get('error', 'Error al enviar mensaje')
-                }, status=500)
-        
-        except Exception as e:
-            logger.error(f"Error inesperado en SendWhatsAppMessageView: {str(e)}", exc_info=True)
-            return JsonResponse({
-                'success': False,
-                'error': 'Error interno del servidor'
-            }, status=500)
+    def post(self, request):
+        if rate_limited(request, 'whatsapp-send', 3, 15 * 60):
+            return JsonResponse({'success': False, 'error': 'Demasiadas solicitudes'}, status=429)
+        try:
+            data = json.loads(request.body)
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            return JsonResponse({'success': False, 'error': 'JSON inválido'}, status=400)
+
+        name = str(data.get('name', '')).strip()[:100]
+        message = str(data.get('message', '')).strip()[:2000]
+        page_url = str(data.get('page_url', '')).strip()[:500]
+        if not name or not message:
+            return JsonResponse({'success': False, 'error': 'Nombre y mensaje son obligatorios'}, status=400)
+
+        lead = WhatsAppLead.objects.create(name=name, message=message, page_url=page_url)
+        try:
+            from crm.models import CRMLead
+            from crm.services import CRMLeadService
+            CRMLeadService.log_lead(
+                channel=CRMLead.CHANNEL_WHATSAPP,
+                full_name=name,
+                message=message,
+                source='Formulario de WhatsApp Web',
+            )
+        except Exception:
+            logger.exception('No se pudo registrar el lead de WhatsApp en CRM')
+
+        whatsapp_text = f'Nuevo contacto Fenix:\n\nNombre: {name}\n\nMensaje:\n{message}'
+        result = send_whatsapp_message(whatsapp_text)
+        lead.sent_successfully = bool(result.get('success'))
+        # No persistir respuestas completas del proveedor, que pueden contener PII.
+        lead.api_response = {'status': 'sent' if lead.sent_successfully else 'failed'}
+        lead.save(update_fields=['sent_successfully', 'api_response'])
+
+        if not lead.sent_successfully:
+            logger.error('Falló el envío de WhatsApp; lead_id=%s', lead.pk)
+            return JsonResponse({'success': False, 'error': 'No se pudo enviar el mensaje'}, status=502)
+
+        target = os.getenv('DEFAULT_WHATSAPP_TARGET', '')
+        user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
+        mobile = any(value in user_agent for value in ('iphone', 'android', 'ipad', 'mobile', 'tablet'))
+        base = 'https://wa.me/' if mobile else 'https://web.whatsapp.com/send?phone='
+        separator = '?text=' if mobile else '&text='
+        return JsonResponse({
+            'success': True,
+            'message': 'Mensaje enviado correctamente',
+            'whatsapp_url': f'{base}{target}{separator}{quote(whatsapp_text)}',
+        })
 
 
 @method_decorator(csrf_exempt, name='dispatch')
 class WhatsAppWebhookView(View):
-    """
-    Endpoint para recibir webhooks de WhatsApp API.
-    """
-    
+    """Webhook externo de Meta; CSRF no aplica, se valida firma HMAC."""
+
     def get(self, request):
-        """
-        Verificación del webhook requerida por Meta.
-        """
-        mode = request.GET.get('hub.mode')
-        token = request.GET.get('hub.verify_token')
-        challenge = request.GET.get('hub.challenge')
-        
-        verify_token_env = os.getenv('WHATSAPP_WEBHOOK_VERIFY_TOKEN', 'fenix_seguridad_webhook_2026')
-        
-        if mode and token:
-            if mode == 'subscribe' and token == verify_token_env:
-                logger.info("Webhook verificado correctamente por Meta")
-                return HttpResponse(challenge, status=200)
-            else:
-                logger.warning(f"Fallo en verificación de Webhook. Token recibido: {token}")
-                return HttpResponse('Error de verificación', status=403)
-                
-        return HttpResponse('Bad Request', status=400)
-        
+        mode = request.GET.get('hub.mode', '')
+        token = request.GET.get('hub.verify_token', '')
+        challenge = request.GET.get('hub.challenge', '')
+        expected = os.getenv('WHATSAPP_WEBHOOK_VERIFY_TOKEN', '')
+        if expected and mode == 'subscribe' and hmac.compare_digest(token, expected):
+            return HttpResponse(challenge, status=200)
+        logger.warning('Falló la verificación inicial del webhook de WhatsApp')
+        return HttpResponse('Forbidden', status=403)
+
     def post(self, request):
-        """
-        Recepción de mensajes y notificaciones de estado.
-        """
+        app_secret = os.getenv('WHATSAPP_APP_SECRET', '')
+        supplied = request.META.get('HTTP_X_HUB_SIGNATURE_256', '')
+        if not app_secret or not supplied.startswith('sha256='):
+            return HttpResponse('Forbidden', status=403)
+        expected = 'sha256=' + hmac.new(
+            app_secret.encode('utf-8'), request.body, hashlib.sha256
+        ).hexdigest()
+        if not hmac.compare_digest(supplied, expected):
+            logger.warning('Firma incorrecta en webhook de WhatsApp')
+            return HttpResponse('Forbidden', status=403)
+
         try:
             body = json.loads(request.body)
-            # Loggear payload para ver la estructura recibida de Meta
-            logger.info(f"\n[WHATSAPP WEBHOOK] Evento entrante:\n{json.dumps(body, indent=2)}\n")
-            
-            # PARSEO DEL BODY DE WHATSAPP WEBHOOK (META CLOUD API)
-            entries = body.get('entry', [])
-            for entry in entries:
-                changes = entry.get('changes', [])
-                for change in changes:
-                    value = change.get('value', {})
-                    messages = value.get('messages', [])
-                    contacts = value.get('contacts', [])
-                    
-                    # Mapear nombres de contacto por su wa_id
-                    contact_names = {}
-                    for contact in contacts:
-                        wa_id = contact.get('wa_id')
-                        profile = contact.get('profile', {})
-                        name = profile.get('name')
-                        if wa_id and name:
-                            contact_names[wa_id] = name
-                    
-                    for msg in messages:
-                        sender_phone = msg.get('from')  # Número de teléfono del emisor
-                        msg_type = msg.get('type')
-                        
-                        # Extraer el cuerpo del mensaje de texto
-                        msg_body = ""
-                        if msg_type == 'text':
-                            msg_body = msg.get('text', {}).get('body', '').strip()
-                        elif msg_type == 'button':
-                            msg_body = msg.get('button', {}).get('text', '').strip()
-                        elif msg_type == 'interactive':
-                            interactive = msg.get('interactive', {})
-                            if interactive.get('type') == 'button_reply':
-                                msg_body = interactive.get('button_reply', {}).get('title', '').strip()
-                            elif interactive.get('type') == 'list_reply':
-                                msg_body = interactive.get('list_reply', {}).get('title', '').strip()
-                        else:
-                            msg_body = f"[{msg_type.upper()}] Mensaje multimedia o interactivo recibido."
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            return HttpResponse('Invalid JSON', status=400)
 
-                        if sender_phone and msg_body:
-                            # Obtener el nombre del perfil de WhatsApp, o fallback por defecto
-                            sender_name = contact_names.get(sender_phone, f"WhatsApp {sender_phone}")
-                            
-                            # Registrar/actualizar lead e historial en el CRM
-                            from crm.services import CRMLeadService
-                            from crm.models import CRMLead
-                            
+        processed = 0
+        try:
+            from crm.models import CRMLead
+            from crm.services import CRMLeadService
+            for entry in body.get('entry', []):
+                for change in entry.get('changes', []):
+                    value = change.get('value', {})
+                    names = {
+                        c.get('wa_id'): c.get('profile', {}).get('name')
+                        for c in value.get('contacts', []) if c.get('wa_id')
+                    }
+                    for msg in value.get('messages', []):
+                        sender = str(msg.get('from', ''))[:30]
+                        msg_type = msg.get('type', '')
+                        if msg_type == 'text':
+                            text = msg.get('text', {}).get('body', '')
+                        elif msg_type == 'button':
+                            text = msg.get('button', {}).get('text', '')
+                        else:
+                            text = f'[{msg_type or "unknown"}]'
+                        text = str(text).strip()[:4000]
+                        if sender and text:
                             CRMLeadService.log_lead(
                                 channel=CRMLead.CHANNEL_WHATSAPP,
-                                full_name=sender_name,
-                                phone=sender_phone,
-                                message=msg_body,
-                                source="WhatsApp Incoming Webhook",
-                                metadata=msg
+                                full_name=str(names.get(sender) or 'Contacto WhatsApp')[:255],
+                                phone=sender,
+                                message=text,
+                                source='WhatsApp Incoming Webhook',
+                                metadata={'message_id': msg.get('id'), 'type': msg_type},
                             )
-            
-            return HttpResponse('EVENT_RECEIVED', status=200)
-        except json.JSONDecodeError:
-            return HttpResponse('Invalid JSON', status=400)
-        except Exception as e:
-            logger.error(f"Error procesando webhook: {str(e)}", exc_info=True)
+                            processed += 1
+        except Exception:
+            logger.exception('Error procesando webhook autenticado de WhatsApp')
             return HttpResponse('Internal Server Error', status=500)
+
+        logger.info('Webhook de WhatsApp procesado; mensajes=%s', processed)
+        return HttpResponse('EVENT_RECEIVED', status=200)

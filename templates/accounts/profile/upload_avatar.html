@@ -23,7 +23,7 @@
                 <div class="card-body">
                     <div class="text-center mb-4">
                         {% if user.avatar %}
-                            <img src="{{ user.avatar.url }}" alt="{{ user.display_name }}" 
+                            <img src="{% url 'accounts:avatar_download' user.id %}" alt="{{ user.display_name }}"
                                  class="rounded-circle img-thumbnail mb-2" 
                                  style="width: 150px; height: 150px; object-fit: cover;">
                             <p class="text-muted">{% trans "Foto actual" %}</p>
