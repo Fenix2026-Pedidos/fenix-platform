@@ -19,7 +19,6 @@ class ResendEmailBackend(BaseEmailBackend):
         api_key = getattr(settings, 'RESEND_API_KEY', '')
         if not api_key:
             logger.error("RESEND_API_KEY no está configurada en los settings de Django.")
-            print("--- [ERROR RESEND] RESEND_API_KEY no configurada ---")
             return 0
             
         sent_count = 0
@@ -62,16 +61,13 @@ class ResendEmailBackend(BaseEmailBackend):
                 )
                 
                 with urllib.request.urlopen(req) as response:
-                    res_body = response.read().decode('utf-8')
-                    logger.info(f"Email enviado con éxito mediante Resend: {res_body}")
-                    print(f"--- [ÉXITO RESEND] Email enviado: {res_body} ---")
+                    response.read()
+                    logger.info("Email enviado correctamente mediante Resend.")
                     sent_count += 1
             except urllib.error.HTTPError as e:
-                err_content = e.read().decode('utf-8')
-                logger.error(f"Error HTTP en Resend ({e.code}): {err_content}")
-                print(f"--- [ERROR RESEND API] HTTP {e.code}: {err_content} ---")
+                e.read()
+                logger.error("Error HTTP en Resend (código %s).", e.code)
             except Exception as e:
-                logger.error(f"Error general en Resend Backend: {e}")
-                print(f"--- [ERROR RESEND] General: {e} ---")
+                logger.error("Error general en Resend Backend: %s", type(e).__name__)
                 
         return sent_count

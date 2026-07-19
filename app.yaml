@@ -12,6 +12,8 @@ env_variables:
   USE_SQLITE_DEV: "false"
   SECURE_SSL_REDIRECT: "true"
   ALLOWED_HOSTS: "fenixdelamancha.es,www.fenixdelamancha.es,project-8ec7876a-62b7-4e0b-82d.appspot.com,project-8ec7876a-62b7-4e0b-82d.ew.r.appspot.com"
+  DEFAULT_FROM_EMAIL: "Fenix <noreply@fenixdelamancha.es>"
+  RESEND_DEFAULT_FROM: "Fenix <noreply@fenixdelamancha.es>"
 
 handlers:
 - url: /static

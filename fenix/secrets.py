@@ -20,6 +20,7 @@ SECRET_ENV_MAP = {
     "fenix-email-host-password": "EMAIL_HOST_PASSWORD",
     "fenix-resend-api-key": "RESEND_API_KEY",
     "fenix-whatsapp-access-token": "WHATSAPP_ACCESS_TOKEN",
+    "fenix-whatsapp-phone-number-id": "WHATSAPP_PHONE_NUMBER_ID",
     "fenix-whatsapp-webhook-verify-token": "WHATSAPP_WEBHOOK_VERIFY_TOKEN",
     "fenix-whatsapp-app-secret": "WHATSAPP_APP_SECRET",
     "fenix-google-api-key": "GOOGLE_API_KEY",
