@@ -321,11 +321,12 @@ if not DEBUG:
             "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
         },
         "staticfiles": {
-            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+            # App Engine sirve STATIC_ROOT mediante el handler /static. No se
+            # usa el manifiesto en runtime porque esos archivos se publican
+            # fuera del contenedor de la aplicación.
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
         },
     }
-    # Whitenoise: No fallar si falta algo en el manifiesto (evita errores 500 críticos por iconos/favicons)
-    WHITENOISE_MANIFEST_STRICT = False
 else:
     STORAGES = {
         "default": {

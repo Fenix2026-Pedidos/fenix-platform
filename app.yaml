@@ -2,6 +2,10 @@ runtime: python312
 
 instance_class: F1
 
+automatic_scaling:
+  min_instances: 0
+  max_instances: 3
+
 entrypoint: gunicorn -b :$PORT fenix.wsgi
 
 # Los secretos se recuperan en tiempo de arranque desde Secret Manager,
