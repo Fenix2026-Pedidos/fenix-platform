@@ -26,7 +26,6 @@ datos*.json
 logs/
 *.log
 media/
-staticfiles/
 check_*.txt
 test_*.txt
 error.txt
