@@ -197,7 +197,7 @@ if _use_sqlite_dev:
     }
 else:
     _db_opts = {}
-    if os.getenv('DB_HOST') and os.getenv('DB_HOST') != 'localhost':
+    if os.getenv('DB_HOST') and os.getenv('DB_HOST') not in {'localhost', '127.0.0.1', '::1'}:
         _db_opts['sslmode'] = 'require'
     DATABASES = {
         'default': {
