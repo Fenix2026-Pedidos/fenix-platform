@@ -6,7 +6,6 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Q
 from django.http import FileResponse, Http404, JsonResponse
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect, get_object_or_404
@@ -117,27 +116,19 @@ def avatar_download(request, user_id):
 
 @login_required
 def export_personal_data(request):
-    """Exportación autocontenida de los principales datos del interesado."""
-    from crm.models import CRMLead
-    from orders.models import Order
-    from recurring.models import RecurringOrder
+    """Exportación con esquema explícito y sin coincidencias ambiguas."""
+    from accounts.privacy_export import build_personal_data_export
+    from core.audit import AuditLog
 
-    user = request.user
-    safe_user_fields = [
-        'email', 'first_name', 'last_name', 'full_name', 'phone', 'company',
-        'job_title', 'vat_number', 'direccion_local', 'ciudad', 'provincia',
-        'codigo_postal', 'pais', 'direccion_entrega', 'ciudad_entrega',
-        'provincia_entrega', 'codigo_postal_entrega', 'created_at', 'last_login_at',
-    ]
-    payload = {
-        'generated_at': timezone.now(),
-        'profile': {field: getattr(user, field, None) for field in safe_user_fields},
-        'orders': list(Order.objects.filter(customer=user).values()),
-        'recurring_orders': list(RecurringOrder.objects.filter(customer=user).values()),
-        'crm': list(CRMLead.objects.filter(Q(email=user.email) | Q(phone=user.phone)).values()),
-        'login_history': list(LoginHistory.objects.filter(user=user).values()),
-        'profile_audit': list(ProfileAuditLog.objects.filter(user=user).values()),
-    }
+    payload = build_personal_data_export(request.user)
+    AuditLog.log(
+        user=request.user,
+        action=AuditLog.ACTION_PERSONAL_DATA_EXPORTED,
+        description='El usuario generó una exportación de sus datos personales.',
+        object_type='User',
+        object_id=request.user.pk,
+        request=request,
+    )
     response = JsonResponse(payload)
     response['Content-Disposition'] = 'attachment; filename="fenix-datos-personales.json"'
     response['Cache-Control'] = 'private, no-store'

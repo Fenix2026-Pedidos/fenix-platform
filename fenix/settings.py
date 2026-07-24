@@ -94,6 +94,15 @@ PRIVACY_EMAIL = os.getenv('PRIVACY_EMAIL', 'info@fenixdelamancha.es')
 DATA_RETENTION_CONTACT_DAYS = int(os.getenv('DATA_RETENTION_CONTACT_DAYS', '730'))
 DATA_RETENTION_SECURITY_DAYS = int(os.getenv('DATA_RETENTION_SECURITY_DAYS', '365'))
 DATA_RETENTION_AUDIT_DAYS = int(os.getenv('DATA_RETENTION_AUDIT_DAYS', '730'))
+# El borrado físico administrativo queda bloqueado por defecto. Las purgas
+# RGPD usarán un flujo separado con revisión, legal hold y evidencia.
+ALLOW_HARD_DELETE = os.getenv('ALLOW_HARD_DELETE', 'false').lower() in ('1', 'true', 'yes')
+TESTING = 'test' in sys.argv
+# Las pruebas nunca deben iniciar correos ni copias externas en hilos.
+CRM_ASYNC_SIDE_EFFECTS_ENABLED = (
+    not TESTING
+    and os.getenv('CRM_ASYNC_SIDE_EFFECTS_ENABLED', 'true').lower() in ('1', 'true', 'yes')
+)
 
 CACHES = {
     'default': {

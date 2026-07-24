@@ -1,3 +1,4 @@
+import hashlib
 import logging
 from django.conf import settings
 from .framework.engine import SynergIAEngine
@@ -39,7 +40,12 @@ class AIService:
         
         # 2. Protección contra Prompt Injection
         if SecurityShield.filter_prompt_injection(clean_query):
-            logger.warning(f"[Security] Intento de Prompt Injection detectado: {clean_query}")
+            fingerprint = hashlib.sha256(clean_query.encode('utf-8')).hexdigest()[:16]
+            logger.warning(
+                "[Security] Intento de prompt injection detectado; length=%s fingerprint=%s",
+                len(clean_query),
+                fingerprint,
+            )
             return "Lo siento, como asistente estratégico de Fenix, no puedo procesar ese tipo de instrucciones. ¿En qué puedo ayudarte respecto a la plataforma?"
 
         try:

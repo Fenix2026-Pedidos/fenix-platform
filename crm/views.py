@@ -1,4 +1,5 @@
 import json
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, HttpResponseBadRequest
 from functools import wraps
@@ -121,10 +122,27 @@ def leads_list(request):
 @crm_access_required
 @require_POST
 def delete_lead(request, lead_uuid):
-    """Elimina un lead individual"""
+    """Archiva por defecto; el borrado físico requiere habilitación explícita."""
     lead = get_object_or_404(CRMLead, uuid=lead_uuid)
-    lead.delete()
-    return JsonResponse({'success': True, 'message': 'Lead eliminado correctamente.'})
+    if settings.ALLOW_HARD_DELETE:
+        lead.delete()
+        message = 'Lead eliminado físicamente.'
+    else:
+        from core.audit import AuditLog
+
+        lead.validation_status = CRMLead.VALIDATION_DESCARTADO
+        lead.lead_status = CRMLead.STATUS_PERDIDO
+        lead.save(update_fields=['validation_status', 'lead_status', 'updated_at'])
+        AuditLog.log(
+            user=request.user,
+            action=AuditLog.ACTION_CRM_LEAD_ARCHIVED,
+            description='Lead archivado; no se realizó borrado físico.',
+            object_type='CRMLead',
+            object_id=lead.pk,
+            request=request,
+        )
+        message = 'Lead archivado correctamente; no se ha eliminado físicamente.'
+    return JsonResponse({'success': True, 'message': message})
 
 
 @crm_access_required
@@ -137,8 +155,28 @@ def bulk_delete_leads(request):
         if not lead_ids:
             return JsonResponse({'success': False, 'error': 'No se seleccionaron leads.'}, status=400)
         
-        CRMLead.objects.filter(uuid__in=lead_ids).delete()
-        return JsonResponse({'success': True, 'message': f'{len(lead_ids)} leads eliminados correctamente.'})
+        queryset = CRMLead.objects.filter(uuid__in=lead_ids)
+        affected = queryset.count()
+        if settings.ALLOW_HARD_DELETE:
+            queryset.delete()
+            message = f'{affected} leads eliminados físicamente.'
+        else:
+            from core.audit import AuditLog
+
+            queryset.update(
+                validation_status=CRMLead.VALIDATION_DESCARTADO,
+                lead_status=CRMLead.STATUS_PERDIDO,
+                updated_at=timezone.now(),
+            )
+            AuditLog.log(
+                user=request.user,
+                action=AuditLog.ACTION_CRM_LEADS_ARCHIVED,
+                description=f'{affected} leads archivados; no se realizó borrado físico.',
+                object_type='CRMLeadBatch',
+                request=request,
+            )
+            message = f'{affected} leads archivados correctamente.'
+        return JsonResponse({'success': True, 'message': message})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 

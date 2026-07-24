@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.db.models import Q
@@ -566,12 +567,41 @@ def user_delete_view(request, user_id):
         messages.error(request, _('No tienes permiso para eliminar este usuario.'))
         return redirect('accounts:user_approval_dashboard')
     
-    # Hard delete: eliminar el registro
-    user_to_delete.delete()
+    if settings.ALLOW_HARD_DELETE:
+        user_email = user_to_delete.email
+        user_to_delete.delete()
+        result_message = _(
+            'Usuario %(email)s eliminado físicamente.'
+        ) % {'email': user_email}
+    else:
+        from accounts.models import UserSession
+        from core.audit import AuditLog
+
+        user_to_delete.status = User.STATUS_DISABLED
+        user_to_delete.pending_approval = False
+        user_to_delete.is_active = False
+        user_to_delete.save(update_fields=[
+            'status', 'pending_approval', 'is_active', 'updated_at',
+        ])
+        UserSession.objects.filter(
+            user=user_to_delete,
+            is_active=True,
+        ).update(is_active=False)
+        AuditLog.log(
+            user=request.user,
+            action=AuditLog.ACTION_USER_DISABLED,
+            description='Cuenta desactivada por un administrador; no se realizó borrado físico.',
+            object_type='User',
+            object_id=user_to_delete.pk,
+            request=request,
+        )
+        result_message = _(
+            'Usuario %(email)s desactivado. Sus datos no se han eliminado físicamente.'
+        ) % {'email': user_to_delete.email}
     
     messages.success(
         request,
-        _('Usuario %(email)s eliminado correctamente.') % {'email': user_to_delete.email}
+        result_message
     )
     return redirect('accounts:user_approval_dashboard')
 

@@ -90,11 +90,23 @@ class CRMLeadService:
                 )
             
             # 4. Enviar notificación interna en segundo plano para no demorar la respuesta de cara al cliente
-            threading.Thread(target=send_crm_lead_notification, args=(lead,)).start()
+            if settings.CRM_ASYNC_SIDE_EFFECTS_ENABLED:
+                threading.Thread(
+                    target=send_crm_lead_notification,
+                    args=(lead,),
+                    daemon=True,
+                ).start()
 
         # Sincronizar opcionalmente con Google Sheets en segundo plano
-        if getattr(settings, 'GOOGLE_SHEETS_WEBHOOK_URL', None):
-            threading.Thread(target=sync_to_sheets_backup, args=(lead, message or "Registro CRM")).start()
+        if (
+            settings.CRM_ASYNC_SIDE_EFFECTS_ENABLED
+            and getattr(settings, 'GOOGLE_SHEETS_WEBHOOK_URL', None)
+        ):
+            threading.Thread(
+                target=sync_to_sheets_backup,
+                args=(lead, message or "Registro CRM"),
+                daemon=True,
+            ).start()
 
         return lead, created
 

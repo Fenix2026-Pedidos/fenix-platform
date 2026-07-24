@@ -19,6 +19,10 @@ class AuditLog(models.Model):
     ACTION_STOCK_UPDATED = 'stock_updated'
     ACTION_DOCUMENT_UPLOADED = 'document_uploaded'
     ACTION_DOCUMENT_DELETED = 'document_deleted'
+    ACTION_PERSONAL_DATA_EXPORTED = 'personal_data_exported'
+    ACTION_USER_DISABLED = 'user_disabled'
+    ACTION_CRM_LEAD_ARCHIVED = 'crm_lead_archived'
+    ACTION_CRM_LEADS_ARCHIVED = 'crm_leads_archived'
     
     ACTION_CHOICES = [
         (ACTION_USER_LOGIN, _('Inicio de sesión')),
@@ -34,6 +38,10 @@ class AuditLog(models.Model):
         (ACTION_STOCK_UPDATED, _('Stock actualizado')),
         (ACTION_DOCUMENT_UPLOADED, _('Documento subido')),
         (ACTION_DOCUMENT_DELETED, _('Documento eliminado')),
+        (ACTION_PERSONAL_DATA_EXPORTED, _('Datos personales exportados')),
+        (ACTION_USER_DISABLED, _('Usuario desactivado')),
+        (ACTION_CRM_LEAD_ARCHIVED, _('Lead de CRM archivado')),
+        (ACTION_CRM_LEADS_ARCHIVED, _('Leads de CRM archivados')),
     ]
     
     user = models.ForeignKey(
