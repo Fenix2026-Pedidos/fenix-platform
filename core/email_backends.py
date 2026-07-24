@@ -2,6 +2,7 @@ import json
 import urllib.request
 import urllib.error
 import logging
+from email.utils import parseaddr
 from django.core.mail.backends.base import BaseEmailBackend
 from django.conf import settings
 
@@ -26,8 +27,9 @@ class ResendEmailBackend(BaseEmailBackend):
             try:
                 # Determinamos el remitente
                 from_email = message.from_email
+                from_address = parseaddr(from_email or "")[1].lower()
                 # Si el remitente es el de por defecto genérico o de gmail, usamos el verificado de Resend
-                if not from_email or "noreply@fenix.com" in from_email or "plataformafenix2026@gmail.com" in from_email:
+                if not from_address or from_address == "noreply@fenix.com" or from_address.endswith("@gmail.com"):
                     from_email = getattr(settings, 'RESEND_DEFAULT_FROM', 'onboarding@resend.dev')
                 
                 recipients = message.to

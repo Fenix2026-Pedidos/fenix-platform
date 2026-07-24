@@ -13,7 +13,7 @@ Tienen control total sobre todos los datos y la configuración del sistema.
 - Capacidad para crear, modificar, archivar y eliminar cualquier registro.
 - Capacidad para gestionar a otros administradores y configurar aspectos críticos del sistema.
 
-Ejemplo de usuario actual con este rol: `plataformafenix2026@gmail.com` (Vladimir Marfetan)
+La cuenta con este rol debe ser designada y revisada por el propietario de la plataforma.
 
 ---
 
