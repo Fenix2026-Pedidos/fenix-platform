@@ -9,7 +9,6 @@ from django.utils import timezone
 from django.db.models import Count, Sum, Q
 from django.db.models.functions import TruncMonth
 from django.core.paginator import Paginator, Page
-from django.core.exceptions import PermissionDenied
 from decimal import Decimal
 import json
 from datetime import datetime, date, timedelta
@@ -19,6 +18,7 @@ from .models import Order, OrderItem, OrderEvent, OrderDocument
 from .forms import OrderStatusUpdateForm, OrderETAForm, OrderDocumentForm
 from catalog.models import Product
 from accounts.models import User
+from accounts.organizations import get_user_customer_organization
 from accounts.utils import is_manager_or_admin
 from .services import enqueue_order_confirmation_email
 
@@ -274,6 +274,7 @@ def order_create(request):
     # Crear el pedido
     order = Order.objects.create(
         customer=request.user,
+        organization=get_user_customer_organization(request.user),
         status=Order.STATUS_NEW,
         total_amount=Decimal('0.00')
     )
@@ -353,8 +354,12 @@ def order_list(request):
     # VISTA USUARIO: Pedidos personales con filtros por mes/año
     # ====================================================================
     if not is_admin:
-        # Obtener pedidos del usuario
-        orders_qs = Order.objects.filter(customer=user).select_related('customer')
+        # Todos los miembros activos de una empresa comparten sus pedidos,
+        # sin poder atravesar la frontera de otra empresa.
+        organization = get_user_customer_organization(user)
+        orders_qs = Order.objects.filter(
+            organization=organization
+        ).select_related('customer', 'organization')
         
         # Aplicar filtros
         orders_qs = filter_orders_by_month_year(orders_qs, month=selected_month, year=selected_year)
@@ -363,7 +368,7 @@ def order_list(request):
         orders_qs = orders_qs.order_by('-created_at')
         
         # Obtener datos para dropdown de meses
-        user_orders = Order.objects.filter(customer=user)
+        user_orders = Order.objects.filter(organization=organization)
         months_available, years_available = get_orders_month_year_data(user_orders)
         
         # Contar total de pedidos en el rango
@@ -489,10 +494,17 @@ def order_detail(request, pk):
     """
     if is_manager_or_admin(request.user):
         # Managers y Super Admin pueden ver cualquier pedido
-        order = get_object_or_404(Order.objects.select_related('customer'), pk=pk)
+        order = get_object_or_404(
+            Order.objects.select_related('customer', 'organization'),
+            pk=pk,
+        )
     else:
-        # Clientes solo pueden ver sus propios pedidos
-        order = get_object_or_404(Order.objects.select_related('customer'), pk=pk, customer=request.user)
+        organization = get_user_customer_organization(request.user)
+        order = get_object_or_404(
+            Order.objects.select_related('customer', 'organization'),
+            pk=pk,
+            organization=organization,
+        )
     
     # Obtener items del pedido con información del producto
     items = OrderItem.objects.filter(order=order).select_related('product')
@@ -540,12 +552,20 @@ def order_detail(request, pk):
 @require_POST
 @transaction.atomic
 def order_cancel(request, pk):
-    order = get_object_or_404(Order.objects.select_related('customer'), pk=pk)
     is_admin = is_manager_or_admin(request.user)
 
-    if not is_admin and order.customer_id != request.user.id:
-        messages.error(request, _('No tienes permiso para cancelar este pedido.'))
-        return redirect('orders:order_detail', pk=order.pk)
+    if is_admin:
+        order = get_object_or_404(
+            Order.objects.select_related('customer', 'organization'),
+            pk=pk,
+        )
+    else:
+        organization = get_user_customer_organization(request.user)
+        order = get_object_or_404(
+            Order.objects.select_related('customer', 'organization'),
+            pk=pk,
+            organization=organization,
+        )
 
     if order.status == Order.STATUS_CANCELLED:
         messages.info(request, _('Este pedido ya esta cancelado.'))
@@ -771,9 +791,15 @@ def order_document_download(request, pk, doc_id):
     """Descarga autenticada; nunca expone una URL pública del bucket."""
     from pathlib import Path
     from django.http import FileResponse
-    order = get_object_or_404(Order, pk=pk)
-    if not is_manager_or_admin(request.user) and order.customer_id != request.user.id:
-        raise PermissionDenied
+    if is_manager_or_admin(request.user):
+        order = get_object_or_404(Order, pk=pk)
+    else:
+        organization = get_user_customer_organization(request.user)
+        order = get_object_or_404(
+            Order,
+            pk=pk,
+            organization=organization,
+        )
     document = get_object_or_404(OrderDocument, pk=doc_id, order=order)
     response = FileResponse(
         document.file.open('rb'),

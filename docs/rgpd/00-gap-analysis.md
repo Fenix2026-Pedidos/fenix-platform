@@ -99,6 +99,7 @@ No se detectaron grabaciones de llamadas, biometría, datos de salud, Stripe, Tw
 
 ### GAP-CRIT-01 — No existe aislamiento estructural entre organizaciones cliente
 
+- **Estado:** mitigación estructural parcial implementada en local en Fase B: organizaciones, membresías, backfill conservador y scoping de pedidos/pedidos recurrentes. RLS y extensión al resto de dominios siguen pendientes.
 - **Severidad:** crítica
 - **Impacto:** el aislamiento depende de que cada vista recuerde filtrar por `request.user`. No permite que una empresa tenga varios usuarios y un filtro omitido podría exponer datos de otra empresa.
 - **Evidencia:** `Order.customer` y otros datos se vinculan directamente a `User`; no existe `CustomerOrganization`, capa central de scoping ni SQL RLS.
@@ -106,7 +107,7 @@ No se detectaron grabaciones de llamadas, biometría, datos de salud, Stripe, Tw
 - **Archivos afectados previstos:** `accounts`, modelos comerciales de `core`, `crm`, `orders`, `recurring`, `notifications`, `whatsapp` y `ai_assistant`; middleware, servicios y migraciones.
 - **Prioridad:** P0
 - **Dependencias:** reglas de pertenencia y administración de empresas, inventario completo y staging PostgreSQL.
-- **Pendiente:** `PENDIENTE_CLIENTE` únicamente para definir si una empresa podrá tener varios usuarios y quién puede invitarlos.
+- **Decisión aplicada:** una empresa puede tener varios usuarios con roles `owner`, `admin` y `member`. El flujo de invitaciones y quién puede ejecutarlo sigue como `PENDIENTE_CLIENTE`.
 
 ### GAP-ALTA-01 — Exportación personal defectuosa y con riesgo de incluir terceros
 

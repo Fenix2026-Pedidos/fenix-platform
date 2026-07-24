@@ -71,13 +71,28 @@ python manage.py test --verbosity 1
 Resultado:
 
 ```text
-Found 46 test(s)
-Ran 46 tests
+Found 53 test(s)
+Ran 53 tests
 OK
 ```
 
 Los mensajes `Forbidden` de CSRF y firma WhatsApp son resultados esperados de
 casos negativos.
+
+### Pruebas de aislamiento por empresa
+
+Se añadieron siete pruebas de aislamiento y operación segura:
+
+1. cada nuevo cliente recibe inicialmente una organización distinta;
+2. miembros de una misma empresa comparten sus pedidos;
+3. un usuario externo no puede abrir ni cancelar un pedido ajeno;
+4. el modelo rechaza un pedido cuyo cliente y organización no coinciden;
+5. una empresa suspendida falla de forma cerrada;
+6. una suspensión no impide la gestión interna del pedido;
+7. los pedidos recurrentes se limitan a la organización.
+
+Los `404` de acceso cruzado y el `403` de organización suspendida son
+resultados esperados.
 
 ### Otras verificaciones
 
@@ -91,8 +106,8 @@ git diff --check                               OK
 
 ### Limitaciones
 
-- Estas pruebas todavía no verifican organizaciones cliente ni RLS porque los
-  modelos correspondientes aún no se han implementado.
+- Las pruebas verifican el scoping de aplicación para pedidos, documentos
+  asociados y pedidos recurrentes, pero todavía no verifican RLS.
 - SQLite no sustituye las pruebas PostgreSQL de RLS y concurrencia.
 - No se han probado contratos, regiones o borrado en proveedores externos.
 - La activación de `ALLOW_HARD_DELETE=True` conserva el comportamiento físico

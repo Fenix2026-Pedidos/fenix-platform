@@ -427,6 +427,8 @@ No existe rollback universal de una eliminación física. Por eso:
 - A3 asegurar exportación y borrados;
 - A4 pruebas de regresión y evidencia.
 
+**Estado local:** A1–A4 completados; pendiente de revisión y despliegue.
+
 ### Fase B — Organizaciones cliente
 
 - B1 modelos de organización/membresía y feature flags;
@@ -435,6 +437,10 @@ No existe rollback universal de una eliminación física. Por eso:
 - B4 managers/middleware de organización;
 - B5 pruebas PostgreSQL;
 - B6 RLS gradual.
+
+**Estado local:** B1–B3 implementados para pedidos y pedidos recurrentes, con
+siete pruebas específicas. B4–B6 y la extensión a los demás dominios permanecen
+pendientes.
 
 ### Fase C — Gobierno
 
