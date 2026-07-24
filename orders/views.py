@@ -18,7 +18,7 @@ from .models import Order, OrderItem, OrderEvent, OrderDocument
 from .forms import OrderStatusUpdateForm, OrderETAForm, OrderDocumentForm
 from catalog.models import Product
 from accounts.models import User
-from accounts.organizations import get_user_customer_organization
+from accounts.organizations import get_request_customer_organization
 from accounts.utils import is_manager_or_admin
 from .services import enqueue_order_confirmation_email
 
@@ -274,7 +274,7 @@ def order_create(request):
     # Crear el pedido
     order = Order.objects.create(
         customer=request.user,
-        organization=get_user_customer_organization(request.user),
+        organization=get_request_customer_organization(request),
         status=Order.STATUS_NEW,
         total_amount=Decimal('0.00')
     )
@@ -356,9 +356,9 @@ def order_list(request):
     if not is_admin:
         # Todos los miembros activos de una empresa comparten sus pedidos,
         # sin poder atravesar la frontera de otra empresa.
-        organization = get_user_customer_organization(user)
-        orders_qs = Order.objects.filter(
-            organization=organization
+        organization = get_request_customer_organization(request)
+        orders_qs = Order.objects.for_organization(
+            organization
         ).select_related('customer', 'organization')
         
         # Aplicar filtros
@@ -368,7 +368,7 @@ def order_list(request):
         orders_qs = orders_qs.order_by('-created_at')
         
         # Obtener datos para dropdown de meses
-        user_orders = Order.objects.filter(organization=organization)
+        user_orders = Order.objects.for_organization(organization)
         months_available, years_available = get_orders_month_year_data(user_orders)
         
         # Contar total de pedidos en el rango
@@ -499,11 +499,13 @@ def order_detail(request, pk):
             pk=pk,
         )
     else:
-        organization = get_user_customer_organization(request.user)
+        organization = get_request_customer_organization(request)
         order = get_object_or_404(
-            Order.objects.select_related('customer', 'organization'),
+            Order.objects.for_organization(organization).select_related(
+                'customer',
+                'organization',
+            ),
             pk=pk,
-            organization=organization,
         )
     
     # Obtener items del pedido con información del producto
@@ -560,11 +562,13 @@ def order_cancel(request, pk):
             pk=pk,
         )
     else:
-        organization = get_user_customer_organization(request.user)
+        organization = get_request_customer_organization(request)
         order = get_object_or_404(
-            Order.objects.select_related('customer', 'organization'),
+            Order.objects.for_organization(organization).select_related(
+                'customer',
+                'organization',
+            ),
             pk=pk,
-            organization=organization,
         )
 
     if order.status == Order.STATUS_CANCELLED:
@@ -794,11 +798,10 @@ def order_document_download(request, pk, doc_id):
     if is_manager_or_admin(request.user):
         order = get_object_or_404(Order, pk=pk)
     else:
-        organization = get_user_customer_organization(request.user)
+        organization = get_request_customer_organization(request)
         order = get_object_or_404(
-            Order,
+            Order.objects.for_organization(organization),
             pk=pk,
-            organization=organization,
         )
     document = get_object_or_404(OrderDocument, pk=doc_id, order=order)
     response = FileResponse(

@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from accounts.models import User
+from accounts.querysets import CustomerOrganizationScopedQuerySet
 from catalog.models import Product
 
 
@@ -39,6 +40,8 @@ class RecurringOrder(models.Model):
     next_run_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Próxima Ejecución'))
     delivery_window_hours = models.PositiveIntegerField(default=24, verbose_name=_('Ventana Entrega (horas)'))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Fecha Creación'))
+
+    objects = CustomerOrganizationScopedQuerySet.as_manager()
 
     class Meta:
         verbose_name = _('Pedido Recurrente')

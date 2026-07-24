@@ -10,15 +10,15 @@ from .models import RecurringOrder, RecurringOrderItem
 from .forms import RecurringOrderForm
 from catalog.models import Product
 from orders.views import get_cart
-from accounts.organizations import get_user_customer_organization
+from accounts.organizations import get_request_customer_organization
 
 
 @login_required
 def recurring_order_list(request):
     """Lista de pedidos recurrentes del usuario"""
-    organization = get_user_customer_organization(request.user)
-    recurring_orders = RecurringOrder.objects.filter(
-        organization=organization
+    organization = get_request_customer_organization(request)
+    recurring_orders = RecurringOrder.objects.for_organization(
+        organization
     ).prefetch_related('items').order_by('-created_at')
     
     context = {
@@ -42,8 +42,8 @@ def recurring_order_create(request):
         if form.is_valid():
             recurring_order = form.save(commit=False)
             recurring_order.customer = request.user
-            recurring_order.organization = get_user_customer_organization(
-                request.user
+            recurring_order.organization = get_request_customer_organization(
+                request
             )
             
             # Calcular next_run_at basado en start_date y frequency
@@ -98,11 +98,10 @@ def recurring_order_create(request):
 @login_required
 def recurring_order_detail(request, pk):
     """Detalle de un pedido recurrente"""
-    organization = get_user_customer_organization(request.user)
+    organization = get_request_customer_organization(request)
     recurring_order = get_object_or_404(
-        RecurringOrder,
+        RecurringOrder.objects.for_organization(organization),
         pk=pk,
-        organization=organization
     )
     
     context = {
@@ -115,11 +114,10 @@ def recurring_order_detail(request, pk):
 @login_required
 def recurring_order_toggle(request, pk):
     """Activar/desactivar un pedido recurrente"""
-    organization = get_user_customer_organization(request.user)
+    organization = get_request_customer_organization(request)
     recurring_order = get_object_or_404(
-        RecurringOrder,
+        RecurringOrder.objects.for_organization(organization),
         pk=pk,
-        organization=organization
     )
     
     if request.method == 'POST':
@@ -142,11 +140,10 @@ def recurring_order_toggle(request, pk):
 @login_required
 def recurring_order_delete(request, pk):
     """Eliminar un pedido recurrente"""
-    organization = get_user_customer_organization(request.user)
+    organization = get_request_customer_organization(request)
     recurring_order = get_object_or_404(
-        RecurringOrder,
+        RecurringOrder.objects.for_organization(organization),
         pk=pk,
-        organization=organization
     )
     
     if request.method == 'POST':

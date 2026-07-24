@@ -73,3 +73,15 @@ def get_user_customer_organization(user):
         raise PermissionDenied('La pertenencia a la empresa no está activa.')
 
     return membership.organization
+
+
+def get_request_customer_organization(request):
+    """Usa el contexto resuelto por middleware y falla cerrado si fue denegado."""
+    if getattr(request, 'customer_organization_access_denied', False):
+        raise PermissionDenied('El contexto de empresa cliente no está activo.')
+
+    organization = getattr(request, 'customer_organization', None)
+    if organization is not None:
+        return organization
+
+    return get_user_customer_organization(request.user)

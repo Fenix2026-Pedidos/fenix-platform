@@ -11,6 +11,33 @@ from django.utils.translation import gettext_lazy as _
 from .utils import get_user_language, is_manager_or_admin
 
 
+class CustomerOrganizationContextMiddleware:
+    """Resuelve una vez el ámbito de empresa sin ampliar permisos."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        request.customer_organization = None
+        request.customer_organization_access_denied = False
+
+        if (
+            request.user.is_authenticated
+            and not is_manager_or_admin(request.user)
+        ):
+            from django.core.exceptions import PermissionDenied
+            from accounts.organizations import get_user_customer_organization
+
+            try:
+                request.customer_organization = (
+                    get_user_customer_organization(request.user)
+                )
+            except PermissionDenied:
+                request.customer_organization_access_denied = True
+
+        return self.get_response(request)
+
+
 class UserApprovalMiddleware:
     """
     Middleware que verifica si el usuario está aprobado.

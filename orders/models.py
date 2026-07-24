@@ -5,6 +5,7 @@ from core.validators import validate_private_document
 from django.utils.translation import gettext_lazy as _
 
 from accounts.models import User
+from accounts.querysets import CustomerOrganizationScopedQuerySet
 from catalog.models import Product
 
 
@@ -62,6 +63,8 @@ class Order(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Fecha Creación'))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Última Actualización'))
+
+    objects = CustomerOrganizationScopedQuerySet.as_manager()
 
     class Meta:
         verbose_name = _('Pedido')

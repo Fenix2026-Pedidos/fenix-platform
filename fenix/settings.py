@@ -124,6 +124,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',  # Auditoría de cambios
     'accounts.middleware.UserApprovalMiddleware',  # Dual-gate: email_verified=True AND status=ACTIVE required
+    'accounts.middleware.CustomerOrganizationContextMiddleware',
     'accounts.middleware.SessionTrackingMiddleware',  # Tracking de sesiones
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
