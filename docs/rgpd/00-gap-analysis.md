@@ -110,6 +110,7 @@ No se detectaron grabaciones de llamadas, biometría, datos de salud, Stripe, Tw
 
 ### GAP-ALTA-01 — Exportación personal defectuosa y con riesgo de incluir terceros
 
+- **Estado:** mitigado en local en Fase A; pendiente de despliegue y validación funcional.
 - **Severidad:** alta
 - **Impacto:** el endpoint puede fallar porque solicita `User.created_at`, campo inexistente. Además, `Q(phone=user.phone)` puede coincidir con múltiples leads cuando el teléfono está vacío y `.values()` exporta campos internos, notas y metadatos sin lista blanca.
 - **Evidencia:** `accounts/profile_views.py:119-142`.
@@ -130,6 +131,7 @@ No se detectaron grabaciones de llamadas, biometría, datos de salud, Stripe, Tw
 
 ### GAP-ALTA-03 — Eliminaciones físicas inmediatas sin salvaguardas
 
+- **Estado:** mitigado en local en Fase A mediante desactivación/archivado reversible; pendiente de desplegar y completar el flujo formal de derechos.
 - **Severidad:** alta
 - **Impacto:** administradores pueden borrar usuarios o leads inmediatamente; no existe bloqueo legal, aprobación dual, inventario de dependencias, propagación a terceros, evidencia ni reversión.
 - **Evidencia:** `accounts/views.py:551-576`; `crm/views.py:121-144`.
@@ -162,6 +164,7 @@ La AEPD indica que todas las brechas deben documentarse y que la notificación a
 
 ### GAP-ALTA-06 — Auditoría fragmentada y con exceso de datos
 
+- **Estado:** mitigación parcial local en Fase A: se auditan exportaciones y bajas reversibles, y el detector de prompt injection deja de registrar el contenido completo. El modelo de auditoría integral sigue pendiente.
 - **Severidad:** alta
 - **Impacto:** `AuditLog` carece de tenant, resultado, correlación, motivo y contexto estructurado; muchas operaciones relevantes no lo usan. `ProfileAuditLog` conserva valores completos anterior/nuevo. El middleware escribe IP, ruta y usuario, pero no es un registro inmutable. El detector de prompt injection registra la consulta completa.
 - **Evidencia:** `core/audit.py`; `core/middleware.py:28-77`; `accounts/models.py:565-604`; `ai_assistant/services.py:42`.
@@ -247,6 +250,7 @@ La AEPD exige identificar la base aplicable para transferencias fuera del EEE, s
 
 ### GAP-MEDIA-05 — Descubrimiento global de tests roto
 
+- **Estado:** resuelto en local en Fase A; la suite descubre y ejecuta 46 pruebas.
 - **Severidad:** media
 - **Impacto:** `manage.py test` no puede importar de forma estable `accounts/tests.py` y el paquete `accounts/tests/` simultáneamente; CI tampoco ejecuta la suite completa.
 - **Evidencia:** colisión entre `accounts/tests.py` y `accounts/tests/`; la ejecución global produjo `ImportError`.
@@ -255,6 +259,7 @@ La AEPD exige identificar la base aplicable para transferencias fuera del EEE, s
 
 ### GAP-MEDIA-06 — Trabajos en hilos dentro del proceso web
 
+- **Estado:** mitigado únicamente en tests para evitar efectos externos y bloqueos; la sustitución por outbox/cola gestionada en producción sigue pendiente.
 - **Severidad:** media
 - **Impacto:** notificaciones y Google Sheets pueden perderse al terminar la instancia y provocan bloqueos en SQLite. Las pruebas de seguridad pasaron, pero registraron errores `database table is locked` en dichos hilos.
 - **Evidencia:** `crm/services.py:93-97`; ejecución local de tests.
@@ -336,9 +341,9 @@ El uso de Google Sheets como “backup analítico” no sustituye una política 
 | `manage.py check --deploy` | Dos advertencias causadas por el entorno de auditoría: SSL desactivado y clave deliberadamente de prueba; `app.yaml` activa SSL y producción carga la clave desde Secret Manager |
 | `makemigrations --check --dry-run` | Sin cambios pendientes |
 | Puerta `scripts/security_gate.py` | Correcta |
-| Tests `core.tests_security whatsapp.tests_security ai_assistant.tests_security` | 7/7 correctos |
-| Efectos durante tests | errores de bloqueo SQLite en hilos secundarios de CRM; no fallaron la suite, pero confirman el GAP de tareas en segundo plano |
-| Suite global | no ejecutable por colisión `accounts/tests.py` / `accounts/tests/` |
+| Tests específicos de seguridad y privacidad | 12/12 correctos: 7 controles existentes y 5 controles RGPD nuevos |
+| Efectos durante tests | efectos externos CRM deshabilitados durante tests; sin hilos secundarios ni bloqueos SQLite |
+| Suite global | 46 pruebas descubiertas y ejecutadas correctamente |
 | Producción | no verificada ni modificada |
 
 La base SQLite local tiene migraciones sin aplicar; esto sólo describe el entorno local ignorado y **no permite inferir** el estado de producción.

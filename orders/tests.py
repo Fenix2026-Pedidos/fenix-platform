@@ -101,7 +101,10 @@ class OrderListViewTests(TestCase):
         # Intentar acceder con filtros de admin
         response = self.client_http.get(
             reverse('orders:order_list'),
-            {'client_id': self.other_client.id, 'month': '2026-02'}
+            {
+                'client_id': self.other_client.id,
+                'month': self.order1.created_at.strftime('%Y-%m'),
+            }
         )
         
         self.assertEqual(response.status_code, 200)
@@ -111,16 +114,15 @@ class OrderListViewTests(TestCase):
         self.assertEqual(len(orders), 2)
         self.assertNotIn(self.order3, orders)
     
-    def test_admin_sees_aggregated_view(self):
-        """Admin ve vista agregada por defecto"""
+    def test_admin_sees_all_orders_in_management_view(self):
+        """Admin ve todos los pedidos en la vista de gestión."""
         self.client_http.login(email='admin@test.com', password='testpass123')
         response = self.client_http.get(reverse('orders:order_list'))
         
         self.assertEqual(response.status_code, 200)
-        self.assertIn('summary', response.context)
-        
-        # Debe usar el template de resumen admin
-        self.assertTemplateUsed(response, 'orders/orders_admin_summary.html')
+        self.assertTrue(response.context['is_admin_view'])
+        self.assertEqual(len(response.context['orders']), 3)
+        self.assertTemplateUsed(response, 'orders/order_list.html')
     
     def test_admin_can_filter_by_client_and_month(self):
         """Admin puede filtrar por cliente y mes"""
@@ -138,13 +140,17 @@ class OrderListViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('orders', response.context)
         
-        # Debe mostrar template de detalle
+        # Debe mostrar sólo los pedidos del cliente seleccionado.
         self.assertTemplateUsed(response, 'orders/order_list.html')
-        self.assertEqual(response.context['view_mode'], 'detail')
+        orders = list(response.context['orders'])
+        self.assertEqual(len(orders), 2)
+        self.assertIn(self.order1, orders)
+        self.assertIn(self.order2, orders)
+        self.assertNotIn(self.order3, orders)
+        self.assertTrue(response.context['is_admin_view'])
     
     def test_unauthenticated_user_redirected(self):
         """Usuario no autenticado es redirigido al login"""
         response = self.client_http.get(reverse('orders:order_list'))
         self.assertEqual(response.status_code, 302)
         self.assertIn('/accounts/login/', response.url)
-
