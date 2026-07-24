@@ -71,8 +71,8 @@ python manage.py test --verbosity 1
 Resultado:
 
 ```text
-Found 53 test(s)
-Ran 53 tests
+Found 57 test(s)
+Ran 57 tests
 OK
 ```
 
@@ -93,6 +93,14 @@ Se añadieron siete pruebas de aislamiento y operación segura:
 
 Los `404` de acceso cruzado y el `403` de organización suspendida son
 resultados esperados.
+
+Cuatro pruebas adicionales verifican la infraestructura:
+
+1. el manager rechaza consultas sin organización explícita;
+2. el middleware resuelve una sola vez la empresa activa;
+3. el middleware marca como denegada una empresa suspendida;
+4. el auditor read-only acepta un estado coherente y falla en modo estricto
+   ante una asociación cruzada.
 
 ### Otras verificaciones
 

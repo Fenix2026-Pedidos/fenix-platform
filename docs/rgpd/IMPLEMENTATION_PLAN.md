@@ -438,9 +438,8 @@ No existe rollback universal de una eliminación física. Por eso:
 - B5 pruebas PostgreSQL;
 - B6 RLS gradual.
 
-**Estado local:** B1–B3 implementados para pedidos y pedidos recurrentes, con
-siete pruebas específicas. B4–B6 y la extensión a los demás dominios permanecen
-pendientes.
+**Estado local:** B1–B4 implementados para pedidos y pedidos recurrentes, con
+once pruebas específicas y auditor read-only. B5–B6 permanecen pendientes.
 
 ### Fase C — Gobierno
 

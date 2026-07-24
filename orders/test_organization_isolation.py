@@ -1,14 +1,21 @@
+import json
 from decimal import Decimal
+from io import StringIO
 
-from django.core.exceptions import ValidationError
-from django.test import Client, TestCase
+from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.management import call_command
+from django.core.management.base import CommandError
+from django.http import HttpResponse
+from django.test import Client, RequestFactory, TestCase
 from django.urls import reverse
 
+from accounts.middleware import CustomerOrganizationContextMiddleware
 from accounts.models import (
     CustomerOrganization,
     CustomerOrganizationMembership,
     User,
 )
+from accounts.organizations import get_request_customer_organization
 from orders.models import Order
 from recurring.models import RecurringOrder
 
@@ -126,3 +133,80 @@ class CustomerOrganizationIsolationTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(recurring, list(response.context['recurring_orders']))
+
+
+class OrganizationScopingInfrastructureTests(TestCase):
+    def setUp(self):
+        self.owner = create_client_user('scope-owner@example.test')
+        self.outsider = create_client_user('scope-outsider@example.test')
+        self.organization = self.owner.organization_membership.organization
+        self.outside_organization = (
+            self.outsider.organization_membership.organization
+        )
+        self.order = Order.objects.create(
+            customer=self.owner,
+            status=Order.STATUS_NEW,
+        )
+        self.outside_order = Order.objects.create(
+            customer=self.outsider,
+            status=Order.STATUS_NEW,
+        )
+
+    def test_queryset_requires_explicit_organization(self):
+        with self.assertRaises(PermissionDenied):
+            Order.objects.for_organization(None)
+
+        scoped_orders = list(Order.objects.for_organization(self.organization))
+        self.assertEqual(scoped_orders, [self.order])
+
+    def test_middleware_resolves_active_organization_once(self):
+        request = RequestFactory().get('/orders/')
+        request.user = self.owner
+        middleware = CustomerOrganizationContextMiddleware(
+            lambda current_request: HttpResponse('ok')
+        )
+
+        response = middleware(request)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(request.customer_organization, self.organization)
+        self.assertEqual(
+            get_request_customer_organization(request),
+            self.organization,
+        )
+
+    def test_middleware_marks_suspended_context_as_denied(self):
+        self.organization.status = CustomerOrganization.STATUS_SUSPENDED
+        self.organization.save(update_fields=['status', 'updated_at'])
+        request = RequestFactory().get('/orders/')
+        request.user = self.owner
+        middleware = CustomerOrganizationContextMiddleware(
+            lambda current_request: HttpResponse('ok')
+        )
+
+        middleware(request)
+
+        self.assertTrue(request.customer_organization_access_denied)
+        with self.assertRaises(PermissionDenied):
+            get_request_customer_organization(request)
+
+    def test_read_only_audit_reports_clean_and_inconsistent_states(self):
+        clean_output = StringIO()
+        call_command(
+            'audit_organization_isolation',
+            '--json',
+            '--strict',
+            stdout=clean_output,
+        )
+        clean_report = json.loads(clean_output.getvalue().splitlines()[0])
+        self.assertEqual(clean_report['status'], 'ok')
+
+        Order.objects.filter(pk=self.order.pk).update(
+            organization=self.outside_organization
+        )
+        with self.assertRaises(CommandError):
+            call_command(
+                'audit_organization_isolation',
+                '--strict',
+                stdout=StringIO(),
+            )

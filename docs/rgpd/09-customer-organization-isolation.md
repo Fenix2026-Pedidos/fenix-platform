@@ -31,16 +31,46 @@ empresas. Las fusiones futuras deberán ser explícitas, auditadas y aprobadas.
 ## Controles de aplicación
 
 - las altas de clientes aprovisionan una organización aislada;
+- el middleware resuelve el contexto empresarial una vez por petición;
+- los querysets exigen `for_organization()` y rechazan ámbitos vacíos;
 - una cuenta sin pertenencia activa no accede a pedidos;
 - una empresa suspendida falla de forma cerrada;
 - el modelo impide guardar un pedido con cliente y organización distintos;
 - listado, detalle, cancelación y descarga documental usan la organización;
 - los pedidos recurrentes usan el mismo límite organizativo.
 
+## Mapa de titularidad aplicado
+
+| Dominio | Ámbito actual | Motivo |
+|---|---|---|
+| Pedidos y documentos | Empresa cliente | Son generados y consultados por sus miembros |
+| Pedidos recurrentes | Empresa cliente | Son instrucciones operativas compartidas de la empresa |
+| Perfil, seguridad y sesiones | Usuario individual | No deben compartirse con compañeros |
+| Notificaciones | Usuario individual | Cada entrega se dirige a una cuenta concreta |
+| CRM, formularios públicos y WhatsApp | Fenix global | Sólo los administra el equipo interno de Fenix |
+| Leads del asistente IA | Fenix global | Son captación comercial previa a ser cliente autenticado |
+
+No se añadirá `organization_id` a un dominio global sólo por uniformidad. Si
+alguno pasa a ser visible o editable por clientes, deberá reclasificarse antes
+de exponerlo.
+
+## Auditoría previa al despliegue
+
+El comando siguiente es read-only:
+
+```powershell
+python manage.py audit_organization_isolation --json --strict
+```
+
+Comprueba usuarios sin membresía, pedidos sin organización, clientes sin
+membresía y asociaciones cruzadas. Con `--strict` devuelve error cuando existe
+alguna inconsistencia crítica y debe ejecutarse en staging antes de permitir
+el despliegue.
+
 ## Evidencia
 
-La suite completa local ejecuta 53 pruebas correctamente, incluidas siete
-pruebas de aislamiento y operación segura. Se usa SQLite temporal y datos
+La suite completa local ejecuta 57 pruebas correctamente, incluidas once
+pruebas de aislamiento, infraestructura y operación segura. Se usa SQLite temporal y datos
 sintéticos; producción no se consulta ni modifica.
 
 ## Límites y trabajo pendiente
@@ -49,7 +79,8 @@ Esta fase todavía no equivale a aislamiento completo en profundidad:
 
 - falta extender `organization_id` a CRM, notificaciones, WhatsApp, IA y
   cualquier otro dato que finalmente sea propiedad de una empresa cliente;
-- falta un manager obligatorio `for_organization()` y contexto transaccional;
+- falta llevar el contexto empresarial a PostgreSQL mediante variable
+  transaccional para soportar RLS;
 - falta probar y activar PostgreSQL Row Level Security en staging;
 - falta verificar que el backfill no deja pedidos con organización nula;
 - falta convertir los campos a `NOT NULL` después de esa verificación;
