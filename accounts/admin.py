@@ -3,9 +3,27 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.html import format_html
 
 from .models import (
-    User, EmailVerificationToken, UserPreferences, SecuritySettings,
-    UserSession, LoginHistory, ProfileAuditLog
+    CustomerOrganization, CustomerOrganizationMembership, User,
+    EmailVerificationToken, UserPreferences, SecuritySettings,
+    UserSession, LoginHistory, ProfileAuditLog,
 )
+
+
+@admin.register(CustomerOrganization)
+class CustomerOrganizationAdmin(admin.ModelAdmin):
+    list_display = ('name', 'legal_name', 'tax_id', 'status', 'created_at')
+    list_filter = ('status',)
+    search_fields = ('name', 'legal_name', 'tax_id', 'memberships__user__email')
+    readonly_fields = ('uuid', 'created_at', 'updated_at')
+
+
+@admin.register(CustomerOrganizationMembership)
+class CustomerOrganizationMembershipAdmin(admin.ModelAdmin):
+    list_display = ('user', 'organization', 'role', 'status', 'created_at')
+    list_filter = ('role', 'status')
+    search_fields = ('user__email', 'organization__name', 'organization__tax_id')
+    autocomplete_fields = ('user', 'organization')
+    readonly_fields = ('created_at', 'updated_at')
 
 
 @admin.register(User)

@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from core.storage import private_order_storage
 from core.validators import validate_private_document
 from django.utils.translation import gettext_lazy as _
@@ -30,6 +31,15 @@ class Order(models.Model):
         related_name='orders',
         verbose_name=_('Cliente')
     )
+    organization = models.ForeignKey(
+        'accounts.CustomerOrganization',
+        on_delete=models.PROTECT,
+        related_name='orders',
+        null=True,
+        blank=True,
+        db_index=True,
+        verbose_name=_('Empresa cliente'),
+    )
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
@@ -57,6 +67,28 @@ class Order(models.Model):
         verbose_name = _('Pedido')
         verbose_name_plural = _('Pedidos')
         ordering = ['-created_at']
+        indexes = [
+            models.Index(
+                fields=['organization', 'status', 'created_at'],
+                name='order_org_status_created_idx',
+            ),
+        ]
+
+    def save(self, *args, **kwargs):
+        if self.customer_id:
+            from accounts.organizations import (
+                get_user_customer_membership,
+            )
+
+            membership = get_user_customer_membership(self.customer)
+            customer_organization = membership.organization
+            if self.organization_id is None:
+                self.organization = customer_organization
+            elif self.organization_id != customer_organization.id:
+                raise ValidationError(
+                    'El pedido y su cliente deben pertenecer a la misma empresa.'
+                )
+        return super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return f'Pedido {self.id} - {self.customer.email}'

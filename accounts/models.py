@@ -8,6 +8,38 @@ from datetime import timedelta
 import uuid
 
 
+class CustomerOrganization(models.Model):
+    """Empresa cliente aislada dentro de la única plataforma Fenix."""
+
+    STATUS_ACTIVE = 'active'
+    STATUS_SUSPENDED = 'suspended'
+    STATUS_CHOICES = [
+        (STATUS_ACTIVE, _('Activa')),
+        (STATUS_SUSPENDED, _('Suspendida')),
+    ]
+
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    name = models.CharField(max_length=200, verbose_name=_('Empresa cliente'))
+    legal_name = models.CharField(max_length=250, blank=True, verbose_name=_('Razón social'))
+    tax_id = models.CharField(max_length=30, blank=True, verbose_name=_('CIF/NIF'))
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=STATUS_ACTIVE,
+        db_index=True,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = _('Empresa cliente')
+        verbose_name_plural = _('Empresas cliente')
+        ordering = ['name', 'id']
+
+    def __str__(self):
+        return self.name
+
+
 class UserManager(BaseUserManager):
     def create_user(self, email: str, password: str | None = None, **extra_fields):
         if not email:
@@ -367,15 +399,69 @@ class User(AbstractBaseUser, PermissionsMixin):
             missing.append(_("Código postal de entrega"))
 
         return missing
-    
+
     def save(self, *args, **kwargs):
-        """
-        Sobrescribe save para actualizar automáticamente profile_completed
-        cada vez que se guarda el usuario.
-        """
-        # Actualizar el flag de completitud antes de guardar
+        """Actualiza automáticamente la completitud del perfil del usuario."""
         self.profile_completed = self.check_profile_completed()
         super().save(*args, **kwargs)
+
+
+class CustomerOrganizationMembership(models.Model):
+    """Pertenencia de una persona a una única empresa cliente."""
+
+    ROLE_OWNER = 'owner'
+    ROLE_ADMIN = 'admin'
+    ROLE_MEMBER = 'member'
+    ROLE_CHOICES = [
+        (ROLE_OWNER, _('Propietario')),
+        (ROLE_ADMIN, _('Administrador')),
+        (ROLE_MEMBER, _('Miembro')),
+    ]
+
+    STATUS_ACTIVE = 'active'
+    STATUS_INVITED = 'invited'
+    STATUS_DISABLED = 'disabled'
+    STATUS_CHOICES = [
+        (STATUS_ACTIVE, _('Activa')),
+        (STATUS_INVITED, _('Invitada')),
+        (STATUS_DISABLED, _('Deshabilitada')),
+    ]
+
+    organization = models.ForeignKey(
+        CustomerOrganization,
+        on_delete=models.PROTECT,
+        related_name='memberships',
+        verbose_name=_('Empresa cliente'),
+    )
+    user = models.OneToOneField(
+        User,
+        on_delete=models.PROTECT,
+        related_name='organization_membership',
+        verbose_name=_('Usuario'),
+    )
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default=ROLE_MEMBER,
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=STATUS_ACTIVE,
+        db_index=True,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = _('Pertenencia a empresa')
+        verbose_name_plural = _('Pertenencias a empresas')
+        indexes = [
+            models.Index(fields=['organization', 'status']),
+        ]
+
+    def __str__(self):
+        return f'{self.user.email} → {self.organization.name}'
 
 
 class EmailVerificationToken(models.Model):
