@@ -439,7 +439,8 @@ No existe rollback universal de una eliminación física. Por eso:
 - B6 RLS gradual.
 
 **Estado local:** B1–B4 implementados para pedidos y pedidos recurrentes, con
-once pruebas específicas y auditor read-only. B5–B6 permanecen pendientes.
+once pruebas específicas y auditor read-only. B5 está configurado en CI y
+pendiente de ejecución remota. B6 permanece pendiente.
 
 ### Fase C — Gobierno
 

@@ -43,7 +43,68 @@ jobs:
     - name: Django System Check
       run: |
         python manage.py check
-        
+
+    - name: Reject missing migrations
+      run: |
+        python manage.py makemigrations --check --dry-run
+
     - name: Compile ALL Templates
       run: |
         python manage.py test_templates
+
+    - name: Run SQLite regression suite
+      run: |
+        python manage.py test --verbosity 1
+
+  postgres-tests:
+    name: PostgreSQL isolation tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: fenix_ci
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d fenix_ci"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Configure isolated PostgreSQL
+      run: |
+        echo "SECRET_KEY=dummy-secret-key-for-postgres-ci-only" >> $GITHUB_ENV
+        echo "DEBUG=True" >> $GITHUB_ENV
+        echo "USE_SQLITE_DEV=False" >> $GITHUB_ENV
+        echo "DB_NAME=fenix_ci" >> $GITHUB_ENV
+        echo "DB_USER=postgres" >> $GITHUB_ENV
+        echo "DB_PASSWORD=postgres" >> $GITHUB_ENV
+        echo "DB_HOST=127.0.0.1" >> $GITHUB_ENV
+        echo "DB_PORT=5432" >> $GITHUB_ENV
+
+    - name: Apply migrations and audit organization backfill
+      run: |
+        python manage.py migrate --noinput
+        python manage.py audit_organization_isolation --json --strict
+
+    - name: Run PostgreSQL regression suite
+      run: |
+        python manage.py test --verbosity 1
