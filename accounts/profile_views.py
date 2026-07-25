@@ -326,6 +326,26 @@ def change_password(request):
             return redirect('accounts:profile_dashboard')
     else:
         form = PasswordChangeForm(request.user)
+
+    password_widgets = {
+        'old_password': {
+            'class': 'password-control',
+            'placeholder': _('Introduce tu contraseña actual'),
+            'autocomplete': 'current-password',
+        },
+        'new_password1': {
+            'class': 'password-control',
+            'placeholder': _('Crea una contraseña segura'),
+            'autocomplete': 'new-password',
+        },
+        'new_password2': {
+            'class': 'password-control',
+            'placeholder': _('Repite la nueva contraseña'),
+            'autocomplete': 'new-password',
+        },
+    }
+    for field_name, attrs in password_widgets.items():
+        form.fields[field_name].widget.attrs.update(attrs)
     
     return render(request, 'accounts/profile/change_password.html', {'form': form})
 
