@@ -9,6 +9,7 @@ Roles oficiales:
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.contrib import messages
+from django.http import JsonResponse
 from django.utils.translation import gettext as _
 from functools import wraps
 
@@ -215,6 +216,19 @@ def admin_required(view_func):
     @login_required
     def wrapper(request, *args, **kwargs):
         if not can_manage_users(request.user):
+            if (
+                request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+                or 'application/json' in request.headers.get('Accept', '')
+            ):
+                return JsonResponse(
+                    {
+                        'ok': False,
+                        'message': str(
+                            _('No tienes permisos para acceder a esta sección.')
+                        ),
+                    },
+                    status=403,
+                )
             messages.error(request, _('No tienes permisos para acceder a esta sección.'))
             return redirect('catalog:product_list')
         return view_func(request, *args, **kwargs)

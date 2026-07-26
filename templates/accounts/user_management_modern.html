@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n static %}
 
 {% block title %}{% trans "Gestión de Usuarios" %} - {{ block.super }}{% endblock %}
 
@@ -19,13 +19,13 @@
                     onclick="switchTab(event, 'registered')">
                     <i class="bi bi-check-circle"></i>
                     <span>{% trans "Usuarios" %}</span>
-                    <span class="tab-count">{{ paginator_registered.count }}</span>
+                    <span class="tab-count" id="registeredCount">{{ paginator_registered.count }}</span>
                 </button>
                 <button class="tab-button {% if active_tab == 'pending' %}active{% endif %}" 
                     onclick="switchTab(event, 'pending')">
                     <i class="bi bi-hourglass"></i>
                     <span>{% trans "Pendientes" %}</span>
-                    <span class="tab-count">{{ paginator_pending.count }}</span>
+                    <span class="tab-count" id="pendingCount">{{ paginator_pending.count }}</span>
                 </button>
             </div>
         </div>
@@ -115,7 +115,7 @@
                     </thead>
                     <tbody>
                         {% for user in page_registered.object_list %}
-                        <tr class="table-row">
+                        <tr class="table-row" id="registered-row-{{ user.id }}" data-user-id="{{ user.id }}">
                             <td class="col-checkbox">
                                 <input type="checkbox" class="row-checkbox" value="{{ user.id }}">
                             </td>
@@ -150,12 +150,28 @@
                             <td class="text-right">
                                 <div class="actions-wrapper">
                                     <button class="btn-kebab" 
+                                            type="button"
                                             data-menu="registered"
+                                            data-user-id="{{ user.id }}"
+                                            data-user-name="{{ user.display_name|escape }}"
+                                            data-user-email="{{ user.email|escape }}"
+                                            data-user-company="{{ user.company|default:'—'|escape }}"
+                                            data-user-role="{{ user.role }}"
+                                            data-user-role-label="{{ user.get_role_display|escape }}"
+                                            data-user-status="{{ user.status }}"
+                                            data-user-status-label="{{ user.get_status_display|escape }}"
+                                            data-user-joined="{{ user.date_joined|date:'d/m/Y H:i' }}"
+                                            data-user-last-login="{{ user.last_login_at|date:'d/m/Y H:i'|default:'Sin accesos registrados' }}"
+                                            data-is-self="{% if user.id == request.user.id %}true{% else %}false{% endif %}"
+                                            data-is-super-admin="{% if user.is_super_admin %}true{% else %}false{% endif %}"
                                             data-view-url="{% url 'accounts:admin_view_user' user.id %}"
                                             data-edit-url="{% if user.is_super_admin %}{% else %}{% url 'accounts:admin_edit_user' user.id %}{% endif %}"
                                             data-edit-disabled="{% if user.is_super_admin %}true{% else %}false{% endif %}"
-                                            data-delete-url="{% url 'accounts:user_delete' user.id %}"
-                                            data-delete-email="{{ user.email }}"
+                                            data-status-url="{% url 'accounts:user_status' user.id %}"
+                                            data-reset-url="{% url 'accounts:admin_password_reset' user.id %}"
+                                            aria-label="{% blocktrans with name=user.display_name %}Acciones de {{ name }}{% endblocktrans %}"
+                                            aria-haspopup="menu"
+                                            aria-expanded="false"
                                             onclick="openActionMenu(event, this)">
                                         <i class="bi bi-three-dots-vertical"></i>
                                     </button>
@@ -170,7 +186,7 @@
             <!-- Mobile Cards -->
             <div class="users-mobile-list d-lg-none">
                 {% for user in page_registered.object_list %}
-                <div class="user-mobile-card">
+                <div class="user-mobile-card" id="registered-card-{{ user.id }}" data-user-id="{{ user.id }}">
                     <div class="card-mobile-header">
                         <div class="user-cell">
                             <div class="user-avatar-mini">
@@ -190,12 +206,28 @@
                             </div>
                         </div>
                         <button class="btn-kebab" 
+                                type="button"
                                 data-menu="registered"
+                                data-user-id="{{ user.id }}"
+                                data-user-name="{{ user.display_name|escape }}"
+                                data-user-email="{{ user.email|escape }}"
+                                data-user-company="{{ user.company|default:'—'|escape }}"
+                                data-user-role="{{ user.role }}"
+                                data-user-role-label="{{ user.get_role_display|escape }}"
+                                data-user-status="{{ user.status }}"
+                                data-user-status-label="{{ user.get_status_display|escape }}"
+                                data-user-joined="{{ user.date_joined|date:'d/m/Y H:i' }}"
+                                data-user-last-login="{{ user.last_login_at|date:'d/m/Y H:i'|default:'Sin accesos registrados' }}"
+                                data-is-self="{% if user.id == request.user.id %}true{% else %}false{% endif %}"
+                                data-is-super-admin="{% if user.is_super_admin %}true{% else %}false{% endif %}"
                                 data-view-url="{% url 'accounts:admin_view_user' user.id %}"
                                 data-edit-url="{% if user.is_super_admin %}{% else %}{% url 'accounts:admin_edit_user' user.id %}{% endif %}"
                                 data-edit-disabled="{% if user.is_super_admin %}true{% else %}false{% endif %}"
-                                data-delete-url="{% url 'accounts:user_delete' user.id %}"
-                                data-delete-email="{{ user.email }}"
+                                data-status-url="{% url 'accounts:user_status' user.id %}"
+                                data-reset-url="{% url 'accounts:admin_password_reset' user.id %}"
+                                aria-label="{% blocktrans with name=user.display_name %}Acciones de {{ name }}{% endblocktrans %}"
+                                aria-haspopup="menu"
+                                aria-expanded="false"
                                 onclick="openActionMenu(event, this)">
                             <i class="bi bi-three-dots-vertical"></i>
                         </button>
@@ -336,7 +368,7 @@
                         </thead>
                         <tbody>
                             {% for user in page_pending.object_list %}
-                            <tr class="table-row">
+                            <tr class="table-row" id="pending-row-{{ user.id }}" data-user-id="{{ user.id }}">
                                 <td class="col-checkbox">
                                     <input type="checkbox" class="row-checkbox" value="{{ user.id }}">
                                 </td>
@@ -382,16 +414,24 @@
                                             {% csrf_token %}
                                         </form>
                                         <button class="btn-kebab" 
+                                                type="button"
                                                 data-menu="pending"
-                                                data-approve-form="approve-form-{{ user.id }}"
-                                                data-reject-form="reject-form-{{ user.id }}"
-                                                data-user-email="{{ user.email }}"
+                                                data-approve-url="{% url 'accounts:approve_user' user.id %}"
+                                                data-reject-url="{% url 'accounts:reject_user' user.id %}"
+                                                data-user-email="{{ user.email|escape }}"
                                                 data-user-id="{{ user.id }}"
-                                                data-user-full-name="{{ user.full_name }}"
-                                                data-user-company="{{ user.company }}"
+                                                data-user-name="{{ user.display_name|escape }}"
+                                                data-user-full-name="{{ user.full_name|escape }}"
+                                                data-user-company="{{ user.company|default:'—'|escape }}"
                                                 data-user-status="{{ user.status }}"
+                                                data-user-status-label="{{ user.get_status_display|escape }}"
                                                 data-user-role="{{ user.role }}"
+                                                data-user-role-label="{{ user.get_role_display|escape }}"
+                                                data-user-joined="{{ user.date_joined|date:'d/m/Y H:i' }}"
                                                 data-user-email-verified="{{ user.email_verified|yesno:'true,false' }}"
+                                                aria-label="{% blocktrans with name=user.display_name %}Acciones de {{ name }}{% endblocktrans %}"
+                                                aria-haspopup="menu"
+                                                aria-expanded="false"
                                                 onclick="openActionMenu(event, this)">
                                             <i class="bi bi-three-dots-vertical"></i>
                                         </button>
@@ -406,7 +446,7 @@
                 <!-- Mobile Cards -->
                 <div class="users-mobile-list d-lg-none">
                     {% for user in page_pending.object_list %}
-                    <div class="user-mobile-card">
+                    <div class="user-mobile-card" id="pending-card-{{ user.id }}" data-user-id="{{ user.id }}">
                         <div class="card-mobile-header">
                             <div class="user-cell">
                                 <div class="user-avatar-mini">
@@ -426,16 +466,24 @@
                                 </div>
                             </div>
                             <button class="btn-kebab" 
+                                    type="button"
                                     data-menu="pending"
-                                    data-approve-form="approve-form-{{ user.id }}"
-                                    data-reject-form="reject-form-{{ user.id }}"
-                                    data-user-email="{{ user.email }}"
+                                    data-approve-url="{% url 'accounts:approve_user' user.id %}"
+                                    data-reject-url="{% url 'accounts:reject_user' user.id %}"
+                                    data-user-email="{{ user.email|escape }}"
                                     data-user-id="{{ user.id }}"
-                                    data-user-full-name="{{ user.full_name }}"
-                                    data-user-company="{{ user.company }}"
+                                    data-user-name="{{ user.display_name|escape }}"
+                                    data-user-full-name="{{ user.full_name|escape }}"
+                                    data-user-company="{{ user.company|default:'—'|escape }}"
                                     data-user-status="{{ user.status }}"
+                                    data-user-status-label="{{ user.get_status_display|escape }}"
                                     data-user-role="{{ user.role }}"
+                                    data-user-role-label="{{ user.get_role_display|escape }}"
+                                    data-user-joined="{{ user.date_joined|date:'d/m/Y H:i' }}"
                                     data-user-email-verified="{{ user.email_verified|yesno:'true,false' }}"
+                                    aria-label="{% blocktrans with name=user.display_name %}Acciones de {{ name }}{% endblocktrans %}"
+                                    aria-haspopup="menu"
+                                    aria-expanded="false"
                                     onclick="openActionMenu(event, this)">
                                 <i class="bi bi-three-dots-vertical"></i>
                             </button>
@@ -540,11 +588,30 @@
 </main>
 
 <!-- Dropdown Global de Acciones -->
-<div id="actionDropdown" class="action-dropdown" aria-hidden="true"></div>
+<div id="actionDropdown" class="action-dropdown" role="menu" aria-hidden="true"></div>
+
+<!-- Modal de detalles de usuario/solicitud -->
+<div id="detailsModal" class="modal-overlay" style="display: none;" aria-hidden="true">
+    <div class="modal-content modal-details" role="dialog" aria-modal="true" aria-labelledby="detailsModalTitle">
+        <div class="modal-heading">
+            <div>
+                <p class="modal-eyebrow" id="detailsModalEyebrow"></p>
+                <h3 id="detailsModalTitle"></h3>
+            </div>
+            <button type="button" class="modal-close" data-close-modal="detailsModal" aria-label="{% trans 'Cerrar' %}">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <dl class="details-grid" id="detailsGrid"></dl>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" data-close-modal="detailsModal">{% trans "Cerrar" %}</button>
+        </div>
+    </div>
+</div>
 
 <!-- Modal Editar Solicitud -->
-<div id="requestModal" class="modal-overlay" style="display: none;">
-    <div class="modal-content">
+<div id="requestModal" class="modal-overlay" style="display: none;" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="requestModalTitle">
         <h3 id="requestModalTitle">{% trans "Editar solicitud" %}</h3>
         <p class="text-muted" id="requestModalSubtitle"></p>
         <form method="post" action="{% url 'accounts:update_pending_request' %}" id="requestForm">
@@ -562,12 +629,9 @@
             </div>
 
             <div class="form-group">
-                <label for="requestStatus">{% trans "Estado" %}</label>
-                <select name="status" id="requestStatus" class="form-select" required>
-                    {% for status_value, status_label in status_choices %}
-                    <option value="{{ status_value }}">{{ status_label }}</option>
-                    {% endfor %}
-                </select>
+                <label>{% trans "Estado" %}</label>
+                <input type="hidden" name="status" id="requestStatus" value="pending">
+                <div class="form-control" aria-readonly="true">{% trans "Pendiente" %}</div>
             </div>
 
             <div class="form-group">
@@ -588,23 +652,27 @@
 
             <div class="modal-actions">
                 <button type="button" class="btn btn-secondary" onclick="closeRequestModal()">{% trans "Cancelar" %}</button>
-                <button type="submit" class="btn btn-primary">{% trans "Guardar" %}</button>
+                <button type="submit" class="btn btn-primary" id="requestSubmitBtn">{% trans "Guardar" %}</button>
             </div>
+            <p class="modal-error" id="requestModalError" role="alert"></p>
         </form>
     </div>
 </div>
 
 <!-- Modal de Confirmación Genérico -->
-<div id="confirmModal" class="modal-overlay" style="display: none;">
-    <div class="modal-content">
+<div id="confirmModal" class="modal-overlay" style="display: none;" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <h3 id="modalTitle"></h3>
         <p id="modalMessage"></p>
+        <p class="modal-error" id="confirmModalError" role="alert"></p>
         <div class="modal-actions">
-            <button class="btn btn-secondary" onclick="closeModal()">{% trans "Cancelar" %}</button>
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">{% trans "Cancelar" %}</button>
             <button id="modalConfirmBtn" class="btn btn-danger">{% trans "Confirmar" %}</button>
         </div>
     </div>
 </div>
+
+<div id="managementToast" class="management-toast" role="status" aria-live="polite"></div>
 
 <style>
 /* ========== LAYOUT GENERAL ========== */
@@ -791,6 +859,253 @@
         display: flex; align-items: center; justify-content: center;
     }
     .btn-kebab:hover { background: #f1f5f9; color: var(--primary-600); border-color: #cbd5e1; }
+    .btn-kebab:focus-visible {
+        outline: 3px solid rgba(122, 15, 15, .18);
+        outline-offset: 2px;
+        border-color: var(--primary-600);
+    }
+    .btn-kebab[aria-expanded="true"] {
+        color: var(--primary-600);
+        border-color: rgba(122, 15, 15, .35);
+        background: var(--primary-50);
+    }
+
+    /* Menú contextual global: fixed evita recortes por overflow de la tabla. */
+    .action-dropdown {
+        position: fixed;
+        z-index: 1200;
+        display: none;
+        width: max-content;
+        min-width: 232px;
+        max-width: min(300px, calc(100vw - 16px));
+        padding: 7px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        border-radius: 13px;
+        background: #fff;
+        box-shadow: 0 18px 45px rgba(15, 23, 42, .18);
+    }
+    .action-dropdown.show {
+        display: block;
+        animation: action-menu-in .14s ease-out;
+    }
+    .dropdown-item {
+        display: flex;
+        width: 100%;
+        min-height: 42px;
+        align-items: center;
+        gap: 11px;
+        padding: 10px 12px;
+        border: 0;
+        border-radius: 9px;
+        color: #263244;
+        background: transparent;
+        cursor: pointer;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 650;
+        text-align: left;
+        text-decoration: none;
+    }
+    .dropdown-item i {
+        width: 18px;
+        color: #64748b;
+        font-size: 16px;
+        text-align: center;
+    }
+    .dropdown-item:hover,
+    .dropdown-item:focus-visible {
+        color: var(--primary-600);
+        background: var(--primary-50);
+        outline: none;
+    }
+    .dropdown-item:hover i,
+    .dropdown-item:focus-visible i {
+        color: inherit;
+    }
+    .dropdown-item:disabled {
+        opacity: .55;
+        cursor: progress;
+    }
+    .dropdown-separator {
+        height: 1px;
+        margin: 6px 4px;
+        background: #e2e8f0;
+    }
+    .dropdown-item.item-delete {
+        color: #b42318;
+    }
+    .dropdown-item.item-delete:hover,
+    .dropdown-item.item-delete:focus-visible {
+        background: #fff1f0;
+    }
+
+    /* Modales del módulo. */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 1300;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(15, 23, 42, .52);
+        backdrop-filter: blur(3px);
+    }
+    .modal-content {
+        width: min(100%, 520px);
+        max-height: calc(100vh - 40px);
+        padding: 25px;
+        overflow-y: auto;
+        border: 1px solid rgba(122, 15, 15, .12);
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 28px 70px rgba(15, 23, 42, .28);
+        animation: modal-in .18s ease-out;
+    }
+    .modal-content h3 {
+        margin: 0 0 8px;
+        color: #0f172a;
+        font-size: 20px;
+    }
+    .modal-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+    }
+    .modal-eyebrow {
+        margin: 0 0 5px;
+        color: var(--primary-600);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+    .modal-close {
+        display: grid;
+        flex: 0 0 36px;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        color: #64748b;
+        background: #fff;
+        cursor: pointer;
+    }
+    .modal-close:hover {
+        color: var(--primary-600);
+        background: var(--primary-50);
+    }
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin: 0;
+    }
+    .details-grid > div {
+        padding: 12px;
+        border: 1px solid #e8edf3;
+        border-radius: 11px;
+        background: #f8fafc;
+    }
+    .details-grid dt {
+        margin-bottom: 4px;
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 750;
+        text-transform: uppercase;
+    }
+    .details-grid dd {
+        margin: 0;
+        overflow-wrap: anywhere;
+        color: #172033;
+        font-size: 13px;
+        font-weight: 650;
+    }
+    .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 22px;
+    }
+    .modal-error {
+        display: none;
+        margin: 14px 0 0;
+        padding: 10px 12px;
+        border: 1px solid #fecaca;
+        border-radius: 9px;
+        color: #991b1b;
+        background: #fff7f7;
+        font-size: 13px;
+    }
+    .modal-error.visible {
+        display: block;
+    }
+    .form-group {
+        margin-top: 15px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 700;
+    }
+    .form-control,
+    .form-select {
+        width: 100%;
+        min-height: 44px;
+        padding: 9px 11px;
+        border: 1px solid #d8e0ea;
+        border-radius: 10px;
+        background: #fff;
+    }
+    .management-toast {
+        position: fixed;
+        right: 22px;
+        bottom: 22px;
+        z-index: 1500;
+        max-width: min(420px, calc(100vw - 32px));
+        padding: 13px 16px;
+        transform: translateY(24px);
+        border: 1px solid #bbf7d0;
+        border-radius: 12px;
+        color: #166534;
+        background: #f0fdf4;
+        box-shadow: 0 14px 36px rgba(15, 23, 42, .16);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .2s ease, transform .2s ease;
+        font-size: 13px;
+        font-weight: 650;
+    }
+    .management-toast.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    .management-toast.warning {
+        border-color: #fde68a;
+        color: #92400e;
+        background: #fffbeb;
+    }
+    .management-toast.error {
+        border-color: #fecaca;
+        color: #991b1b;
+        background: #fff7f7;
+    }
+    body.modal-open {
+        overflow: hidden;
+    }
+    @keyframes action-menu-in {
+        from { transform: translateY(-5px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes modal-in {
+        from { transform: translateY(8px) scale(.985); opacity: 0; }
+        to { transform: translateY(0) scale(1); opacity: 1; }
+    }
 
     /* Mobile Cards */
     .users-mobile-list { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
@@ -933,6 +1248,20 @@
         .info-row .value {
             max-width: 180px;
         }
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+        .modal-actions {
+            flex-direction: column-reverse;
+        }
+        .modal-actions .btn {
+            justify-content: center;
+            width: 100%;
+        }
+        .management-toast {
+            right: 16px;
+            bottom: 16px;
+        }
     }
 
     /* Utility Display Classes */
@@ -954,285 +1283,6 @@
     .text-center { text-align: center !important; }
 </style>
 
-<script>
-// ========== FUNCIONES JAVASCRIPT ==========
-
-// Cambiar entre tabs
-function switchTab(event, tabName) {
-    // Ocultar todos los tabs
-    document.querySelectorAll('.tab-panel').forEach(panel => {
-        panel.classList.remove('active');
-    });
-    
-    document.querySelectorAll('.tab-button').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    // Mostrar tab seleccionado
-    document.getElementById('tab-' + tabName).classList.add('active');
-    event.target.closest('.tab-button').classList.add('active');
-    
-    // Actualizar URL sin recargar
-    const url = new URL(window.location);
-    url.searchParams.set('tab', tabName);
-    window.history.replaceState({}, '', url);
-}
-
-const actionDropdown = document.getElementById('actionDropdown');
-let activeActionButton = null;
-
-function openActionMenu(event, button) {
-    event.stopPropagation();
-
-    if (activeActionButton === button && actionDropdown.classList.contains('show')) {
-        closeActionMenu();
-        return;
-    }
-
-    activeActionButton = button;
-    const menuType = button.dataset.menu;
-    const editDisabled = button.dataset.editDisabled === 'true';
-
-    if (menuType === 'registered') {
-        actionDropdown.innerHTML = `
-            <a class="dropdown-item" href="${button.dataset.viewUrl}">
-                <i class="bi bi-eye"></i>
-                <span>Ver usuario</span>
-            </a>
-            ${editDisabled ? '' : `
-            <a class="dropdown-item" href="${button.dataset.editUrl}">
-                <i class="bi bi-pencil"></i>
-                <span>Editar</span>
-            </a>`}
-            <button type="button" class="dropdown-item item-delete" data-action="delete" data-delete-url="${button.dataset.deleteUrl}" data-delete-email="${button.dataset.deleteEmail}">
-                <i class="bi bi-trash"></i>
-                <span>Eliminar</span>
-            </button>
-        `;
-    } else if (menuType === 'pending') {
-        actionDropdown.innerHTML = `
-            <button type="button" class="dropdown-item" data-action="edit-request">
-                <i class="bi bi-pencil"></i>
-                <span>Editar solicitud</span>
-            </button>
-            <button type="button" class="dropdown-item" data-action="approve" data-form-id="${button.dataset.approveForm}" data-user-email="${button.dataset.userEmail}">
-                <i class="bi bi-check-circle"></i>
-                <span>Aprobar</span>
-            </button>
-            <button type="button" class="dropdown-item item-delete" data-action="reject" data-form-id="${button.dataset.rejectForm}" data-user-email="${button.dataset.userEmail}">
-                <i class="bi bi-x-circle"></i>
-                <span>Rechazar</span>
-            </button>
-        `;
-    }
-
-    actionDropdown.classList.add('show');
-    positionDropdown(button);
-}
-
-function positionDropdown(button) {
-    const rect = button.getBoundingClientRect();
-    const dropdownRect = actionDropdown.getBoundingClientRect();
-
-    let top = rect.bottom + 8;
-    let left = rect.right - dropdownRect.width;
-
-    if (top + dropdownRect.height > window.innerHeight - 8) {
-        top = rect.top - dropdownRect.height - 8;
-    }
-
-    if (left < 8) {
-        left = 8;
-    }
-
-    if (left + dropdownRect.width > window.innerWidth - 8) {
-        left = window.innerWidth - dropdownRect.width - 8;
-    }
-
-    actionDropdown.style.top = `${top}px`;
-    actionDropdown.style.left = `${left}px`;
-}
-
-function closeActionMenu() {
-    actionDropdown.classList.remove('show');
-    actionDropdown.style.top = '';
-    actionDropdown.style.left = '';
-    activeActionButton = null;
-}
-
-actionDropdown.addEventListener('click', function(event) {
-    const actionItem = event.target.closest('[data-action]');
-    if (!actionItem) {
-        return;
-    }
-
-    const action = actionItem.dataset.action;
-    if (action === 'edit-request') {
-        openRequestModal(activeActionButton);
-        closeActionMenu();
-        return;
-    }
-    if (action === 'delete') {
-        confirmDelete(actionItem.dataset.deleteUrl, actionItem.dataset.deleteEmail);
-    }
-    if (action === 'approve' || action === 'reject') {
-        confirmAction(actionItem.dataset.formId, action, actionItem.dataset.userEmail);
-    }
-
-    closeActionMenu();
-});
-
-document.addEventListener('click', function(event) {
-    if (!event.target.closest('.actions-menu') && !event.target.closest('#actionDropdown')) {
-        closeActionMenu();
-    }
-});
-
-document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-        closeActionMenu();
-        closeRequestModal();
-        closeModal();
-    }
-});
-
-window.addEventListener('resize', function() {
-    if (actionDropdown.classList.contains('show') && activeActionButton) {
-        positionDropdown(activeActionButton);
-    }
-});
-
-window.addEventListener('scroll', function() {
-    if (actionDropdown.classList.contains('show')) {
-        closeActionMenu();
-    }
-}, true);
-
-// Select All checkboxes
-function toggleSelectAll(checkbox) {
-    const table = checkbox.closest('table');
-    table.querySelectorAll('.row-checkbox').forEach(cb => {
-        cb.checked = checkbox.checked;
-    });
-}
-
-// Modal Editar Solicitud
-function openRequestModal(button) {
-    const modal = document.getElementById('requestModal');
-    const title = document.getElementById('requestModalTitle');
-    const subtitle = document.getElementById('requestModalSubtitle');
-    const userIdInput = document.getElementById('requestUserId');
-    const fullNameInput = document.getElementById('requestFullName');
-    const companyInput = document.getElementById('requestCompany');
-    const statusSelect = document.getElementById('requestStatus');
-    const roleSelect = document.getElementById('requestRole');
-    const emailVerified = document.getElementById('requestEmailVerified');
-
-    const userEmail = button.dataset.userEmail;
-    title.textContent = `Editar solicitud`;
-    subtitle.textContent = userEmail;
-
-    userIdInput.value = button.dataset.userId;
-    fullNameInput.value = button.dataset.userFullName || '';
-    companyInput.value = button.dataset.userCompany || '';
-    statusSelect.value = button.dataset.userStatus || 'pending';
-    roleSelect.value = button.dataset.userRole || roleSelect.value;
-    emailVerified.checked = button.dataset.userEmailVerified === 'true';
-
-    modal.style.display = 'flex';
-}
-
-function closeRequestModal() {
-    document.getElementById('requestModal').style.display = 'none';
-}
-
-document.getElementById('requestModal')?.addEventListener('click', function(event) {
-    if (event.target === this) {
-        closeRequestModal();
-    }
-});
-
-// Confirmar acción (Aprobar/Rechazar)
-function confirmAction(formId, action, userEmail) {
-    const modal = document.getElementById('confirmModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalMessage = document.getElementById('modalMessage');
-    const modalConfirmBtn = document.getElementById('modalConfirmBtn');
-    
-    modalTitle.textContent = action === 'approve' ? `Aprobar ${userEmail}` : `Rechazar ${userEmail}`;
-    
-    if (action === 'approve') {
-        modalMessage.textContent = '¿Estás seguro de que deseas aprobar a este usuario?';
-        modalConfirmBtn.textContent = 'Aprobar';
-        modalConfirmBtn.className = 'btn btn-danger';
-        modalConfirmBtn.onclick = function() {
-            document.getElementById(formId).submit();
-        };
-    } else if (action === 'reject') {
-        modalMessage.textContent = '¿Estás seguro de que deseas rechazar a este usuario?';
-        modalConfirmBtn.textContent = 'Rechazar';
-        modalConfirmBtn.className = 'btn btn-danger';
-        modalConfirmBtn.onclick = function() {
-            document.getElementById(formId).submit();
-        };
-    }
-    
-    modal.style.display = 'flex';
-}
-
-// Confirmar eliminación
-function confirmDelete(deleteUrl, userEmail) {
-    const modal = document.getElementById('confirmModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalMessage = document.getElementById('modalMessage');
-    const modalConfirmBtn = document.getElementById('modalConfirmBtn');
-    
-    modalTitle.textContent = '¿Eliminar usuario?';
-    modalMessage.textContent = '¿Estás seguro de que deseas eliminar a ' + userEmail + '?';
-    modalConfirmBtn.textContent = 'Eliminar';
-    modalConfirmBtn.className = 'btn btn-danger';
-    modalConfirmBtn.onclick = function() {
-        // Hacer DELETE request
-        fetch(deleteUrl, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
-                              document.cookie.split('; ').find(row => row.startsWith('csrftoken='))?.split('=')[1]
-            }
-        }).then(() => {
-            window.location.reload();
-        }).catch(err => {
-            alert('Error al eliminar usuario');
-            console.error(err);
-        });
-        closeModal();
-    };
-    
-    modal.style.display = 'flex';
-}
-
-// Cerrar modal
-function closeModal() {
-    document.getElementById('confirmModal').style.display = 'none';
-}
-
-// Cerrar modal al hacer click fuera
-document.getElementById('confirmModal')?.addEventListener('click', function(event) {
-    if (event.target === this) {
-        closeModal();
-    }
-});
-
-// Restaurar tab activa al cargar
-document.addEventListener('DOMContentLoaded', function() {
-    const url = new URL(window.location);
-    const activeTab = url.searchParams.get('tab') || 'registered';
-    
-    const tabButton = document.querySelector(`.tab-button[onclick*="'${activeTab}'"]`);
-    if (tabButton) {
-        tabButton.classList.add('active');
-    }
-});
-</script>
+<script src="{% static 'js/user_management_actions.js' %}"></script>
 
 {% endblock %}

@@ -56,6 +56,12 @@ urlpatterns = [
     # CRUD de usuarios
     path('user-approval/users/<int:user_id>/update/', views.user_update_view, name='user_update'),
     path('user-approval/users/<int:user_id>/delete/', views.user_delete_view, name='user_delete'),
+    path('user-approval/users/<int:user_id>/status/', views.user_status_view, name='user_status'),
+    path(
+        'user-approval/users/<int:user_id>/password-reset/',
+        views.admin_password_reset_view,
+        name='admin_password_reset',
+    ),
     
     # Aprobación/rechazo de nuevos usuarios
     path('user-approval/new/<int:user_id>/approve/', views.approve_user_view, name='approve_user'),

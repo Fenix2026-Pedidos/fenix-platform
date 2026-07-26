@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from django.db import transaction
 from django.db.models import Q
 from django.http import JsonResponse
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -23,6 +24,35 @@ from .permissions import (
     get_role_choices_for_user,
     admin_required,
 )
+
+
+def _wants_json(request):
+    """Detecta las acciones AJAX del panel sin romper los formularios legacy."""
+    return (
+        request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+        or 'application/json' in request.headers.get('Accept', '')
+    )
+
+
+def _management_counts(editor):
+    registered = User.objects.filter(
+        status__in=[
+            User.STATUS_ACTIVE,
+            User.STATUS_DISABLED,
+            User.STATUS_REJECTED,
+        ]
+    )
+    registered = get_visible_users_queryset(editor, registered)
+    pending = User.objects.filter(status=User.STATUS_PENDING)
+    pending = get_visible_users_queryset(editor, pending)
+    return {
+        'registered': registered.count(),
+        'pending': pending.count(),
+    }
+
+
+def _json_error(message, *, status=400):
+    return JsonResponse({'ok': False, 'message': str(message)}, status=status)
 
 
 @login_required
@@ -367,9 +397,10 @@ def user_approval_list(request):
         page_registered = paginator_registered.page(1)
     
     # ========== TAB 2: USUARIOS PENDIENTES ==========
-    pending_new_users = User.objects.filter(
-        status=User.STATUS_PENDING,
-        role=User.ROLE_USER
+    pending_new_users = User.objects.filter(status=User.STATUS_PENDING)
+    pending_new_users = get_visible_users_queryset(
+        request.user,
+        pending_new_users,
     ).order_by('-date_joined')
     
     # PAGINACIÓN TAB 2
@@ -609,6 +640,167 @@ def user_delete_view(request, user_id):
 @login_required
 @admin_required
 @require_POST
+@transaction.atomic
+def user_status_view(request, user_id):
+    """Activa o desactiva una cuenta con bloqueo transaccional y auditoría."""
+    from accounts.models import UserSession
+    from core.audit import AuditLog
+
+    target = get_object_or_404(
+        User.objects.select_for_update(),
+        pk=user_id,
+    )
+    if not can_edit_target(request.user, target):
+        return _json_error(
+            _('No tienes permiso para modificar este usuario.'),
+            status=403,
+        )
+
+    requested_status = request.POST.get('status', '').strip()
+    if requested_status not in (User.STATUS_ACTIVE, User.STATUS_DISABLED):
+        return _json_error(_('Estado solicitado no válido.'), status=400)
+
+    if target.pk == request.user.pk and requested_status != User.STATUS_ACTIVE:
+        return _json_error(
+            _('No puedes desactivar tu propia cuenta.'),
+            status=409,
+        )
+
+    if target.is_super_admin() and requested_status != User.STATUS_ACTIVE:
+        remaining_super_admins = (
+            User.objects.select_for_update()
+            .filter(
+                role=User.ROLE_SUPER_ADMIN,
+                status=User.STATUS_ACTIVE,
+                is_active=True,
+            )
+            .exclude(pk=target.pk)
+            .count()
+        )
+        if remaining_super_admins == 0:
+            return _json_error(
+                _('No se puede desactivar al último superadministrador.'),
+                status=409,
+            )
+
+    if target.status == requested_status:
+        return _json_error(
+            _('El usuario ya tiene ese estado.'),
+            status=409,
+        )
+
+    target.status = requested_status
+    target.pending_approval = False
+    target.is_active = requested_status == User.STATUS_ACTIVE
+    target.save(update_fields=[
+        'status',
+        'pending_approval',
+        'is_active',
+        'updated_at',
+    ])
+
+    if requested_status == User.STATUS_DISABLED:
+        UserSession.objects.filter(
+            user=target,
+            is_active=True,
+        ).update(is_active=False)
+        audit_action = AuditLog.ACTION_USER_DISABLED
+        description = 'Cuenta desactivada desde Gestión de Usuarios.'
+        message = _(
+            'Usuario %(email)s desactivado correctamente.'
+        ) % {'email': target.email}
+    else:
+        audit_action = 'user_reactivated'
+        description = 'Cuenta reactivada desde Gestión de Usuarios.'
+        message = _(
+            'Usuario %(email)s activado correctamente.'
+        ) % {'email': target.email}
+
+    AuditLog.log(
+        user=request.user,
+        action=audit_action,
+        description=description,
+        object_type='User',
+        object_id=target.pk,
+        request=request,
+    )
+    return JsonResponse({
+        'ok': True,
+        'message': message,
+        'user': {
+            'id': target.pk,
+            'status': target.status,
+            'status_label': target.get_status_display(),
+            'is_active': target.is_active,
+        },
+        'counts': _management_counts(request.user),
+    })
+
+
+@login_required
+@admin_required
+@require_POST
+def admin_password_reset_view(request, user_id):
+    """Envía el enlace oficial de restablecimiento sin exponer contraseñas."""
+    from django.contrib.auth.forms import PasswordResetForm
+    from core.audit import AuditLog
+
+    target = get_object_or_404(User, pk=user_id)
+    if not can_edit_target(request.user, target):
+        return _json_error(
+            _('No tienes permiso para modificar este usuario.'),
+            status=403,
+        )
+    if not target.is_active:
+        return _json_error(
+            _('Activa la cuenta antes de enviar un restablecimiento.'),
+            status=409,
+        )
+
+    form = PasswordResetForm({'email': target.email})
+    if not form.is_valid():
+        return _json_error(
+            _('No se pudo iniciar el restablecimiento de contraseña.'),
+            status=400,
+        )
+
+    try:
+        form.save(
+            request=request,
+            use_https=request.is_secure(),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            subject_template_name='accounts/password_reset_subject.txt',
+            email_template_name='accounts/password_reset_email.html',
+        )
+    except Exception:
+        return _json_error(
+            _(
+                'No se pudo enviar el enlace de restablecimiento. '
+                'Inténtalo de nuevo.'
+            ),
+            status=502,
+        )
+
+    AuditLog.log(
+        user=request.user,
+        action='password_reset_requested',
+        description='Enlace de restablecimiento solicitado por un administrador.',
+        object_type='User',
+        object_id=target.pk,
+        request=request,
+    )
+    return JsonResponse({
+        'ok': True,
+        'message': _(
+            'Se ha enviado el enlace de restablecimiento a %(email)s.'
+        ) % {'email': target.email},
+    })
+
+
+@login_required
+@admin_required
+@require_POST
+@transaction.atomic
 def approve_user_view(request, user_id):
     """
     Aprueba un nuevo usuario pendiente.
@@ -616,10 +808,25 @@ def approve_user_view(request, user_id):
     
     IMPORTANTE: El role NO cambia automáticamente (sigue siendo 'user').
     """
-    user_to_approve = get_object_or_404(User, pk=user_id)
+    from core.audit import AuditLog
+
+    user_to_approve = get_object_or_404(
+        User.objects.select_for_update(),
+        pk=user_id,
+    )
+    if not can_edit_target(request.user, user_to_approve):
+        if _wants_json(request):
+            return _json_error(
+                _('No tienes permiso para aprobar este usuario.'),
+                status=403,
+            )
+        messages.error(request, _('No tienes permiso para aprobar este usuario.'))
+        return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
     
     # Solo se pueden aprobar usuarios con status='pending'
     if user_to_approve.status != User.STATUS_PENDING:
+        if _wants_json(request):
+            return _json_error(_('Este usuario ya fue procesado.'), status=409)
         messages.warning(request, _('Este usuario ya fue procesado.'))
         return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
     
@@ -631,22 +838,45 @@ def approve_user_view(request, user_id):
     user_to_approve.approved_by = request.user
     user_to_approve.approved_at = timezone.now()
     user_to_approve.save()
+    AuditLog.log(
+        user=request.user,
+        action=AuditLog.ACTION_USER_APPROVED,
+        description='Solicitud de usuario aprobada desde Gestión de Usuarios.',
+        object_type='User',
+        object_id=user_to_approve.pk,
+        request=request,
+    )
     
     # Enviar email al usuario
+    warning = ''
     try:
         from .utils import send_user_approved_email
         send_user_approved_email(user_to_approve, request)
-        messages.success(
-            request,
-            _('Usuario %(email)s aprobado exitosamente. Se ha enviado un email de notificación.') % 
-            {'email': user_to_approve.email}
+    except Exception:
+        warning = _(
+            'El usuario fue aprobado, pero no se pudo enviar la notificación.'
         )
-    except Exception as e:
-        messages.warning(
-            request,
-            _('Usuario %(email)s aprobado, pero hubo un error al enviar el email: %(error)s') % 
-            {'email': user_to_approve.email, 'error': str(e)}
-        )
+
+    success_message = _(
+        'Usuario %(email)s aprobado correctamente.'
+    ) % {'email': user_to_approve.email}
+    if _wants_json(request):
+        return JsonResponse({
+            'ok': True,
+            'message': success_message,
+            'warning': warning,
+            'user': {
+                'id': user_to_approve.pk,
+                'status': user_to_approve.status,
+                'status_label': user_to_approve.get_status_display(),
+            },
+            'counts': _management_counts(request.user),
+        })
+
+    if warning:
+        messages.warning(request, f'{success_message} {warning}')
+    else:
+        messages.success(request, success_message)
     
     return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
 
@@ -654,6 +884,7 @@ def approve_user_view(request, user_id):
 @login_required
 @admin_required
 @require_POST
+@transaction.atomic
 def update_pending_request(request):
     """
     Actualiza estado/rol/email_verificado de una solicitud pendiente.
@@ -663,26 +894,67 @@ def update_pending_request(request):
     status = request.POST.get('status')
     role = request.POST.get('role')
     email_verified = request.POST.get('email_verified') == 'on'
+    full_name = request.POST.get('full_name', '').strip()
+    company = request.POST.get('company', '').strip()
 
-    user_to_update = get_object_or_404(User, pk=user_id)
+    user_to_update = get_object_or_404(
+        User.objects.select_for_update(),
+        pk=user_id,
+    )
 
     if not can_edit_target(request.user, user_to_update):
+        if _wants_json(request):
+            return _json_error(
+                _('No tienes permiso para editar este usuario.'),
+                status=403,
+            )
         messages.error(request, _('No tienes permiso para editar este usuario.'))
         return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
 
-    if status not in dict(User.STATUS_CHOICES):
-        messages.error(request, _('Estado inválido.'))
+    if user_to_update.status != User.STATUS_PENDING:
+        if _wants_json(request):
+            return _json_error(_('Esta solicitud ya fue procesada.'), status=409)
+        messages.warning(request, _('Esta solicitud ya fue procesada.'))
+        return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
+
+    # La edición de una solicitud no debe saltarse los flujos auditados de
+    # aprobación o rechazo. Esas transiciones tienen endpoints dedicados.
+    if status != User.STATUS_PENDING:
+        if _wants_json(request):
+            return _json_error(
+                _('Para aprobar o rechazar utiliza la acción correspondiente.'),
+                status=400,
+            )
+        messages.error(
+            request,
+            _('Para aprobar o rechazar utiliza la acción correspondiente.'),
+        )
         return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
 
     if role and role not in dict(User.ROLE_CHOICES):
+        if _wants_json(request):
+            return _json_error(_('Rol inválido.'), status=400)
         messages.error(request, _('Rol inválido.'))
         return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
 
     if role and role != user_to_update.role:
         if not can_assign_role(request.user, role):
+            if _wants_json(request):
+                return _json_error(
+                    _('No tienes permiso para asignar este rol.'),
+                    status=403,
+                )
             messages.error(request, _('No tienes permiso para asignar este rol.'))
             return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
 
+    if not full_name:
+        if _wants_json(request):
+            return _json_error(_('El nombre es obligatorio.'), status=400)
+        messages.error(request, _('El nombre es obligatorio.'))
+        return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
+
+    user_to_update.full_name = full_name[:200]
+    user_to_update.company = company[:200]
     user_to_update.status = status
     if role:
         user_to_update.role = role
@@ -710,6 +982,15 @@ def update_pending_request(request):
             from .utils import send_user_approved_email
             send_user_approved_email(user_to_update, request)
         except Exception as e:
+            if _wants_json(request):
+                return JsonResponse({
+                    'ok': True,
+                    'message': _('Solicitud actualizada correctamente.'),
+                    'warning': _(
+                        'No se pudo enviar el email de notificación.'
+                    ),
+                    'counts': _management_counts(request.user),
+                })
             messages.warning(request, _('Usuario actualizado pero no se pudo enviar email: %(error)s') % {'error': str(e)})
             return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
     elif status == User.STATUS_REJECTED:
@@ -717,8 +998,33 @@ def update_pending_request(request):
             from .utils import send_user_rejected_email
             send_user_rejected_email(user_to_update, request)
         except Exception as e:
+            if _wants_json(request):
+                return JsonResponse({
+                    'ok': True,
+                    'message': _('Solicitud actualizada correctamente.'),
+                    'warning': _(
+                        'No se pudo enviar el email de notificación.'
+                    ),
+                    'counts': _management_counts(request.user),
+                })
             messages.warning(request, _('Usuario rechazado pero no se pudo enviar email: %(error)s') % {'error': str(e)})
             return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
+
+    if _wants_json(request):
+        return JsonResponse({
+            'ok': True,
+            'message': _('Solicitud actualizada correctamente.'),
+            'user': {
+                'id': user_to_update.pk,
+                'full_name': user_to_update.full_name,
+                'company': user_to_update.company,
+                'role': user_to_update.role,
+                'role_label': user_to_update.get_role_display(),
+                'status': user_to_update.status,
+                'status_label': user_to_update.get_status_display(),
+            },
+            'counts': _management_counts(request.user),
+        })
 
     messages.success(request, _('Solicitud actualizada correctamente.'))
     return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
@@ -727,15 +1033,31 @@ def update_pending_request(request):
 @login_required
 @admin_required
 @require_POST
+@transaction.atomic
 def reject_user_view(request, user_id):
     """
     Rechaza un nuevo usuario pendiente.
     Cambia status='rejected', desactiva acceso, envía email de notificación.
     """
-    user_to_reject = get_object_or_404(User, pk=user_id)
+    from core.audit import AuditLog
+
+    user_to_reject = get_object_or_404(
+        User.objects.select_for_update(),
+        pk=user_id,
+    )
+    if not can_edit_target(request.user, user_to_reject):
+        if _wants_json(request):
+            return _json_error(
+                _('No tienes permiso para rechazar este usuario.'),
+                status=403,
+            )
+        messages.error(request, _('No tienes permiso para rechazar este usuario.'))
+        return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
     
     # Solo se pueden rechazar usuarios con status='pending'
     if user_to_reject.status != User.STATUS_PENDING:
+        if _wants_json(request):
+            return _json_error(_('Este usuario ya fue procesado.'), status=409)
         messages.warning(request, _('Este usuario ya fue procesado.'))
         return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
     
@@ -744,22 +1066,45 @@ def reject_user_view(request, user_id):
     user_to_reject.pending_approval = False
     user_to_reject.is_active = False
     user_to_reject.save()
+    AuditLog.log(
+        user=request.user,
+        action=AuditLog.ACTION_USER_REJECTED,
+        description='Solicitud de usuario rechazada desde Gestión de Usuarios.',
+        object_type='User',
+        object_id=user_to_reject.pk,
+        request=request,
+    )
     
     # Enviar email al usuario
+    warning = ''
     try:
         from .utils import send_user_rejected_email
         send_user_rejected_email(user_to_reject, request)
-        messages.success(
-            request,
-            _('Solicitud de %(email)s rechazada. Se ha enviado un email de notificación.') % 
-            {'email': user_to_reject.email}
+    except Exception:
+        warning = _(
+            'La solicitud fue rechazada, pero no se pudo enviar la notificación.'
         )
-    except Exception as e:
-        messages.warning(
-            request,
-            _('Solicitud rechazada, pero hubo un error al enviar el email: %(error)s') % 
-            {'error': str(e)}
-        )
+
+    success_message = _(
+        'Solicitud de %(email)s rechazada correctamente.'
+    ) % {'email': user_to_reject.email}
+    if _wants_json(request):
+        return JsonResponse({
+            'ok': True,
+            'message': success_message,
+            'warning': warning,
+            'user': {
+                'id': user_to_reject.pk,
+                'status': user_to_reject.status,
+                'status_label': user_to_reject.get_status_display(),
+            },
+            'counts': _management_counts(request.user),
+        })
+
+    if warning:
+        messages.warning(request, f'{success_message} {warning}')
+    else:
+        messages.success(request, success_message)
     
     return redirect(f"{reverse('accounts:user_approval_dashboard')}?tab=pending")
 
