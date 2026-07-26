@@ -94,6 +94,21 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('is_active', 'is_staff', 'email_verified')
         }),
     )
+
+    def formfield_for_choice_field(self, db_field, request, **kwargs):
+        """Super Admin es una identidad reservada, nunca una opción asignable."""
+        if db_field.name == 'role':
+            kwargs['choices'] = [
+                (User.ROLE_ADMIN, 'Admin'),
+                (User.ROLE_USER, 'Usuario'),
+            ]
+        return super().formfield_for_choice_field(db_field, request, **kwargs)
+
+    def get_readonly_fields(self, request, obj=None):
+        readonly = list(super().get_readonly_fields(request, obj))
+        if obj and obj.is_super_admin() and 'role' not in readonly:
+            readonly.append('role')
+        return readonly
     
     def profile_completed_badge(self, obj):
         """Muestra badge visual del estado del perfil operativo"""

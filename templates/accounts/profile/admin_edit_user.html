@@ -72,9 +72,6 @@
                     <select name="role" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px;">
                         <option value="user" {% if target_user.role == 'user' %}selected{% endif %}>{% trans "Usuario" %}</option>
                         <option value="admin" {% if target_user.role == 'admin' %}selected{% endif %}>{% trans "Admin" %}</option>
-                        {% if request.user.is_super_admin %}
-                        <option value="super_admin" {% if target_user.role == 'super_admin' %}selected{% endif %}>{% trans "Super Admin" %}</option>
-                        {% endif %}
                     </select>
                 </div>
                 <div>

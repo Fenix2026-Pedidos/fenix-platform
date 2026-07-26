@@ -87,19 +87,17 @@ def can_assign_role(editor, target_role):
     Verifica si 'editor' puede asignar 'target_role' a un usuario.
     
     Reglas:
-    - SUPER_ADMIN puede asignar cualquier role
-    - ADMIN puede asignar 'user' y 'admin', pero NO 'super_admin'
+    - 'super_admin' es un rol reservado y no puede asignarse desde la plataforma.
+    - SUPER_ADMIN y ADMIN pueden asignar únicamente 'user' y 'admin'.
     - USER no puede asignar roles
     """
     if not editor or not editor.is_authenticated:
         return False
-    
-    # SUPER_ADMIN puede asignar cualquier role
-    if is_super_admin(editor):
-        return True
-    
-    # ADMIN puede asignar user y admin, pero NO super_admin
-    if is_admin(editor):
+
+    if target_role == ROLE_SUPER_ADMIN:
+        return False
+
+    if is_super_admin(editor) or is_admin(editor):
         return target_role in [ROLE_USER, ROLE_ADMIN]
     
     # USER no puede asignar roles
@@ -143,23 +141,17 @@ def get_role_choices_for_user(user):
     """
     Retorna las opciones de roles que 'user' puede asignar.
     
-    - SUPER_ADMIN ve: super_admin, admin, user
-    - ADMIN ve: admin, user (NO super_admin)
+    - SUPER_ADMIN y ADMIN ven únicamente: admin, user.
+    - super_admin nunca se expone como opción asignable.
     - USER ve: [] (no puede asignar roles)
     """
-    from accounts.models import User
-    
     if not user or not user.is_authenticated:
         return []
     
-    if is_super_admin(user):
-        return User.ROLE_CHOICES
-    
-    if is_admin(user):
-        # ADMIN no puede asignar super_admin
+    if is_super_admin(user) or is_admin(user):
         return [
-            (ROLE_ADMIN, 'Admin'),
-            (ROLE_USER, 'User'),
+            (ROLE_ADMIN, _('Admin')),
+            (ROLE_USER, _('Usuario')),
         ]
     
     return []

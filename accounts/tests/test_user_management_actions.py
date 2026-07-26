@@ -1,9 +1,13 @@
 from unittest.mock import patch
 
+from django.contrib import admin
+from django.test import RequestFactory
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
+from accounts.admin import UserAdmin
 from accounts.models import User
+from accounts.permissions import can_assign_role, get_role_choices_for_user
 from core.audit import AuditLog
 
 
@@ -47,6 +51,68 @@ class UserManagementActionTests(TestCase):
         self.assertContains(response, 'aria-haspopup="menu"')
         self.assertContains(response, 'aria-expanded="false"')
         self.assertContains(response, 'js/user_management_actions.js')
+
+    def test_super_admin_role_is_never_exposed_or_assignable(self):
+        target = make_user('role-target@example.test')
+
+        dashboard = self.client.get(
+            reverse('accounts:user_approval_dashboard')
+        )
+        edit_page = self.client.get(
+            reverse('accounts:admin_edit_user', args=[target.pk])
+        )
+
+        self.assertNotContains(
+            dashboard,
+            '<option value="super_admin"',
+            html=False,
+        )
+        self.assertNotContains(
+            edit_page,
+            '<option value="super_admin"',
+            html=False,
+        )
+        self.assertNotIn(
+            User.ROLE_SUPER_ADMIN,
+            dict(get_role_choices_for_user(self.super_admin)),
+        )
+        self.assertFalse(
+            can_assign_role(self.super_admin, User.ROLE_SUPER_ADMIN)
+        )
+
+    def test_super_admin_role_cannot_be_assigned_by_forged_request(self):
+        target = make_user('forged-role@example.test')
+
+        response = self.client.post(
+            reverse('accounts:user_update', args=[target.pk]),
+            {
+                'first_name': 'Usuario',
+                'last_name': 'Prueba',
+                'company': 'Empresa',
+                'role': User.ROLE_SUPER_ADMIN,
+                'status': User.STATUS_ACTIVE,
+                'email_verified': 'on',
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        target.refresh_from_db()
+        self.assertEqual(target.role, User.ROLE_USER)
+
+    def test_django_admin_does_not_offer_super_admin_role(self):
+        request = RequestFactory().get('/admin/accounts/user/add/')
+        request.user = self.super_admin
+        model_admin = UserAdmin(User, admin.site)
+
+        role_field = model_admin.formfield_for_choice_field(
+            User._meta.get_field('role'),
+            request,
+        )
+
+        self.assertNotIn(
+            User.ROLE_SUPER_ADMIN,
+            dict(role_field.choices),
+        )
 
     def test_disable_and_reactivate_user_return_json_and_are_audited(self):
         target = make_user('cliente@example.test')
