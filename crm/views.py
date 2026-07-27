@@ -1,7 +1,8 @@
+import csv
 import json
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from functools import wraps
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
@@ -27,53 +28,57 @@ from .services import CRMLeadService
 
 User = get_user_model()
 
+
+def _filtered_leads_queryset(request):
+    """Aplica los mismos filtros a la pantalla y a sus exportaciones."""
+    queryset = CRMLead.objects.all().select_related('assigned_to').order_by('-created_at')
+    filters = {
+        'search': request.GET.get('search', '').strip(),
+        'channel': request.GET.get('channel', '').strip(),
+        'status': request.GET.get('status', '').strip(),
+        'validation': request.GET.get('validation', '').strip(),
+        'priority': request.GET.get('priority', '').strip(),
+        'zone': request.GET.get('zone', '').strip(),
+        'agent': request.GET.get('agent', '').strip(),
+        'date_from': request.GET.get('date_from', '').strip(),
+        'date_to': request.GET.get('date_to', '').strip(),
+    }
+
+    if filters['search']:
+        queryset = queryset.filter(
+            Q(full_name__icontains=filters['search'])
+            | Q(phone__icontains=filters['search'])
+            | Q(email__icontains=filters['search'])
+            | Q(company_name__icontains=filters['search'])
+            | Q(notes__icontains=filters['search'])
+        )
+    if filters['channel']:
+        queryset = queryset.filter(channel=filters['channel'])
+    if filters['status']:
+        queryset = queryset.filter(lead_status=filters['status'])
+    if filters['validation']:
+        queryset = queryset.filter(validation_status=filters['validation'])
+    if filters['priority']:
+        queryset = queryset.filter(priority=filters['priority'])
+    if filters['zone']:
+        queryset = queryset.filter(geographic_zone__iexact=filters['zone'])
+    if filters['agent']:
+        queryset = queryset.filter(assigned_to_id=filters['agent'])
+    if filters['date_from']:
+        queryset = queryset.filter(created_at__date__gte=filters['date_from'])
+    if filters['date_to']:
+        queryset = queryset.filter(created_at__date__lte=filters['date_to'])
+
+    return queryset, filters
+
+
 @crm_access_required
 def leads_list(request):
     """
     Vista del Dashboard del CRM. Muestra listado de leads con filtros premium,
     KPIs comerciales y paginación rápida.
     """
-    leads_queryset = CRMLead.objects.all().select_related('assigned_to').order_by('-created_at')
-
-    # 1. Aplicar Filtros Dinámicos
-    query_search = request.GET.get('search', '').strip()
-    query_channel = request.GET.get('channel', '').strip()
-    query_status = request.GET.get('status', '').strip()
-    query_validation = request.GET.get('validation', '').strip()
-    query_priority = request.GET.get('priority', '').strip()
-    query_zone = request.GET.get('zone', '').strip()
-    query_agent = request.GET.get('agent', '').strip()
-    
-    # Filtros avanzados (fechas)
-    date_from = request.GET.get('date_from', '').strip()
-    date_to = request.GET.get('date_to', '').strip()
-
-    if query_search:
-        leads_queryset = leads_queryset.filter(
-            Q(full_name__icontains=query_search) |
-            Q(phone__icontains=query_search) |
-            Q(email__icontains=query_search) |
-            Q(company_name__icontains=query_search) |
-            Q(notes__icontains=query_search)
-        )
-
-    if query_channel:
-        leads_queryset = leads_queryset.filter(channel=query_channel)
-    if query_status:
-        leads_queryset = leads_queryset.filter(lead_status=query_status)
-    if query_validation:
-        leads_queryset = leads_queryset.filter(validation_status=query_validation)
-    if query_priority:
-        leads_queryset = leads_queryset.filter(priority=query_priority)
-    if query_zone:
-        leads_queryset = leads_queryset.filter(geographic_zone__iexact=query_zone)
-    if query_agent:
-        leads_queryset = leads_queryset.filter(assigned_to_id=query_agent)
-    
-    if date_from:
-        leads_queryset = leads_queryset.filter(created_at__date__gte=date_from)
-    if date_to:
-        leads_queryset = leads_queryset.filter(created_at__date__lte=date_to)
+    leads_queryset, filters = _filtered_leads_queryset(request)
 
     # 2. Generar Métricas KPI de Ventas
     kpis = {
@@ -104,19 +109,63 @@ def leads_list(request):
         'validations': CRMLead.VALIDATION_CHOICES,
         'priorities': CRMLead.PRIORITY_CHOICES,
         'per_page': per_page,
-        'filters': {
-            'search': query_search,
-            'channel': query_channel,
-            'status': query_status,
-            'validation': query_validation,
-            'priority': query_priority,
-            'zone': query_zone,
-            'agent': query_agent,
-            'date_from': date_from,
-            'date_to': date_to,
-        }
+        'filters': filters,
     }
     return render(request, 'crm/leads_list.html', context)
+
+
+def _csv_safe(value):
+    """Evita que una hoja de cálculo interprete datos de usuario como fórmulas."""
+    text = '' if value is None else str(value)
+    if text.startswith(('=', '+', '-', '@')):
+        return f"'{text}"
+    return text
+
+
+@crm_access_required
+def export_leads_csv(request):
+    """Exporta la vista filtrada y audita el acceso a datos personales."""
+    from core.audit import AuditLog
+
+    queryset, _filters = _filtered_leads_queryset(request)
+    exported_count = queryset.count()
+    response = HttpResponse(content_type='text/csv; charset=utf-8')
+    response['Content-Disposition'] = (
+        f'attachment; filename="fenix-crm-leads-{timezone.localdate():%Y%m%d}.csv"'
+    )
+    response.write('\ufeff')
+    writer = csv.writer(response)
+    writer.writerow([
+        'ID', 'Nombre', 'Empresa', 'Email', 'Teléfono', 'Canal', 'Zona',
+        'Estado', 'Validación', 'Prioridad', 'Comercial asignado',
+        'Último contacto', 'Fecha de creación',
+    ])
+    for lead in queryset.iterator():
+        assigned_to = lead.assigned_to.display_name if lead.assigned_to else ''
+        writer.writerow([
+            lead.serial_id,
+            _csv_safe(lead.full_name),
+            _csv_safe(lead.company_name),
+            _csv_safe(lead.email),
+            _csv_safe(lead.phone),
+            lead.get_channel_display(),
+            _csv_safe(lead.geographic_zone),
+            lead.get_lead_status_display(),
+            lead.get_validation_status_display(),
+            lead.get_priority_display(),
+            _csv_safe(assigned_to),
+            timezone.localtime(lead.last_contact_at).strftime('%d/%m/%Y %H:%M'),
+            timezone.localtime(lead.created_at).strftime('%d/%m/%Y %H:%M'),
+        ])
+
+    AuditLog.log(
+        user=request.user,
+        action=AuditLog.ACTION_PERSONAL_DATA_EXPORTED,
+        description=f'Exportación CSV de CRM Leads: {exported_count} registros.',
+        object_type='CRMLead',
+        request=request,
+    )
+    return response
 
 
 @crm_access_required

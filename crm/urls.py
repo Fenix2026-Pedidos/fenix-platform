@@ -5,6 +5,7 @@ app_name = 'crm'
 
 urlpatterns = [
     path('leads/', views.leads_list, name='leads_list'),
+    path('leads/export.csv', views.export_leads_csv, name='export_leads_csv'),
     path('leads/bulk-delete/', views.bulk_delete_leads, name='bulk_delete_leads'),
     path('leads/<uuid:lead_uuid>/', views.lead_detail, name='lead_detail'),
     path('leads/<uuid:lead_uuid>/delete/', views.delete_lead, name='delete_lead'),
