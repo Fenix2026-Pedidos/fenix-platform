@@ -190,7 +190,45 @@ def send_verification_email(user, verification_url):
         to=[user.email],
     )
     email.attach_alternative(html_content, "text/html")
-    email.send(fail_silently=False)
+    try:
+        sent_count = email.send(fail_silently=False)
+        if sent_count != 1:
+            raise RuntimeError("El proveedor no confirmó la entrega del email.")
+    except Exception:
+        token.delete()
+        raise
+
+
+def send_new_user_admin_notification(user, request=None):
+    """Notifica al administrador que hay una nueva cuenta pendiente."""
+    from django.core.mail import EmailMultiAlternatives
+    from django.urls import reverse
+
+    approval_url = ""
+    if request:
+        approval_url = request.build_absolute_uri(
+            f"{reverse('accounts:user_approval_dashboard')}?tab=pending"
+        )
+
+    subject = f"Nueva cuenta pendiente en Fenix: {user.email}"
+    body = (
+        "Se ha registrado una nueva cuenta en Fenix.\n\n"
+        f"Nombre: {user.full_name}\n"
+        f"Empresa: {user.company}\n"
+        f"Email: {user.email}\n"
+    )
+    if approval_url:
+        body += f"\nRevisar solicitud: {approval_url}\n"
+
+    email = EmailMultiAlternatives(
+        subject=subject,
+        body=body,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[settings.ADMIN_APPROVAL_EMAIL],
+    )
+    sent_count = email.send(fail_silently=False)
+    if sent_count != 1:
+        raise RuntimeError("El proveedor no confirmó la notificación al administrador.")
 
 
 def send_approval_notification(user, approved=True):

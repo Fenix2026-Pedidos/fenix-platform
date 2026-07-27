@@ -5,10 +5,29 @@ import logging
 from email.utils import parseaddr
 from django.core.mail.backends.base import BaseEmailBackend
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 
 logger = logging.getLogger(__name__)
 
+
+class ResendDeliveryError(RuntimeError):
+    """Error de entrega que debe conocer el flujo que solicitó el envío."""
+
+
 class ResendEmailBackend(BaseEmailBackend):
+    @staticmethod
+    def _response_error_message(error):
+        try:
+            payload = json.loads(error.read().decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError, AttributeError):
+            return "respuesta no interpretable"
+        return payload.get("message") or payload.get("name") or "error no detallado"
+
+    def _fail(self, message, *, cause=None):
+        logger.error(message)
+        if not self.fail_silently:
+            raise ResendDeliveryError(message) from cause
+
     def send_messages(self, email_messages):
         """
         Envía los mensajes de correo a través de la API REST de Resend mediante HTTPS.
@@ -19,8 +38,11 @@ class ResendEmailBackend(BaseEmailBackend):
         
         api_key = getattr(settings, 'RESEND_API_KEY', '')
         if not api_key:
-            logger.error("RESEND_API_KEY no está configurada en los settings de Django.")
-            return 0
+            message = "RESEND_API_KEY no está configurada en los settings de Django."
+            if self.fail_silently:
+                logger.error(message)
+                return 0
+            raise ImproperlyConfigured(message)
             
         sent_count = 0
         for message in email_messages:
@@ -67,9 +89,17 @@ class ResendEmailBackend(BaseEmailBackend):
                     logger.info("Email enviado correctamente mediante Resend.")
                     sent_count += 1
             except urllib.error.HTTPError as e:
-                e.read()
-                logger.error("Error HTTP en Resend (código %s).", e.code)
+                detail = self._response_error_message(e)
+                self._fail(
+                    f"Resend rechazó el email (HTTP {e.code}): {detail}",
+                    cause=e,
+                )
             except Exception as e:
-                logger.error("Error general en Resend Backend: %s", type(e).__name__)
+                if isinstance(e, ResendDeliveryError):
+                    raise
+                self._fail(
+                    f"Error de transporte en Resend: {type(e).__name__}",
+                    cause=e,
+                )
                 
         return sent_count

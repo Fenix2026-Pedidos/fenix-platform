@@ -12,6 +12,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from core.rate_limit import rate_limited
 from django.urls import reverse
 from django.views.decorators.http import require_POST
+import logging
 from .models import User, EmailVerificationToken
 from .forms import LoginForm, RegisterForm
 from .utils import send_verification_email, send_approval_notification, is_manager_or_admin
@@ -24,6 +25,8 @@ from .permissions import (
     get_role_choices_for_user,
     admin_required,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def _wants_json(request):
@@ -195,37 +198,46 @@ def register_view(request):
                 from core.crm_services import CRMService
                 CRMService.sync_lead({
                     "source": "Registro Plataforma Fenix",
-                    "name": f"{user.first_name} {user.last_name}",
+                    "name": user.full_name,
                     "email": user.email,
-                    "phone_prefix": user.phone_prefix or "+34",
-                    "phone_number": user.phone_number or "",
-                    "company": user.vat_number or "-",
-                    "message": f"Nuevo registro: {user.job_title}"
+                    "phone_prefix": "+34",
+                    "phone_number": user.phone or user.telefono_empresa or "",
+                    "company": user.company or "-",
+                    "message": f"Nuevo registro: {user.job_title or 'sin cargo indicado'}"
                 })
-            except Exception as e:
-                print(f"Error syncing with CRM: {e}")
+            except Exception:
+                logger.exception("Error al sincronizar el nuevo registro con CRM.")
             
             # Enviar email de verificación con token
+            email_sent = False
             try:
                 verification_url = request.build_absolute_uri(reverse('accounts:verify_email'))
                 send_verification_email(user, verification_url)
-            except Exception as e:
-                print(f"Error sending verification email: {e}")
-                pass  # No fallar el registro si el email falla
+                email_sent = True
+            except Exception:
+                logger.exception("No se pudo enviar el email de verificación a %s.", user.email)
             
             # Enviar notificación al administrador
             try:
                 from .utils import send_new_user_admin_notification
                 send_new_user_admin_notification(user, request)
-            except Exception as e:
-                print(f"Error sending admin notification: {e}")
-                pass  # No fallar el registro si el email falla
+            except Exception:
+                logger.exception("No se pudo notificar el nuevo registro al administrador.")
+
+            request.session['unverified_user_email'] = user.email
             
-            messages.success(
-                request,
-                _('Registro exitoso. Por favor verifica tu email para continuar.')
-            )
-            return redirect('accounts:login')
+            if email_sent:
+                messages.success(
+                    request,
+                    _('Cuenta creada. Te hemos enviado un email de verificación.')
+                )
+            else:
+                messages.error(
+                    request,
+                    _('La cuenta se ha creado, pero no hemos podido enviar el email. '
+                      'Pulsa “Reenviar Email de Verificación” para intentarlo de nuevo.')
+                )
+            return redirect('accounts:email_verification')
     else:
         form = RegisterForm()
     
@@ -314,7 +326,14 @@ def resend_confirmation(request):
         
         # Enviar nuevo email de verificación
         verification_url = request.build_absolute_uri(reverse('accounts:verify_email'))
-        send_verification_email(user, verification_url)
+        try:
+            send_verification_email(user, verification_url)
+        except Exception:
+            logger.exception("No se pudo reenviar la verificación a %s.", user.email)
+            return JsonResponse({
+                'success': False,
+                'error': _('El servicio de correo no ha podido completar el envío. Inténtalo de nuevo.')
+            }, status=503)
         
         return JsonResponse({
             'success': True, 
