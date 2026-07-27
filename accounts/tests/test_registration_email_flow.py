@@ -1,6 +1,4 @@
-from io import BytesIO
 from unittest.mock import patch
-from urllib.error import HTTPError
 
 from django.core.mail import EmailMessage
 from django.test import TestCase, override_settings
@@ -111,17 +109,13 @@ class ResendBackendTests(TestCase):
         RESEND_API_KEY="test-key",
         RESEND_DEFAULT_FROM="Fenix <noreply@fenixdelamancha.es>",
     )
-    @patch("core.email_backends.urllib.request.urlopen")
-    def test_http_error_is_propagated_with_provider_reason(self, urlopen):
-        urlopen.side_effect = HTTPError(
-            url="https://api.resend.com/emails",
-            code=403,
-            msg="Forbidden",
-            hdrs={},
-            fp=BytesIO(
-                b'{"message":"The fenixdelamancha.es domain is not verified"}'
-            ),
-        )
+    @patch("core.email_backends.requests.post")
+    def test_http_error_is_propagated_with_provider_reason(self, post):
+        post.return_value.ok = False
+        post.return_value.status_code = 403
+        post.return_value.json.return_value = {
+            "message": "The fenixdelamancha.es domain is not verified"
+        }
         backend = ResendEmailBackend(fail_silently=False)
         message = EmailMessage(
             subject="Prueba",

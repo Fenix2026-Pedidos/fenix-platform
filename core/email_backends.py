@@ -1,8 +1,6 @@
-import json
-import urllib.request
-import urllib.error
 import logging
 from email.utils import parseaddr
+import requests
 from django.core.mail.backends.base import BaseEmailBackend
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -16,11 +14,12 @@ class ResendDeliveryError(RuntimeError):
 
 class ResendEmailBackend(BaseEmailBackend):
     @staticmethod
-    def _response_error_message(error):
+    def _response_error_message(response):
         try:
-            payload = json.loads(error.read().decode("utf-8"))
-        except (UnicodeDecodeError, json.JSONDecodeError, AttributeError):
-            return "respuesta no interpretable"
+            payload = response.json()
+        except (ValueError, AttributeError):
+            detail = (getattr(response, "text", "") or "").strip()
+            return detail[:300] or "respuesta no interpretable"
         return payload.get("message") or payload.get("name") or "error no detallado"
 
     def _fail(self, message, *, cause=None):
@@ -74,24 +73,27 @@ class ResendEmailBackend(BaseEmailBackend):
                 elif hasattr(message, 'content_subtype') and message.content_subtype == 'html':
                     payload['html'] = message.body
                             
-                req = urllib.request.Request(
+                response = requests.post(
                     "https://api.resend.com/emails",
-                    data=json.dumps(payload).encode('utf-8'),
+                    json=payload,
                     headers={
                         "Authorization": f"Bearer {api_key}",
-                        "Content-Type": "application/json"
+                        "Accept": "application/json",
+                        "User-Agent": "Fenix-Platform/1.0",
                     },
-                    method="POST"
+                    timeout=15,
                 )
-                
-                with urllib.request.urlopen(req) as response:
-                    response.read()
-                    logger.info("Email enviado correctamente mediante Resend.")
-                    sent_count += 1
-            except urllib.error.HTTPError as e:
-                detail = self._response_error_message(e)
+                if not response.ok:
+                    detail = self._response_error_message(response)
+                    self._fail(
+                        f"Resend rechazó el email (HTTP {response.status_code}): {detail}"
+                    )
+
+                logger.info("Email enviado correctamente mediante Resend.")
+                sent_count += 1
+            except requests.RequestException as e:
                 self._fail(
-                    f"Resend rechazó el email (HTTP {e.code}): {detail}",
+                    f"Error de transporte en Resend: {type(e).__name__}",
                     cause=e,
                 )
             except Exception as e:
